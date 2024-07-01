@@ -5,7 +5,7 @@ import { ICommand, PropertyChanged } from './ICommand';
 import { CommandResult } from "./CommandResult";
 import { CommandValidator } from './CommandValidator';
 import { Constructor } from '@cratis/fundamentals';
-
+import { Globals } from '../Globals';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
@@ -42,12 +42,17 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
             actualRoute = this.routeTemplate(payload);
         }
 
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+        if (Globals.microservice?.length > 0) {
+            headers[Globals.microserviceHttpHeader] = Globals.microservice;
+        }
+
         const response = await fetch(actualRoute, {
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
+            headers,
             body: JSON.stringify(payload)
         });
         this.setInitialValuesFromCurrentValues();

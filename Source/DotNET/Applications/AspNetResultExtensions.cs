@@ -17,4 +17,12 @@ public static class AspNetResultExtensions
     /// <returns>True if it has, false if not.</returns>
     public static bool IsAspNetResult(this ActionExecutingContext context)
         => context.Filters.Any(_ => _ is AspNetResultAttribute);
+
+    /// <summary>
+    /// Check if an action has the with <see cref="IgnoreValidationAttribute"/> as filter and should then ignore validation in the action filters.
+    /// </summary>
+    /// <param name="context"><see cref="ActionExecutingContext"/> to check.</param>
+    /// <returns>True if it has, false if not.</returns>
+    public static bool ShouldIgnoreValidation(this ActionExecutingContext context)
+        => context.Filters.Any(_ => _ is IgnoreValidationAttribute);
 }

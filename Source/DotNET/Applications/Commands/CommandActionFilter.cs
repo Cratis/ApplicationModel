@@ -23,7 +23,7 @@ public class CommandActionFilter : IAsyncActionFilter
             var exceptionStackTrace = string.Empty;
             ActionExecutedContext? result = null;
             object? response = null;
-            if (context.ModelState.IsValid)
+            if (context.ModelState.IsValid || context.ShouldIgnoreValidation())
             {
                 result = await next();
 

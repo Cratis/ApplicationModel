@@ -50,7 +50,8 @@ public static class QueryExtensions
             argument.CollectTypesInvolved(additionalTypesInvolved);
         }
 
-        foreach (var property in responseModel.Type.GetPropertyDescriptors())
+        var propertyDescriptors = responseModel.Type.GetPropertyDescriptors();
+        foreach (var property in propertyDescriptors)
         {
             property.CollectTypesInvolved(additionalTypesInvolved);
         }
@@ -66,6 +67,7 @@ public static class QueryExtensions
             responseModel.IsObservable,
             imports,
             method.GetArgumentDescriptors(),
+            propertyDescriptors,
             [.. typesInvolved, .. additionalTypesInvolved]);
     }
 }

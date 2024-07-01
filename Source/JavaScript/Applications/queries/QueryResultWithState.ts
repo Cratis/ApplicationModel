@@ -3,6 +3,7 @@
 
 import { ValidationResult } from '../validation/ValidationResult';
 import { IQueryResult } from './IQueryResult';
+import { PagingInfo } from './PagingInfo';
 import { QueryResult } from './QueryResult';
 
 /**
@@ -13,6 +14,7 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
     static empty<TDataType>(defaultValue: TDataType): QueryResultWithState<TDataType> {
         return new QueryResultWithState(
             defaultValue,
+            PagingInfo.noPaging,
             true,
             true,
             true,
@@ -26,6 +28,7 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
     static initial<TDataType>(defaultValue: TDataType): QueryResultWithState<TDataType> {
         return new QueryResultWithState(
             defaultValue,
+            PagingInfo.noPaging,
             true,
             true,
             true,
@@ -39,6 +42,7 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
     /**
      * Initializes an instance of {@link QueryResultWithState<TDataType>}.
      * @param {TDataType} data The items returned, if any - can be empty.
+     * @param {PagingInfo} paging The paging info.
      * @param {boolean} isSuccess Whether or not the query was successful.
      * @param {boolean} isAuthorized Whether or not the query was authorized.
      * @param {boolean} isValid Whether or not it is valid.
@@ -50,6 +54,7 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
      */
     constructor(
         readonly data: TDataType,
+        readonly paging: PagingInfo,
         readonly isSuccess: boolean,
         readonly isAuthorized: boolean,
         readonly isValid: boolean,
@@ -85,6 +90,7 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
     static fromQueryResult<TDataType>(queryResult: QueryResult<TDataType>, isPerforming: boolean) {
         return new QueryResultWithState<TDataType>(
             queryResult.data,
+            queryResult.paging,
             queryResult.isSuccess,
             queryResult.isAuthorized,
             queryResult.isValid,

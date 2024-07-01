@@ -203,6 +203,26 @@ public static class TypeExtensions
     }
 
     /// <summary>
+    /// Try to get an import statement for a type.
+    /// </summary>
+    /// <param name="type">Type to get for.</param>
+    /// <param name="importStatement">The resulting import statement if it requires so.</param>
+    /// <returns>True if it needs an import statement, false if not.</returns>
+    public static bool TryGetImportStatement(this Type type, out ImportStatement? importStatement)
+    {
+        var knownType = type.IsKnownType();
+        if (knownType && _primitiveTypeMap.TryGetValue(type.FullName!, out var targetType) &&
+            !string.IsNullOrEmpty(targetType?.Module))
+        {
+            importStatement = new ImportStatement(targetType.Type, targetType.Module);
+            return true;
+        }
+
+        importStatement = null;
+        return false;
+    }
+
+    /// <summary>
     /// Check if a type is a dictionary.
     /// </summary>
     /// <param name="type">Type to check.</param>
@@ -479,7 +499,7 @@ public static class TypeExtensions
     /// <returns>The element type.</returns>
     public static Type GetSubjectElementType(this Type subjectType)
     {
-        if (subjectType.IsGenericType && subjectType.IsSubject() )
+        if (subjectType.IsGenericType && subjectType.IsSubject())
         {
             return subjectType.GetGenericArguments()[0];
         }

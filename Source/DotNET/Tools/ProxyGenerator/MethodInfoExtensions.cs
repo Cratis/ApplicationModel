@@ -77,8 +77,8 @@ public static class MethodInfoExtensions
     {
         List<PropertyDescriptor> properties = [];
         var parameters = method.GetParameters();
-        var primitives = parameters.Where(_ => _.ParameterType.IsAPrimitiveType());
-        var complex = parameters.Where(_ => !_.ParameterType.IsAPrimitiveType());
+        var primitives = parameters.Where(_ => _.ParameterType.IsAPrimitiveType() || _.ParameterType.IsConcept());
+        var complex = parameters.Where(_ => !_.ParameterType.IsAPrimitiveType() && !_.ParameterType.IsConcept());
 
         properties.AddRange(primitives.ToList().ConvertAll(_ => _.ToPropertyDescriptor()));
 

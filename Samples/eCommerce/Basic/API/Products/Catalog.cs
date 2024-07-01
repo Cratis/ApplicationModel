@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Domain.Products;
+using Read.Products;
 
 namespace API.Products;
 
@@ -22,5 +23,15 @@ public class Catalog(IGrainFactory grainFactory) : ControllerBase
     {
         var product = grainFactory.GetGrain<IProduct>(addProduct.SKU);
         await product.Register(addProduct.Name);
+    }
+
+    /// <summary>
+    /// Gets all the products in the catalog.
+    /// </summary>
+    /// <returns>Collection of products.</returns>
+    [HttpGet]
+    public Task<IQueryable<Product>> AllProducts()
+    {
+        return Task.FromResult(new List<Product>().AsQueryable());
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+import { Globals } from '../Globals';
 import { IObservableQueryConnection } from './IObservableQueryConnection';
 import { QueryResult } from './QueryResult';
 
@@ -25,7 +26,10 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
     /** @inheritdoc */
     connect(dataReceived: DataReceived<TDataType>) {
         const secure = document.location.protocol.indexOf('https') === 0;
-        const url = `${secure ? 'wss' : 'ws'}://${document.location.host}${this._route}`;
+        let url = `${secure ? 'wss' : 'ws'}://${document.location.host}${this._route}`;
+        if (Globals.microservice?.length > 0) {
+            url = `${url}?${Globals.microserviceWSQueryArgument}=${Globals.microservice}`;
+        }
         let timeToWait = 500;
         const timeExponent = 500;
         const retries = 100;

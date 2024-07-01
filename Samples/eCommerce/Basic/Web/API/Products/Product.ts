@@ -3,8 +3,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 // eslint-disable-next-line header/header
-export * from './Product';
-export * from './SetStockForProduct';
-export * from './SetPrice';
-export * from './AddProduct';
-export * from './AllProducts';
+import { field } from '@cratis/fundamentals';
+
+export class Product {
+
+    @field(String)
+    id!: string;
+
+    @field(String)
+    name!: string;
+
+    @field(Boolean)
+    isRegistered!: boolean;
+}

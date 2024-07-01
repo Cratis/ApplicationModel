@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { ValidationResult } from '../validation/ValidationResult';
+import { PagingInfo } from './PagingInfo';
 
 /**
  * Defines the result from executing a query.
@@ -11,6 +12,11 @@ export interface IQueryResult<TDataType> {
      * Gets the data result from the query.
      */
     readonly data: TDataType;
+
+    /**
+     * Gets the paging information.
+     */
+    readonly paging: PagingInfo;
 
     /**
      * Gets whether or not the query executed successfully.

@@ -21,11 +21,20 @@ namespace Cratis.Applications.Queries;
 /// Initializes a new instance of the <see cref="QueryActionFilter"/> class.
 /// </remarks>
 /// <param name="options"><see cref="JsonOptions"/>.</param>
+/// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
+/// <param name="queryProviders"><see cref="IQueryProviders"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 public class QueryActionFilter(
     IOptions<JsonOptions> options,
+    IQueryContextManager queryContextManager,
+    IQueryProviders queryProviders,
     ILogger<QueryActionFilter> logger) : IAsyncActionFilter
 {
+    const string SortByQueryStringKey = "sortby";
+    const string SortDirectionQueryStringKey = "sortDirection";
+    const string PageQueryStringKey = "page";
+    const string PageSizeQueryStringKey = "pageSize";
+
     readonly JsonOptions _options = options.Value;
 
     /// <inheritdoc/>
@@ -34,6 +43,8 @@ public class QueryActionFilter(
         if (context.HttpContext.Request.Method == HttpMethod.Get.Method &&
             context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
         {
+            EstablishQueryContext(context);
+
             var callResult = await CallNextAndHandleValidationAndExceptions(context, next);
             if (callResult.Result?.Result is ObjectResult objectResult && IsStreamingResult(objectResult))
             {
@@ -76,6 +87,7 @@ public class QueryActionFilter(
             else
             {
                 logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
+                var response = queryProviders.Execute(callResult.Response!);
                 var queryResult = new QueryResult<object>
                 {
                     CorrelationId = context.HttpContext.GetCorrelationId(),
@@ -113,6 +125,26 @@ public class QueryActionFilter(
         else
         {
             await next();
+        }
+    }
+
+    void EstablishQueryContext(ActionExecutingContext context)
+    {
+        var sorting = Sorting.None;
+        if (context.HttpContext.Request.Query.ContainsKey(SortByQueryStringKey) &&
+            context.HttpContext.Request.Query.ContainsKey(SortDirectionQueryStringKey))
+        {
+            sorting = new Sorting(
+                context.HttpContext.Request.Query[SortByQueryStringKey].ToString()!,
+                context.HttpContext.Request.Query[SortDirectionQueryStringKey].ToString()! == "desc" ? SortDirection.Descending : SortDirection.Ascending);
+        }
+
+        if (context.HttpContext.Request.Query.ContainsKey(PageQueryStringKey) &&
+            context.HttpContext.Request.Query.ContainsKey(PageSizeQueryStringKey))
+        {
+            var page = int.Parse(context.HttpContext.Request.Query[PageQueryStringKey].ToString()!);
+            var pageSize = int.Parse(context.HttpContext.Request.Query[PageSizeQueryStringKey].ToString()!);
+            queryContextManager.Set(new(context.HttpContext.GetCorrelationId(), new(page, pageSize, true), sorting));
         }
     }
 
@@ -193,7 +225,7 @@ public class QueryActionFilter(
         object? response = null;
         ActionExecutedContext? result = null;
 
-        if (context.ModelState.IsValid)
+        if (context.ModelState.IsValid || context.ShouldIgnoreValidation())
         {
             result = await next();
 

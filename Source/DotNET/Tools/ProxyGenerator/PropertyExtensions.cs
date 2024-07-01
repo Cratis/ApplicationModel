@@ -54,6 +54,7 @@ public static class PropertyExtensions
             targetType.Constructor,
             targetType.Module,
             isEnumerable,
-            isNullable);
+            isNullable,
+            propertyType.IsAPrimitiveType());
     }
 }

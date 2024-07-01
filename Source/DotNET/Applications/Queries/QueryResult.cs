@@ -18,6 +18,11 @@ public class QueryResult<T>
     public static readonly QueryResult<T> Success = new();
 
     /// <summary>
+    /// Gets or inits the <see cref="PagingInfo"/> for the query.
+    /// </summary>
+    public PagingInfo Paging { get; set; } = PagingInfo.NotPaged;
+
+    /// <summary>
     /// Gets the <see cref="CorrelationId"/> associated with the command.
     /// </summary>
     public CorrelationId CorrelationId { get; init; } = new(Guid.Empty.ToString());

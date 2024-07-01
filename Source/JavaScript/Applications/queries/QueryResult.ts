@@ -4,11 +4,8 @@
 import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { ValidationResult } from '../validation/ValidationResult';
 import { IQueryResult } from './IQueryResult';
-
-type QueryResultFromServer<TDataType> = {
-    data: TDataType;
-    isSuccess: boolean;
-};
+import { PagingInfo } from './PagingInfo';
+import { inherits } from 'util';
 
 /**
  * Represents the result from executing a {@link IQueryFor}.
@@ -54,6 +51,7 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
         this.validationResults = result.validationResults.map(_ => new ValidationResult(_.severity, _.message, _.members, _.state));
         this.exceptionMessages = result.exceptionMessages;
         this.exceptionStackTrace = result.exceptionStackTrace;
+        this.paging = result.paging;
 
         if (result.data) {
             let data: any = result.data;
@@ -75,6 +73,9 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
 
     /** @inheritdoc */
     readonly data: TDataType;
+
+    /** @inheritdoc */
+    readonly paging: PagingInfo;
 
     /** @inheritdoc */
     readonly isSuccess: boolean;

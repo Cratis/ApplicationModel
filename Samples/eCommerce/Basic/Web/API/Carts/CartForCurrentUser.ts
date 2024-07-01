@@ -4,11 +4,12 @@
 
 // eslint-disable-next-line header/header
 import { QueryFor, QueryResultWithState } from '@cratis/applications/queries';
-import { useQuery, PerformQuery } from '@cratis/applications.react/queries';
+import { useQuery, PerformQuery, SetSorting} from '@cratis/applications.react/queries';
 import { Cart } from './Cart';
 import Handlebars from 'handlebars';
 
 const routeTemplate = Handlebars.compile('/api/carts');
+
 
 export class CartForCurrentUser extends QueryFor<Cart> {
     readonly route: string = '/api/carts';
@@ -24,7 +25,8 @@ export class CartForCurrentUser extends QueryFor<Cart> {
         ];
     }
 
-    static use(): [QueryResultWithState<Cart>, PerformQuery] {
+
+    static use(): [QueryResultWithState<Cart>, PerformQuery, SetSorting] {
         return useQuery<Cart, CartForCurrentUser>(CartForCurrentUser);
     }
 }

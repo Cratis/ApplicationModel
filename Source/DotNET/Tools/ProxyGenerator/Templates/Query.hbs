@@ -4,13 +4,37 @@
 
 // eslint-disable-next-line header/header
 import { QueryFor, QueryResultWithState } from '@cratis/applications/queries';
-import { useQuery, PerformQuery } from '@cratis/applications.react/queries';
+{{#if IsEnumerable}}
+import { useQuery, useQueryWithPaging, PerformQuery, SetSorting, SortingForQuery, Paging, SetPage } from '@cratis/applications.react/queries';
+{{else}}
+import { useQuery, PerformQuery, SetSorting} from '@cratis/applications.react/queries';
+{{/if}}
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';
 {{/Imports}}
 import Handlebars from 'handlebars';
 
 const routeTemplate = Handlebars.compile('{{{Route}}}');
+
+{{#if IsEnumerable}}
+class {{Name}}SortBy {
+{{#Properties}}
+    private _{{camelCase Name}}: SortingForQuery<{{../Name}}>;
+{{/Properties}}
+
+    constructor(readonly query: {{Name}}) {
+{{#Properties}}
+        this._{{camelCase Name}} = new SortingForQuery({{../Name}}, query);
+{{/Properties}}
+    }
+
+{{#Properties}}
+    {{camelCase Name}}(): SortingForQuery<{{../Name}}> {
+        return this._{{camelCase Name}};
+    }
+{{/Properties}}
+}
+{{/if}}
 
 {{#if Arguments.[0]}}
 export interface {{Name}}Arguments {
@@ -22,6 +46,7 @@ export interface {{Name}}Arguments {
     {{/if}}
     {{/Arguments}}
 }
+
 {{#if IsEnumerable}}
 export class {{Name}} extends QueryFor<{{Model}}[], {{Name}}Arguments> {
 {{else}}
@@ -38,12 +63,16 @@ export class {{Name}} extends QueryFor<{{Model}}> {
     readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
 {{#if IsEnumerable}}
     readonly defaultValue: {{Model}}[] = [];
+    readonly _sortBy: {{Name}}SortBy;
 {{else}}
     readonly defaultValue: {{Model}} = {} as any;
 {{/if}}
 
     constructor() {
         super({{Constructor}}, {{lowercase IsEnumerable}});
+{{#if IsEnumerable}}        
+        this._sortBy = new {{Name}}SortBy(this);
+{{/if}}
     }
 
     get requestArguments(): string[] {
@@ -54,10 +83,20 @@ export class {{Name}} extends QueryFor<{{Model}}> {
         ];
     }
 
+{{#if IsEnumerable}}
+    get sortBy(): {{Name}}SortBy {
+        return this._sortBy;
+    }
+{{/if}}
+
 {{#if Arguments.[0]}}
 {{#if IsEnumerable}}
     static use(args?: {{Name}}Arguments): [QueryResultWithState<{{Model}}[]>, PerformQuery<{{Name}}Arguments>] {
         return useQuery<{{Model}}[], {{Name}}, {{Name}}Arguments>({{Name}}, args);
+    }
+
+    static useWithPaging(page:number, pageSize: number, args?: {{Name}}Arguments): [QueryResultWithState<{{Model}}[]>, PerformQuery] {
+        return useQueryWithPaging<{{Model}}[], {{Name}}>({{Name}}, new Paging(page, pageSize), args);
     }
 {{else}}
     static use(args?: {{Name}}Arguments): [QueryResultWithState<{{Model}}>, PerformQuery<{{Name}}Arguments>] {
@@ -66,11 +105,15 @@ export class {{Name}} extends QueryFor<{{Model}}> {
 {{/if}}
 {{else}}
 {{#if IsEnumerable}}
-    static use(): [QueryResultWithState<{{Model}}[]>, PerformQuery] {
+    static use(): [QueryResultWithState<{{Model}}[]>, PerformQuery, SetSorting] {
         return useQuery<{{Model}}[], {{Name}}>({{Name}});
     }
+
+    static useWithPaging(page:number, pageSize: number): [QueryResultWithState<{{Model}}[]>, PerformQuery, SetSorting, SetPage] {
+        return useQueryWithPaging<{{Model}}[], {{Name}}>({{Name}}, new Paging(page, pageSize));
+    }
 {{else}}
-    static use(): [QueryResultWithState<{{Model}}>, PerformQuery] {
+    static use(): [QueryResultWithState<{{Model}}>, PerformQuery, SetSorting] {
         return useQuery<{{Model}}, {{Name}}>({{Name}});
     }
 {{/if}}

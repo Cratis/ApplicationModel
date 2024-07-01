@@ -13,6 +13,7 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="Module">The module, if any, the type belongs to.</param>
 /// <param name="IsEnumerable">Whether or not the property is an enumerable or not.</param>
 /// <param name="IsNullable">Whether or not the property is nullable or not.</param>
+/// <param name="isPrimitive">Whether or not the property is a primitive type.</param>
 public record PropertyDescriptor(
     Type OriginalType,
     string Name,
@@ -20,4 +21,5 @@ public record PropertyDescriptor(
     string Constructor,
     string Module,
     bool IsEnumerable,
-    bool IsNullable);
+    bool IsNullable,
+    bool isPrimitive);
