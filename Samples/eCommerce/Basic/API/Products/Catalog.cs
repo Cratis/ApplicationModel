@@ -12,6 +12,8 @@ namespace API.Products;
 /// Represents the catalog API.
 /// </summary>
 /// <param name="grainFactory"><see cref="IGrainFactory"/> for working with grains.</param>
+/// <param name="catalogQueries"><see cref="ICatalogQueries"/> for working with the catalog.</param>
+/// <param name="collection"><see cref="IMongoCollection{TDocument}"/> for working with products.</param>
 [Route("/api/products/catalog")]
 public class Catalog(IGrainFactory grainFactory, ICatalogQueries catalogQueries, IMongoCollection<Product> collection) : ControllerBase
 {

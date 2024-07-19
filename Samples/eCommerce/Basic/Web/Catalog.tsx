@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 export const Catalog = withViewModel(CatalogViewModel, ({ viewModel }) => {
     const [products, currentPage, perform, setSorting, setPage] = AllProducts.useWithPaging(10);
+    const [descending, setDescending] = useState(false);
 
     return (
         <div>
@@ -23,6 +24,19 @@ export const Catalog = withViewModel(CatalogViewModel, ({ viewModel }) => {
                 const page = currentPage + 1;
                 setPage(page);
             }}>Next page</button>
+            <br/>
+
+            <button onClick={() => {
+                if (descending) {
+                    setSorting(AllProducts.sortBy.id.ascending);
+                    setPage(0);
+                    setDescending(false);
+                } else {
+                    setSorting(AllProducts.sortBy.id.descending);
+                    setPage(0);
+                    setDescending(true);
+                }
+            }}>Change sorting</button>
         </div>
     );
 });

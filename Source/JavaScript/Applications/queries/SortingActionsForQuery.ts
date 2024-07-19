@@ -8,29 +8,29 @@ import { Sorting } from './Sorting';
 /**
  * Represents sorting for a query.
  */
-export class SortingForQuery<TDataType, TArguments = {}> {
+export class SortingActionsForQuery<TDataType, TArguments = {}> {
 
     /**
-     *
+     * Initializes a new instance of {@link SortingActionsForQuery}.
      * @param {string} field The field that the sorting represents.
      * @param {IQueryFor<TDataType, TArguments>} query The query that holds the field.
      */
-    constructor(readonly field: string, readonly query: IQueryFor<TDataType, TArguments>) {
+    constructor(readonly field: string, readonly query: IQueryFor<TDataType, TArguments>) { 
     }
 
     /**
       * Instructs query to sort ascending for the field.
       */
-    get ascending(): SortingForQuery<TDataType, TArguments> {
+    ascending(): Sorting {
         this.query.sorting = new Sorting(this.field, SortDirection.ascending);
-        return this;
+        return this.query.sorting;
     }
 
     /**
       * Instructs query to sort ascending for the field.
       */
-    get descending(): SortingForQuery<TDataType, TArguments> {
+    descending(): Sorting {
         this.query.sorting = new Sorting(this.field, SortDirection.descending);
-        return this;
+        return this.query.sorting;
     }
 }

@@ -4,7 +4,10 @@
 using System.Linq.Expressions;
 using System.Reactive.Subjects;
 using System.Reflection;
+using Cratis.Applications;
+using Cratis.Applications.Queries;
 using Cratis.Concepts;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 
 namespace MongoDB.Driver;
@@ -164,6 +167,11 @@ public static class MongoDBCollectionExtensions
         Func<IEnumerable<TDocument>, ISubject<TResult>> createSubject,
         Action<IEnumerable<TDocument>, ISubject<TResult>> onNext)
     {
+        var queryContext = Internals.ServiceProvider.GetService<IQueryContextManager>()!.Current;
+        if (queryContext.Paging.IsPaged)
+        {
+        }
+
         var response = await findCall();
         var documents = response.ToList();
         var subject = createSubject(documents);
@@ -188,70 +196,71 @@ public static class MongoDBCollectionExtensions
 
         var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<TDocument>>().Match(fullFilter);
 
-        var cursor = await collection.WatchAsync(pipeline, options);
         var idProperty = typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        var cancellationTokenSource = new CancellationTokenSource();
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        var cancellationToken = cancellationTokenSource.Token;
 
-        _ = Task.Run(async () =>
+        IChangeStreamCursor<ChangeStreamDocument<TDocument>> cursor = null!;
+
+        try
         {
-            try
-            {
-                while (await cursor.MoveNextAsync())
+            cursor = await collection.WatchAsync(pipeline, options);
+            await cursor.ForEachAsync(
+                changeDocument =>
                 {
                     if (subject is Subject<TResult> disposableSubject && disposableSubject.IsDisposed &&
                         subject is BehaviorSubject<TResult> disposableBehaviorSubject && disposableBehaviorSubject.IsDisposed)
                     {
                         cursor.Dispose();
+                        cancellationTokenSource.Dispose();
                         return;
                     }
 
-                    if (!cursor.Current.Any()) continue;
-
-                    foreach (var changeDocument in cursor.Current)
+                    if (changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
                     {
-                        if (changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
+                        var id = BsonTypeMapper.MapToDotNetValue(idValue);
+                        if (idProperty.PropertyType.IsConcept())
                         {
-                            var id = BsonTypeMapper.MapToDotNetValue(idValue);
-                            if (idProperty.PropertyType.IsConcept())
-                            {
-                                id = ConceptFactory.CreateConceptInstance(idProperty.PropertyType, id);
-                            }
+                            id = ConceptFactory.CreateConceptInstance(idProperty.PropertyType, id);
+                        }
 
-                            var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
-                            if (changeDocument.OperationType == ChangeStreamOperationType.Delete && document is not null)
-                            {
-                                documents.Remove(document);
-                            }
-                            else if (document is not null)
-                            {
-                                var index = documents.IndexOf(document);
-                                documents[index] = changeDocument.FullDocument;
-                            }
-                            else
-                            {
-                                documents.Add(changeDocument.FullDocument);
-                            }
+                        var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
+                        if (changeDocument.OperationType == ChangeStreamOperationType.Delete && document is not null)
+                        {
+                            documents.Remove(document);
+                        }
+                        else if (document is not null)
+                        {
+                            var index = documents.IndexOf(document);
+                            documents[index] = changeDocument.FullDocument;
+                        }
+                        else
+                        {
+                            documents.Add(changeDocument.FullDocument);
                         }
                     }
 
                     onNext(documents, subject);
-                }
-            }
-            catch (ObjectDisposedException)
-            {
-                Console.WriteLine("Cursor disposed.");
-                cursor.Dispose();
-                subject.OnCompleted();
+                },
+                cancellationToken);
+        }
+        catch (ObjectDisposedException)
+        {
+            Console.WriteLine("Cursor disposed.");
+            cursor.Dispose();
+            subject.OnCompleted();
 
-                if (subject is Subject<TResult> disposableSubject)
-                {
-                    disposableSubject.Dispose();
-                }
-                if (subject is BehaviorSubject<TResult> disposableBehaviorSubject)
-                {
-                    disposableBehaviorSubject.Dispose();
-                }
+            if (subject is Subject<TResult> disposableSubject)
+            {
+                disposableSubject.Dispose();
             }
-        });
+            if (subject is BehaviorSubject<TResult> disposableBehaviorSubject)
+            {
+                disposableBehaviorSubject.Dispose();
+            }
+        }
 
         subject.Subscribe(_ => { }, cursor.Dispose);
 

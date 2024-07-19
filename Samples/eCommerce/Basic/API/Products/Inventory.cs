@@ -17,7 +17,9 @@ public class Inventory : ControllerBase
     /// <param name="command">The command payload.</param>
     /// <returns>Awaitable task.</returns>
     [HttpPost("set-stock/{sku}")]
-    public Task SetStockForProduct([FromRoute] SKU sku, [FromBody] SetStockForProduct command)
+    public Task SetStockForProduct(
+        [FromRoute] SKU sku,
+        [FromBody] SetStockForProduct command)
     {
         Console.WriteLine($"Setting stock for product {sku} to {command.Quantity}");
         return Task.CompletedTask;

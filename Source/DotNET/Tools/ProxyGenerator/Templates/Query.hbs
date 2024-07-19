@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line header/header
 {{#if IsEnumerable}}
-import { QueryFor, QueryResultWithState, SortingForQuery, Paging } from '@cratis/applications/queries';
+import { QueryFor, QueryResultWithState, SortingActions, SortingActionsForQuery, Paging } from '@cratis/applications/queries';
 import { useQuery, useQueryWithPaging, PerformQuery, SetSorting, SetPage } from '@cratis/applications.react/queries';
 {{else}}
 import { QueryFor, QueryResultWithState } from '@cratis/applications/queries';
@@ -17,25 +17,38 @@ import Handlebars from 'handlebars';
 
 const routeTemplate = Handlebars.compile('{{{Route}}}');
 
-{{!-- {{#if IsEnumerable}}
+{{#if IsEnumerable}}
 class {{Name}}SortBy {
 {{#Properties}}
-    private _{{camelCase Name}}: SortingForQuery<{{../Name}}>;
+    private _{{camelCase Name}}: SortingActionsForQuery<{{../Model}}[]>;
 {{/Properties}}
 
     constructor(readonly query: {{Name}}) {
 {{#Properties}}
-        this._{{camelCase Name}} = new SortingForQuery({{../Name}}, query);
+        this._{{camelCase Name}} = new SortingActionsForQuery<{{../Model}}[]>('{{camelCase Name}}', query);
 {{/Properties}}
     }
 
 {{#Properties}}
-    {{camelCase Name}}(): SortingForQuery<{{../Name}}> {
+    get {{camelCase Name}}(): SortingActionsForQuery<{{../Model}}[]> {
         return this._{{camelCase Name}};
     }
 {{/Properties}}
 }
-{{/if}} --}}
+
+class {{Name}}SortByWithoutQuery {
+{{#Properties}}
+    private _{{camelCase Name}}: SortingActions  = new SortingActions('{{camelCase Name}}');
+{{/Properties}}
+
+{{#Properties}}
+    get {{camelCase Name}}(): SortingActions {
+        return this._{{camelCase Name}};
+    }
+{{/Properties}}
+}
+
+{{/if}}
 
 {{#if Arguments.[0]}}
 export interface {{Name}}Arguments {
@@ -64,16 +77,17 @@ export class {{Name}} extends QueryFor<{{Model}}> {
     readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
 {{#if IsEnumerable}}
     readonly defaultValue: {{Model}}[] = [];
-    {{!-- readonly _sortBy: {{Name}}SortBy; --}}
+    private readonly _sortBy: {{Name}}SortBy;
+    private static readonly _sortBy: {{Name}}SortByWithoutQuery = new {{Name}}SortByWithoutQuery();
 {{else}}
     readonly defaultValue: {{Model}} = {} as any;
 {{/if}}
 
     constructor() {
         super({{Constructor}}, {{lowercase IsEnumerable}});
-{{!-- {{#if IsEnumerable}}        
+{{#if IsEnumerable}}        
         this._sortBy = new {{Name}}SortBy(this);
-{{/if}} --}}
+{{/if}}
     }
 
     get requestArguments(): string[] {
@@ -84,11 +98,15 @@ export class {{Name}} extends QueryFor<{{Model}}> {
         ];
     }
 
-{{!-- {{#if IsEnumerable}}
+{{#if IsEnumerable}}
     get sortBy(): {{Name}}SortBy {
         return this._sortBy;
     }
-{{/if}} --}}
+
+    static get sortBy(): {{Name}}SortByWithoutQuery {
+        return this._sortBy;
+    }
+{{/if}}
 
 {{#if Arguments.[0]}}
 {{#if IsEnumerable}}

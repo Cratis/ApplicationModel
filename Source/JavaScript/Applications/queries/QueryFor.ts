@@ -64,13 +64,13 @@ export abstract class QueryFor<TDataType, TArguments = {}> implements IQueryFor<
         }
 
         if (this.paging && this.paging.pageSize > 0) {
-            actualRoute = this.addQueryParameters(actualRoute, 'page', this.paging.page);
-            actualRoute = this.addQueryParameters(actualRoute, 'pageSize', this.paging.pageSize);
+            actualRoute = this.addQueryParameter(actualRoute, 'page', this.paging.page);
+            actualRoute = this.addQueryParameter(actualRoute, 'pageSize', this.paging.pageSize);
         }
 
         if (this.sorting.hasSorting) {
-            actualRoute = this.addQueryParameters(actualRoute, 'sortBy', this.sorting.field);
-            actualRoute = this.addQueryParameters(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+            actualRoute = this.addQueryParameter(actualRoute, 'sortBy', this.sorting.field);
+            actualRoute = this.addQueryParameter(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
         }
 
         const response = await fetch(actualRoute, {
@@ -87,7 +87,7 @@ export abstract class QueryFor<TDataType, TArguments = {}> implements IQueryFor<
         }
     }
 
-    private addQueryParameters(route: string, key: string, value: any): string {
+    private addQueryParameter(route: string, key: string, value: any): string {
         route += (route.indexOf('?') > 0) ? '&' : '?';
         route += `${key}=${value}`;
         return route;

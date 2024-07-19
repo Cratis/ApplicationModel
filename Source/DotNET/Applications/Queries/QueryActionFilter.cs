@@ -139,11 +139,13 @@ public class QueryActionFilter(
     void EstablishQueryContext(ActionExecutingContext context)
     {
         var sorting = Sorting.None;
+        var paging = Paging.NotPaged;
+
         if (context.HttpContext.Request.Query.ContainsKey(SortByQueryStringKey) &&
             context.HttpContext.Request.Query.ContainsKey(SortDirectionQueryStringKey))
         {
             sorting = new Sorting(
-                context.HttpContext.Request.Query[SortByQueryStringKey].ToString()!,
+                context.HttpContext.Request.Query[SortByQueryStringKey].ToString()!.ToPascalCase(),
                 context.HttpContext.Request.Query[SortDirectionQueryStringKey].ToString()! == "desc" ? SortDirection.Descending : SortDirection.Ascending);
         }
 
@@ -152,10 +154,10 @@ public class QueryActionFilter(
         {
             var page = int.Parse(context.HttpContext.Request.Query[PageQueryStringKey].ToString()!);
             var pageSize = int.Parse(context.HttpContext.Request.Query[PageSizeQueryStringKey].ToString()!);
-
-            // TODO: Now it seems like query context can only be set if paging is set, but does not support only sorting.
-            queryContextManager.Set(new(context.HttpContext.GetCorrelationId(), new(page, pageSize, true), sorting));
+            paging = new(page, pageSize, true);
         }
+
+        queryContextManager.Set(new(context.HttpContext.GetCorrelationId(), paging, sorting));
     }
 
     IClientEnumerableObservable CreateClientEnumerableObservableFrom(ObjectResult objectResult)

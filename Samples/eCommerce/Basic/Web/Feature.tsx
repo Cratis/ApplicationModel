@@ -10,7 +10,6 @@ import { useIdentity } from '@cratis/applications.react/identity';
 export const Feature = withViewModel(FeatureViewModel, ({ viewModel }) => {
 
     const identity = useIdentity();
-
     return (
         <div>
             <h2>Hello {`${identity.name}`} your cart id is {`${viewModel.cart.id}`} </h2>

@@ -7,4 +7,8 @@
         <PackageReference Include="Cratis.Fundamentals"/>
         <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Applications/Applications.csproj" />
+    </ItemGroup>
 </Project>

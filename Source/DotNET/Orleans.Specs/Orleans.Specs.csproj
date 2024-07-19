@@ -3,10 +3,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>Cratis.Applications.Orleans.Specs</AssemblyName>
         <RootNamespace>Cratis.Applications.Orleans</RootNamespace>
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../Source/DotNET/Orleans/Orleans.csproj"/>
+        <ProjectReference Include="../Orleans/Orleans.csproj"/>
     </ItemGroup>
     
     <ItemGroup>

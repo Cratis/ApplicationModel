@@ -6,17 +6,13 @@ using Cratis.Execution;
 
 namespace Cratis.Applications.Commands;
 
+#pragma warning disable SA1402 // File may only contain a single type
+
 /// <summary>
 /// Represents the result coming from executing a command.
 /// </summary>
-/// <typeparam name="T">Type of the data returned.</typeparam>
-public class CommandResult<T>
+public class CommandResult
 {
-    /// <summary>
-    /// Represents a successful command result.
-    /// </summary>
-    public static readonly CommandResult<T> Success = new();
-
     /// <summary>
     /// Gets the <see cref="CorrelationId"/> associated with the command.
     /// </summary>
@@ -56,6 +52,18 @@ public class CommandResult<T>
     /// Gets the stack trace if there was an exception.
     /// </summary>
     public string ExceptionStackTrace { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Represents the result coming from executing a command with a response.
+/// </summary>
+/// <typeparam name="T">Type of the data returned.</typeparam>
+public class CommandResult<T> : CommandResult
+{
+    /// <summary>
+    /// Represents a successful command result.
+    /// </summary>
+    public static readonly CommandResult<T> Success = new();
 
     /// <summary>
     /// Optional response object. Controller actions representing a command can optionally return a response as any type, this is where it would be.
