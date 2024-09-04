@@ -57,7 +57,7 @@
     },
     "dependencies": {
         "@cratis/applications": "1.0.0",
-        "@cratis/fundamentals": "5.3.8",
+        "@cratis/fundamentals": "5.3.9",
         "handlebars": "4.7.8",
         "react": "18.3.1"
     },
