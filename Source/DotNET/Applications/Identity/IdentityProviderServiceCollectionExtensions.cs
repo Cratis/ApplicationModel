@@ -20,7 +20,8 @@ public static class IdentityProviderServiceCollectionExtensions
     /// <exception cref="MultipleIdentityDetailsProvidersFound">Thrown if multiple identity details providers are found.</exception>
     public static IServiceCollection AddIdentityProvider(this IServiceCollection services, ITypes types)
     {
-        var providerTypes = types.FindMultiple<IProvideIdentityDetails>().ToArray();
+        var defaultImplementationType = typeof(DefaultIdentityDetailsProvider);
+        var providerTypes = types.FindMultiple<IProvideIdentityDetails>().Where(_ => _ != defaultImplementationType).ToArray();
         if (providerTypes.Length > 1)
         {
             throw new MultipleIdentityDetailsProvidersFound(providerTypes);
@@ -28,7 +29,7 @@ public static class IdentityProviderServiceCollectionExtensions
 
         services.AddSingleton(
             typeof(IProvideIdentityDetails),
-            providerTypes.Length == 1 ? providerTypes[0] : typeof(DefaultIdentityDetailsProvider));
+            providerTypes.Length == 1 ? providerTypes[0] : defaultImplementationType);
 
         services.AddSingleton<IdentityProviderEndpoint>();
 
