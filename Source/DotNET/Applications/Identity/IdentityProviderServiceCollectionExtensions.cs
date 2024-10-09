@@ -34,4 +34,19 @@ public static class IdentityProviderServiceCollectionExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Add a identity provider to the service collection.
+    /// </summary>
+    /// <typeparam name="TProvider">The <see cref="Type"/> of the <see cref="IProvideIdentityDetails"/> implementation to add.</typeparam>
+    /// <param name="services"><see cref="IServiceCollection"/> to add to.</param>
+    /// <returns><see cref="IServiceCollection"/> for continuation.</returns>
+    public static IServiceCollection AddIdentityProvider<TProvider>(this IServiceCollection services)
+        where TProvider : class, IProvideIdentityDetails
+    {
+        services.AddSingleton<TProvider>();
+        services.AddSingleton<IdentityProviderEndpoint>();
+
+        return services;
+    }
 }
