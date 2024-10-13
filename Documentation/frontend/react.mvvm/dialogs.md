@@ -162,9 +162,99 @@ To enable the new `ConfirmationDialog` all you need to do is hook it up in your 
 ```tsx
 export const App = () => {
     return (
-        <ConfirmationDialogs component={ConfirmationDialog}>
+        <DialogComponents confirmation={ConfirmationDialog}>
             {/* Your application */}
-        </ConfirmationDialogs>
+        </DialogComponents>
+    );
+};
+```
+
+## Busy indicator dialogs
+
+Another common type of modal dialog is the indeterminate busy indicator dialog. You typically use these dialogs for giving
+a visual clue to the user that the system is working. These type of dialogs are not meant to be something the user can
+close, but rather something the system closes when it is ready with the work the system is doing.
+
+To use a busy indicator dialog from a ViewModel, you need to take a dependency to the `IDialogs`, assuming you have hooked up [TSyringe and bindings](./tsyringe.md).
+Then in a method, you can call the `showBusyIndicator()` on the `IDialogs` to show the confirmation.
+
+Below is a full sample of how this works.
+
+```ts
+import { injectable } from 'tsyringe';
+import { DialogResult } from '@cratis/applications.react/dialogs';
+import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
+
+@injectable()
+export class YourViewModel {
+    constructor(
+        private readonly _dialogs: IDialogs) {
+    }
+
+    // Method called from typically your view
+    async performLongRunningOperation() {
+        const busyIndicator = this._dialogs.showBusyIndicator('Performing something that will take a while', 'Please wait');
+        setTimeout(() => {
+            busyIndicator.close();
+        }, 1000);
+    }
+}
+```
+
+The `showBusyIndicator()` returns an object that has a method called `close()`. This method is then something you use to close the dialog.
+
+Since you haven't defined how a busy indicator dialog looks like, you will not see anything.
+
+### Defining the Busy Indicator Dialog
+
+As with the confirmation dialog, you define a busy indicator dialog on the application level. It is then the dialog that will be used across your entire application.
+
+The anatomy of any dialog is that it uses the `useDialogContext()` in the dialog itself to get what context it is in.
+With the context you get access to the actual request payload and the method to call when the dialog should close, or the dialog resolver
+as it is called.
+
+Below is an example using [Prime React](http://primereact.org) to create a confirmation dialog supporting the different button types.
+
+
+```tsx
+import { Dialog } from 'primereact/dialog';
+import { useDialogContext, BusyIndicatorDialogRequest } from '@cratis/applications.react.mvvm/dialogs';
+import { DialogResult } from '@cratis/applications.react/dialogs';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+export const BusyIndicatorDialog = () => {
+    const { request } = useDialogContext<BusyIndicatorDialogRequest, DialogResult>();
+
+    const headerElement = (
+        <div className="inline-flex align-items-center justify-content-center gap-2">
+            <span className="font-bold white-space-nowrap">{request.title}</span>
+        </div>
+    );
+
+    return (
+        <>
+            <Dialog header={headerElement} modal visible={true} onHide={() => { }}>
+                <ProgressSpinner />
+                <p className="m-0">
+                    {request.message}
+                </p>
+            </Dialog>
+        </>
+    );
+};
+```
+
+The code above uses the `useDialogContext()` with the `BusyIndicatorDialogRequest` and `DialogResult` as the types expected from
+the request and resolver type. For this implementation, it shows a spinner.
+
+To enable the new `BusyIndicatorDialog` all you need to do is hook it up in your application like below.
+
+```tsx
+export const App = () => {
+    return (
+        <DialogComponents busyIndicator={BusyIndicatorDialog}>
+            {/* Your application */}
+        </DialogComponents>
     );
 };
 ```
