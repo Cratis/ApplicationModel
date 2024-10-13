@@ -42,7 +42,10 @@ public static class QueryExtensions
         var argumentsWithComplexTypes = arguments.Where(_ => !_.OriginalType.IsKnownType());
         typesInvolved.AddRange(argumentsWithComplexTypes.Select(_ => _.OriginalType));
 
-        var imports = typesInvolved.GetImports(targetPath, method.DeclaringType!.ResolveTargetPath(segmentsToSkip), segmentsToSkip).ToList();
+        var imports = typesInvolved
+                        .GetImports(targetPath, method.DeclaringType!.ResolveTargetPath(segmentsToSkip), segmentsToSkip)
+                        .DistinctBy(_ => _.Type)
+                        .ToList();
 
         var additionalTypesInvolved = new List<Type>();
         foreach (var argument in argumentsWithComplexTypes)

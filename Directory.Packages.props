@@ -9,7 +9,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
     <PackageVersion Include="Serilog" Version="4.0.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
@@ -21,6 +21,7 @@
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.3" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="FluentValidation" Version="11.0.3" />
     <PackageVersion Include="MongoDB.Driver" Version="2.25.0" />
     <PackageVersion Include="handlebars.net" Version="2.1.6" />

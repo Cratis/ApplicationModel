@@ -1,7 +1,7 @@
 name: .NET Build
 
 env:
-  DOTNET_VERSION: "8.0.301"
+  DOTNET_VERSION: "8.0.403"
 
 on:
   workflow_dispatch:

@@ -1,5 +1,3 @@
-- name: MVVM
-  href: mvvm/toc.yml
 - name: Identity
   href: identity.md
 - name: Commands

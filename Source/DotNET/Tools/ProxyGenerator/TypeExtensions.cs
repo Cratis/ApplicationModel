@@ -300,8 +300,9 @@ public static class TypeExtensions
 
         imports.AddRange(typesInvolved.GetImports(targetPath, type!.ResolveTargetPath(segmentsToSkip), segmentsToSkip));
         imports = imports
-                    .Distinct()
-                    .Where(_ => propertyDescriptors.Exists(pd => pd.Type == _.Type) && _.OriginalType != type).ToList();
+                    .DistinctBy(_ => _.Type)
+                    .Where(_ => propertyDescriptors.Exists(pd => pd.Type == _.Type) && _.OriginalType != type)
+                    .ToList();
 
         return new TypeDescriptor(
             type,
