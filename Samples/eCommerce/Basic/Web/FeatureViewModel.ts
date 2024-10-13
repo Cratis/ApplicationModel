@@ -41,4 +41,11 @@ export class FeatureViewModel {
         const result = await this._dialogs.showConfirmation('Delete?', 'Are you sure you want to delete?', DialogButtons.YesNo);
         console.log(`Result: ${result}`);
     }
+
+    async doHeavyStuff() {
+        const busyIndicator = this._dialogs.showBusyIndicator('Doing heavy stuff', 'Please wait');
+        setTimeout(() => {
+            busyIndicator.close();
+        }, 1000);
+    }
 }

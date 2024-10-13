@@ -32,6 +32,9 @@ export const Feature = withViewModel<FeatureViewModel, FeatureProps>(FeatureView
             <button onClick={() => viewModel.doStuff()}>Open dialog</button>
             <br />
             <button onClick={() => viewModel.doOtherStuff()}>Open standard dialog</button>
+            <br />
+            <button onClick={() => viewModel.doHeavyStuff()}>Show busy indicator</button>
+
 
             <CustomDialogWrapper>
                 <CustomDialog />

@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { DialogRequest, DialogResolver } from './DialogRegistration';
+import { DialogRegistration, DialogRequest, DialogResolver } from './DialogRegistration';
 
 /**
  * Defines a system that can handle dialog requests and responses.
@@ -29,4 +29,11 @@ export abstract class IDialogMediatorHandler {
      * @param {*} request An instance of the dialog request.
      */
     abstract show<TRequest extends {}, TResponse>(request: TRequest): Promise<TResponse>;
+
+    /**
+     * Get the registration for a given request type.
+     * @param {Constructor} requestType Type of request.
+     * @returns {DialogRegistration} The registration for the request type.
+     */
+    abstract getRegistration<TRequest extends {}, TResponse>(requestType: Constructor<TRequest>): DialogRegistration<TRequest, TResponse>;
 }

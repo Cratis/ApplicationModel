@@ -48,4 +48,17 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
 
         return promise;
     }
+
+    /** @inheritdoc */
+    getRegistration<TRequest extends {}, TResponse>(requestType: Constructor<TRequest>): DialogRegistration<TRequest, TResponse> {
+        if (!this.hasSubscriber(requestType)) {
+            if (this._parent) {
+                return this._parent.getRegistration(requestType);
+            }
+
+            throw new Error('No registration found for request');
+        }
+
+        return this._registrations.get(requestType)!;
+    }
 }
