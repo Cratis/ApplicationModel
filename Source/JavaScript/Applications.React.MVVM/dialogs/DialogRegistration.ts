@@ -19,10 +19,10 @@ export class DialogRegistration<TRequest extends {}, TResponse> {
     /**
      * Initializes a new instance of {@link DialogRegistration}.
      * @param requester The requester for the dialog.
-     * @param responder The responder for the dialog.
+     * @param resolver The resolver for the dialog.
      */
     constructor(
         readonly requester: DialogRequest<TRequest, TResponse>,
-        readonly responder: DialogResolver<TResponse>) {
+        readonly resolver: DialogResolver<TResponse>) {
     }
 }

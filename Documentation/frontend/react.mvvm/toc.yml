@@ -1,2 +1,12 @@
-- name: MVVM
-  href: mvvm/toc.yml
+- name: Dialogs
+  href: dialogs.md
+- name: Browser
+  href: browser.md
+- name: Messaging
+  href: messaging.md
+- name: MVVM Context
+  href: mvvm-context.md
+- name: TSyringe
+  href: tsyringe.md
+- name: Using ViewModel
+  href: using-view-model.md

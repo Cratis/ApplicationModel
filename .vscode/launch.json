@@ -25,12 +25,12 @@
             "cwd": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator",
             "program": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net8.0/Cratis.Applications.ProxyGenerator.dll",
             "args": [
-                // "/Volumes/Code/KDI/Ocean/Source/Accounts/Api/bin/Debug/net8.0/Api.dll",
-                // "/Volumes/Code/KDI/Ocean/Source/Accounts/Web/Api",
+                "/Volumes/Code/KDI/Ocean/Source/Exercises/Main/bin/Debug/net8.0/Kongsberg.KSim.Ocean.Exercises.Main.dll",
+                "/Volumes/Code/KDI/Ocean/Source/Exercises/Web/Api",
                 // "/Volumes/Code/Cratis/Chronicle/Source/Api/bin/Debug/net8.0/Cratis.Chronicle.Api.dll",
                 // "/Volumes/Code/Cratis/Chronicle/Source/Workbench/Api",
-                "${workspaceFolder}/Samples/eCommerce/Basic/Main/bin/Debug/net8.0/Main.dll",
-                "${workspaceFolder}/Samples/eCommerce/Basic/Web/API",
+                // "${workspaceFolder}/Samples/eCommerce/Basic/Main/bin/Debug/net8.0/Main.dll",
+                // "${workspaceFolder}/Samples/eCommerce/Basic/Web/API",
                 "1"
             ],
             "stopAtEntry": false,

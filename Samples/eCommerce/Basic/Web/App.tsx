@@ -5,13 +5,14 @@ import { ApplicationModel } from '@cratis/applications.react';
 import { MVVM } from '@cratis/applications.react.mvvm';
 import { BrowserRouter } from "react-router-dom";
 import { Feature } from './Feature';
-import { ConfirmationDialogs } from '@cratis/applications.react.mvvm/dialogs';
+import { DialogComponents } from '@cratis/applications.react.mvvm/dialogs';
 import { ConfirmationDialog } from './ConfirmationDialog';
+import { BusyIndicatorDialog } from './BusyIndicatorDialog';
 
 export const App = () => {
     return (
         <ApplicationModel microservice='e-commerce'>
-            <ConfirmationDialogs component={ConfirmationDialog}>
+            <DialogComponents confirmation={ConfirmationDialog} busyIndicator={BusyIndicatorDialog}>
                 <MVVM>
                     <BrowserRouter>
                         <Feature blah='Horse' />
@@ -19,7 +20,7 @@ export const App = () => {
                         {/* <ObservingCatalog /> */}
                     </BrowserRouter>
                 </MVVM>
-            </ConfirmationDialogs>
+            </DialogComponents>
         </ApplicationModel>
     );
 };

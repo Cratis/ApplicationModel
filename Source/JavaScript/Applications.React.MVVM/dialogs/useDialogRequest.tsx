@@ -88,6 +88,6 @@ const useConfiguredWrapper = <TRequest extends {}, TResponse>(type: Constructor<
  * @returns A tuple with a component to use for wrapping your dialog and a delegate used when the dialog is resolved with the result expected.
  */
 export const useDialogRequest = <TRequest extends {}, TResponse>(request: Constructor<TRequest>): [React.FC<IDialogRequestProps>, IDialogContext<TRequest, TResponse>, DialogResolver<TResponse>] => {
-    const [DialogWrapper, dialogContext, responder] = useConfiguredWrapper<TRequest, TResponse>(request);
-    return [DialogWrapper, dialogContext, responder];
+    const [DialogWrapper, dialogContext, resolver] = useConfiguredWrapper<TRequest, TResponse>(request);
+    return [DialogWrapper, dialogContext, resolver];
 };
