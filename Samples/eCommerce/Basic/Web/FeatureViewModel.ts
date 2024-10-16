@@ -20,9 +20,9 @@ export class FeatureViewModel implements IViewModelDetached {
         readonly query: ObserveCartForCurrentUser,
         private readonly _messenger: IMessenger,
         private readonly _dialogs: IDialogs) {
-        // query.subscribe(async result => {
-        //     this.cart = result.data;
-        // });
+        query.subscribe(async result => {
+            this.cart = result.data;
+        });
 
         _messenger.subscribe(Something, something => {
             console.log(`Got something: ${something.value}`);
@@ -30,7 +30,7 @@ export class FeatureViewModel implements IViewModelDetached {
     }
 
     detached(): void {
-        console.log('Hello from detached');
+        console.log(`Detaching viewmodel ${(this as any).__magic.toString()}`);
     }
 
     cart: Cart = new Cart();
