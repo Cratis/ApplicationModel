@@ -24,6 +24,8 @@ public class ClientObservable<T>(
     ISubject<T> subject,
     JsonOptions jsonOptions) : IClientObservable, IAsyncEnumerable<T>
 {
+    const int BufferSIze = 1024 * 4;
+
     /// <summary>
     /// Notifies all subscribed and future observers about the arrival of the specified element in the sequence.
     /// </summary>
@@ -63,7 +65,7 @@ public class ClientObservable<T>(
         });
 #pragma warning restore MA0147 // Avoid async void method for delegate
 
-        var buffer = new byte[1024 * 4];
+        var buffer = new byte[BufferSIze];
         try
         {
             var received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
@@ -75,12 +77,9 @@ public class ClientObservable<T>(
 
             await webSocket.CloseAsync(received.CloseStatus.Value, received.CloseStatusDescription, cts.Token);
         }
-        catch
-        {
-            Console.WriteLine("Client disconnected");
-        }
         finally
         {
+            Console.WriteLine("Client disconnected");
             cts.Cancel();
             subject.OnCompleted();
             subscription?.Dispose();

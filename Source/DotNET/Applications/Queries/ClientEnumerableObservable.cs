@@ -16,12 +16,14 @@ namespace Cratis.Applications.Queries;
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
 public class ClientEnumerableObservable<T>(IAsyncEnumerable<T> enumerable, JsonOptions jsonOptions) : IClientEnumerableObservable
 {
+    const int BufferSize = 1024 * 4;
+
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
-        var queryResult = new QueryResult<object>();
         using var cts = new CancellationTokenSource();
+        var queryResult = new QueryResult<object>();
 
         _ = Task.Run(async () =>
         {
@@ -48,7 +50,7 @@ public class ClientEnumerableObservable<T>(IAsyncEnumerable<T> enumerable, JsonO
             }
         });
 
-        var buffer = new byte[1024 * 4];
+        var buffer = new byte[BufferSize];
         try
         {
             var received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
@@ -60,12 +62,9 @@ public class ClientEnumerableObservable<T>(IAsyncEnumerable<T> enumerable, JsonO
 
             await webSocket.CloseAsync(received.CloseStatus.Value, received.CloseStatusDescription, cts.Token);
         }
-        catch
-        {
-            Console.WriteLine("Client disconnected");
-        }
         finally
         {
+            Console.WriteLine("Client disconnected");
             cts.Cancel();
         }
     }
