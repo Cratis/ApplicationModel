@@ -2,7 +2,7 @@
 
 Every React functional component can have a view model. This is accomplished using the `withViewModel()` method.
 
-## View Model lifecycles
+## View Model lifecycle
 
 ### Detaches
 
