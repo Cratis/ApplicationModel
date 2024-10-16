@@ -6,6 +6,7 @@ import { Cart, ObserveCartForCurrentUser } from './API/Carts';
 import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
 import { CustomDialogRequest } from './CustomDialog';
 import { IMessenger } from '@cratis/applications.react.mvvm/messaging';
+import { IViewModelDetached } from '../../../../Source/JavaScript/Applications.React.MVVM/dialogs/IViewModelDetached';
 
 export class Something {
     constructor(readonly value: string) {
@@ -14,7 +15,7 @@ export class Something {
 
 
 @injectable()
-export class FeatureViewModel {
+export class FeatureViewModel implements IViewModelDetached {
     constructor(
         readonly query: ObserveCartForCurrentUser,
         private readonly _messenger: IMessenger,
@@ -26,6 +27,10 @@ export class FeatureViewModel {
         _messenger.subscribe(Something, something => {
             console.log(`Got something: ${something.value}`);
         });
+    }
+
+    detached(): void {
+        console.log('Hello from detached');
     }
 
     cart: Cart = new Cart();

@@ -3,11 +3,19 @@
 
 import { ApplicationModel } from '@cratis/applications.react';
 import { MVVM } from '@cratis/applications.react.mvvm';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { Feature } from './Feature';
 import { DialogComponents } from '@cratis/applications.react.mvvm/dialogs';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { BusyIndicatorDialog } from './BusyIndicatorDialog';
+
+const Something = () => {
+    return (
+        <div>
+            <Link to='/'>Go back</Link>
+        </div>
+    );
+};
 
 export const App = () => {
     return (
@@ -15,7 +23,11 @@ export const App = () => {
             <DialogComponents confirmation={ConfirmationDialog} busyIndicator={BusyIndicatorDialog}>
                 <MVVM>
                     <BrowserRouter>
-                        <Feature blah='Horse' />
+                        <Routes>
+                            <Route path='/' element={<Feature blah='Horse' />} />
+                            <Route path='/something' element={<Something/>} />
+                        </Routes>
+
                         {/* <Catalog /> */}
                         {/* <ObservingCatalog /> */}
                     </BrowserRouter>

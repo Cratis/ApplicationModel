@@ -41,6 +41,13 @@ export abstract class ObservableQueryFor<TDataType, TArguments = {}> implements 
         this._microservice = Globals.microservice ?? '';
     }
 
+    /**
+     * Disposes the query.
+     */
+    dispose() {
+        this._connection?.disconnect();
+    }
+
     /** @inheritdoc */
     setMicroservice(microservice: string) {
         this._microservice = microservice;
