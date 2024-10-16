@@ -19,7 +19,9 @@ export class ObservableQuerySubscription<TDataType> {
      * Unsubscribe subscription.
      */
     unsubscribe() {
-        this._connection.disconnect();
-        this._connection = undefined!;
+        if (this._connection) {
+            this._connection.disconnect();
+            this._connection = undefined!;
+        }
     }
 }
