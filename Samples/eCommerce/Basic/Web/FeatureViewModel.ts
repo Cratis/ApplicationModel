@@ -16,7 +16,6 @@ export class Something {
 @injectable()
 export class FeatureViewModel {
     constructor(
-        readonly query: ObserveCartForCurrentUser,
         private readonly _messenger: IMessenger,
         private readonly _dialogs: IDialogs) {
         // query.subscribe(async result => {
