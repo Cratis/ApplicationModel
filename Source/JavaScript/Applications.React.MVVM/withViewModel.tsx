@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { container } from "tsyringe";
+import { container, DependencyContainer } from "tsyringe";
 import { Constructor } from '@cratis/fundamentals';
 import { FunctionComponent, ReactElement, useEffect, useMemo, useRef } from 'react';
 import { Observer } from 'mobx-react';
@@ -51,15 +51,26 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
             const dialogService = new Dialogs(dialogMediatorContext.current!);
             child.registerInstance<IDialogs>(IDialogs as Constructor<IDialogs>, dialogService);
             const vm = child.resolve<TViewModel>(viewModelType) as any;
-            makeAutoObservable(vm as any);
+            makeAutoObservable(vm);
+            vm.__childContainer = child;
             return vm;
         }, []);
 
         useEffect(() => {
             return () => {
-                const vmWithDetach = (vm.current as any as IViewModelDetached);
+                const currentVm = vm.current as any;
+                if (!currentVm) {
+                    return;
+                }
+
+                const vmWithDetach = (currentVm as IViewModelDetached);
                 if (typeof (vmWithDetach.detached) == 'function') {
                     vmWithDetach.detached();
+                }
+
+                if (currentVm.__childContainer) {
+                    const container = currentVm.__childContainer as DependencyContainer;
+                    container.dispose();
                 }
             };
         }, []);
