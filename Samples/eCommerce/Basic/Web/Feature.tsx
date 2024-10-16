@@ -8,13 +8,13 @@ import { Column } from 'primereact/column';
 import { useIdentity } from '@cratis/applications.react/identity';
 import { useDialogRequest } from '@cratis/applications.react.mvvm/dialogs';
 import { CustomDialog, CustomDialogRequest } from './CustomDialog';
+import { Link } from 'react-router-dom';
 import { ObserveCartForCurrentUser } from './API/Carts';
 
 
 export interface FeatureProps {
     blah: string;
 }
-
 
 export const Feature = withViewModel<FeatureViewModel, FeatureProps>(FeatureViewModel, ({ viewModel, props }) => {
     const [CustomDialogWrapper, context, resolver] = useDialogRequest<CustomDialogRequest, string>(CustomDialogRequest);
@@ -25,7 +25,7 @@ export const Feature = withViewModel<FeatureViewModel, FeatureProps>(FeatureView
     return (
         <div>
             <h2>Hello {`${identity.name}`} your cart id is {`${viewModel.cart.id}`} </h2>
-            <a href="/something">Go somewhere</a>
+            <Link to='/something'>Go to something</Link>
 
             <DataTable value={result.data.items}>
                 <Column field="SKU" header="SKU" />

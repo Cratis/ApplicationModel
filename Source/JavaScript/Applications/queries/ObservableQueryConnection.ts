@@ -23,6 +23,13 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
     constructor(private readonly _route: string, private readonly _microservice: string) {
     }
 
+    /**
+     * Disposes the connection.
+     */
+    dispose() {
+        this.disconnect();
+    }
+
     /** @inheritdoc */
     connect(dataReceived: DataReceived<TDataType>, queryArguments?: any) {
         const secure = document.location.protocol.indexOf('https') === 0;
@@ -91,6 +98,9 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
     /** @inheritdoc */
     disconnect() {
+        if (this._disconnected) {
+            return;
+        }
         console.log(`Disconnecting '${this._route}'`);
         this._disconnected = true;
         this._socket?.close();

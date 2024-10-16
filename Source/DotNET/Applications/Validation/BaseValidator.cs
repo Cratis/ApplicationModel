@@ -6,6 +6,7 @@ using FluentValidation;
 
 namespace Cratis.Applications.Validation;
 
+#pragma warning disable CS0618 // Type or member is obsolete (Related to FluentValidation and the Transform method)
 /// <summary>
 /// Represents a base validator that we use for discovery.
 /// </summary>
@@ -160,3 +161,4 @@ public class BaseValidator<T> : AbstractValidator<T>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
     public IRuleBuilderInitial<T, ulong> RuleFor(Expression<Func<T, ConceptAs<ulong>>> expression) => Transform(expression, (value) => value.Value);
 }
+#pragma warning restore CS0618 // Type or member is obsolete
