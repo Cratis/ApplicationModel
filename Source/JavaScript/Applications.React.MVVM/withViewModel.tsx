@@ -15,7 +15,7 @@ import {
     IDialogs,
     useDialogMediator
 } from './dialogs';
-import { IViewModelDetached } from './dialogs/IViewModelDetached';
+import { IViewModelDetached } from './IViewModelDetached';
 
 function disposeViewModel(viewModel: any) {
     const vmWithDetach = (viewModel as IViewModelDetached);
