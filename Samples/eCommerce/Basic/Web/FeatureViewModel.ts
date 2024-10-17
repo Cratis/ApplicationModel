@@ -6,7 +6,7 @@ import { Cart, ObserveCartForCurrentUser } from './API/Carts';
 import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
 import { CustomDialogRequest } from './CustomDialog';
 import { IMessenger } from '@cratis/applications.react.mvvm/messaging';
-import { IViewModelDetached } from '../../../../Source/JavaScript/Applications.React.MVVM/dialogs/IViewModelDetached';
+import { IViewModelDetached } from '@cratis/applications.react.mvvm';
 
 export class Something {
     constructor(readonly value: string) {
