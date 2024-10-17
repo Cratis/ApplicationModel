@@ -4,7 +4,7 @@
 import { ICommand, PropertyChanged } from './ICommand';
 import { CommandResult } from "./CommandResult";
 import { CommandValidator } from './CommandValidator';
-import { Constructor } from '@cratis/fundamentals';
+import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { Globals } from '../Globals';
 
 type Callback = {
@@ -66,7 +66,7 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
             const response = await fetch(actualRoute, {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload)
+                body: JsonSerializer.serialize(payload)
             });
             this.setInitialValuesFromCurrentValues();
 
