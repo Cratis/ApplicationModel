@@ -81,6 +81,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
                 retry();
             };
             this._socket.onerror = (error) => {
+                if (this._disconnected) return;
                 console.log(`Error with connection for '${this._route} - ${error}`);
                 retry();
             };
@@ -105,6 +106,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
         console.log(`Disconnecting '${this._route}'`);
         this._disconnected = true;
         this._socket?.close();
+        console.log(`Connection for '${this._route}' closed`);
         this._socket = undefined!;
     }
 }
