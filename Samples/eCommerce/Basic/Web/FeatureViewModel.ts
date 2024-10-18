@@ -17,12 +17,11 @@ export class Something {
 @injectable()
 export class FeatureViewModel implements IViewModelDetached {
     constructor(
-        readonly query: ObserveCartForCurrentUser,
         private readonly _messenger: IMessenger,
         private readonly _dialogs: IDialogs) {
-        query.subscribe(async result => {
-            this.cart = result.data;
-        });
+        // query.subscribe(async result => {
+        //     this.cart = result.data;
+        // });
 
         _messenger.subscribe(Something, something => {
             console.log(`Got something: ${something.value}`);

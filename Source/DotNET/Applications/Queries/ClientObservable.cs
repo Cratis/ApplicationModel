@@ -1,11 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net.WebSockets;
 using System.Reactive.Subjects;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
 
@@ -19,10 +18,14 @@ namespace Cratis.Applications.Queries;
 /// <param name="queryContext">The <see cref="QueryContext"/> the observable is for.</param>
 /// <param name="subject">The <see cref="ISubject{T}"/> the observable wraps.</param>
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
+/// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="logger">The <see cref="ILogger"/>.</param>
 public class ClientObservable<T>(
     QueryContext queryContext,
     ISubject<T> subject,
-    JsonOptions jsonOptions) : IClientObservable, IAsyncEnumerable<T>
+    JsonOptions jsonOptions,
+    IWebSocketConnectionHandler webSocketConnectionHandler,
+    ILogger<ClientObservable<T>> logger) : IClientObservable, IAsyncEnumerable<T>
 {
     /// <summary>
     /// Notifies all subscribed and future observers about the arrival of the specified element in the sequence.
@@ -33,57 +36,55 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
-        using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
-        IDisposable? subscription = default;
+        var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
+        var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult<object>();
         using var cts = new CancellationTokenSource();
 
-#pragma warning disable MA0147 // Avoid async void method for delegate
-        subscription = subject.Subscribe(async _ =>
+        using var subscription = subject.Subscribe(Next, Error, Complete);
+        await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
+        subject.OnCompleted();
+
+        await tsc.Task;
+        return;
+
+        async void Next(T data)
         {
-            queryResult.Paging = new(
-                queryContext.Paging.Page,
-                queryContext.Paging.Size,
-                queryContext.TotalItems);
-
-            queryResult.Data = _!;
-
             try
             {
-                var message = JsonSerializer.SerializeToUtf8Bytes(queryResult, jsonOptions.JsonSerializerOptions);
-                await webSocket.SendAsync(message, WebSocketMessageType.Text, true, cts.Token);
-                message = null!;
+                if (data is null)
+                {
+                    logger.ObservableReceivedNullItem();
+                    return;
+                }
+
+                queryResult.Paging = new(queryContext.Paging.Page, queryContext.Paging.Size, queryContext.TotalItems);
+                queryResult.Data = data!;
+
+                var error = await webSocketConnectionHandler.SendMessage(webSocket, queryResult, jsonOptions.JsonSerializerOptions, cts.Token, logger);
+                if (error is not null)
+                {
+                    subject.OnError(error);
+                }
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error sending message to client: {ex.Message}\n{ex.StackTrace}");
-                subscription?.Dispose();
+                subject.OnError(ex);
+            }
+        }
+        void Error(Exception error)
+        {
+            if (cts.IsCancellationRequested)
+            {
                 subject.OnCompleted();
             }
-        });
-#pragma warning restore MA0147 // Avoid async void method for delegate
-
-        var buffer = new byte[1024 * 4];
-        try
-        {
-            var received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-
-            while (!received.CloseStatus.HasValue)
-            {
-                received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-            }
-
-            await webSocket.CloseAsync(received.CloseStatus.Value, received.CloseStatusDescription, cts.Token);
+            logger.ObservableAnErrorOccurred(error);
         }
-        catch
+        void Complete()
         {
-            Console.WriteLine("Client disconnected");
-        }
-        finally
-        {
+            logger.ObservableCompleted();
             cts.Cancel();
-            subject.OnCompleted();
-            subscription?.Dispose();
+            tsc.SetResult();
         }
     }
 

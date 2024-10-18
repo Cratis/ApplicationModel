@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -69,7 +70,7 @@ public class QueryActionFilter(
                 if (IsSubjectResult(objectResult))
                 {
                     logger.ClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientObservable = CreateClientObservableFrom(objectResult);
+                    var clientObservable = CreateClientObservableFrom(context.HttpContext.RequestServices, objectResult);
                     HandleWebSocketHeadersForMultipleProxies(context.HttpContext);
 
                     if (context.HttpContext.WebSockets.IsWebSocketRequest)
@@ -87,7 +88,7 @@ public class QueryActionFilter(
                 else if (IsAsyncEnumerableResult(objectResult))
                 {
                     logger.AsyncEnumerableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientEnumerableObservable = CreateClientEnumerableObservableFrom(objectResult);
+                    var clientEnumerableObservable = CreateClientEnumerableObservableFrom(context.HttpContext.RequestServices, objectResult);
 
                     HandleWebSocketHeadersForMultipleProxies(context.HttpContext);
                     if (context.HttpContext.WebSockets.IsWebSocketRequest)
@@ -175,19 +176,19 @@ public class QueryActionFilter(
         queryContextManager.Set(new(context.HttpContext.GetCorrelationId(), paging, sorting));
     }
 
-    IClientEnumerableObservable CreateClientEnumerableObservableFrom(ObjectResult objectResult)
+    IClientEnumerableObservable CreateClientEnumerableObservableFrom(IServiceProvider serviceProvider, ObjectResult objectResult)
     {
         var type = objectResult.Value!.GetType();
         var clientEnumerableObservableType = typeof(ClientEnumerableObservable<>).MakeGenericType(type.GetGenericArguments()[0]);
-        return (Activator.CreateInstance(clientEnumerableObservableType, objectResult.Value, _options) as IClientEnumerableObservable)!;
+        return (ActivatorUtilities.CreateInstance(serviceProvider, clientEnumerableObservableType, objectResult.Value, _options) as IClientEnumerableObservable)!;
     }
 
-    IClientObservable CreateClientObservableFrom(ObjectResult objectResult)
+    IClientObservable CreateClientObservableFrom(IServiceProvider serviceProvider, ObjectResult objectResult)
     {
         var type = objectResult.Value!.GetType();
         var subjectType = type.GetInterfaces().First(_ => _.IsGenericType && _.GetGenericTypeDefinition() == typeof(ISubject<>));
         var clientObservableType = typeof(ClientObservable<>).MakeGenericType(subjectType.GetGenericArguments()[0]);
-        return (Activator.CreateInstance(clientObservableType, queryContextManager.Current, objectResult.Value, _options) as IClientObservable)!;
+        return (ActivatorUtilities.CreateInstance(serviceProvider, clientObservableType, queryContextManager.Current, objectResult.Value, _options) as IClientObservable)!;
     }
 
     bool IsStreamingResult(ObjectResult objectResult) => IsAsyncEnumerableResult(objectResult) || IsSubjectResult(objectResult);

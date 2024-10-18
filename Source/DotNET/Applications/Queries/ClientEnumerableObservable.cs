@@ -1,10 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net.WebSockets;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
 
@@ -14,59 +13,63 @@ namespace Cratis.Applications.Queries;
 /// <typeparam name="T">Type of data being observed.</typeparam>
 /// <param name="enumerable">The <see cref="IAsyncEnumerable{T}"/> to use for streaming.</param>
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
-public class ClientEnumerableObservable<T>(IAsyncEnumerable<T> enumerable, JsonOptions jsonOptions) : IClientEnumerableObservable
+/// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="logger">The <see cref="ILogger"/>.</param>
+public class ClientEnumerableObservable<T>(
+    IAsyncEnumerable<T> enumerable,
+    JsonOptions jsonOptions,
+    IWebSocketConnectionHandler webSocketConnectionHandler,
+    ILogger<ClientEnumerableObservable<T>> logger)
+    : IClientEnumerableObservable
 {
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
-        var queryResult = new QueryResult<object>();
         using var cts = new CancellationTokenSource();
+        var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var queryResult = new QueryResult<object>();
 
         _ = Task.Run(async () =>
         {
-            await foreach (var item in enumerable.WithCancellation(cts.Token))
+            try
             {
-                if (item is null)
+                await foreach (var item in enumerable.WithCancellation(cts.Token))
                 {
-                    break;
-                }
+                    if (item is null)
+                    {
+                        logger.ObservableReceivedNullItem();
+                        continue;
+                    }
 
-                queryResult.Data = item;
-
-                try
-                {
-                    var message = JsonSerializer.SerializeToUtf8Bytes(queryResult, jsonOptions.JsonSerializerOptions);
-                    await webSocket.SendAsync(message, WebSocketMessageType.Text, true, cts.Token);
-                    message = null!;
+                    queryResult.Data = item;
+                    var error = await webSocketConnectionHandler.SendMessage(webSocket, queryResult, jsonOptions.JsonSerializerOptions, cts.Token, logger);
+                    if (error is null)
+                    {
+                        continue;
+                    }
+                    if (cts.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    logger.EnumerableObservableSkip();
                 }
-                catch (Exception ex)
+                tsc.SetResult();
+                cts.Cancel();
+            }
+            catch (Exception ex)
+            {
+                if (!cts.IsCancellationRequested)
                 {
-                    Console.Error.WriteLine($"Error sending message to client: {ex.Message}\n{ex.StackTrace}");
-                    break;
+                    logger.EnumerableObservableError(ex);
+                    cts.Cancel();
+                    tsc.SetResult();
                 }
             }
         });
 
-        var buffer = new byte[1024 * 4];
-        try
-        {
-            var received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-
-            while (!received.CloseStatus.HasValue)
-            {
-                received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-            }
-
-            await webSocket.CloseAsync(received.CloseStatus.Value, received.CloseStatusDescription, cts.Token);
-        }
-        catch
-        {
-            Console.WriteLine("Client disconnected");
-        }
-        finally
-        {
-            cts.Cancel();
-        }
+        await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
+        cts.Cancel();
+        await tsc.Task;
     }
 }

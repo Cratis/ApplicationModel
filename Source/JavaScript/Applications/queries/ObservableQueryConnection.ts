@@ -52,6 +52,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
         const timeExponent = 500;
         const retries = 100;
         let currentAttempt = 0;
+        const maxTime = 10_000;
 
         const connectSocket = () => {
             const retry = () => {
@@ -64,6 +65,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
                 setTimeout(connectSocket, timeToWait);
                 timeToWait += (timeExponent * currentAttempt);
+                timeToWait = timeToWait > maxTime ? maxTime : timeToWait; 
             };
 
             this._socket = new WebSocket(url);
@@ -79,12 +81,13 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
                 retry();
             };
             this._socket.onerror = (error) => {
+                if (this._disconnected) return;
                 console.log(`Error with connection for '${this._route} - ${error}`);
                 retry();
             };
             this._socket.onmessage = (ev) => {
                 if (this._disconnected) {
-                    this.disconnect();
+                    console.log('Received message after closing connection');
                     return;
                 }
                 dataReceived(JSON.parse(ev.data));
@@ -103,6 +106,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
         console.log(`Disconnecting '${this._route}'`);
         this._disconnected = true;
         this._socket?.close();
+        console.log(`Connection for '${this._route}' closed`);
         this._socket = undefined!;
     }
 }
