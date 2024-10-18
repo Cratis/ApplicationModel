@@ -22,7 +22,7 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
         try
         {
             var buffer = new byte[BufferSize];
-            WebSocketReceiveResult? received = null!;
+            WebSocketReceiveResult? received = null;
             try
             {
                 do
@@ -35,8 +35,8 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
             }
             catch (TaskCanceledException)
             {
-                logger.ObservableCloseConnection(received.CloseStatusDescription);
-                await webSocket.CloseOutputAsync(received.CloseStatus ?? WebSocketCloseStatus.Empty, received.CloseStatusDescription, token);
+                logger.ObservableCloseConnection(received?.CloseStatusDescription);
+                await webSocket.CloseOutputAsync(received?.CloseStatus ?? WebSocketCloseStatus.Empty, received?.CloseStatusDescription, token);
             }
             finally
             {
