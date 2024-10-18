@@ -10,7 +10,10 @@ internal static partial class ClientObservableLogMessages
     [LoggerMessage(LogLevel.Warning, "Error sending message to client")]
     internal static partial void ObservableErrorSendingMessage(this ILogger logger, Exception error);
 
-    [LoggerMessage(LogLevel.Warning, "Error while receiving messages to client")]
+    [LoggerMessage(LogLevel.Debug, "WebSocket error while receiving messages from client")]
+    internal static partial void ObservableWebSocketErrorReceivingMessage(this ILogger logger, Exception error);
+
+    [LoggerMessage(LogLevel.Warning, "Error while receiving messages from client")]
     internal static partial void ObservableErrorReceivingMessage(this ILogger logger, Exception error);
 
     [LoggerMessage(LogLevel.Debug, "Client disconnected")]
@@ -37,6 +40,6 @@ internal static partial class ClientObservableLogMessages
     [LoggerMessage(LogLevel.Warning, "An error occurred")]
     internal static partial void ObservableAnErrorOccurred(this ILogger logger, Exception exception);
 
-    [LoggerMessage(LogLevel.Debug, "The observed stream fro the server completed")]
+    [LoggerMessage(LogLevel.Debug, "The observed stream from the server completed")]
     internal static partial void ObservableCompleted(this ILogger logger);
 }

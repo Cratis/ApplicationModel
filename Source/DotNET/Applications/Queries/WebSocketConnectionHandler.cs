@@ -22,21 +22,34 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
         try
         {
             var buffer = new byte[BufferSize];
-            WebSocketReceiveResult? received = null;
+            WebSocketReceiveResult? received = null!;
             try
             {
                 do
                 {
+                    received = null!;
                     received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), token);
                     logger.ObservableReceivedMessage();
                 }
                 while (!received.CloseStatus.HasValue);
             }
+            catch (TaskCanceledException)
+            {
+                logger.ObservableCloseConnection(received.CloseStatusDescription);
+                await webSocket.CloseOutputAsync(received.CloseStatus ?? WebSocketCloseStatus.Empty, received.CloseStatusDescription, token);
+            }
             finally
             {
-                logger.ObservableCloseConnection(received?.CloseStatusDescription ?? "Unavailable");
-                await webSocket.CloseOutputAsync(received?.CloseStatus ?? WebSocketCloseStatus.InternalServerError, received?.CloseStatusDescription, token);
+                if (received is not null)
+                {
+                    logger.ObservableCloseConnection(received.CloseStatusDescription);
+                    await webSocket.CloseOutputAsync(received.CloseStatus ?? WebSocketCloseStatus.Empty, received.CloseStatusDescription, token);
+                }
             }
+        }
+        catch (WebSocketException ex)
+        {
+            logger.ObservableWebSocketErrorReceivingMessage(ex);
         }
         catch (Exception ex)
         {
