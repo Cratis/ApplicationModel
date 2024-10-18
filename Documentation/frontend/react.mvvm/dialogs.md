@@ -393,7 +393,7 @@ import { CustomDialogViewModel } from './CustomDialogViewModel';
 // The dialog now needs props with the request and resolver.
 export interface CustomDialogProps {
     request: CustomDialogRequest;
-    resolver: Dialog
+    resolver: DialogResolver<string>;
 }
 
 export class CustomDialogRequest { 
