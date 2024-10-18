@@ -216,8 +216,14 @@ public static class MongoCollectionExtensions
                 documents = query.ToList();
                 onNext(documents, subject);
 
-                cursor = await collection.WatchAsync(pipeline, options);
-                subject.Subscribe(_ => { }, cursor.Dispose);
+                cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
+                subject.Subscribe(_ => { }, () =>
+                {
+                    logger.CursorDisposed();
+                    cancellationTokenSource.Cancel();
+                    cancellationTokenSource.Dispose();
+                    cursor.Dispose();
+                });
 
                 await cursor.ForEachAsync(
                     async changeDocument =>
@@ -225,8 +231,10 @@ public static class MongoCollectionExtensions
                         if (subject is Subject<TResult> disposableSubject && disposableSubject.IsDisposed &&
                             subject is BehaviorSubject<TResult> disposableBehaviorSubject && disposableBehaviorSubject.IsDisposed)
                         {
-                            cursor.Dispose();
+                            logger.CursorDisposed();
+                            cancellationTokenSource.Cancel();
                             cancellationTokenSource.Dispose();
+                            cursor.Dispose();
                             return;
                         }
 
@@ -243,9 +251,11 @@ public static class MongoCollectionExtensions
                     },
                     cancellationToken);
             }
-            catch (ObjectDisposedException ex)
+            catch (ObjectDisposedException)
             {
-                logger.CursorDisposed(ex.ObjectName);
+                logger.CursorDisposed();
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
                 cursor.Dispose();
                 subject.OnCompleted();
 

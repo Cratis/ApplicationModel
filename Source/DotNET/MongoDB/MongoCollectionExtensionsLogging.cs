@@ -9,6 +9,6 @@ namespace MongoDB.Driver;
 
 internal static partial class MongoCollectionExtensionsLogMessages
 {
-    [LoggerMessage(LogLevel.Trace, "Cursor '{Name}' disposed")]
-    internal static partial void CursorDisposed(this ILogger<MongoCollectionExtensions.MongoCollection> logger, string name);
+    [LoggerMessage(LogLevel.Trace, "Cursor disposed")]
+    internal static partial void CursorDisposed(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
 }
