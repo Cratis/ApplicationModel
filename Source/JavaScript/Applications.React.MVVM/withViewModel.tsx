@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { container, DependencyContainer } from "tsyringe";
-import { Constructor } from '@cratis/fundamentals';
-import { FunctionComponent, ReactElement, useEffect, useMemo, useRef } from 'react';
+import { Constructor, Guid } from '@cratis/fundamentals';
+import { FunctionComponent, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { Observer } from 'mobx-react';
-import { makeAutoObservable } from 'mobx';
+import { has, makeAutoObservable } from 'mobx';
 import { useParams } from 'react-router-dom';
 import {
     DialogMediator,
@@ -15,7 +15,19 @@ import {
     IDialogs,
     useDialogMediator
 } from './dialogs';
-import { IViewModelDetached } from './dialogs/IViewModelDetached';
+import { IViewModelDetached } from './IViewModelDetached';
+
+function disposeViewModel(viewModel: any) {
+    const vmWithDetach = (viewModel as IViewModelDetached);
+    if (typeof (vmWithDetach.detached) == 'function') {
+        vmWithDetach.detached();
+    }
+
+    if (viewModel.__childContainer) {
+        const container = viewModel.__childContainer as DependencyContainer;
+        container.dispose();
+    }
+}
 
 /**
  * Represents the view context that is passed to the view.
@@ -35,47 +47,39 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
     const renderComponent = (props: TProps) => {
         const params = useParams();
         const dialogMediatorContext = useRef<IDialogMediatorHandler | null>(null);
-        const vm = useRef<TViewModel | null>(null);
+        const currentViewModel = useRef<TViewModel | null>(null);
+        const [_, setInitialRender] = useState(true);
         const parentDialogMediator = useDialogMediator();
 
         dialogMediatorContext.current = useMemo(() => {
             return new DialogMediatorHandler(parentDialogMediator);
         }, []);
 
-        vm.current = useMemo(() => {
+        useEffect(() => {
             const child = container.createChildContainer();
-
             child.registerInstance('props', props);
             child.registerInstance('params', params);
 
             const dialogService = new Dialogs(dialogMediatorContext.current!);
             child.registerInstance<IDialogs>(IDialogs as Constructor<IDialogs>, dialogService);
-            const vm = child.resolve<TViewModel>(viewModelType) as any;
-            makeAutoObservable(vm);
-            vm.__childContainer = child;
-            return vm;
-        }, []);
+            const viewModel = child.resolve<TViewModel>(viewModelType) as any;
+            makeAutoObservable(viewModel);
+            viewModel.__childContainer = child;
+            viewModel.__magic = Guid.create();
 
-        useEffect(() => {
+            currentViewModel.current = viewModel;
+
+            setInitialRender(false);
+
             return () => {
-                const currentVm = vm.current as any;
-                if (!currentVm) {
-                    return;
-                }
-
-                const vmWithDetach = (currentVm as IViewModelDetached);
-                if (typeof (vmWithDetach.detached) == 'function') {
-                    vmWithDetach.detached();
-                }
-
-                if (currentVm.__childContainer) {
-                    const container = currentVm.__childContainer as DependencyContainer;
-                    container.dispose();
-                }
+                disposeViewModel(currentViewModel.current);
             };
         }, []);
 
-        const component = () => targetComponent({ viewModel: vm.current!, props }) as ReactElement<any, string>;
+        if (currentViewModel.current === null) return null;
+
+        const component = () => targetComponent({ viewModel: currentViewModel.current!, props }) as ReactElement<any, string>;
+
         return (
             <DialogMediator handler={dialogMediatorContext.current!}>
                 <Observer>

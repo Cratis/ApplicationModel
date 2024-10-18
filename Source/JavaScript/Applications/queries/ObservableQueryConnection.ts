@@ -70,6 +70,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
             this._socket = new WebSocket(url);
             this._socket.onopen = (ev) => {
+                if (this._disconnected) return;
                 console.log(`Connection for '${this._route}' established`);
                 timeToWait = 500;
                 currentAttempt = 0;
