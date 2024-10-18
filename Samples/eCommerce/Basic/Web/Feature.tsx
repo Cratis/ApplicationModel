@@ -19,8 +19,6 @@ export interface FeatureProps {
 export const Feature = withViewModel<FeatureViewModel, FeatureProps>(FeatureViewModel, ({ viewModel, props }) => {
     const [CustomDialogWrapper, context, resolver] = useDialogRequest<CustomDialogRequest, string>(CustomDialogRequest);
     const [result] = ObserveCartForCurrentUser.use();
-    console.log("Data:");
-    console.log(result.data);
     const identity = useIdentity();
     return (
         <div>
