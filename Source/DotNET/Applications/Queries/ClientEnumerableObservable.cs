@@ -55,6 +55,7 @@ public class ClientEnumerableObservable<T>(
                     logger.EnumerableObservableSkip();
                 }
                 tsc.SetResult();
+                cts.Cancel();
             }
             catch (Exception ex)
             {
