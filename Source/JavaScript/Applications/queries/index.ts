@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+export * from './IQuery';
 export * from './IQueryFor';
 export * from './Paging';
 export * from './Sorting';
@@ -16,3 +17,5 @@ export * from './ObservableQueryFor';
 export * from './IObservableQueryConnection';
 export * from './ObservableQueryConnection';
 export * from './ObservableQuerySubscription';
+export * from './IQueryProvider';
+export * from './QueryProvider';
