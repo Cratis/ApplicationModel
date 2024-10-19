@@ -7,6 +7,9 @@
     "references": [
         {
             "path": "../Applications"
+        },
+        {
+            "path": "../Applications.React"
         }
     ],
     "exclude": [
