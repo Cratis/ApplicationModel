@@ -5,17 +5,13 @@ import 'reflect-metadata';
 import * as browser from './browser';
 import * as messaging from './messaging';
 import * as dialogs from './dialogs';
-import { Bindings } from './Bindings';
-import { MVVM, MVVMContext, MVVMProps } from './MVVMContext';
+export * from './Bindings';
+export * from './MVVMContext';
 export * from './withViewModel';
 export * from './IViewModelDetached';
 
 export {
-    Bindings,
     browser,
     messaging,
-    dialogs,
-    MVVM,
-    MVVMContext,
-    MVVMProps
+    dialogs
 };
