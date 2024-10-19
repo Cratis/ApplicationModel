@@ -7,6 +7,7 @@ import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs
 import { CustomDialogRequest } from './CustomDialog';
 import { IMessenger } from '@cratis/applications.react.mvvm/messaging';
 import { IViewModelDetached } from '@cratis/applications.react.mvvm';
+import { IQueryProvider } from '@cratis/applications/queries';
 
 export class Something {
     constructor(readonly value: string) {
@@ -18,10 +19,13 @@ export class Something {
 export class FeatureViewModel implements IViewModelDetached {
     constructor(
         private readonly _messenger: IMessenger,
-        private readonly _dialogs: IDialogs) {
+        private readonly _dialogs: IDialogs,
+        private readonly queryProvider: IQueryProvider) {
         // query.subscribe(async result => {
         //     this.cart = result.data;
         // });
+
+        const query = queryProvider.get(ObserveCartForCurrentUser);
 
         _messenger.subscribe(Something, something => {
             console.log(`Got something: ${something.value}`);

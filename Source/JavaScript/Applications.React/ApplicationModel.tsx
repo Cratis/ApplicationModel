@@ -4,7 +4,8 @@
 import { Globals } from '@cratis/applications';
 import { CommandScope } from './commands';
 import { IdentityProvider } from './identity';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Bindings } from './Bindings';
 
 export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
@@ -23,6 +24,9 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
     const configuration: ApplicationModelConfiguration = {
         microservice: props.microservice
     };
+
+    Bindings.initialize(configuration.microservice);
+
     return (
         <ApplicationModelContext.Provider value={configuration}>
             <IdentityProvider>
