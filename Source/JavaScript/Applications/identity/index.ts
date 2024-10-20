@@ -2,4 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 export * from './IdentityProvider';
-export * from './useIdentity';
+export * from './IdentityProviderResult';
+export * from './IIdentityProvider';
+export * from './IIdentity';

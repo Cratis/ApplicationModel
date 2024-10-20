@@ -86,6 +86,7 @@ if (RuntimeEnvironment.IsDevelopment)
 
 app.UseWebSockets();
 app.MapControllers();
+app.MapIdentityProvider();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapFallbackToFile("/index.html");
