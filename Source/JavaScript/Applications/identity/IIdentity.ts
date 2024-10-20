@@ -4,7 +4,7 @@
 /**
  * Defines the context for identity.
  */
-export interface IIdentityContext<TDetails = {}> {
+export interface IIdentity<TDetails = {}> {
 
     /**
      * The id of the identity.
@@ -19,7 +19,7 @@ export interface IIdentityContext<TDetails = {}> {
     /**
      * The claims for the identity.
      */
-    claims: { [key: string]: string };
+    claims: { [key: string]: string; };
 
     /**
      * The application specific details for the identity.
@@ -34,5 +34,5 @@ export interface IIdentityContext<TDetails = {}> {
     /**
      * Refreshes the identity context.
      */
-    refresh(): void;
+    refresh(): Promise<IIdentity<TDetails>>;
 }

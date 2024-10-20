@@ -1,27 +1,16 @@
 # Identity
 
-Based on the output of the [Cratis Middleware](https://github.com/cratis/IngressMiddleware), the frontend benefits from
-getting the user details provided by the application all the way into the frontend without having to make an extra call to the
-backend.
+The React implementation of identity is built on top of what you find the [core](../core/identity.md).
+It provides an encapsulation that feels more natural to a React application.
 
-While in development mode on your local machine, if there is no cookie it will call the `.cratis/me` endpoint from the frontend
-itself. This makes it possible to work without having to simulate the production environment.
-
-> Important note: Since local development is not configured with the identity provider, but you still need a way to test that both the backend and the frontend
-> deals with the identity in the correct way. This can be achieved by creating the correct token and injecting it as request headers using
-> a browser extension. Read more [here](../general/generating-principal.md).
-
-This information is stored in a cookie called `.cratis-identity`. The content of this is a base64 encoded string containing the
-JSON structure returned by the backend to the ingress middleware.
-
-## Identity context
+## Identity provider context
 
 To use the identity system you need to provide the identity context for your application.
 
 At the top level of your application, typically in your `App.tsx` file you would add the provider by doing the following:
 
 ```typescript
-import { IdentityProvider } from '@cratis/applications/identity';
+import { IdentityProvider } from '@cratis/applications.react/identity';
 
 export const App = () => {
     return (
@@ -35,7 +24,7 @@ export const App = () => {
 This context can then be used anywhere by consuming the React context directly:
 
 ```typescript
-import { IdentityProviderContext } from '@cratis/applications/identity';
+import { IdentityProviderContext } from '@cratis/applications.react/identity';
 
 export const SomeComponent = () => {
     return (
@@ -61,7 +50,7 @@ the context you find a method called `refresh()`. Calling this will invalidate t
 the backend to get the current identity details.
 
 ```typescript
-import { IdentityProviderContext } from '@cratis/applications/identity';
+import { IdentityProviderContext } from '@cratis/applications.react/identity';
 
 export const SomeComponent = () => {
     return (
@@ -85,7 +74,7 @@ export const SomeComponent = () => {
 Anywhere within your application you can then access the identity by adding using the `useIdentity()` hook:
 
 ```typescript
-import { useIdentity } from '@cratis/applications/identity';
+import { useIdentity } from '@cratis/applications.react/identity';
 
 export const Home = () => {
     const identity = useIdentity();
@@ -103,7 +92,7 @@ By default, if not specified, the type of the details is `any`. You can change t
 the exact shape of what's expected:
 
 ```typescript
-import { useIdentity } from '@cratis/applications/identity';
+import { useIdentity } from '@cratis/applications.react/identity';
 
 type Identity = {
     firstName: string;
@@ -125,7 +114,7 @@ Since the `useIdentity()` returns an instance of the `IIdentityContext`. So for 
 accessible:
 
 ```typescript
-import { useIdentity } from '@cratis/applications/identity';
+import { useIdentity } from '@cratis/applications.react/identity';
 
 type Identity = {
     firstName: string;
@@ -153,7 +142,7 @@ This is especially useful when working in local development and the cookie has n
 The default value can be provided as an argument to the `useIdentity()` hook:
 
 ```typescript
-import { useIdentity } from '@cratis/applications/identity';
+import { useIdentity } from '@cratis/applications.react/identity';
 
 type Identity = {
     firstName: string;

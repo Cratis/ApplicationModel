@@ -1,3 +1,5 @@
+- name: Core
+  href: core/toc.yml
 - name: React
   href: react/toc.yml
 - name: MVVM with React

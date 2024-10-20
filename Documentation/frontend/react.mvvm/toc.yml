@@ -4,6 +4,8 @@
   href: browser.md
 - name: Messaging
   href: messaging.md
+- name: Identity
+  href: identity.md
 - name: MVVM Context
   href: mvvm-context.md
 - name: TSyringe

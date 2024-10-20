@@ -29,6 +29,11 @@
             "require": "./dist/commands/index.js",
             "types": "./dist/commands/index.d.ts"
         },
+        "./identity": {
+            "import": "./dist/identity/index.js",
+            "require": "./dist/identity/index.js",
+            "types": "./dist/identity/index.d.ts"
+        },
         "./queries": {
             "import": "./dist/queries/index.js",
             "require": "./dist/queries/index.js",
