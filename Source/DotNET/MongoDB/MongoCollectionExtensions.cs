@@ -169,12 +169,12 @@ public static class MongoCollectionExtensions
         Func<IEnumerable<TDocument>, ISubject<TResult>> createSubject,
         Action<IEnumerable<TDocument>, ISubject<TResult>> onNext)
     {
+        var completedCleanup = false;
         var documents = new List<TDocument>();
         var subject = createSubject([]);
-
         var logger = Internals.ServiceProvider.GetRequiredService<ILogger<MongoCollection>>();
         var queryContextManager = Internals.ServiceProvider.GetRequiredService<IQueryContextManager>();
-        var queryContext = Internals.ServiceProvider.GetRequiredService<IQueryContextManager>().Current;
+        var queryContext = queryContextManager.Current;
         var invalidateFindOnAddOrDelete = queryContext.Paging.IsPaged || queryContext.Sorting != Sorting.None;
 
         var options = new ChangeStreamOptions
@@ -201,7 +201,8 @@ public static class MongoCollectionExtensions
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var cancellationToken = cancellationTokenSource.Token;
 
-        IChangeStreamCursor<ChangeStreamDocument<TDocument>> cursor = null!;
+        _ = Task.Run(Watch);
+        return subject;
 
         async Task Watch()
         {
@@ -216,28 +217,12 @@ public static class MongoCollectionExtensions
                 documents = query.ToList();
                 onNext(documents, subject);
 
-                cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
-                subject.Subscribe(_ => { }, () =>
-                {
-                    logger.CursorDisposed();
-                    cancellationTokenSource.Cancel();
-                    cancellationTokenSource.Dispose();
-                    cursor.Dispose();
-                });
+                using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
+                _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
 
                 await cursor.ForEachAsync(
                     async changeDocument =>
                     {
-                        if (subject is Subject<TResult> disposableSubject && disposableSubject.IsDisposed &&
-                            subject is BehaviorSubject<TResult> disposableBehaviorSubject && disposableBehaviorSubject.IsDisposed)
-                        {
-                            logger.CursorDisposed();
-                            cancellationTokenSource.Cancel();
-                            cancellationTokenSource.Dispose();
-                            cursor.Dispose();
-                            return;
-                        }
-
                         documents = await HandleChange(
                             queryContext,
                             onNext,
@@ -253,25 +238,32 @@ public static class MongoCollectionExtensions
             }
             catch (ObjectDisposedException)
             {
-                logger.CursorDisposed();
-                cancellationTokenSource.Cancel();
-                cancellationTokenSource.Dispose();
-                cursor.Dispose();
-                subject.OnCompleted();
-
-                if (subject is Subject<TResult> disposableSubject)
-                {
-                    disposableSubject.Dispose();
-                }
-                if (subject is BehaviorSubject<TResult> disposableBehaviorSubject)
-                {
-                    disposableBehaviorSubject.Dispose();
-                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.UnexpectedError(ex);
+            }
+            finally
+            {
+                Cleanup();
             }
         }
 
-        _ = Task.Run(Watch, cancellationToken);
-        return subject;
+        void Cleanup()
+        {
+            if (completedCleanup)
+            {
+                return;
+            }
+            logger.CursorDisposed();
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource?.Dispose();
+            subject?.OnCompleted();
+            completedCleanup = true;
+        }
     }
 
     static async Task UpdateTotalItems<TDocument>(QueryContext queryContext, IFindFluent<TDocument, TDocument> query)
