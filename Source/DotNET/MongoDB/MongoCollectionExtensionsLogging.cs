@@ -11,4 +11,7 @@ internal static partial class MongoCollectionExtensionsLogMessages
 {
     [LoggerMessage(LogLevel.Trace, "Cursor disposed")]
     internal static partial void CursorDisposed(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
+
+    [LoggerMessage(LogLevel.Warning, "Unexpected error occurred")]
+    internal static partial void UnexpectedError(this ILogger<MongoCollectionExtensions.MongoCollection> logger, Exception ex);
 }

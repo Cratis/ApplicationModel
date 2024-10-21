@@ -36,7 +36,7 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
-        var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
+        using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
         var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult<object>();
         using var cts = new CancellationTokenSource();
@@ -44,7 +44,6 @@ public class ClientObservable<T>(
         using var subscription = subject.Subscribe(Next, Error, Complete);
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
         subject.OnCompleted();
-
         await tsc.Task;
         return;
 
