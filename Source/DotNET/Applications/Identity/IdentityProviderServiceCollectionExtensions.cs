@@ -27,13 +27,7 @@ public static class IdentityProviderServiceCollectionExtensions
             throw new MultipleIdentityDetailsProvidersFound(providerTypes);
         }
 
-        services.AddSingleton(
-            typeof(IProvideIdentityDetails),
-            providerTypes.Length == 1 ? providerTypes[0] : defaultImplementationType);
-
-        services.AddSingleton<IdentityProviderEndpoint>();
-
-        return services;
+        return services.AddIdentityProvider(providerTypes.Length == 1 ? providerTypes[0] : defaultImplementationType);
     }
 
     /// <summary>
@@ -43,9 +37,19 @@ public static class IdentityProviderServiceCollectionExtensions
     /// <param name="services"><see cref="IServiceCollection"/> to add to.</param>
     /// <returns><see cref="IServiceCollection"/> for continuation.</returns>
     public static IServiceCollection AddIdentityProvider<TProvider>(this IServiceCollection services)
-        where TProvider : class, IProvideIdentityDetails
+        where TProvider : class, IProvideIdentityDetails =>
+        services.AddIdentityProvider(typeof(TProvider));
+
+    /// <summary>
+    /// Add a identity provider to the service collection.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> to add to.</param>
+    /// <param name="type">The <see cref="Type"/> of the <see cref="IProvideIdentityDetails"/> implementation to add.</param>
+    /// <returns><see cref="IServiceCollection"/> for continuation.</returns>
+    public static IServiceCollection AddIdentityProvider(this IServiceCollection services, Type type)
     {
-        services.AddSingleton<TProvider>();
+        TypeIsNotAnIdentityDetailsProvider.ThrowIfNotAnIdentityDetailsProvider(type);
+        services.AddSingleton(typeof(IProvideIdentityDetails), type);
         services.AddSingleton<IdentityProviderEndpoint>();
 
         return services;
