@@ -20,4 +20,9 @@ public class ApplicationModelOptions
     /// Gets or sets the options for the tenancy.
     /// </summary>
     public TenancyOptions Tenancy { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets what type of identity details provider to use. If none is specified it will use type discovery to try to find one.
+    /// </summary>
+    public Type? IdentityDetailsProvider { get; set; }
 }

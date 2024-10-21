@@ -49,7 +49,9 @@ public static class HostBuilderExtensions
     public static IHostBuilder UseCratisApplicationModel(this IHostBuilder builder, Action<ApplicationModelOptions> configureOptions)
     {
         builder.ConfigureServices(_ => AddOptions(_, configureOptions));
-        return builder.UseApplicationModelImplementation();
+        var options = new ApplicationModelOptions();
+        configureOptions(options);
+        return builder.UseApplicationModelImplementation(options.IdentityDetailsProvider);
     }
 
     static OptionsBuilder<ApplicationModelOptions> AddOptions(IServiceCollection services, Action<ApplicationModelOptions>? configureOptions = default)
@@ -66,7 +68,7 @@ public static class HostBuilderExtensions
         return builder;
     }
 
-    static IHostBuilder UseApplicationModelImplementation(this IHostBuilder builder)
+    static IHostBuilder UseApplicationModelImplementation(this IHostBuilder builder, Type? identityDetailsProvider = default)
     {
         Internals.Types = Types.Instance;
         Internals.Types.RegisterTypeConvertersForConcepts();
@@ -76,13 +78,24 @@ public static class HostBuilderExtensions
         builder.UseDefaultServiceProvider(_ => _.ValidateOnBuild = false);
 
         builder
-            .ConfigureServices(_ => _
-                .AddTypeDiscovery()
-                .AddSingleton<IDerivedTypes>(derivedTypes)
-                .AddIdentityProvider(Internals.Types)
-                .AddControllersFromProjectReferencedAssembles(Internals.Types, derivedTypes)
-                .AddBindingsByConvention()
-                .AddSelfBindings());
+            .ConfigureServices(services =>
+            {
+                services
+                    .AddTypeDiscovery()
+                    .AddSingleton<IDerivedTypes>(derivedTypes)
+                    .AddControllersFromProjectReferencedAssembles(Internals.Types, derivedTypes)
+                    .AddBindingsByConvention()
+                    .AddSelfBindings();
+
+                if (identityDetailsProvider is not null)
+                {
+                    services.AddIdentityProvider(identityDetailsProvider);
+                }
+                else
+                {
+                    services.AddIdentityProvider(Internals.Types);
+                }
+            });
 
         return builder;
     }

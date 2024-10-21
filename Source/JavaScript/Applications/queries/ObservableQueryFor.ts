@@ -29,7 +29,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = {}> implements 
     abstract readonly defaultValue: TDataType;
     abstract get requiredRequestArguments(): string[];
     sorting: Sorting;
-    paging: Paging | undefined;
+    paging: Paging;
 
     /**
      * Initializes a new instance of the {@link ObservableQueryFor<,>}} class.
@@ -38,6 +38,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = {}> implements 
      */
     constructor(readonly modelType: Constructor, readonly enumerable: boolean) {
         this.sorting = Sorting.none;
+        this.paging = Paging.noPaging;
         this._microservice = Globals.microservice ?? '';
     }
 

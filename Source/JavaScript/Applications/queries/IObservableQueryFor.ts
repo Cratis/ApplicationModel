@@ -4,8 +4,7 @@
 import Handlebars from 'handlebars';
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { QueryResult } from './QueryResult';
-import { Paging } from './Paging';
-import { Sorting } from './Sorting';
+import { IQuery } from './IQuery';
 
 /**
  * The delegate type representing the callback of result from the server.
@@ -17,37 +16,11 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
  * @template TDataType Type of model the query is for.
  * @template TArguments Optional type of arguments to use for the query.
  */
-export interface IObservableQueryFor<TDataType, TArguments = {}> {
+export interface IObservableQueryFor<TDataType, TArguments = {}> extends IQuery {
     readonly route: string;
     readonly routeTemplate: Handlebars.TemplateDelegate;
     readonly requiredRequestArguments: string[];
     readonly defaultValue: TDataType;
-
-    /**
-     * Gets the sorting for the query.
-     */
-    get sorting(): Sorting;
-
-    /**
-     * Sets the sorting for the query.
-     */
-    set sorting(value: Sorting);
-
-    /**
-     * Gets the paging for the query.
-     */
-    get paging(): Paging | undefined;
-
-    /**
-     * Sets the paging for the query.
-     */ 
-    set paging(value: Paging);
-
-    /**
-     * Set the microservice to be used for the query. This is passed along to the server to identify the microservice.
-     * @param microservice Name of microservice
-     */
-    setMicroservice(microservice: string);
 
     /**
      * Subscribe to the query. This will create a subscription onto the server.
