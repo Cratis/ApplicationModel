@@ -5,7 +5,9 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "dev": "vite"
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "yarn build && vite preview"
     },
     "author": "",
     "license": "MIT",

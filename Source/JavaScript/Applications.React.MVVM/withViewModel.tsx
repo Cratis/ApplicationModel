@@ -3,7 +3,7 @@
 
 import { container, DependencyContainer } from "tsyringe";
 import { Constructor, Guid } from '@cratis/fundamentals';
-import { FunctionComponent, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { FunctionComponent, ReactElement, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Observer } from 'mobx-react';
 import { has, makeAutoObservable } from 'mobx';
 import { useParams } from 'react-router-dom';
@@ -16,6 +16,7 @@ import {
     useDialogMediator
 } from './dialogs';
 import { IViewModelDetached } from './IViewModelDetached';
+import { ApplicationModelContext } from '@cratis/applications.react';
 
 function disposeViewModel(viewModel: any) {
     const vmWithDetach = (viewModel as IViewModelDetached);
@@ -45,6 +46,7 @@ export interface IViewContext<T, TProps = any> {
  */
 export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(viewModelType: Constructor<TViewModel>, targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
     const renderComponent = (props: TProps) => {
+        const applicationContext = useContext(ApplicationModelContext);
         const params = useParams();
         const dialogMediatorContext = useRef<IDialogMediatorHandler | null>(null);
         const currentViewModel = useRef<TViewModel | null>(null);
@@ -53,7 +55,9 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
 
         useEffect(() => {
             if (currentViewModel.current !== null) {
-                return;
+                return () => {
+                    disposeViewModel(currentViewModel.current);
+                };
             }
 
             dialogMediatorContext.current = new DialogMediatorHandler(parentDialogMediator);
@@ -72,7 +76,9 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
             setInitialRender(false);
 
             return () => {
-                disposeViewModel(currentViewModel.current);
+                if (applicationContext.development === false) {
+                    disposeViewModel(viewModel);
+                }
             };
         }, []);
 

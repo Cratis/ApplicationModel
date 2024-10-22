@@ -17,15 +17,17 @@ const Something = () => {
     );
 };
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const App = () => {
     return (
-        <ApplicationModel microservice='e-commerce'>
+        <ApplicationModel microservice='e-commerce' development={isDevelopment}>
             <DialogComponents confirmation={ConfirmationDialog} busyIndicator={BusyIndicatorDialog}>
                 <MVVM>
                     <BrowserRouter>
                         <Routes>
                             <Route path='/' element={<Feature blah='Horse' />} />
-                            <Route path='/something' element={<Something/>} />
+                            <Route path='/something' element={<Something />} />
                         </Routes>
 
                         {/* <Catalog /> */}
