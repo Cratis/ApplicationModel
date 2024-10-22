@@ -10,19 +10,23 @@ import { Bindings } from './Bindings';
 export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
     microservice: string;
+    development?: boolean;
 }
 
 export interface ApplicationModelConfiguration {
     microservice: string;
+    development?: boolean
 }
 
 export const ApplicationModelContext = React.createContext<ApplicationModelConfiguration>({
-    microservice: Globals.microservice
+    microservice: Globals.microservice,
+    development: false
 });
 
 export const ApplicationModel = (props: ApplicationModelProps) => {
     const configuration: ApplicationModelConfiguration = {
-        microservice: props.microservice
+        microservice: props.microservice,
+        development: props.development ?? false
     };
 
     Bindings.initialize(configuration.microservice);
