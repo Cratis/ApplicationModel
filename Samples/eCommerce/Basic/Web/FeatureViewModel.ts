@@ -36,12 +36,16 @@ export class FeatureViewModel implements IViewModelDetached {
         _messenger.subscribe(Something, something => {
             console.log(`Got something: ${something.value}`);
         });
+
+        setInterval(() => {
+            this.counter++;
+        }, 1000);
     }
 
     detached(): void {
-        console.log(`Detaching viewmodel ${(this as any).__magic.toString()}`);
     }
 
+    counter: number = 0;
     cart: Cart = new Cart();
 
     async doStuff() {

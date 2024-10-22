@@ -51,11 +51,13 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
         const [_, setInitialRender] = useState(true);
         const parentDialogMediator = useDialogMediator();
 
-        dialogMediatorContext.current = useMemo(() => {
-            return new DialogMediatorHandler(parentDialogMediator);
-        }, []);
-
         useEffect(() => {
+            if (currentViewModel.current !== null) {
+                return;
+            }
+
+            dialogMediatorContext.current = new DialogMediatorHandler(parentDialogMediator);
+
             const child = container.createChildContainer();
             child.registerInstance('props', props);
             child.registerInstance('params', params);
@@ -65,8 +67,6 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
             const viewModel = child.resolve<TViewModel>(viewModelType) as any;
             makeAutoObservable(viewModel);
             viewModel.__childContainer = child;
-            viewModel.__magic = Guid.create();
-
             currentViewModel.current = viewModel;
 
             setInitialRender(false);

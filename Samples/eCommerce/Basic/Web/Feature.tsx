@@ -22,7 +22,7 @@ export const Feature = withViewModel<FeatureViewModel, FeatureProps>(FeatureView
     const identity = useIdentity();
     return (
         <div>
-            <h2>Hello {`${identity.name}`} your cart id is {`${viewModel.cart.id}`} </h2>
+            <h2>Hello {`${identity.name}`} your cart id is {`${viewModel.cart.id}`} - counter: {viewModel.counter}</h2>
             <Link to='/something'>Go to something</Link>
 
             <DataTable value={result.data.items}>
