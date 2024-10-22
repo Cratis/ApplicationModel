@@ -58,8 +58,8 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
-        if (Globals.microservice?.length > 0) {
-            headers[Globals.microserviceHttpHeader] = Globals.microservice;
+        if (this._microservice?.length > 0) {
+            headers[Globals.microserviceHttpHeader] = this._microservice;
         }
 
         try {
