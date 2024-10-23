@@ -20,6 +20,8 @@ describe('when chaining callbacks and result has exceptions', () => {
     }, Object, false);
 
     let onSuccessCalled = false;
+    let onFailedCalled = false;
+    let receivedCommandResultOnFailed: CommandResult<{}>;
     let onUnauthorizedCalled = false;
     let onValidationFailureCalled = false;
     let onExceptionCalled = false;
@@ -28,6 +30,10 @@ describe('when chaining callbacks and result has exceptions', () => {
 
     result
         .onSuccess(() => onSuccessCalled = true)
+        .onFailed((commandResult) => {
+            onFailedCalled = true;
+            receivedCommandResultOnFailed = commandResult;
+        })
         .onUnauthorized(() => onUnauthorizedCalled = true)
         .onValidationFailure(() => onValidationFailureCalled = true)
         .onException((messages, stackTrace) => {
@@ -36,11 +42,13 @@ describe('when chaining callbacks and result has exceptions', () => {
             receivedStackTrace = stackTrace;
         });
 
-    it('should call the on success callback', () => onSuccessCalled.should.be.false);
+    it('should not call the on success callback', () => onSuccessCalled.should.be.false);
     it('should forward the exception messages to the callback', () => receivedMessages.should.equal(result.exceptionMessages));
     it('should forward the exception stack trace to the callback', () => receivedStackTrace.should.equal(result.exceptionStackTrace));
+    it('should call the on failed callback', () => onFailedCalled.should.be.true);
+    it('should forward the command result to the on failed callback', () => receivedCommandResultOnFailed.should.equal(result));
     it('should not call the on unauthorized callback', () => onUnauthorizedCalled.should.be.false);
     it('should not call the on validation failure callback', () => onValidationFailureCalled.should.be.false);
-    it('should not call the on exception callback', () => onExceptionCalled.should.be.true);
+    it('should call the on exception callback', () => onExceptionCalled.should.be.true);
 });
 

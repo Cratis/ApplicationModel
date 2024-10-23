@@ -13,6 +13,11 @@ import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 type OnSuccess = (<TResponse>(response: TResponse) => void) | (() => void);
 
 /**
+ * Delegate type for the onFailed callback.
+ */
+type OnFailed<TResponse> = ((commandResult: CommandResult<TResponse>) => void) | (() => void);
+
+/**
  * Delegate type for the onException callback.
  */
 type OnException = (messages: string[], stackTrace: string) => void;
@@ -119,6 +124,18 @@ export class CommandResult<TResponse = {}> implements ICommandResult<TResponse> 
     onSuccess(callback: OnSuccess): CommandResult<TResponse> {
         if (this.isSuccess) {
             callback(this.response as TResponse);
+        }
+        return this;
+    }
+
+    /**
+     * Set up a callback for when the command failed.
+     * @param {OnFailed} callback The callback to call when the command failed.
+     * @returns {CommandResult} The instance of the command result.
+     */
+    onFailed(callback: OnFailed<TResponse>): CommandResult<TResponse> {
+        if (!this.isSuccess) {
+            callback(this);
         }
         return this;
     }
