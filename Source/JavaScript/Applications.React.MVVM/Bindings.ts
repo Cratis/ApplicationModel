@@ -15,3 +15,4 @@ export class Bindings {
         container.registerInstance(ILocalStorage as Constructor<ILocalStorage>, localStorage);
     }
 }
+

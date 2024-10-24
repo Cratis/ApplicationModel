@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { container, DependencyContainer } from "tsyringe";
-import { Constructor, Guid } from '@cratis/fundamentals';
+import { Constructor } from '@cratis/fundamentals';
 import { FunctionComponent, ReactElement, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Observer } from 'mobx-react';
-import { has, makeAutoObservable } from 'mobx';
-import { useParams } from 'react-router-dom';
+import { makeAutoObservable } from 'mobx';
+import { useParams, useSearchParams } from 'react-router-dom';
 import {
     DialogMediator,
     DialogMediatorHandler,
@@ -17,6 +17,7 @@ import {
 } from './dialogs';
 import { IViewModelDetached } from './IViewModelDetached';
 import { ApplicationModelContext } from '@cratis/applications.react';
+import { WellKnownBindings } from "./WellKnownBindings";
 
 function disposeViewModel(viewModel: any) {
     const vmWithDetach = (viewModel as IViewModelDetached);
@@ -44,15 +45,19 @@ export interface IViewContext<T, TProps = any> {
  * @param {FunctionComponent} targetComponent The target component to render.
  * @returns 
  */
-export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(viewModelType: Constructor<TViewModel>, targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
+export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(
+viewModelType: Constructor<TViewModel>,
+    targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
+
     const renderComponent = (props: TProps) => {
         const applicationContext = useContext(ApplicationModelContext);
         const params = useParams();
+        const [queryParams, setQueryParams] = useSearchParams();
+        const queryParamsObject = Object.fromEntries(queryParams.entries());
         const dialogMediatorContext = useRef<IDialogMediatorHandler | null>(null);
         const currentViewModel = useRef<TViewModel | null>(null);
         const [_, setInitialRender] = useState(true);
         const parentDialogMediator = useDialogMediator();
-
         useEffect(() => {
             if (currentViewModel.current !== null) {
                 return () => {
@@ -63,8 +68,9 @@ export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(vie
             dialogMediatorContext.current = new DialogMediatorHandler(parentDialogMediator);
 
             const child = container.createChildContainer();
-            child.registerInstance('props', props);
-            child.registerInstance('params', params);
+            child.registerInstance(WellKnownBindings.props, props);
+            child.registerInstance(WellKnownBindings.params, params);
+            child.registerInstance(WellKnownBindings.queryParams, queryParamsObject);
 
             const dialogService = new Dialogs(dialogMediatorContext.current!);
             child.registerInstance<IDialogs>(IDialogs as Constructor<IDialogs>, dialogService);

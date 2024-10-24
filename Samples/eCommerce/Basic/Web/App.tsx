@@ -8,6 +8,8 @@ import { Feature } from './Feature';
 import { DialogComponents } from '@cratis/applications.react.mvvm/dialogs';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { BusyIndicatorDialog } from './BusyIndicatorDialog';
+import { TestQuery } from './TestQuery';
+import { TestParams } from './TestParams';
 
 const Something = () => {
     return (
@@ -28,6 +30,8 @@ export const App = () => {
                         <Routes>
                             <Route path='/' element={<Feature blah='Horse' />} />
                             <Route path='/something' element={<Something />} />
+                            <Route path='/test-query' element={<TestQuery />} />
+                            <Route path='/test-params/:id/:num' element={<TestParams />} />
                         </Routes>
 
                         {/* <Catalog /> */}
