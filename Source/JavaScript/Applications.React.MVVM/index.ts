@@ -9,6 +9,7 @@ export * from './Bindings';
 export * from './MVVMContext';
 export * from './withViewModel';
 export * from './IViewModelDetached';
+export * from './WellKnownBindings';
 
 export {
     browser,
