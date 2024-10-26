@@ -3,14 +3,14 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="5.6.1" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="5.6.2" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.11.4" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.11.4" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
-    <PackageVersion Include="Serilog" Version="4.0.2" />
+    <PackageVersion Include="Serilog" Version="4.1.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
@@ -45,7 +45,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" NoWarn="NU5104" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.8" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.173" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.175" />
     <!-- Specifications -->
     <PackageVersion Include="Cratis.Specifications.XUnit" Version="3.0.4" />
     <PackageVersion Include="xunit" Version="2.9.2" />
