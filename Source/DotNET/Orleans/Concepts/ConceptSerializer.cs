@@ -24,7 +24,15 @@ public class ConceptSerializer : IGeneralizedCodec, IGeneralizedCopier, ITypeFil
     public bool IsSupportedType(Type type) => type.IsConcept();
 
     /// <inheritdoc/>
-    public bool? IsTypeAllowed(Type type) => type.IsConcept();
+    public bool? IsTypeAllowed(Type type)
+    {
+        if (type.IsConcept())
+        {
+            return true;
+        }
+
+        return null;
+    }
 
     /// <inheritdoc/>
     public object ReadValue<TInput>(ref Reader<TInput> reader, Field field)
