@@ -45,7 +45,7 @@
         "module-alias": "2.2.3",
         "npm-check-updates": "17.1.4",
         "prettier": "3.3.3",
-        "rollup": "4.24.0",
+        "rollup": "4.24.3",
         "rollup-plugin-commonjs": "10.1.0",
         "rollup-plugin-node-resolve": "5.2.0",
         "rollup-plugin-peer-deps-external": "2.2.4",
