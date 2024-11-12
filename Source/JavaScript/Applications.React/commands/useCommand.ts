@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback, useContext, useRef, useMemo } from 'r
 import { Command } from '@cratis/applications/commands';
 import React from 'react';
 import { CommandScopeContext } from './CommandScope';
-import { ApplicationModelContext } from '../ApplicationModel';
+import { ApplicationModelContext } from '../ApplicationModelContext';
 
 export type SetCommandValues<TCommandContent> = (command: TCommandContent) => void;
 export type ClearCommandValues = () => void;

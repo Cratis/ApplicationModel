@@ -7,7 +7,7 @@ import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
 import { SetPage } from './SetPage';
 import { SetPageSize } from './SetPageSize';
-import { ApplicationModelContext } from '../ApplicationModel';
+import { ApplicationModelContext } from '../ApplicationModelContext';
 
 /**
  * Delegate type for performing a {@link IQueryFor} in the context of the {@link useQuery} hook.

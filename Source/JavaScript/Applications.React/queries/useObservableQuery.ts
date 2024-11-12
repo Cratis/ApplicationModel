@@ -7,7 +7,7 @@ import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
 import { SetPage } from './SetPage';
 import { SetPageSize } from './SetPageSize';
-import { ApplicationModelContext } from '../ApplicationModel';
+import { ApplicationModelContext } from '../ApplicationModelContext';
 
 function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, sorting?: Sorting, paging?: Paging, args?: TArguments):
     [QueryResultWithState<TDataType>, SetSorting, SetPage, SetPageSize] {

@@ -26,11 +26,9 @@ interface DialogWrapperProps<TRequest extends {}> {
 
 const DialogWrapper = <TRequest extends {}, TResponse>(props: DialogWrapperProps<TRequest>) => {
     return (
-        <>
-            <div>
-                {props.isVisible && props.children}
-            </div>
-        </>
+        <div>
+            {props.isVisible && props.children}
+        </div>
     );
 };
 

@@ -1,8 +1,7 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
-        "rootDir": ".",
-        "outDir": "dist",
+        "outDir": "dist/esm",
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,

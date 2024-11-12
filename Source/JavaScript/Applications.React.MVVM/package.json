@@ -14,30 +14,30 @@
         "**/*.tsx"
     ],
     "type": "module",
-    "main": "dist/index.js",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "types": "./dist/esm/index.d.ts"
         },
         "./browser": {
-            "import": "./dist/browser/index.js",
-            "require": "./dist/browser/index.js",
-            "types": "./dist/browser/index.d.ts"
+            "import": "./dist/esm/browser/index.js",
+            "require": "./dist/cjs/browser/index.js",
+            "types": "./dist/esm/browser/index.d.ts"
         },
         "./messaging": {
-            "import": "./dist/messaging/index.js",
-            "require": "./dist/messaging/index.js",
-            "types": "./dist/messaging/index.d.ts"
+            "import": "./dist/esm/messaging/index.js",
+            "require": "./dist/cjs/messaging/index.js",
+            "types": "./dist/esm/messaging/index.d.ts"
         },
         "./dialogs": {
-            "import": "./dist/dialogs/index.js",
-            "require": "./dist/dialogs/index.js",
-            "types": "./dist/dialogs/index.d.ts"
+            "import": "./dist/esm/dialogs/index.js",
+            "require": "./dist/cjs/dialogs/index.js",
+            "types": "./dist/esm/dialogs/index.d.ts"
         }
     },
     "scripts": {

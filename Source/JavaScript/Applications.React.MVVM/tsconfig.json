@@ -1,8 +1,17 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
+        "baseUrl": ".",
         "rootDir": ".",
-        "outDir": "dist"
+        "outDir": "dist/esm",
+        "paths": {
+            "@cratis/applications/*": [
+                "../Applications/dist/esm/*"
+            ],
+            "@cratis/applications.react/*": [
+                "../Applications.React/dist/esm/*"
+            ]
+        }
     },
     "references": [
         {
@@ -12,7 +21,7 @@
             "path": "../Applications.React"
         }
     ],
-    "exclude": [
+     "exclude": [
         "dist",
         "**/for_*/**"
     ]
