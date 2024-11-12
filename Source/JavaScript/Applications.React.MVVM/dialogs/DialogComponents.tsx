@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, Fragment } from 'react';
 import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
 import { DialogResult } from '@cratis/applications.react/dialogs';
@@ -27,7 +27,7 @@ const DialogComponentsWrapper = (props: DialogComponentsProps) => {
 
     return (
         <DialogComponentsContext.Provider value={{}}>
-            <>
+            <Fragment>
                 {props.children}
                 {props.confirmation &&
                     <ConfirmationDialog>
@@ -38,7 +38,7 @@ const DialogComponentsWrapper = (props: DialogComponentsProps) => {
                     <BusyIndicatorDialog>
                         <props.busyIndicator />
                     </BusyIndicatorDialog>}
-            </>
+            </Fragment>
         </DialogComponentsContext.Provider>
     );
 };

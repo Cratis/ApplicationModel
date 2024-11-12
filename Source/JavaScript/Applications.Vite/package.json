@@ -28,7 +28,7 @@
     "scripts": {
         "prepare": "yarn g:build",
         "clean": "yarn g:clean",
-        "build": "yarn g:rollup-build",
+        "build": "yarn g:build",
         "lint": "yarn g:lint",
         "lint:ci": "yarn g:lint:ci",
         "test": "yarn g:test",

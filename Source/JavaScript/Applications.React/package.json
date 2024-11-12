@@ -14,35 +14,35 @@
         "**/*.tsx"
     ],
     "type": "module",
-    "main": "dist/index.js",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "types": "./dist/esm/index.d.ts"
         },
         "./commands": {
-            "import": "./dist/commands/index.js",
-            "require": "./dist/commands/index.js",
-            "types": "./dist/commands/index.d.ts"
+            "import": "./dist/esm/commands/index.js",
+            "require": "./dist/cjs/commands/index.js",
+            "types": "./dist/esm/commands/index.d.ts"
         },
         "./queries": {
-            "import": "./dist/queries/index.js",
-            "require": "./dist/queries/index.js",
-            "types": "./dist/queries/index.d.ts"
+            "import": "./dist/esm/queries/index.js",
+            "require": "./dist/cjs/queries/index.js",
+            "types": "./dist/esm/queries/index.d.ts"
         },
         "./dialogs": {
-            "import": "./dist/dialogs/index.js",
-            "require": "./dist/dialogs/index.js",
-            "types": "./dist/dialogs/index.js"
+            "import": "./dist/esm/dialogs/index.js",
+            "require": "./dist/cjs/dialogs/index.js",
+            "types": "./dist/esm/dialogs/index.js"
         },
         "./identity": {
-            "import": "./dist/identity/index.js",
-            "require": "./dist/identity/index.js",
-            "types": "./dist/identity/index.d.ts"
+            "import": "./dist/esm/identity/index.js",
+            "require": "./dist/cjs/identity/index.js",
+            "types": "./dist/esm/identity/index.d.ts"
         }
     },
     "scripts": {
