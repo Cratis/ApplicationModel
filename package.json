@@ -7,7 +7,7 @@
     "scripts": {
         "g:clean": "cd $INIT_CWD && tsc -b --clean",
         "g:build2": "cd $INIT_CWD && tsc -b --verbose",
-        "g:build": "cd $INIT_CWD && DEBUG=* && rollup -c ./rollup.config.mjs",
+        "g:build": "cd $INIT_CWD && tsc -b && rollup -c ./rollup.config.mjs",
         "g:lint": "cd $INIT_CWD && eslint --cache . --ext .ts,.tsx --quiet --fix",
         "g:lint:ci": "cd $INIT_CWD && eslint --cache . --ext .ts,.tsx --quiet",
         "g:test": "cd $INIT_CWD && mocha --config ${PROJECT_CWD}/.mocharc.js",
