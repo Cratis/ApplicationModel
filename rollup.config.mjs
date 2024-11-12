@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import typescript2 from 'rollup-plugin-typescript2';
-import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
@@ -36,10 +35,6 @@ export function rollup(cjsPath, esmPath, tsconfigPath, pkg) {
             'react-dom',
         ],
         plugins: [
-            nodeResolve({
-                extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                moduleDirectories: ['node_modules']
-            }),
             peerDepsExternal(),
             commonjs({
                 include: /node_modules/,
