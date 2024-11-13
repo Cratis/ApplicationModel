@@ -62,13 +62,7 @@ public class FromRequestModelBinder(IModelBinder bodyModelBinder, IModelBinder c
 
     bool IsDefaultValue(Type type, object value)
     {
-        MethodInfo isDefaultMethod;
-
-        if (_isDefaultMethodsByType.ContainsKey(type))
-        {
-            isDefaultMethod = _isDefaultMethodsByType[type];
-        }
-        else
+        if (!_isDefaultMethodsByType.TryGetValue(type, out var isDefaultMethod))
         {
             var equalityComparerType = typeof(DefaultValueChecker<>).MakeGenericType(type);
             isDefaultMethod = equalityComparerType.GetMethod(nameof(DefaultValueChecker<object>.IsDefault))!;

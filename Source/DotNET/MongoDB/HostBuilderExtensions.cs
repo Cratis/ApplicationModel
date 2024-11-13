@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.Hosting;
 /// </summary>
 public static class HostBuilderExtensions
 {
-    static readonly IDictionary<string, IMongoClient> _clients = new Dictionary<string, IMongoClient>();
+    static readonly Dictionary<string, IMongoClient> _clients = [];
     static IMongoDBClientFactory? _clientFactory;
     static IMongoServerResolver? _serverResolver;
 

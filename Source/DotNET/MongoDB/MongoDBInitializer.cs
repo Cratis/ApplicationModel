@@ -14,7 +14,7 @@ namespace Cratis.Applications.MongoDB;
 /// Initializes a new instance of <see cref="MongoDBInitializer"/>.
 /// </remarks>
 /// <param name="modelNameResolver"><see cref="IModelNameResolver"/>.</param>
-class MongoDBInitializer(IModelNameResolver modelNameResolver) : IHostedService
+sealed class MongoDBInitializer(IModelNameResolver modelNameResolver) : IHostedService
 {
     /// <inheritdoc/>
     public Task StartAsync(CancellationToken cancellationToken)

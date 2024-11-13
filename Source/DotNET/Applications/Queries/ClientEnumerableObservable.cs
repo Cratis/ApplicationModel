@@ -55,21 +55,21 @@ public class ClientEnumerableObservable<T>(
                     logger.EnumerableObservableSkip();
                 }
                 tsc.SetResult();
-                cts.Cancel();
+                await cts.CancelAsync();
             }
             catch (Exception ex)
             {
                 if (!cts.IsCancellationRequested)
                 {
                     logger.EnumerableObservableError(ex);
-                    cts.Cancel();
+                    await cts.CancelAsync();
                     tsc.SetResult();
                 }
             }
         });
 
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
-        cts.Cancel();
+        await cts.CancelAsync();
         await tsc.Task;
     }
 }

@@ -15,7 +15,7 @@ namespace Cratis.Applications.Validation;
 public class DiscoverableModelValidatorProvider : IModelValidatorProvider
 {
     readonly IServiceProvider _serviceProvider;
-    readonly IDictionary<Type, Type> _validatorTypesByModelType;
+    readonly Dictionary<Type, Type> _validatorTypesByModelType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DiscoverableModelValidatorProvider"/> class.
@@ -56,9 +56,9 @@ public class DiscoverableModelValidatorProvider : IModelValidatorProvider
     /// <inheritdoc/>
     public void CreateValidators(ModelValidatorProviderContext context)
     {
-        if (_validatorTypesByModelType.ContainsKey(context.ModelMetadata.ModelType))
+        if (_validatorTypesByModelType.TryGetValue(context.ModelMetadata.ModelType, out var value))
         {
-            var validator = (_serviceProvider.GetRequiredService(_validatorTypesByModelType[context.ModelMetadata.ModelType]) as IValidator)!;
+            var validator = (_serviceProvider.GetRequiredService(value) as IValidator)!;
             var modelValidator = new DiscoverableModelValidator(validator);
             context.Results.Add(new ValidatorItem
             {

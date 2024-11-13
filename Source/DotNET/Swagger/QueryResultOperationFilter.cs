@@ -74,9 +74,9 @@ public class QueryResultOperationFilter : IOperationFilter
 
         var schema = context.SchemaGenerator.GenerateSchema(queryResultType, context.SchemaRepository);
         var response = operation.Responses.First((kvp) => kvp.Key == ((int)HttpStatusCode.OK).ToString()).Value;
-        if (response.Content.ContainsKey("application/json"))
+        if (response.Content.TryGetValue("application/json", out var value))
         {
-            operation.Responses.First().Value.Content["application/json"].Schema = schema;
+            value.Schema = schema;
         }
         else
         {

@@ -38,9 +38,9 @@ public class CommandResultOperationFilter : IOperationFilter
 
         var schema = context.SchemaGenerator.GenerateSchema(commandResultType, context.SchemaRepository);
         var response = operation.Responses.First().Value;
-        if (response.Content.ContainsKey("application/json"))
+        if (response.Content.TryGetValue("application/json", out var value))
         {
-            operation.Responses.First().Value.Content["application/json"].Schema = schema;
+            value.Schema = schema;
         }
         else
         {
