@@ -181,8 +181,7 @@ public static class MongoCollectionExtensions
         {
             FullDocument = ChangeStreamFullDocumentOption.UpdateLookup
         };
-
-        var filterRendered = filter.Render(collection.DocumentSerializer, collection.Settings.SerializerRegistry);
+        var filterRendered = filter.Render(new RenderArgs<TDocument>(collection.DocumentSerializer, collection.Settings.SerializerRegistry));
         PrefixKeys(filterRendered);
 
         var fullFilter = Builders<ChangeStreamDocument<TDocument>>.Filter.Or(
@@ -396,5 +395,5 @@ public static class MongoCollectionExtensions
     /// <summary>
     /// Internal class used as an identifying type for logging purpose.
     /// </summary>
-    internal class MongoCollection;
+    internal sealed class MongoCollection;
 }

@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>Cratis.Applications.Orleans.MongoDB</AssemblyName>
         <RootNamespace>Cratis.Applications.Orleans.MongoDB</RootNamespace>
     </PropertyGroup>

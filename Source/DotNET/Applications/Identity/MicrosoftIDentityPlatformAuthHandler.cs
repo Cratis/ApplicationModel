@@ -18,12 +18,10 @@ namespace Cratis.Applications.Identity;
 /// <param name="options">The <see cref="IOptionsMonitor{TOptions}"/>.</param>
 /// <param name="loggerFactory">The <see cref="ILoggerFactory"/>.</param>
 /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-/// <param name="clock">The <see cref="ISystemClock"/>.</param>
 public class MicrosoftIDentityPlatformAuthHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory loggerFactory,
-    UrlEncoder encoder,
-    ISystemClock clock) : AuthenticationHandler<AuthenticationSchemeOptions>(options, loggerFactory, encoder, clock)
+    UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, loggerFactory, encoder)
 {
     /// <summary>
     /// Gets the scheme name.

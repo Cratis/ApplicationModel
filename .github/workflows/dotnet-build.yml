@@ -1,7 +1,7 @@
 name: .NET Build
 
 env:
-  DOTNET_VERSION: "8.0.403"
+  DOTNET_VERSION: "9.0.100"
 
 on:
   workflow_dispatch:
@@ -39,7 +39,9 @@ jobs:
       - name: Setup .Net
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: |
+            ${{ env.DOTNET_VERSION }}
+            8.0.x
 
       - name: Build
         run: dotnet build --configuration Release
