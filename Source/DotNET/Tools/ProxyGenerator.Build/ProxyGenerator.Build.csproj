@@ -25,13 +25,19 @@
 
     <Target Name="PublishBuildCLI" BeforeTargets="GenerateNuspec">
         <Exec Command="dotnet build -c $(Configuration)" WorkingDirectory="../ProxyGenerator"/>
+        <Message Text="Handlebars: '$(PkgHandlebars_Net)' '$(NuGetPackageRoot)'" Importance="high" />
+
+        <ItemGroup>
+            <HandlebarsVersion Include="@( ('Identity', 'handlebars.net')->Metadata('Version'))" />
+        </ItemGroup>
+        <Message Importance="high" Text="Handlebars version: %(HandlebarsVersion.Identity) %(HandlebarsVersion.Version)" />
     </Target>
 
     <!-- Include output from the ProxyGenerator -->
     <ItemGroup>
         <Content Include="$(OutputPath)/*.*" PackagePath="tasks/net8.0/" />
-        <Content Include="$(PKGHandlebars_Net)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(PKGMicrosoft_Extensions_DependencyModel)\lib\net8.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(PKGSystem_Reflection_MetadataLoadContext)\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\handlebars.net\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\Microsoft.Extensions.DependencyModel\lib\net8.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\System.Reflection.MetadataLoadContext)\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
     </ItemGroup>
 </Project>
