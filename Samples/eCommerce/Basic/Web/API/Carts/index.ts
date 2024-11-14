@@ -8,4 +8,5 @@ export * from './AddItem';
 export * from './Cart';
 export * from './CartForCurrentUser';
 export * from './CartItem';
+export * from './index';
 export * from './ObserveCartForCurrentUser';
