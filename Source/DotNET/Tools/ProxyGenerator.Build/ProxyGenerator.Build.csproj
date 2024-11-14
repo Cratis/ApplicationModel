@@ -28,7 +28,7 @@
     <ItemGroup>
         <Content Include="$(OutputPath)/*.*" PackagePath="tasks/net8.0/" />
         <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymGHodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
         <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
     </ItemGroup>
 </Project>
