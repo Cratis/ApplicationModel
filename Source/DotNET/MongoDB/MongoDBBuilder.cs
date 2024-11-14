@@ -17,7 +17,7 @@ public class MongoDBBuilder : IMongoDBBuilder
     {
         var types = Types.Types.Instance;
         ClassMaps = types.FindMultiple(typeof(IBsonClassMapFor<>)).ToList();
-        ConventionPackFilters = types.FindMultiple(typeof(ICanFilterMongoDBConventionPacksForType)).ToList();
+        ConventionPackFilters = types.FindMultiple<ICanFilterMongoDBConventionPacksForType>().ToList();
     }
 
     /// <inheritdoc/>

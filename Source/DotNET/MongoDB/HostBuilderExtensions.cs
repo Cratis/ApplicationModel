@@ -69,7 +69,7 @@ public static class HostBuilderExtensions
 
     static void AddServices(
         IServiceCollection services,
-        IMongoDBBuilder mongoDBBuilder,
+        MongoDBBuilder mongoDBBuilder,
         string? mongoDBConfigSectionPath = null,
         Action<MongoDBOptions>? configureOptions = default)
     {
