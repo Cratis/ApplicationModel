@@ -6,7 +6,6 @@
 // eslint-disable-next-line header/header
 export * from './AddProduct';
 export * from './AllProducts';
-export * from './index';
 export * from './ObserveAllProducts';
 export * from './Product';
 export * from './SetPrice';

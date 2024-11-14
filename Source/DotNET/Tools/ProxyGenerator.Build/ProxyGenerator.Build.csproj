@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AssemblyName>Cratis.Applications.ProxyGenerator.Build</AssemblyName>
         <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks></TargetFrameworks>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
         <NoWarn>$(NoWarn);NU5118</NoWarn>
