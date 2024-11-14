@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../ProxyGenerator/ProxyGenerator.csproj" PrivateAssets="All" />
-        <PackageReference Include="handlebars.net" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="handlebars.net" GeneratePathProperty="true" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Reflection.MetadataLoadContext" GeneratePathProperty="true" PrivateAssets="all"/>
     </ItemGroup>
@@ -22,22 +22,12 @@
         <PackageReference Include="Microsoft.Build.Framework" />
         <PackageReference Include="Microsoft.Build.Utilities.Core" />
     </ItemGroup>
-
-    <Target Name="PublishBuildCLI" BeforeTargets="GenerateNuspec">
-        <Exec Command="dotnet build -c $(Configuration)" WorkingDirectory="../ProxyGenerator"/>
-        <Message Text="Handlebars: '$(PkgHandlebars_Net)' '$(NuGetPackageRoot)'" Importance="high" />
-
-        <ItemGroup>
-            <HandlebarsVersion Include="@( ('Identity', 'handlebars.net')->Metadata('Version'))" />
-        </ItemGroup>
-        <Message Importance="high" Text="Handlebars version: %(HandlebarsVersion.Identity) %(HandlebarsVersion.Version)" />
-    </Target>
-
+ 
     <!-- Include output from the ProxyGenerator -->
     <ItemGroup>
         <Content Include="$(OutputPath)/*.*" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\handlebars.net\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\Microsoft.Extensions.DependencyModel\lib\net8.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\System.Reflection.MetadataLoadContext)\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\Microsoft.Extensions.DependencyModel\$(MicrosoftExtensionsDependencyModelVersion)\lib\net8.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\System.Reflection.MetadataLoadContext\$(SystemReflectionMetadataLoadContextVersion)\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
     </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <HandlebarsVersion>2.1.6</HandlebarsVersion>
+    <MicrosoftExtensionsDependencyModelVersion>9.0.0</MicrosoftExtensionsDependencyModelVersion>
+    <SystemReflectionMetadataLoadContextVersion>9.0.0</SystemReflectionMetadataLoadContextVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Cratis.Fundamentals" Version="6.0.1" />
@@ -9,7 +12,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="$(MicrosoftExtensionsDependencyModelVersion)" />
     <PackageVersion Include="Serilog" Version="4.1.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
@@ -24,10 +27,10 @@
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
     <PackageVersion Include="FluentValidation" Version="11.10.0" />
     <PackageVersion Include="MongoDB.Driver" Version="2.30.0" />
-    <PackageVersion Include="handlebars.net" Version="2.1.6" />
+    <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
     <PackageVersion Include="castle.core" Version="5.1.1" />
     <PackageVersion Include="polly.core" Version="8.5.0" />
-    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.0" />
+    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="$(SystemReflectionMetadataLoadContextVersion)" />
     <!-- Orleans -->
     <PackageVersion Include="Microsoft.Orleans.SDK" Version="8.2.0" />
     <PackageVersion Include="Microsoft.Orleans.Runtime" Version="8.2.0" />
