@@ -3,6 +3,7 @@
         <AssemblyName>Cratis.Applications.Specs</AssemblyName>
         <RootNamespace>Cratis.Applications</RootNamespace>
         <IsTestProject>true</IsTestProject>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>

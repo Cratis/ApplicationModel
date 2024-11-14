@@ -25,6 +25,10 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(IsTestProject)'=='true'">
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <MSBuildTreatWarningsAsErrors>False</MSBuildTreatWarningsAsErrors>
