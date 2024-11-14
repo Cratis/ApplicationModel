@@ -25,17 +25,6 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(IsTestProject)'=='false'">
-        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(IsTestProject)'=='true'">
-        <TargetFramework>net9.0</TargetFramework>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)'==''">
-        <Configuration>Debug</Configuration>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <MSBuildTreatWarningsAsErrors>False</MSBuildTreatWarningsAsErrors>
