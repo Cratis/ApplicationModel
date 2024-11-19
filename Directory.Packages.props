@@ -35,8 +35,8 @@
     <PackageVersion Include="Microsoft.Orleans.SDK" Version="8.2.0" />
     <PackageVersion Include="Microsoft.Orleans.Runtime" Version="8.2.0" />
     <PackageVersion Include="Microsoft.Orleans.Server" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="8.2.0" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="8.2.0" />
     <PackageVersion Include="OrleansTestKit" Version="8.2.2" />
     <PackageVersion Include="OrleansDashboard" Version="8.2.0" />
