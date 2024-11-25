@@ -32,12 +32,12 @@
     <PackageVersion Include="polly.core" Version="8.5.0" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="$(SystemReflectionMetadataLoadContextVersion)" />
     <!-- Orleans -->
-    <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Orleans.Runtime" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Orleans.Server" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="9.0.1" />
     <PackageVersion Include="OrleansTestKit" Version="8.2.2" />
     <PackageVersion Include="OrleansDashboard" Version="8.2.0" />
     <!-- Roslyn-->
