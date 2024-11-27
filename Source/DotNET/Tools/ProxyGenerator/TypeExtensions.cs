@@ -354,7 +354,6 @@ public static class TypeExtensions
     /// <returns>Converted <see cref="EnumDescriptor"/>.</returns>
     public static EnumDescriptor ToEnumDescriptor(this Type type)
     {
-        var enumUnderlyingType = Enum.GetUnderlyingType(type);
         var values = Enum.GetValuesAsUnderlyingType(type).Cast<int>();
         var names = Enum.GetNames(type);
         var members = values.Select((value, index) => new EnumMemberDescriptor(names[index], value)).ToArray();
