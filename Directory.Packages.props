@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <Orleans>9.0.1</Orleans>
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
     <MicrosoftExtensionsDependencyModelVersion>9.0.0</MicrosoftExtensionsDependencyModelVersion>
     <SystemReflectionMetadataLoadContextVersion>9.0.0</SystemReflectionMetadataLoadContextVersion>
@@ -21,7 +22,7 @@
     <PackageVersion Include="Serilog.Sinks.PeriodicBatching" Version="5.0.0" />
     <PackageVersion Include="serilog.aspnetcore" Version="8.0.3" />
     <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.1.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
@@ -32,12 +33,12 @@
     <PackageVersion Include="polly.core" Version="8.5.0" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="$(SystemReflectionMetadataLoadContextVersion)" />
     <!-- Orleans -->
-    <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Orleans.Runtime" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Orleans.Server" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="8.2.0" />
-    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Orleans.SDK" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.Runtime" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.Server" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="$(Orleans)" />
     <PackageVersion Include="OrleansTestKit" Version="8.2.2" />
     <PackageVersion Include="OrleansDashboard" Version="8.2.0" />
     <!-- Roslyn-->
@@ -48,7 +49,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" NoWarn="NU5104" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.9" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.180" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.181" />
     <!-- Specifications -->
     <PackageVersion Include="Cratis.Specifications.XUnit" Version="3.0.4" />
     <PackageVersion Include="xunit" Version="2.9.2" />
