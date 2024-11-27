@@ -12,8 +12,6 @@
     </PropertyGroup>
 
     <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild">
-        <Message Text="Working directory : $(CratisProxyGeneratorAssemblyDirectory)" Importance="high" />
-        <Message Text="TargetFramework : $(TargetFramework)" Importance="high" />
         <Exec Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)/$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
     </Target>
 </Project>

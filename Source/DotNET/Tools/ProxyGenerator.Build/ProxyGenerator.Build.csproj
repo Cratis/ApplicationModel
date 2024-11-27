@@ -33,20 +33,17 @@
     </ItemGroup>
  
     <!-- Include output from the ProxyGenerator -->
-    <ItemGroup>
-        <Content Include="$(ProxyGeneratorNet8Folder)/*" PackagePath="horses" />
-        <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
+    <Target Name="IncludeOutputFiles" AfterTargets="Build">
+        <ItemGroup>
+            <Content Include="$(OutputPath)**/*" PackagePath="tasks/net8.0/" Pack="true" />
+            <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
+            <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
+            <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
 
-        <Content Include="$(ProxyGeneratorNet9Folder)/*" PackagePath="horses/net9.0/" />
-        <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net9.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net9.0/" />
-        <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net9.0/" />
-    </ItemGroup>
-
-    <Target Name="DoDi" AfterTargets="BeforeBuild">
-        <Message Text="Folder $(ProxyGeneratorNet9Folder)" Importance="high" />
-        <Message Text="File %(ProxyGeneratorNet9Files.Identity)" Importance="high" />
+            <Content Include="$(OutputPath)**/*" PackagePath="tasks/net9.0/" Pack="true" />
+            <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net9.0/" />
+            <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net9.0/" />
+            <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net9.0/" />
+        </ItemGroup>
     </Target>
 </Project>
