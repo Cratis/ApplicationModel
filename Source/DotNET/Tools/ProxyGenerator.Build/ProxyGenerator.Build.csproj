@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>Cratis.Applications.ProxyGenerator.Build</AssemblyName>
+        <OutputType>Exe</OutputType>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
         <NoWarn>$(NoWarn);NU5118</NoWarn>
@@ -23,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="../ProxyGenerator/**/*.cs" Exclude="../ProxyGenerator/obj/**/*.cs;../ProxyGenerator/Program.cs"/>
+        <Compile Include="../ProxyGenerator/**/*.cs" Exclude="../ProxyGenerator/obj/**/*.cs"/>
     </ItemGroup>
 
     <!-- Include output from the ProxyGenerator -->
