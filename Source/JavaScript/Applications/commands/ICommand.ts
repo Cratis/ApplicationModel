@@ -8,11 +8,10 @@ import { CommandResult } from './CommandResult';
  */
 export type PropertyChanged = (property: string) => void;
 
-
 /**
  * Defines the base of a command.
  */
-export interface ICommand<TCommandContent = {}, TCommandResponse = {}> {
+export interface ICommand<TCommandContent = object, TCommandResponse = object> {
     /**
      * Gets the route information for the command.
      */
@@ -63,5 +62,5 @@ export interface ICommand<TCommandContent = {}, TCommandResponse = {}> {
      * @param {PropertyChanged} callback Callback to register.
      * @param {*} thisArg The this arg to use when calling.
      */
-    onPropertyChanged(callback: PropertyChanged, thisArg: any): void;
+    onPropertyChanged(callback: PropertyChanged, thisArg: object): void;
 }

@@ -8,7 +8,7 @@ import { Sorting } from './Sorting';
 /**
  * Represents sorting for an observable query.
  */
-export class SortingActionsForObservableQuery<TDataType, TArguments = {}> {
+export class SortingActionsForObservableQuery<TDataType, TArguments = object> {
 
     /**
      * Initializes a new instance of {@link SortingActionsForQuery}.

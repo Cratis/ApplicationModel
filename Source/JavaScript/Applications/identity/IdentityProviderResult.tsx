@@ -5,5 +5,5 @@ export type IdentityProviderResult = {
     id: string;
     name: string;
     claims: { [key: string]: string; };
-    details: any;
+    details: object;
 };

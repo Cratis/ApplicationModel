@@ -16,11 +16,13 @@ import { Paging } from './Paging';
 import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Represents an implementation of {@link IQueryFor}.
  * @template TDataType Type of data returned by the query.
  */
-export abstract class ObservableQueryFor<TDataType, TArguments = {}> implements IObservableQueryFor<TDataType, TArguments> {
+export abstract class ObservableQueryFor<TDataType, TArguments = object> implements IObservableQueryFor<TDataType, TArguments> {
     private _microservice: string;
     private _connection?: IObservableQueryConnection<TDataType>;
 

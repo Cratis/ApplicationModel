@@ -67,18 +67,10 @@ export class QueryResultWithState<TDataType> implements IQueryResult<TDataType> 
 
     /** @inheritdoc */
     get hasData(): boolean {
-        const data = this.data as any;
-        if (data) {
-            if (data.constructor && data.constructor === Array) {
-                if (data.length || 0 > 0) {
-                    return true;
-                }
-            } else {
-                return true;
-            }
+        if (Array.isArray(this.data)) {
+            return this.data.length > 0;
         }
-
-        return false;
+        return !!this.data;
     }
 
     /**

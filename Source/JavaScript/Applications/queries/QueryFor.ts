@@ -15,7 +15,7 @@ import { SortDirection } from './SortDirection';
  * Represents an implementation of {@link IQueryFor}.
  * @template TDataType Type of data returned by the query.
  */
-export abstract class QueryFor<TDataType, TArguments = {}> implements IQueryFor<TDataType, TArguments> {
+export abstract class QueryFor<TDataType, TArguments = object> implements IQueryFor<TDataType, TArguments> {
     private _microservice: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
@@ -90,12 +90,12 @@ export abstract class QueryFor<TDataType, TArguments = {}> implements IQueryFor<
         try {
             const result = await response.json();
             return new QueryResult(result, this.modelType, this.enumerable);
-        } catch (ex) {
+        } catch {
             return noSuccess;
         }
     }
 
-    private addQueryParameter(route: string, key: string, value: any): string {
+    private addQueryParameter(route: string, key: string, value: unknown): string {
         route += (route.indexOf('?') > 0) ? '&' : '?';
         route += `${key}=${value}`;
         return route;

@@ -9,13 +9,13 @@ import { Globals } from '../Globals';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
-    thisArg: WeakRef<any>;
+    thisArg: WeakRef<object>;
 }
 
 /**
  * Represents an implementation of {@link ICommand} that works with HTTP fetch.
  */
-export abstract class Command<TCommandContent = {}, TCommandResponse = {}> implements ICommand<TCommandContent, TCommandResponse> {
+export abstract class Command<TCommandContent = object, TCommandResponse = object> implements ICommand<TCommandContent, TCommandResponse> {
     private _microservice: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
@@ -23,7 +23,7 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
     abstract get requestArguments(): string[];
     abstract get properties(): string[];
 
-    private _initialValues: any = {};
+    private _initialValues: object = {};
     private _hasChanges = false;
     private _callbacks: Callback[] = [];
 
@@ -84,7 +84,7 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
     /** @inheritdoc */
     setInitialValues(values: TCommandContent) {
         this.properties.forEach(property => {
-            if ((values as any).hasOwnProperty(property)) {
+            if (Object.prototype.hasOwnProperty.call(values, property)) {
                 this._initialValues[property] = values[property];
                 this[property] = values[property];
             }
@@ -130,7 +130,7 @@ export abstract class Command<TCommandContent = {}, TCommandResponse = {}> imple
     }
 
     /** @inheritdoc */
-    onPropertyChanged(callback: PropertyChanged, thisArg: any) {
+    onPropertyChanged(callback: PropertyChanged, thisArg: object) {
         this._callbacks.push({
             callback: new WeakRef(callback),
             thisArg: new WeakRef(thisArg)

@@ -23,6 +23,7 @@ export class NullObservableQueryConnection<TDataType> implements IObservableQuer
     }
 
     /** @inheritdoc */
+    /* eslint-disable @typescript-eslint/no-empty-function */
     disconnect() {
     }
 }

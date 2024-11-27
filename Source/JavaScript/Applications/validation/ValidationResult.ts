@@ -3,6 +3,8 @@
 
 import { ValidationResultSeverity } from './ValidationResultSeverity';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Represents a validation error with a message for one or more members.
  */

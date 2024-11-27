@@ -12,5 +12,5 @@ export abstract class IIdentityProvider {
      * Gets the current identity by optionally specifying the details type.
      * @returns The current identity as {@link IIdentity}.
      */
-    abstract getCurrent<TDetails = {}>(): Promise<IIdentity<TDetails>>;
+    abstract getCurrent<TDetails = object>(): Promise<IIdentity<TDetails>>;
 }

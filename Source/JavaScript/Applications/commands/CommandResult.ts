@@ -6,7 +6,6 @@ import { ICommandResult } from './ICommandResult';
 import { ValidationResult } from '../validation/ValidationResult';
 import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 
-
 /**
  * Delegate type for the onSuccess callback.
  */
@@ -32,11 +31,27 @@ type OnUnauthorized = () => void;
  */
 type OnValidationFailure = (validationResults: ValidationResult[]) => void;
 
+type ServerCommandResult = {
+    correlationId: string;
+    isSuccess: boolean;
+    isAuthorized: boolean;
+    isValid: boolean;
+    hasExceptions: boolean;
+    validationResults: {
+        severity: number;
+        message: string;
+        members: string[];
+        state: object;
+    }[];
+    exceptionMessages: string[];
+    exceptionStackTrace: string;
+    response: object | null;
+}
 
 /**
  * Represents the result from executing a {@link ICommand}.
  */
-export class CommandResult<TResponse = {}> implements ICommandResult<TResponse> {
+export class CommandResult<TResponse = object> implements ICommandResult<TResponse> {
 
     static empty: CommandResult = new CommandResult({
         correlationId: Guid.empty.toString(),
@@ -97,7 +112,7 @@ export class CommandResult<TResponse = {}> implements ICommandResult<TResponse> 
      * @param {Constructor} responseInstanceType The {@see Constructor} that represents the type of response, if any. Defaults to {@see Object}.
      * @param {boolean} isResponseTypeEnumerable Whether or not the response type is an enumerable or not.
      */
-    constructor(result: any, responseInstanceType: Constructor = Object, isResponseTypeEnumerable: boolean) {
+    constructor(result: ServerCommandResult, responseInstanceType: Constructor = Object, isResponseTypeEnumerable: boolean) {
         this.correlationId = Guid.parse(result.correlationId);
         this.isSuccess = result.isSuccess;
         this.isAuthorized = result.isAuthorized;
@@ -109,9 +124,9 @@ export class CommandResult<TResponse = {}> implements ICommandResult<TResponse> 
 
         if (result.response) {
             if (isResponseTypeEnumerable) {
-                this.response = JsonSerializer.deserializeArrayFromInstance(responseInstanceType, result.response) as any;
+                this.response = JsonSerializer.deserializeArrayFromInstance(responseInstanceType, result.response) as TResponse;
             } else {
-                this.response = JsonSerializer.deserializeFromInstance(responseInstanceType, result.response) as any;
+                this.response = JsonSerializer.deserializeFromInstance(responseInstanceType, result.response) as TResponse;
             }
         }
     }

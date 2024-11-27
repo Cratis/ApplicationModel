@@ -5,17 +5,42 @@ import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { ValidationResult } from '../validation/ValidationResult';
 import { IQueryResult } from './IQueryResult';
 import { PagingInfo } from './PagingInfo';
-import { inherits } from 'util';
+
+type ServerQueryResult = {
+    data: object;
+    isSuccess: boolean;
+    isAuthorized: boolean;
+    isValid: boolean;
+    hasExceptions: boolean;
+    validationResults: ServerValidationResult[];
+    exceptionMessages: string[];
+    exceptionStackTrace: string;
+    paging: ServerPagingInfo;
+}
+
+type ServerValidationResult = {
+    severity: number;
+    message: string;
+    members: string[];
+    state: object;
+}
+
+type ServerPagingInfo = {
+    totalItems: number;
+    totalPages: number;
+    page: number;
+    items: number;
+}
 
 /**
  * Represents the result from executing a {@link IQueryFor}.
  * @template TDataType The data type.
  */
-export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
+export class QueryResult<TDataType = object> implements IQueryResult<TDataType> {
 
     static empty<TDataType>(defaultValue: TDataType): QueryResult<TDataType> {
         return new QueryResult({
-            data: defaultValue,
+            data: defaultValue as object,
             isSuccess: true,
             isAuthorized: true,
             isValid: true,
@@ -23,6 +48,13 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
             validationResults: [],
             exceptionMessages: [],
             exceptionStackTrace: '',
+            paging: {
+                totalItems: 0,
+                totalPages: 0,
+                page: 0,
+                items: 0
+            }
+
         }, Object, false);
     }
 
@@ -35,6 +67,12 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
         validationResults: [],
         exceptionMessages: [],
         exceptionStackTrace: '',
+        paging: {
+            totalItems: 0,
+            totalPages: 0,
+            page: 0,
+            items: 0
+        }
     }, Object, false);
 
     /**
@@ -43,7 +81,7 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
      * @param {Constructor} instanceType The type of instance to deserialize.
      * @param {boolean} enumerable Whether or not the result is supposed be an enumerable or not.
      */
-    constructor(result: any, instanceType: Constructor, enumerable: boolean) {
+    constructor(result: ServerQueryResult, instanceType: Constructor, enumerable: boolean) {
         this.isSuccess = result.isSuccess;
         this.isAuthorized = result.isAuthorized;
         this.isValid = result.isValid;
@@ -51,10 +89,14 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
         this.validationResults = result.validationResults.map(_ => new ValidationResult(_.severity, _.message, _.members, _.state));
         this.exceptionMessages = result.exceptionMessages;
         this.exceptionStackTrace = result.exceptionStackTrace;
-        this.paging = result.paging;
+        this.paging = new PagingInfo();
+        this.paging.page = result.paging.page;
+        this.paging.size = result.paging.items;
+        this.paging.totalItems = result.paging.totalItems;
+        this.paging.totalPages = result.paging.totalPages;
 
         if (result.data) {
-            let data: any = result.data;
+            let data: object = result.data;
             if (enumerable) {
                 if (Array.isArray(result.data)) {
                     data = JsonSerializer.deserializeArrayFromInstance(instanceType, data);
@@ -65,9 +107,9 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
                 data = JsonSerializer.deserializeFromInstance(instanceType, data);
             }
 
-            this.data = data;
+            this.data = data as TDataType;
         } else {
-            this.data = null as any;
+            this.data = null as TDataType;
         }
     }
 
@@ -102,17 +144,12 @@ export class QueryResult<TDataType = {}> implements IQueryResult<TDataType> {
      * Gets whether or not the query has data.
      */
     get hasData(): boolean {
-        const data = this.data as any;
-        if (data) {
-            if (data.constructor && data.constructor === Array) {
-                if (data.length || 0 > 0) {
-                    return true;
-                }
-            } else {
-                return true;
+        if (this.data) {
+            if (Array.isArray(this.data)) {
+                return this.data.length > 0;
             }
+            return true;
         }
-
         return false;
     }
 }

@@ -4,7 +4,7 @@
 /**
  * Defines the context for identity.
  */
-export interface IIdentity<TDetails = {}> {
+export interface IIdentity<TDetails = object> {
 
     /**
      * The id of the identity.

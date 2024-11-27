@@ -7,8 +7,8 @@
  * @param {string[]} expectedRequestArguments Array of all expected arguments.
  * @param {*} actualArguments Object containing the arguments.
  * @returns True if valid, false if not.
- */
-export function ValidateRequestArguments(requestName: string, expectedRequestArguments: string[], actualArguments?: any): boolean {
+*/
+export function ValidateRequestArguments(requestName: string, expectedRequestArguments: string[], actualArguments?: object): boolean {
     if (expectedRequestArguments.length > 0) {
         const missing: string[] = [];
 

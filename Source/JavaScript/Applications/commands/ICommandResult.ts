@@ -7,7 +7,7 @@ import { ValidationResult } from '../validation/ValidationResult';
 /**
  * Defines the result from executing commands.
  */
- export interface ICommandResult<TResponse = {}> {
+ export interface ICommandResult<TResponse = object> {
     /**
      * Gets the correlation identifier associated with the executed command.
      */

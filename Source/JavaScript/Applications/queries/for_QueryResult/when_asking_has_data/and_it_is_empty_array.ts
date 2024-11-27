@@ -3,6 +3,8 @@
 
 import { QueryResult } from '../../QueryResult';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 describe("when asking has data and it is empty array", () => {
     const queryResult = new QueryResult<any>({
         validationResults: [],

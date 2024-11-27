@@ -16,7 +16,7 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
  * @template TDataType Type of model the query is for.
  * @template TArguments Optional type of arguments to use for the query.
  */
-export interface IObservableQueryFor<TDataType, TArguments = {}> extends IQuery {
+export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
     readonly routeTemplate: Handlebars.TemplateDelegate;
     readonly requiredRequestArguments: string[];

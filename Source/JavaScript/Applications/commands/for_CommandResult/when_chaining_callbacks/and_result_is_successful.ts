@@ -4,7 +4,7 @@
 import { CommandResult } from '../../CommandResult';
 
 describe('when chaining callbacks and result is successful', () => {
-    const result = new CommandResult({
+    const result = new CommandResult<string>({
         correlationId: '0c0ee8c8-b5a6-4999-b030-6e6a0c931b91',
         isSuccess: true,
         isAuthorized: true,
@@ -13,7 +13,7 @@ describe('when chaining callbacks and result is successful', () => {
         validationResults: [],
         exceptionMessages: [],
         exceptionStackTrace: '',
-        response: "The ultimate response"
+        response: 'The ultimate response'
     }, Object, false);
 
     let onSuccessCalled = false;
@@ -21,7 +21,7 @@ describe('when chaining callbacks and result is successful', () => {
     let onUnauthorizedCalled = false;
     let onValidationFailureCalled = false;
     let onExceptionCalled = false;
-    let receivedResponse: any = null;
+    let receivedResponse: string | null = null;
 
     result
         .onSuccess(response => {

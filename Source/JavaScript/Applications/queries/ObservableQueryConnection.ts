@@ -5,7 +5,6 @@ import { Globals } from '../Globals';
 import { IObservableQueryConnection } from './IObservableQueryConnection';
 import { QueryResult } from './QueryResult';
 
-
 export type DataReceived<TDataType> = (data: QueryResult<TDataType>) => void;
 
 /**
@@ -31,7 +30,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
     }
 
     /** @inheritdoc */
-    connect(dataReceived: DataReceived<TDataType>, queryArguments?: any) {
+    connect(dataReceived: DataReceived<TDataType>, queryArguments?: object) {
         const secure = document.location.protocol.indexOf('https') === 0;
         let url = `${secure ? 'wss' : 'ws'}://${document.location.host}${this._route}`;
         if (this._microservice?.length > 0) {
@@ -69,13 +68,13 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
             };
 
             this._socket = new WebSocket(url);
-            this._socket.onopen = (ev) => {
+            this._socket.onopen = () => {
                 if (this._disconnected) return;
                 console.log(`Connection for '${this._route}' established`);
                 timeToWait = 500;
                 currentAttempt = 0;
             };
-            this._socket.onclose = (ev) => {
+            this._socket.onclose = () => {
                 if (this._disconnected) return;
                 console.log(`Unexpected connection closed for route '${this._route}`);
                 retry();

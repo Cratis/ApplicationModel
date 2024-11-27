@@ -23,7 +23,7 @@ describe('when chaining callbacks and result is invalid', () => {
 
     let onSuccessCalled = false;
     let onFailedCalled = false;
-    let receivedCommandResultOnFailed: CommandResult<{}>;
+    let receivedCommandResultOnFailed: CommandResult<object>;
     let onUnauthorizedCalled = false;
     let onValidationFailureCalled = false;
     let onExceptionCalled = false;

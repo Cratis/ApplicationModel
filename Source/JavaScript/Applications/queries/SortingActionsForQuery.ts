@@ -8,7 +8,7 @@ import { Sorting } from './Sorting';
 /**
  * Represents sorting for a query.
  */
-export class SortingActionsForQuery<TDataType, TArguments = {}> {
+export class SortingActionsForQuery<TDataType, TArguments = object> {
 
     /**
      * Initializes a new instance of {@link SortingActionsForQuery}.

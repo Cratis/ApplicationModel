@@ -15,7 +15,7 @@ export class IdentityProvider extends IIdentityProvider {
      * Gets the current identity by optionally specifying the details type.
      * @returns The current identity as {@link IIdentity}.
      */
-    static async getCurrent<TDetails = {}>(): Promise<IIdentity<TDetails>> {
+    static async getCurrent<TDetails = object>(): Promise<IIdentity<TDetails>> {
         const cookie = this.getCookie();
         if (cookie.length == 2) {
             const json = atob(cookie[1]);
@@ -35,7 +35,7 @@ export class IdentityProvider extends IIdentityProvider {
     }
 
     /** @inheritdoc */
-    async getCurrent<TDetails = {}>(): Promise<IIdentity<TDetails>> {
+    async getCurrent<TDetails = object>(): Promise<IIdentity<TDetails>> {
         return IdentityProvider.getCurrent<TDetails>();
     }
 
