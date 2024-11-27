@@ -24,8 +24,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="../ProxyGenerator/**/*.cs" Exclude="../ProxyGenerator/obj/**/*.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)../ProxyGenerator/**/*.cs" Exclude="../ProxyGenerator/obj/**/*.cs"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="$(MSBuildThisFileDirectory)../ProxyGenerator/Templates/**/*.hbs">
+             <LogicalName>Cratis.Applications.ProxyGenerator.Templates.%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+        </EmbeddedResource>
+    </ItemGroup>
+
 
     <!-- Include output from the ProxyGenerator -->
     <ItemGroup>
