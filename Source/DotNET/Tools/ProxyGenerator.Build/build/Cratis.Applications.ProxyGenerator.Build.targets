@@ -8,9 +8,9 @@
 
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == true">$(CratisProxyPackedAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == false">$(CratisProxyDevAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
-        <CratisProxyGeneratorAssembly>Cratis.Applications.ProxyGenerator.dll</CratisProxyGeneratorAssembly>
+        <CratisProxyGeneratorAssembly>Cratis.Applications.ProxyGenerator.Build.dll</CratisProxyGeneratorAssembly>
     </PropertyGroup>
-<!-- /Volumes/sourcecode/repos/cratis/Cratis/Source/Api/bin/Debug/net9.0//Cratis.Chronicle.Api.dll /Volumes/sourcecode/repos/cratis/Cratis/Source/Api/../Workbench/Web/Api 2 -->
+    
     <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild"> 
         <Message Text="MSBuildProjectDirectory : $(MSBuildProjectDirectory)" Importance="high" />
         <Message Text="OutputPath : $(OutputPath)" Importance="high" />
