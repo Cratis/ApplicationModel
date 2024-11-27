@@ -3,7 +3,7 @@
         <TargetFrameworkFolder Condition=" '$(TargetFramework)' == 'net8.0' ">net8.0</TargetFrameworkFolder>
         <TargetFrameworkFolder Condition=" '$(TargetFramework)' == 'net9.0' ">net9.0</TargetFrameworkFolder>
 
-        <CratisProxyDevAssemblyDirectory>$(MSBuildThisFileDirectory)../../ProxyGenerator/bin/$(Configuration)/$(TargetFrameworkFolder)</CratisProxyDevAssemblyDirectory>
+        <CratisProxyDevAssemblyDirectory>$(MSBuildThisFileDirectory)../../ProxyGenerator.Build/bin/$(Configuration)/$(TargetFrameworkFolder)</CratisProxyDevAssemblyDirectory>
         <CratisProxyPackedAssemblyDirectory>$(MSBuildThisFileDirectory)../tasks/$(TargetFrameworkFolder)</CratisProxyPackedAssemblyDirectory>
 
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == true">$(CratisProxyPackedAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
@@ -15,6 +15,7 @@
         <Message Text="MSBuildProjectDirectory : $(MSBuildProjectDirectory)" Importance="high" />
         <Message Text="OutputPath : $(OutputPath)" Importance="high" />
         <Message Text="AssemblyName : $(AssemblyName)" Importance="high" />
+        <Message Text="ProxyGenerator base directory : $(CratisProxyGeneratorAssemblyDirectory)" Importance="high" />
         <Message Text="Full path to assembly : $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll" Importance="high" />
 
         <Exec ConsoleToMsBuild="true" Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
