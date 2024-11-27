@@ -4,7 +4,8 @@
     <Orleans>9.0.1</Orleans>
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
     <MicrosoftExtensionsDependencyModelVersion>9.0.0</MicrosoftExtensionsDependencyModelVersion>
-    <SystemReflectionMetadataLoadContextVersion>9.0.0</SystemReflectionMetadataLoadContextVersion>
+    <SystemReflectionMetadataLoadContextVersion Condition=" '$(TargetFramework)' == 'net8.0' ">8.0.1</SystemReflectionMetadataLoadContextVersion>
+    <SystemReflectionMetadataLoadContextVersion Condition=" '$(TargetFramework)' == 'net9.0' ">9.0.0</SystemReflectionMetadataLoadContextVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Cratis.Fundamentals" Version="6.0.2" />
