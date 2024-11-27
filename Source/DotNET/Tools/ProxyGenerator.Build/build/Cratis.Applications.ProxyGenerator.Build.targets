@@ -10,8 +10,13 @@
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == false">$(CratisProxyDevAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
         <CratisProxyGeneratorAssembly>Cratis.Applications.ProxyGenerator.dll</CratisProxyGeneratorAssembly>
     </PropertyGroup>
+<!-- /Volumes/sourcecode/repos/cratis/Cratis/Source/Api/bin/Debug/net9.0//Cratis.Chronicle.Api.dll /Volumes/sourcecode/repos/cratis/Cratis/Source/Api/../Workbench/Web/Api 2 -->
+    <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild"> 
+        <Message Text="MSBuildProjectDirectory : $(MSBuildProjectDirectory)" Importance="high" />
+        <Message Text="OutputPath : $(OutputPath)" Importance="high" />
+        <Message Text="AssemblyName : $(AssemblyName)" Importance="high" />
+        <Message Text="Full path to assembly : $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll" Importance="high" />
 
-    <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild">
-        <Exec Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)/$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
+        <Exec ConsoleToMsBuild="true" Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
     </Target>
 </Project>
