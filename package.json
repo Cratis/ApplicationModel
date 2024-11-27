@@ -8,8 +8,8 @@
         "g:clean": "cd $INIT_CWD && tsc -b --clean",
         "g:build2": "cd $INIT_CWD && tsc -b --verbose",
         "g:build": "cd $INIT_CWD && tsc -b && rollup -c ./rollup.config.mjs",
-        "g:lint": "cd $INIT_CWD && eslint --cache . --ext .ts,.tsx --quiet --fix",
-        "g:lint:ci": "cd $INIT_CWD && eslint --cache . --ext .ts,.tsx --quiet",
+        "g:lint": "cd $INIT_CWD && eslint --cache --quiet --fix",
+        "g:lint:ci": "cd $INIT_CWD && eslint --cache --quiet",
         "g:test": "cd $INIT_CWD && mocha --config ${PROJECT_CWD}/.mocharc.js",
         "g:ci": "cd $INIT_CWD && yarn clean && yarn lint:ci && yarn build && yarn test",
         "g:up": "cd $INIT_CWD && ncu -u",
@@ -22,6 +22,7 @@
         "up": "node ./run-task-on-workspaces.js up"
     },
     "devDependencies": {
+        "@eslint/compat": "1.2.3",
         "@types/chai": "5.0.1",
         "@types/chai-as-promised": "8.0.1",
         "@types/mocha": "10.0.9",
@@ -52,7 +53,8 @@
         "sinon": "19.0.2",
         "sinon-chai": "4.0.0",
         "ts-node": "10.9.2",
-        "typescript": "5.6.3"
+        "typescript": "5.7.2",
+        "typescript-eslint": "8.16.0"
     },
     "license": "MIT",
     "version": "0.0.0"
