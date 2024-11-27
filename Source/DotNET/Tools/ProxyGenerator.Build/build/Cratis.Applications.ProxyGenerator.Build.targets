@@ -1,7 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <CratisProxyDevAssemblyDirectory>$(MSBuildThisFileDirectory)../../ProxyGenerator/bin/$(Configuration)/net8.0</CratisProxyDevAssemblyDirectory>
-        <CratisProxyPackedAssemblyDirectory>$(MSBuildThisFileDirectory)../tasks/net8.0</CratisProxyPackedAssemblyDirectory>
+        <TargetFrameworkFolder Condition=" '$(TargetFramework)' == 'net8.0' ">net8.0</TargetFrameworkFolder>
+        <TargetFrameworkFolder Condition=" '$(TargetFramework)' == 'net9.0' ">net9.0</TargetFrameworkFolder>
+
+        <CratisProxyDevAssemblyDirectory>$(MSBuildThisFileDirectory)../../ProxyGenerator/bin/$(Configuration)/$(TargetFrameworkFolder)</CratisProxyDevAssemblyDirectory>
+        <CratisProxyPackedAssemblyDirectory>$(MSBuildThisFileDirectory)../tasks/$(TargetFrameworkFolder)</CratisProxyPackedAssemblyDirectory>
 
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == true">$(CratisProxyPackedAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == false">$(CratisProxyDevAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
