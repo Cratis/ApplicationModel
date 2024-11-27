@@ -23,24 +23,19 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <ProxyGeneratorNet8Folder>$(MSBuildThisDirectory)../ProxyGenerator/bin/Release/net8.0/Cratis.Applications.ProxyGenerator.*</ProxyGeneratorNet8Folder>
-        <ProxyGeneratorNet9Folder>$(MSBuildThisDirectory)../ProxyGenerator/bin/Release/net9.0/Cratis.Applications.ProxyGenerator.*</ProxyGeneratorNet9Folder>
+        <ProxyGeneratorNet8Folder>$(MSBuildThisDirectory)../ProxyGenerator/bin/Release/net8.0/</ProxyGeneratorNet8Folder>
+        <ProxyGeneratorNet9Folder>$(MSBuildThisDirectory)../ProxyGenerator/bin/Release/net9.0/</ProxyGeneratorNet9Folder>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProxyGeneratorNet8Files Include="$(ProxyGeneratorNet8Folder)"/>
-        <ProxyGeneratorNet9Files Include="$(ProxyGeneratorNet9Folder)"/>
-    </ItemGroup>
- 
     <!-- Include output from the ProxyGenerator -->
     <Target Name="IncludeOutputFiles" AfterTargets="Build">
         <ItemGroup>
-            <Content Include="$(OutputPath)**/*" PackagePath="tasks/net8.0/" Pack="true" />
+            <Content Include="$(ProxyGeneratorNet8Folder)*" PackagePath="tasks/net8.0/" />
             <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
             <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
             <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
 
-            <Content Include="$(OutputPath)**/*" PackagePath="tasks/net9.0/" Pack="true" />
+            <Content Include="$(ProxyGeneratorNet9Folder)*" PackagePath="tasks/net9.0/" />
             <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net9.0/" />
             <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\$(MicrosoftExtensionsDependencyModelVersion)\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net9.0/" />
             <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\$(SystemReflectionMetadataLoadContextVersion)\lib\netstandard2.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net9.0/" />
