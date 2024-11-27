@@ -6,7 +6,6 @@
         <NoWarn>$(NoWarn);IDE0005;SA0001;ORLEANS0010</NoWarn>
         <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-
     </PropertyGroup>
 
     <ItemGroup>
