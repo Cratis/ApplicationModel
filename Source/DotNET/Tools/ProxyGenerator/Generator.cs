@@ -89,6 +89,7 @@ public static class Generator
         {
             var exports = directory
                 .GetFiles("*.ts")
+                .Where(_ => _.Name != "index.ts")
                 .Select(_ => $"./{Path.GetFileNameWithoutExtension(_.Name)}")
                 .OrderBy(_ => _.Split('/')[^1]);
             var descriptor = new IndexDescriptor(exports);
