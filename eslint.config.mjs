@@ -126,12 +126,11 @@ const defaultConfig = [
         },
     },
     {
-        ignores: ['**/*.js', '**/wwwroot/**'],
-        files: ['**/for_ */**/*.ts'],
-
+        files: ['**/for_*/**/*.ts'],
         rules: {
             '@typescript-eslint/naming-convention': 0,
             '@typescript-eslint/no-unused-expressions': 0,
+            "@typescript-eslint/no-empty-function": "off",
             'no-restricted-globals': 0,
         },
     },
