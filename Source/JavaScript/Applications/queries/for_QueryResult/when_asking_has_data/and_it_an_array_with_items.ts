@@ -6,7 +6,19 @@ import { QueryResult } from '../../QueryResult';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 describe("when asking has data and it is an array with items", () => {
-    const queryResult = new QueryResult<any>({
+    const queryResult = new QueryResult<object>({
+        isSuccess: true,
+        isAuthorized: true,
+        isValid: true,
+        hasExceptions: false,
+        exceptionMessages: [],
+        exceptionStackTrace: '',
+        paging: {
+            totalItems: 0,
+            totalPages: 0,
+            page: 0,
+            items: 0
+        },
         validationResults: [],
         data: [{}, {}]
     }, Object, true);

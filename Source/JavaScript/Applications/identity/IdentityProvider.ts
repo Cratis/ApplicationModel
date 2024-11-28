@@ -10,7 +10,7 @@ import { IdentityProviderResult } from './IdentityProviderResult';
 */
 export class IdentityProvider extends IIdentityProvider {
     static readonly CookieName = '.cratis-identity';
-    
+
     /**
      * Gets the current identity by optionally specifying the details type.
      * @returns The current identity as {@link IIdentity}.
@@ -29,7 +29,7 @@ export class IdentityProvider extends IIdentityProvider {
                 refresh: IdentityProvider.refresh
             } as IIdentity<TDetails>;
         } else {
-            const identity = await this.refresh();
+            const identity = await this.refresh<TDetails>();
             return identity;
         }
     }
@@ -39,7 +39,7 @@ export class IdentityProvider extends IIdentityProvider {
         return IdentityProvider.getCurrent<TDetails>();
     }
 
-    static async refresh() {
+    static async refresh<TDetails = object>(): Promise<IIdentity<TDetails>> {
         IdentityProvider.clearCookie();
         const response = await fetch('/.cratis/me');
 
@@ -49,7 +49,7 @@ export class IdentityProvider extends IIdentityProvider {
             id: result.id,
             name: result.name,
             claims: result.claims,
-            details: result.details,
+            details: result.details as TDetails,
             isSet: true,
             refresh: IdentityProvider.refresh
         };

@@ -8,6 +8,9 @@ import ts from 'typescript';
 
 const findContent = (fileContent: string, contentRegEx: RegExp) => contentRegEx.test(fileContent);
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 const parseTsConfig = (tsconfig: string, cwd = process.cwd()): ts.ParsedCommandLine => {
     const fileName = ts.findConfigFile(
         cwd,
@@ -21,7 +24,6 @@ const parseTsConfig = (tsconfig: string, cwd = process.cwd()): ts.ParsedCommandL
 
     let loadedConfig: any = {};
     let baseDir = cwd;
-    let configFileName;
     if (fileName) {
         const text = ts.sys.readFile(fileName);
         if (text === undefined) throw new Error(`failed to read '${fileName}'`);
@@ -35,7 +37,6 @@ const parseTsConfig = (tsconfig: string, cwd = process.cwd()): ts.ParsedCommandL
 
         loadedConfig = result.config;
         baseDir = path.dirname(fileName);
-        configFileName = fileName;
     }
 
     const parsedTsConfig = ts.parseJsonConfigFileContent(

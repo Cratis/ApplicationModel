@@ -75,7 +75,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
             connectionQueryArguments.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args)) {
+        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args as object)) {
             this._connection = new NullObservableQueryConnection(this.defaultValue);
         } else {
             actualRoute = this.routeTemplate(args);

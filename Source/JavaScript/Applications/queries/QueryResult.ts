@@ -7,7 +7,9 @@ import { IQueryResult } from './IQueryResult';
 import { PagingInfo } from './PagingInfo';
 
 type ServerQueryResult = {
-    data: object;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    data: any;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     isSuccess: boolean;
     isAuthorized: boolean;
     isValid: boolean;

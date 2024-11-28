@@ -49,7 +49,7 @@ export abstract class QueryFor<TDataType, TArguments = object> implements IQuery
         args = args || this.arguments;
 
         let actualRoute = this.route;
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args)) {
+        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args as object)) {
             return new Promise<QueryResult<TDataType>>((resolve) => {
                 resolve(noSuccess);
             });

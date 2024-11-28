@@ -26,7 +26,7 @@ describe('when chaining callbacks and result is successful', () => {
     result
         .onSuccess(response => {
             onSuccessCalled = true;
-            receivedResponse = response;
+            receivedResponse = response as string;
         })
         .onFailed(() => onFailedCalled = true)
         .onUnauthorized(() => onUnauthorizedCalled = true)
@@ -34,7 +34,7 @@ describe('when chaining callbacks and result is successful', () => {
         .onException(() => onExceptionCalled = true);
 
     it('should call the on success callback', () => onSuccessCalled.should.be.true);
-    it('should pass the response to the callback', () => receivedResponse.should.equal(result.response));
+    it('should pass the response to the callback', () => receivedResponse!.should.equal(result.response));
     it('should not call the on failed callback', () => onFailedCalled.should.be.false);
     it('should not call the on unauthorized callback', () => onUnauthorizedCalled.should.be.false);
     it('should not call the on validation failure callback', () => onValidationFailureCalled.should.be.false);

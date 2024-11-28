@@ -7,6 +7,18 @@ import { QueryResult } from '../../QueryResult';
 
 describe("when asking has data and it is undefined", () => {
     const queryResult = new QueryResult<any>({
+        isSuccess: true,
+        isAuthorized: true,
+        isValid: true,
+        hasExceptions: false,
+        exceptionMessages: [],
+        exceptionStackTrace: '',
+        paging: {
+            totalItems: 0,
+            totalPages: 0,
+            page: 0,
+            items: 0
+        },
         validationResults: [],
         data:undefined
     }, Object, true);

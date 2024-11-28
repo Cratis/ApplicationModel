@@ -45,7 +45,10 @@ type ServerCommandResult = {
     }[];
     exceptionMessages: string[];
     exceptionStackTrace: string;
-    response: object | null;
+
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    response: any;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 /**

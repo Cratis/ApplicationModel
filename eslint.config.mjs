@@ -96,7 +96,10 @@ const defaultConfig = [
             '**/wwwroot/**',
             '**/templates/**',
             '**/Api/**',
+            '**/rollup.config.mjs'
         ],
+    },
+    {
         files: ['**/*.ts', '**/*.tsx'],
 
         plugins: {
