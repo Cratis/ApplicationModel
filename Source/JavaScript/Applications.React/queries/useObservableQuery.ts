@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { QueryResultWithState, IObservableQueryFor, QueryResult, Sorting, Paging, ObservableQuerySubscription } from '@cratis/applications/queries';
+import { QueryResultWithState, IObservableQueryFor, QueryResult, Sorting, Paging } from '@cratis/applications/queries';
 import { Constructor } from '@cratis/fundamentals';
 import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
@@ -9,7 +9,7 @@ import { SetPage } from './SetPage';
 import { SetPageSize } from './SetPageSize';
 import { ApplicationModelContext } from '../ApplicationModelContext';
 
-function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, sorting?: Sorting, paging?: Paging, args?: TArguments):
+function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, sorting?: Sorting, paging?: Paging, args?: TArguments):
     [QueryResultWithState<TDataType>, SetSorting, SetPage, SetPageSize] {
     const [currentPaging, setCurrentPaging] = useState<Paging>(paging ?? Paging.noPaging);
     const [currentSorting, setCurrentSorting] = useState<Sorting>(sorting ?? Sorting.none);
@@ -30,7 +30,7 @@ function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFo
     useEffect(() => {
         const subscription = queryInstance.current!.subscribe(response => {
             setResult(QueryResultWithState.fromQueryResult(response, false));
-        }, args as any);
+        }, args as object);
 
         return () => {
             subscription.unsubscribe();
@@ -59,9 +59,9 @@ function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFo
  * @param args Optional: Arguments for the query, if any
  * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
  */
-export function useObservableQuery<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, args?: TArguments, sorting?: Sorting):
+export function useObservableQuery<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, SetSorting] {
-    const [result, setSorting, _] = useObservableQueryInternal<TDataType, TQuery, TArguments>(query, sorting, Paging.noPaging, args);
+    const [result, setSorting] = useObservableQueryInternal<TDataType, TQuery, TArguments>(query, sorting, Paging.noPaging, args);
     return [result, setSorting];
 }
 
@@ -75,7 +75,7 @@ export function useObservableQuery<TDataType, TQuery extends IObservableQueryFor
  * @param paging Paging information.
  * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
  */
-export function useObservableQueryWithPaging<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, paging: Paging, args?: TArguments, sorting?: Sorting):
+export function useObservableQueryWithPaging<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, paging: Paging, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, SetSorting, SetPage, SetPageSize] {
     return useObservableQueryInternal<TDataType, TQuery, TArguments>(query, sorting, paging, args);
 }

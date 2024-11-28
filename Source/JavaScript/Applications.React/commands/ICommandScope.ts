@@ -8,9 +8,9 @@ import { ICommand, CommandResults } from '@cratis/applications/commands';
  */
 export interface ICommandScope {
     /**
-     * Gets whether or not there are any changes in the context.
+     * Gets or sets whether or not there are any changes in the context.
      */
-    readonly hasChanges: boolean;
+    hasChanges: boolean;
 
     /**
      * Add a command for tracking in the scope.

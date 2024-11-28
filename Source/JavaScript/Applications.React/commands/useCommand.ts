@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { useState, useEffect, useCallback, useContext, useRef, useMemo } from 'react';
+import { useState, useCallback, useContext, useRef, useMemo } from 'react';
 import { Command } from '@cratis/applications/commands';
 import React from 'react';
 import { CommandScopeContext } from './CommandScope';
@@ -22,7 +22,7 @@ export function useCommand<TCommand extends Command, TCommandContent>(commandTyp
     const [hasChanges, setHasChanges] = useState(false);
     const applicationModel = useContext(ApplicationModelContext);
 
-    const propertyChangedCallback = useCallback(property => {
+    const propertyChangedCallback = useCallback(() => {
         if (command.current?.hasChanges !== hasChanges) {
             setHasChanges(command.current?.hasChanges ?? false);
         }

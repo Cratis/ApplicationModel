@@ -4,6 +4,8 @@
 import sinon from 'sinon';
 import { CommandResult, ICommand, PropertyChanged } from '@cratis/applications/commands';
 
+/* eslint-disable */
+
 export class FakeCommand implements ICommand {
     route = '';
     private _hasChanges: boolean;

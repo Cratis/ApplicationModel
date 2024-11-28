@@ -45,7 +45,7 @@ export interface IViewContext<T, TProps = any> {
  * @param {FunctionComponent} targetComponent The target component to render.
  * @returns 
  */
-export function withViewModel<TViewModel extends {}, TProps extends {} = {}>(
+export function withViewModel<TViewModel extends {}, TProps extends {} = object>(
 viewModelType: Constructor<TViewModel>,
     targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
 

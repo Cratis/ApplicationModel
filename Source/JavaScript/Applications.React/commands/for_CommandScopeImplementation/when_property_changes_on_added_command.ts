@@ -10,10 +10,10 @@ describe('when property changes on added command', () => {
     const setHasChanges = sinon.stub();
     const scope = new CommandScopeImplementation(setHasChanges);
     let callbackToCall: PropertyChanged;
-    let thisArgForCallback: any;
+    let thisArgForCallback: object = {};
 
     const command = new FakeCommand(true);
-    command.onPropertyChanged = (callback: PropertyChanged, thisArg: any): void => {
+    command.onPropertyChanged = (callback: PropertyChanged, thisArg: object): void => {
         callbackToCall = callback;
         thisArgForCallback = thisArg;
     };

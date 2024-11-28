@@ -6,6 +6,7 @@ import { Command, CommandResult, CommandResults } from '@cratis/applications/com
 import { CommandScopeImplementation } from './CommandScopeImplementation';
 import { ICommandScope } from './ICommandScope';
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 const defaultCommandScopeContext: ICommandScope = {
     addCommand: () => { },
     execute: async () => {
@@ -14,6 +15,7 @@ const defaultCommandScopeContext: ICommandScope = {
     hasChanges: false,
     revertChanges: () => { }
 };
+/* eslint-enable @typescript-eslint/no-empty-function */
 
 export const CommandScopeContext = React.createContext<ICommandScope>(defaultCommandScopeContext);
 
@@ -39,7 +41,7 @@ export const CommandScope = (props: ICommandScopeProps) => {
     }, []);
 
     if (commandScope) {
-        (commandScope as any).hasChanges = hasChanges;
+        commandScope.hasChanges = hasChanges;
     }
 
     return (

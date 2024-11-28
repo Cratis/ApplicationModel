@@ -10,7 +10,7 @@ import { IIdentity } from '@cratis/applications/identity';
  * @param defaultDetails Optional default details to use if the context is not set.
  * @returns An identity context.
  */
-export function useIdentity<TDetails = {}>(defaultDetails?: TDetails | undefined | null): IIdentity<TDetails> {
+export function useIdentity<TDetails = object>(defaultDetails?: TDetails | undefined | null): IIdentity<TDetails> {
     const context = React.useContext(IdentityProviderContext) as IIdentity<TDetails>;
     if (context.isSet === false && defaultDetails !== undefined) {
         context.details = defaultDetails!;

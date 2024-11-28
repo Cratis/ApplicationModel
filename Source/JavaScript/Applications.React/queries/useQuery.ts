@@ -12,11 +12,11 @@ import { ApplicationModelContext } from '../ApplicationModelContext';
 /**
  * Delegate type for performing a {@link IQueryFor} in the context of the {@link useQuery} hook.
  */
-export type PerformQuery<TArguments = {}> = (args?: TArguments) => Promise<void>;
+export type PerformQuery<TArguments = object> = (args?: TArguments) => Promise<void>;
 
 type QueryPerformer<TQuery extends IQueryFor<TDataType>, TDataType> = (performer: TQuery) => Promise<QueryResult<TDataType>>;
 
-function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, performer: QueryPerformer<TQuery, TDataType>, sorting?: Sorting, paging?: Paging, args?: TArguments):
+function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, performer: QueryPerformer<TQuery, TDataType>, sorting?: Sorting, paging?: Paging, args?: TArguments):
     [QueryResultWithState<TDataType>, PerformQuery<TArguments>, SetSorting, SetPage, SetPageSize] {
     paging ??= Paging.noPaging;
     sorting ??= Sorting.none;
@@ -39,7 +39,7 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
             try {
                 const queryResult = await performer(queryInstance.current!);
                 setResult(QueryResultWithState.fromQueryResult(queryResult, false));
-            } catch (error) {
+            } catch {
                 // Ignore
             }
         }
@@ -88,7 +88,7 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
  * @param args Optional: Arguments for the query, if any
  * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
  */
-export function useQuery<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, args?: TArguments, sorting?: Sorting):
+export function useQuery<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, PerformQuery<TArguments>, SetSorting] {
     const [result, perform, setSorting] = useQueryInternal(query, async (queryInstance: TQuery) => await queryInstance.perform(args!), sorting, undefined, args);
     return [result, perform, setSorting];
@@ -104,7 +104,7 @@ export function useQuery<TDataType, TQuery extends IQueryFor<TDataType>, TArgume
  * @param args Optional: Arguments for the query, if any
  * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
  */
-export function useQueryWithPaging<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = {}>(query: Constructor<TQuery>, paging: Paging, args?: TArguments, sorting?: Sorting):
+export function useQueryWithPaging<TDataType, TQuery extends IQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, paging: Paging, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, PerformQuery<TArguments>, SetSorting, SetPage, SetPageSize] {
     return useQueryInternal(query, async (queryInstance: TQuery) => await queryInstance.perform(args!), sorting, paging, args);
 }

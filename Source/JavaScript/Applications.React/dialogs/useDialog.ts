@@ -4,16 +4,16 @@
 import { useState } from 'react';
 import { DialogResult } from './DialogResult';
 
-export interface IDialogProps<TInput = {}, TOutput = {}> {
+export interface IDialogProps<TInput = object, TOutput = object> {
     visible: boolean;
     input: TInput;
     onClose: DialogClosed<TOutput>
 }
 
-export type ShowDialog<T = {}> = (input?: T) => void;
+export type ShowDialog<T = object> = (input?: T) => void;
 export type DialogClosed<T> = (result: DialogResult, output?: T) => void;
 
-export function useDialog<TInput = {}, TOutput = {}>(onClose: DialogClosed<TOutput>): [ShowDialog<TInput>, IDialogProps<TInput, TOutput>] {
+export function useDialog<TInput = object, TOutput = object>(onClose: DialogClosed<TOutput>): [ShowDialog<TInput>, IDialogProps<TInput, TOutput>] {
     const [visible, setVisible] = useState(false);
     const [input, setInput] = useState({});
 
