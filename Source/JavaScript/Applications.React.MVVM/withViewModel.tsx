@@ -38,7 +38,7 @@ function disposeViewModel(viewModel: IViewModel) {
 /**
  * Represents the view context that is passed to the view.
  */
-export interface IViewContext<T, TProps = objectny> {
+export interface IViewContext<T, TProps = object> {
     viewModel: T,
     props: TProps,
 }

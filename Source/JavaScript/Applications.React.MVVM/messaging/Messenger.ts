@@ -20,7 +20,7 @@ export class Messenger extends IMessenger {
     /** @inheritdoc */
     subscribe<TMessage extends object>(type: Constructor<TMessage>, callback: (message: TMessage) => void): Subscription {
         const observable = this._messages.pipe(filter(m => m.type === type));
-        const subscription = observable.subscribe(m => callback(m.content));
+        const subscription = observable.subscribe(m => callback(m.content as TMessage));
         return subscription;
     }
 }
