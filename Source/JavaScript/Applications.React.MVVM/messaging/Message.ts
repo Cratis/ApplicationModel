@@ -13,6 +13,6 @@ export class Message {
      * @param {Constructor} type Type of the content in the message.
      * @param {*} content The actual content.
      */
-    constructor(readonly type: Constructor, readonly content: any) {
+    constructor(readonly type: Constructor, readonly content: object) {
     }
 }

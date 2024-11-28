@@ -18,11 +18,11 @@ export abstract class IMessenger {
      * Publish a message.
      * @param {*} message Message to publish.
      */
-    abstract publish<TMessage extends {}>(message: TMessage): void;
+    abstract publish<TMessage extends object>(message: TMessage): void;
 
     /**
      * Subscribe to a specific message type.
      * @param {MessageHandler} callback Callback that gets called when message arrives.
      */
-    abstract subscribe<TMessage extends {}>(type: Constructor<TMessage>, callback: MessageHandler<TMessage>): Subscription;
+    abstract subscribe<TMessage extends object>(type: Constructor<TMessage>, callback: MessageHandler<TMessage>): Subscription;
 }

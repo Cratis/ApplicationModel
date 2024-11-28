@@ -8,8 +8,6 @@ import { BusyIndicator } from './BusyIndicator';
 import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
 import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
-import { DialogContext } from './useDialogRequest';
-import React from 'react';
 
 /**
  * Represents an implementation of {@link IDialogs}.
@@ -24,7 +22,7 @@ export class Dialogs extends IDialogs {
     }
 
     /** @inheritdoc */
-    show<TInput extends {}, TOutput>(input: TInput): Promise<TOutput> {
+    show<TInput extends object, TOutput>(input: TInput): Promise<TOutput> {
         return this._dialogMediatorHandler.show<TInput, TOutput>(input);
     }
 

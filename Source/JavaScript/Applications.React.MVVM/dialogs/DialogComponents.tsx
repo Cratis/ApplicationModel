@@ -10,15 +10,17 @@ import { DialogMediator } from './DialogMediator';
 import { DialogMediatorHandler } from './DialogMediatorHandler';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export interface IDialogComponentsContext {
 }
+/* eslint-enable @typescript-eslint/no-empty-object-type */
 
 export const DialogComponentsContext = React.createContext<IDialogComponentsContext>({});
 
 export interface DialogComponentsProps {
     children?: JSX.Element | JSX.Element[];
-    confirmation?: React.FC | React.FC<any>;
-    busyIndicator?: React.FC | React.FC<any>;
+    confirmation?: React.FC | React.FC<object>;
+    busyIndicator?: React.FC | React.FC<object>;
 }
 
 const DialogComponentsWrapper = (props: DialogComponentsProps) => {

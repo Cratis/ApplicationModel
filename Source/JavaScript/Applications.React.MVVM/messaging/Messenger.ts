@@ -13,12 +13,12 @@ export class Messenger extends IMessenger {
     private _messages: Subject<Message> = new Subject<Message>();
 
     /** @inheritdoc */
-    publish<TMessage extends {}>(message: TMessage): void {
+    publish<TMessage extends object>(message: TMessage): void {
         this._messages.next(new Message(message.constructor as Constructor, message));
     }
 
     /** @inheritdoc */
-    subscribe<TMessage extends {}>(type: Constructor<TMessage>, callback: (message: TMessage) => void): Subscription {
+    subscribe<TMessage extends object>(type: Constructor<TMessage>, callback: (message: TMessage) => void): Subscription {
         const observable = this._messages.pipe(filter(m => m.type === type));
         const subscription = observable.subscribe(m => callback(m.content));
         return subscription;

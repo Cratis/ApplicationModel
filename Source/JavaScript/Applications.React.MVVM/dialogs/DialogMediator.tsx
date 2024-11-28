@@ -7,7 +7,7 @@ import { IDialogMediatorHandler } from './IDialogMediatorHandler';
 /**
  * Context for the dialog mediator.
  */
-export const DialogMediatorContext = React.createContext<IDialogMediatorHandler>(undefined as any);
+export const DialogMediatorContext = React.createContext<IDialogMediatorHandler>(undefined!);
 
 /**
  * Props for the dialog mediator.

@@ -9,12 +9,12 @@ export type DialogResolver<TResponse> = (response: TResponse) => void;
 /**
  * Represents the delegate for a dialog request.
  */
-export type DialogRequest<TRequest extends {}, TResponse> = (request: TRequest, resolve: DialogResolver<TResponse>) => void;
+export type DialogRequest<TRequest extends object, TResponse> = (request: TRequest, resolve: DialogResolver<TResponse>) => void;
 
 /**
  * Represents the registration of a dialog.
  */
-export class DialogRegistration<TRequest extends {}, TResponse> {
+export class DialogRegistration<TRequest extends object, TResponse> {
 
     /**
      * Initializes a new instance of {@link DialogRegistration}.

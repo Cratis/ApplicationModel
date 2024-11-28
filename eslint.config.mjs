@@ -67,6 +67,7 @@ const rules = {
         '@typescript-eslint/no-empty-function': 'error',
         '@typescript-eslint/no-var-requires': 'error',
         '@typescript-eslint/ban-ts-comment': 0,
+        "@typescript-eslint/no-empty-interface": 0,
 
         'header/header': [
             2,

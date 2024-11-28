@@ -9,7 +9,7 @@ import { DialogRegistration, DialogRequest, DialogResolver } from './DialogRegis
  * Represents an implementation of {@link IDialogMediatorHandler}
  */
 export class DialogMediatorHandler extends IDialogMediatorHandler {
-    private _registrations: WeakMap<Constructor, DialogRegistration<any, any>> = new WeakMap();
+    private _registrations: WeakMap<Constructor, DialogRegistration<object, object>> = new WeakMap();
 
     /**
      * Initializes a new instance of {@link DialogMediatorHandler}
@@ -20,19 +20,19 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
     }
 
     /** @inheritdoc */
-    subscribe<TRequest extends {}, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, resolver: DialogResolver<TResponse>): void {
+    subscribe<TRequest extends object, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, resolver: DialogResolver<TResponse>): void {
         this._registrations.set(
             requestType,
-            new DialogRegistration<TRequest, TResponse>(requester, resolver));
+            new DialogRegistration<TRequest, TResponse>(requester, resolver) as unknown as DialogRegistration<object, object>);
     }
 
     /** @inheritdoc */
-    hasSubscriber<TRequest extends {}>(requestType: Constructor<TRequest>): boolean {
+    hasSubscriber<TRequest extends object>(requestType: Constructor<TRequest>): boolean {
         return this._registrations.has(requestType);
     }
 
     /** @inheritdoc */
-    show<TRequest extends {}, TResponse>(request: TRequest): Promise<TResponse> {
+    show<TRequest extends object, TResponse>(request: TRequest): Promise<TResponse> {
         if (!this.hasSubscriber(request.constructor as Constructor)) {
             if (this._parent) {
                 return this._parent.show(request);
@@ -41,16 +41,16 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
             return Promise.reject('No registration found for request');
         }
 
-        const promise = new Promise<TResponse>((resolve, reject) => {
+        const promise = new Promise<TResponse>((resolve) => {
             const registration = this._registrations.get(request.constructor as Constructor)!;
-            registration.requester(request, resolve);
+            registration.requester(request, resolve as unknown as DialogResolver<object>);
         });
 
         return promise;
     }
 
     /** @inheritdoc */
-    getRegistration<TRequest extends {}, TResponse>(requestType: Constructor<TRequest>): DialogRegistration<TRequest, TResponse> {
+    getRegistration<TRequest extends object, TResponse>(requestType: Constructor<TRequest>): DialogRegistration<TRequest, TResponse> {
         if (!this.hasSubscriber(requestType)) {
             if (this._parent) {
                 return this._parent.getRegistration(requestType);
@@ -59,6 +59,6 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
             throw new Error('No registration found for request');
         }
 
-        return this._registrations.get(requestType)!;
+        return this._registrations.get(requestType)! as unknown as DialogRegistration<TRequest, TResponse>;
     }
 }

@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { QueryResultWithState, IObservableQueryFor, QueryResult, Sorting, Paging } from '@cratis/applications/queries';
+import { QueryResultWithState, IObservableQueryFor, Sorting, Paging } from '@cratis/applications/queries';
 import { Constructor } from '@cratis/fundamentals';
 import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
@@ -57,7 +57,7 @@ function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFo
  * @template TArguments Optional: Arguments for the query, if any
  * @param query Query type constructor.
  * @param args Optional: Arguments for the query, if any
- * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
+ * @returns Tuple of {@link QueryResultWithState} and a {@link PerformQuery} delegate.
  */
 export function useObservableQuery<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, SetSorting] {
@@ -73,7 +73,7 @@ export function useObservableQuery<TDataType, TQuery extends IObservableQueryFor
  * @param query Query type constructor.
  * @param args Optional: Arguments for the query, if any
  * @param paging Paging information.
- * @returns Tuple of {@link QueryResult} and a {@link PerformQuery} delegate.
+ * @returns Tuple of {@link QueryResultWithState} and a {@link PerformQuery} delegate.
  */
 export function useObservableQueryWithPaging<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, paging: Paging, args?: TArguments, sorting?: Sorting):
     [QueryResultWithState<TDataType>, SetSorting, SetPage, SetPageSize] {
