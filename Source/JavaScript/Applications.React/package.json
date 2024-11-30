@@ -20,29 +20,29 @@
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./dist/esm/index.js",
+            "types": "./dist/esm/index.d.ts",
             "require": "./dist/cjs/index.js",
-            "types": "./dist/esm/index.d.ts"
+            "import": "./dist/esm/index.js"
         },
         "./commands": {
-            "import": "./dist/esm/commands/index.js",
+            "types": "./dist/esm/commands/index.d.ts",
             "require": "./dist/cjs/commands/index.js",
-            "types": "./dist/esm/commands/index.d.ts"
+            "import": "./dist/esm/commands/index.js"
         },
         "./queries": {
-            "import": "./dist/esm/queries/index.js",
+            "types": "./dist/esm/queries/index.d.ts",
             "require": "./dist/cjs/queries/index.js",
-            "types": "./dist/esm/queries/index.d.ts"
+            "import": "./dist/esm/queries/index.js"
         },
         "./dialogs": {
-            "import": "./dist/esm/dialogs/index.js",
+            "types": "./dist/esm/dialogs/index.js",
             "require": "./dist/cjs/dialogs/index.js",
-            "types": "./dist/esm/dialogs/index.js"
+            "import": "./dist/esm/dialogs/index.js"
         },
         "./identity": {
-            "import": "./dist/esm/identity/index.js",
+            "types": "./dist/esm/identity/index.d.ts",
             "require": "./dist/cjs/identity/index.js",
-            "types": "./dist/esm/identity/index.d.ts"
+            "import": "./dist/esm/identity/index.js"
         }
     },
     "scripts": {

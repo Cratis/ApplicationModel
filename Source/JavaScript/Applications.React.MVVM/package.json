@@ -20,24 +20,24 @@
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./dist/esm/index.js",
+            "types": "./dist/esm/index.d.ts",
             "require": "./dist/cjs/index.js",
-            "types": "./dist/esm/index.d.ts"
+            "import": "./dist/esm/index.js"
         },
         "./browser": {
+            "types": "./dist/esm/browser/index.d.ts",
             "import": "./dist/esm/browser/index.js",
-            "require": "./dist/cjs/browser/index.js",
-            "types": "./dist/esm/browser/index.d.ts"
+            "require": "./dist/cjs/browser/index.js"
         },
         "./messaging": {
+            "types": "./dist/esm/messaging/index.d.ts",
             "import": "./dist/esm/messaging/index.js",
-            "require": "./dist/cjs/messaging/index.js",
-            "types": "./dist/esm/messaging/index.d.ts"
+            "require": "./dist/cjs/messaging/index.js"
         },
         "./dialogs": {
-            "import": "./dist/esm/dialogs/index.js",
+            "types": "./dist/esm/dialogs/index.d.ts",
             "require": "./dist/cjs/dialogs/index.js",
-            "types": "./dist/esm/dialogs/index.d.ts"
+            "import": "./dist/esm/dialogs/index.js"
         }
     },
     "scripts": {

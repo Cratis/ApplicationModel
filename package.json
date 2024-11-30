@@ -10,7 +10,8 @@
         "g:build": "cd $INIT_CWD && tsc -b && rollup -c ./rollup.config.mjs",
         "g:lint": "cd $INIT_CWD && eslint --cache --quiet --fix",
         "g:lint:ci": "cd $INIT_CWD && eslint --cache --quiet",
-        "g:test": "cd $INIT_CWD && mocha --config ${PROJECT_CWD}/.mocharc.js",
+        "g:test": "cd $INIT_CWD && vitest run",
+        "g:test:watch": "cd $INIT_CWD && vitest --watch",
         "g:ci": "cd $INIT_CWD && yarn clean && yarn lint:ci && yarn build && yarn test",
         "g:up": "cd $INIT_CWD && ncu -u",
         "clean": "node ./run-task-on-workspaces.js clean",
@@ -31,6 +32,7 @@
         "@types/sinon-chai": "4.0.0",
         "@typescript-eslint/eslint-plugin": "8.15.0",
         "@typescript-eslint/parser": "8.15.0",
+        "@vitest/coverage-v8": "2.1.6",
         "chai": "5.1.2",
         "chai-as-promised": "8.0.0",
         "edit-json-file": "1.8.0",
@@ -54,7 +56,10 @@
         "sinon-chai": "4.0.0",
         "ts-node": "10.9.2",
         "typescript": "5.7.2",
-        "typescript-eslint": "8.16.0"
+        "typescript-eslint": "8.16.0",
+        "vite-plugin-commonjs": "0.10.4",
+        "vite-tsconfig-paths": "5.1.3",
+        "vitest": "2.1.6"
     },
     "license": "MIT",
     "version": "0.0.0"

@@ -20,29 +20,29 @@
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./dist/esm/index.js",
+            "types": "./dist/esm/index.d.ts",
             "require": "./dist/cjs/index.js",
-            "types": "./dist/esm/index.d.ts"
+            "import": "./dist/esm/index.js"
         },
         "./commands": {
+            "types": "./dist/esm/commands/index.d.ts",
             "import": "./dist/esm/commands/index.js",
-            "require": "./dist/cjs/commands/index.js",
-            "types": "./dist/esm/commands/index.d.ts"
+            "require": "./dist/cjs/commands/index.js"
         },
         "./identity": {
+            "types": "./dist/esm/identity/index.d.ts",
             "import": "./dist/esm/identity/index.js",
-            "require": "./dist/cjs/identity/index.js",
-            "types": "./dist/esm/identity/index.d.ts"
+            "require": "./dist/cjs/identity/index.js"
         },
         "./queries": {
+            "types": "./dist/esm/queries/index.d.ts",
             "import": "./dist/esm/queries/index.js",
-            "require": "./dist/cjs/queries/index.js",
-            "types": "./dist/esm/queries/index.d.ts"
+            "require": "./dist/cjs/queries/index.js"
         },
         "./validation": {
+            "types": "./dist/esm/validation/index.d.ts",
             "import": "./dist/esm/validation/index.js",
-            "require": "./dist/cjs/validation/index.js",
-            "types": "./dist/esm/validation/index.d.ts"
+            "require": "./dist/cjs/validation/index.js"
         }
     },
     "scripts": {
@@ -52,6 +52,7 @@
         "lint": "yarn g:lint",
         "lint:ci": "yarn g:lint:ci",
         "test": "yarn g:test",
+        "test:watch": "yarn g:test:watch",
         "ci": "yarn g:ci",
         "up": "yarn g:up"
     },
