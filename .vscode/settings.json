@@ -12,6 +12,7 @@
         "primereact",
         "Swashbuckle",
         "templating",
+        "tseslint",
         "tsyringe",
         "Unmap",
         "unmapping",
