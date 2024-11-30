@@ -298,6 +298,6 @@ out
 !.yarn/sdks
 !.yarn/versions
 yarn.lock
+coverage
 
 .DS_Store
-coverage
