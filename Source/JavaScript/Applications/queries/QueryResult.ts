@@ -28,10 +28,10 @@ type ServerValidationResult = {
 }
 
 type ServerPagingInfo = {
+    page: number;
+    size: number; 
     totalItems: number;
     totalPages: number;
-    page: number;
-    items: number;
 }
 
 /**
@@ -54,7 +54,7 @@ export class QueryResult<TDataType = object> implements IQueryResult<TDataType> 
                 totalItems: 0,
                 totalPages: 0,
                 page: 0,
-                items: 0
+                size: 0
             }
 
         }, Object, false);
@@ -73,7 +73,7 @@ export class QueryResult<TDataType = object> implements IQueryResult<TDataType> 
             totalItems: 0,
             totalPages: 0,
             page: 0,
-            items: 0
+            size: 0
         }
     }, Object, false);
 
@@ -93,7 +93,7 @@ export class QueryResult<TDataType = object> implements IQueryResult<TDataType> 
         this.exceptionStackTrace = result.exceptionStackTrace;
         this.paging = new PagingInfo();
         this.paging.page = result.paging.page;
-        this.paging.size = result.paging.items;
+        this.paging.size = result.paging.size;
         this.paging.totalItems = result.paging.totalItems;
         this.paging.totalPages = result.paging.totalPages;
 
