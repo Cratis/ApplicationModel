@@ -6,6 +6,7 @@ using Castle.DynamicProxy;
 using Cratis.Applications.MongoDB.Resilience;
 using Cratis.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
@@ -22,9 +23,10 @@ namespace Cratis.Applications.MongoDB;
 /// Initializes a new instance of the <see cref="MongoDBClientFactory"/> class.
 /// </remarks>
 /// <param name="serverResolver"><see cref="IMongoServerResolver"/> for resolving the server.</param>
+/// <param name="options"><see cref="IOptions{TOptions}"/> for getting the options.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 [Singleton]
-public class MongoDBClientFactory(IMongoServerResolver serverResolver, ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
+public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<MongoDBOptions> options, ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
 {
     readonly ConcurrentDictionary<string, IMongoClient> _clients = new();
 
@@ -42,6 +44,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, ILogger<M
 
     IMongoClient CreateImplementation(MongoClientSettings settings)
     {
+        settings.DirectConnection = options.Value.DirectConnection;
         settings.ClusterConfigurator = ClusterConfigurator;
         logger.CreateClient(settings.Server.ToString());
 #pragma warning disable CA2000 // Dispose objects before losing scope - we're returning the client

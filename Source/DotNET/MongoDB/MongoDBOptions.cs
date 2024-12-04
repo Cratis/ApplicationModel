@@ -21,4 +21,9 @@ public class MongoDBOptions
     /// </summary>
     [Required]
     public string Database { get; set; } = null!;
+
+    /// <summary>
+    /// Gets whether or use the direct connection option for MongoDB. Defaults to true.
+    /// </summary>
+    public bool DirectConnection { get; set; } = true;
 }
