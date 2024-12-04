@@ -30,8 +30,8 @@ export const App = () => {
                         <Routes>
                             <Route path='/' element={<Feature blah='Horse' />} />
                             <Route path='/something' element={<Something />} />
-                            <Route path='/test-query' element={<TestQuery />} />
-                            <Route path='/test-params/:id/:num' element={<TestParams />} />
+                            {/* <Route path='/test-query' element={<TestQuery />} />
+                            <Route path='/test-params/:id/:num' element={<TestParams />} /> */}
                         </Routes>
 
                         {/* <Catalog /> */}

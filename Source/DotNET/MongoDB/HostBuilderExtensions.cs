@@ -15,7 +15,6 @@ namespace Microsoft.Extensions.Hosting;
 /// </summary>
 public static class HostBuilderExtensions
 {
-    static readonly Dictionary<string, IMongoClient> _clients = [];
     static IMongoDBClientFactory? _clientFactory;
     static IMongoServerResolver? _serverResolver;
 
@@ -98,15 +97,7 @@ public static class HostBuilderExtensions
             // TODO: This will not work when multi tenant.
             _clientFactory ??= sp.GetRequiredService<IMongoDBClientFactory>();
             _serverResolver ??= sp.GetRequiredService<IMongoServerResolver>();
-            var server = _serverResolver.Resolve();
-            if (_clients.TryGetValue(server.ToString(), out var client))
-            {
-                return client;
-            }
-
-            client = _clientFactory.Create();
-            _clients[server.ToString()] = client;
-            return client;
+            return _clientFactory.Create();
         });
 
         services.AddTransient(sp =>

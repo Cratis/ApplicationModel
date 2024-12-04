@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using Cratis.Execution;
 using Cratis.Types;
 
@@ -30,7 +29,7 @@ public class QueryProviders(
         var queryContext = queryContextManager.Current ?? new QueryContext(correlationIdAccessor.Current, Paging.NotPaged, Sorting.None);
         if (queryProviderType == null)
         {
-            return new(queryContext.TotalItems, (query as IEnumerable)!);
+            return new(queryContext.TotalItems, query);
         }
 
         var queryProvider = serviceProvider.GetService(queryProviderType);

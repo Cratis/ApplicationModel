@@ -118,7 +118,7 @@ public class QueryActionFilter(
                     ValidationResults = context.ModelState.SelectMany(_ => _.Value!.Errors.Select(p => p.ToValidationResult(_.Key.ToCamelCase()))),
                     ExceptionMessages = callResult.ExceptionMessages,
                     ExceptionStackTrace = callResult.ExceptionStackTrace ?? string.Empty,
-                    Data = response.Items
+                    Data = response.Data
                 };
 
                 if (!queryResult.IsAuthorized)
