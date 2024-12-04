@@ -5,7 +5,6 @@ import { WellKnownBindings } from '@cratis/applications.react.mvvm';
 import { inject, injectable } from 'tsyringe';
 import { Params } from './TestQuery';
 
-
 @injectable()
 export class TestQueryViewModel {
     constructor(@inject(WellKnownBindings.queryParams) params: Params) {

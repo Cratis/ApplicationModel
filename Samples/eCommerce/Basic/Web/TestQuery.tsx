@@ -3,7 +3,6 @@
 import { withViewModel } from "@cratis/applications.react.mvvm";
 import { TestQueryViewModel } from "./TestQueryViewModel";
 
-
 export type Params = { 
     someString?: string; 
     num?: number;
