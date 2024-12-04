@@ -25,6 +25,11 @@ public class MongoClientInterceptorSelector(
     /// <inheritdoc/>
     public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
     {
+        if (method.Name == nameof(IDisposable.Dispose))
+        {
+            return [new MongoClientDisposeInterceptor()];
+        }
+
         if (method.Name == nameof(IMongoClient.GetDatabase))
         {
             return [new MongoClientInterceptor(proxyGenerator, resiliencePipeline, mongoClient)];
