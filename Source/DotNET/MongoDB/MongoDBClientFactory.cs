@@ -44,7 +44,9 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, ILogger<M
     {
         settings.ClusterConfigurator = ClusterConfigurator;
         logger.CreateClient(settings.Server.ToString());
+#pragma warning disable CA2000 // Dispose objects before losing scope - we're returning the client
         var client = new MongoClient(settings);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
         var resiliencePipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
