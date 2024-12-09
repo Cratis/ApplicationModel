@@ -95,7 +95,7 @@ public class ConceptSerializer<T> : IBsonSerializer<T>
         {
             bsonWriter.WriteDouble((double)underlyingValue);
         }
-        else if (underlyingValueType == typeof(int) || underlyingValueType == typeof(uint))
+        else if (underlyingValueType == typeof(int))
         {
             bsonWriter.WriteInt32((int)underlyingValue);
         }
