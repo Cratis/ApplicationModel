@@ -78,7 +78,7 @@ public class ConceptSerializer : IGeneralizedCodec, IGeneralizedCopier, ITypeFil
         }
         else if (field.FieldType == typeof(ulong))
         {
-            value = UInt64Codec.ReadValue(ref reader, field);
+            value = DecimalCodec.ReadValue(ref reader, field);
         }
         else if (field.FieldType == typeof(float))
         {
@@ -165,7 +165,7 @@ public class ConceptSerializer : IGeneralizedCodec, IGeneralizedCopier, ITypeFil
                 UInt32Codec.WriteField(ref writer, fieldIdDelta, intValue);
                 break;
             case ulong longValue:
-                UInt64Codec.WriteField(ref writer, fieldIdDelta, longValue);
+                DecimalCodec.WriteField(ref writer, fieldIdDelta, longValue);
                 break;
             case float floatValue:
                 FloatCodec.WriteField(ref writer, fieldIdDelta, floatValue);
