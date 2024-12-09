@@ -97,21 +97,19 @@ public class ConceptSerializer<T> : IBsonSerializer<T>
         }
         else if (underlyingValueType == typeof(int) || underlyingValueType == typeof(uint))
         {
-            if (underlyingValue is uint)
-            {
-                underlyingValue = Convert.ChangeType(underlyingValue, typeof(int))!;
-            }
-
             bsonWriter.WriteInt32((int)underlyingValue);
         }
-        else if (underlyingValueType == typeof(long) || underlyingValueType == typeof(ulong))
+        else if (underlyingValueType == typeof(uint))
         {
-            if (underlyingValue is ulong underlyingValueAsULong)
-            {
-                underlyingValue = (long)underlyingValueAsULong;
-            }
-
+            bsonWriter.WriteInt64((uint)underlyingValue);
+        }
+        else if (underlyingValueType == typeof(long))
+        {
             bsonWriter.WriteInt64((long)underlyingValue);
+        }
+        else if (underlyingValueType == typeof(ulong))
+        {
+            bsonWriter.WriteDecimal128((ulong)underlyingValue);
         }
         else if (underlyingValueType == typeof(bool))
         {
@@ -185,24 +183,24 @@ public class ConceptSerializer<T> : IBsonSerializer<T>
             return (float)bsonReader.ReadDouble();
         }
 
-        if (valueType == typeof(int) || valueType == typeof(uint))
+        if (valueType == typeof(int))
         {
-            var value = bsonReader.ReadInt32();
-            if (valueType == typeof(uint))
-            {
-                return Convert.ChangeType(value, typeof(uint))!;
-            }
-            return value;
+            return bsonReader.ReadInt32();
         }
 
-        if (valueType == typeof(long) || valueType == typeof(ulong))
+        if (valueType == typeof(uint))
         {
-            var value = bsonReader.ReadInt64();
-            if (valueType == typeof(ulong))
-            {
-                return (ulong)value;
-            }
-            return value;
+            return (uint)bsonReader.ReadInt64();
+        }
+
+        if (valueType == typeof(long))
+        {
+            return bsonReader.ReadInt64();
+        }
+
+        if (valueType == typeof(ulong))
+        {
+            return (ulong)bsonReader.ReadDecimal128();
         }
 
         if (valueType == typeof(bool))
