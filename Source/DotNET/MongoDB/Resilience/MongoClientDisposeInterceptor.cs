@@ -12,9 +12,15 @@ namespace Cratis.Applications.MongoDB.Resilience;
 /// <param name="mongoClient"><see cref="IMongoClient"/> to intercept.</param>
 public class MongoClientDisposeInterceptor(IMongoClient mongoClient) : IInterceptor
 {
+    bool _isDisposed;
+
     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
-        mongoClient.Dispose();
+        if (!_isDisposed)
+        {
+            mongoClient.Dispose();
+            _isDisposed = true;
+        }
     }
 }
