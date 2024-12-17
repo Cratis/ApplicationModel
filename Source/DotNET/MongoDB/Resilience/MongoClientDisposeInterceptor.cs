@@ -9,18 +9,11 @@ namespace Cratis.Applications.MongoDB.Resilience;
 /// <summary>
 /// Represents an interceptor for <see cref="IMongoClient"/> Dispose method.
 /// </summary>
-/// <param name="mongoClient"><see cref="IMongoClient"/> to intercept.</param>
-public class MongoClientDisposeInterceptor(IMongoClient mongoClient) : IInterceptor
+public class MongoClientDisposeInterceptor : IInterceptor
 {
-    bool _isDisposed;
-
-    /// <inheritdoc/>
+     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
-        if (!_isDisposed)
-        {
-            mongoClient.Dispose();
-            _isDisposed = true;
-        }
+        // Do nothing - we don't want to dispose the client as we want to keep a single instance across a running process
     }
 }
