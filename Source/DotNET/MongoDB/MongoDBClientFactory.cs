@@ -34,7 +34,9 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<
     public IMongoClient Create() => Create(serverResolver.Resolve());
 
     /// <inheritdoc/>
-    public IMongoClient Create(MongoClientSettings settings) => _clients.GetOrAdd(settings.Server.ToString(), (_, v) => v, CreateImplementation(settings));
+#pragma warning disable MA0106 // Avoid closure by using an overload with the 'factoryArgument' parameter
+    public IMongoClient Create(MongoClientSettings settings) => _clients.GetOrAdd(settings.Server.ToString(), (_) => CreateImplementation(settings));
+#pragma warning restore MA0106 // Avoid closure by using an overload with the 'factoryArgument' parameter
 
     /// <inheritdoc/>
     public IMongoClient Create(MongoUrl url) => Create(MongoClientSettings.FromUrl(url));

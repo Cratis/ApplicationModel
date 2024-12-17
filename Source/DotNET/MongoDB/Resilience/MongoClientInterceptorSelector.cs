@@ -27,7 +27,7 @@ public class MongoClientInterceptorSelector(
     {
         if (method.Name == nameof(IDisposable.Dispose))
         {
-            return [new MongoClientDisposeInterceptor(mongoClient)];
+            return [new MongoClientDisposeInterceptor()];
         }
 
         if (method.Name == nameof(IMongoClient.GetDatabase))
