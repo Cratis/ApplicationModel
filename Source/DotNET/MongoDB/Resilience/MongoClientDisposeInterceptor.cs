@@ -9,11 +9,12 @@ namespace Cratis.Applications.MongoDB.Resilience;
 /// <summary>
 /// Represents an interceptor for <see cref="IMongoClient"/> Dispose method.
 /// </summary>
-public class MongoClientDisposeInterceptor : IInterceptor
+/// <param name="mongoClient"><see cref="IMongoClient"/> to intercept.</param>
+public class MongoClientDisposeInterceptor(IMongoClient mongoClient) : IInterceptor
 {
     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
-        // DO NOTHING
+        mongoClient.Dispose();
     }
 }
