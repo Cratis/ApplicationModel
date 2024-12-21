@@ -92,7 +92,7 @@ public static class HostBuilderExtensions
         services.AddSingleton(typeof(IMongoServerResolver), mongoDBBuilder.ServerResolverType);
         services.AddSingleton(typeof(IMongoDatabaseNameResolver), mongoDBBuilder.DatabaseNameResolverType);
         services.AddSingleton<IMongoDBClientFactory, MongoDBClientFactory>();
-        services.AddTransient(sp =>
+        services.AddScoped(sp =>
         {
             // TODO: This will not work when multi tenant.
             _clientFactory ??= sp.GetRequiredService<IMongoDBClientFactory>();
@@ -100,14 +100,14 @@ public static class HostBuilderExtensions
             return _clientFactory.Create();
         });
 
-        services.AddTransient(sp =>
+        services.AddScoped(sp =>
         {
             var client = sp.GetRequiredService<IMongoClient>();
             var databaseNameResolver = sp.GetRequiredService<IMongoDatabaseNameResolver>();
             return client.GetDatabase(databaseNameResolver.Resolve());
         });
 
-        services.AddTransient(typeof(IMongoCollection<>), typeof(MongoCollectionAdapter<>));
+        services.AddScoped(typeof(IMongoCollection<>), typeof(MongoCollectionAdapter<>));
     }
 
     static MongoDBBuilder CreateMongoDBBuilder(Action<MongoDBBuilder>? configure)

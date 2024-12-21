@@ -11,9 +11,9 @@ namespace Cratis.Applications.MongoDB.Resilience;
 /// </summary>
 public class MongoClientDisposeInterceptor : IInterceptor
 {
-    /// <inheritdoc/>
+     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
-        // DO NOTHING
+        // Do nothing - we don't want to dispose the client as we want to keep a single instance across a running process
     }
 }
