@@ -44,7 +44,7 @@
         "eslint-plugin-react": "7.37.2",
         "glob": "11.0.0",
         "globals": "15.14.0",
-        "mocha": "10.8.2",
+        "mocha": "11.0.1",
         "module-alias": "2.2.3",
         "npm-check-updates": "17.1.12",
         "prettier": "3.3.3",
