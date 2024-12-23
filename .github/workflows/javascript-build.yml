@@ -48,8 +48,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
   
       - name: Yarn install
-        env:
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn
 
       - name: Build JS/TS
