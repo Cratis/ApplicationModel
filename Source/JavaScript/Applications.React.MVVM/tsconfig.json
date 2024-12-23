@@ -23,6 +23,7 @@
     ],
      "exclude": [
         "dist",
-        "**/for_*/**"
+        "**/for_*/**",
+        "vite.config.mts"
     ]
 }
