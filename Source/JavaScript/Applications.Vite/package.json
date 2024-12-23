@@ -43,6 +43,7 @@
     },
     "devDependencies": {
         "@types/react": "18.3.12",
-        "vite": "6.0.5"
+        "vite": "6.0.5",
+        "reflect-metadata": "0.2.2"
     }
 }
