@@ -3,7 +3,7 @@
 
 import { rollup } from '../../../rollup.config.mjs';
 
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 import path from "path";
 
