@@ -20,7 +20,9 @@
         "skipLibCheck": true,
         "lib": [
             "ESNext",
-            "DOM"
+            "ES2022",
+            "DOM",
+            "DOM.Iterable"
         ],
         "jsx": "react-jsx",
         "esModuleInterop": true,
@@ -41,7 +43,8 @@
     },
     "exclude": [
         "**/dist",
-        "**/for_*/**"
+        "**/for_*/**",
+        "**/vite.config.mts"
     ],
     "references": [
         {
