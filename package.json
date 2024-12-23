@@ -4,6 +4,9 @@
         "Source/**/*",
         "Samples/**/*"
     ],
+    "engines": {
+        "node": ">=23.0.0"
+    },
     "scripts": {
         "g:clean": "cd $INIT_CWD && tsc -b --clean",
         "g:build2": "cd $INIT_CWD && tsc -b --verbose",
