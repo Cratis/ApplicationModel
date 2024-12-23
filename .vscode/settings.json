@@ -1,24 +1,31 @@
 {
-    "cSpell.words": [
-        "applicationmodel",
-        "appsettings",
-        "Brotli",
-        "Bson",
-        "camelcase",
-        "Cratis",
-        "datatable",
-        "Expando",
-        "MVVM",
-        "primeicons",
-        "primereact",
-        "Swashbuckle",
-        "templating",
-        "tseslint",
-        "tsyringe",
-        "Unmap",
-        "unmapping",
-        "Unmaps"
-    ],
-    "dotnet.defaultSolution": "ApplicationModel.sln",
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "cSpell.words": [
+    "applicationmodel",
+    "appsettings",
+    "Brotli",
+    "Bson",
+    "camelcase",
+    "Cratis",
+    "datatable",
+    "Expando",
+    "MVVM",
+    "primeicons",
+    "primereact",
+    "Swashbuckle",
+    "templating",
+    "tseslint",
+    "tsyringe",
+    "Unmap",
+    "unmapping",
+    "Unmaps"
+  ],
+  "dotnet.defaultSolution": "ApplicationModel.sln",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }
