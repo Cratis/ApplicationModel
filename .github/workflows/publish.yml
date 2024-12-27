@@ -124,3 +124,12 @@ jobs:
       - name: Git reset (package.json files changed)
         run: |
           git reset --hard
+
+      - name: Trigger Documentation Build
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT_DOCUMENTATION }}
+          repository: cratis/documentation
+          event-type: build-docs
+
+          
