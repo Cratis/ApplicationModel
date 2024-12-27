@@ -432,7 +432,7 @@ export class CustomDialogViewModel {
     name: string = '';
 
     done() {
-        this._props.resolver('Done done done...);
+        this._props.resolver('Done done done...');
     }
 
     cancel() {
