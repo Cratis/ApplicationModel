@@ -39,7 +39,7 @@
         "@typescript-eslint/parser": "8.19.0",
         "@vitest/coverage-v8": "2.1.6",
         "chai": "5.1.2",
-        "chai-as-promised": "8.0.0",
+        "chai-as-promised": "8.0.1",
         "edit-json-file": "1.8.0",
         "eslint": "9.17.0",
         "eslint-config-prettier": "9.1.0",
