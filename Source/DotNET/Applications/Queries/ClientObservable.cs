@@ -4,6 +4,7 @@
 using System.Reactive.Subjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
@@ -19,12 +20,14 @@ namespace Cratis.Applications.Queries;
 /// <param name="subject">The <see cref="ISubject{T}"/> the observable wraps.</param>
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
 /// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="hostApplicationLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
 /// <param name="logger">The <see cref="ILogger"/>.</param>
 public class ClientObservable<T>(
     QueryContext queryContext,
     ISubject<T> subject,
     JsonOptions jsonOptions,
     IWebSocketConnectionHandler webSocketConnectionHandler,
+    IHostApplicationLifetime hostApplicationLifetime,
     ILogger<ClientObservable<T>> logger) : IClientObservable, IAsyncEnumerable<T>
 {
     /// <summary>
@@ -37,14 +40,19 @@ public class ClientObservable<T>(
     public async Task HandleConnection(ActionExecutingContext context)
     {
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
-        var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult<object>();
         using var cts = new CancellationTokenSource();
 
         using var subscription = subject.Subscribe(Next, Error, Complete);
+
+        // If application is stopping, complete the observable
+        hostApplicationLifetime.ApplicationStopping.Register(Complete);
+
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
         subject.OnCompleted();
-        await tsc.Task;
+
+        await tcs.Task;
         return;
 
         async void Next(T data)
@@ -83,7 +91,7 @@ public class ClientObservable<T>(
         {
             logger.ObservableCompleted();
             cts.Cancel();
-            tsc.SetResult();
+            tcs.SetResult();
         }
     }
 
