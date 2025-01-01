@@ -18,7 +18,6 @@
         <ProjectReference Include="../../../../Source\DotNET/Orleans/Orleans.csproj" />
         <ProjectReference Include="../../../../Source\DotNET/Orleans.MongoDB/Orleans.MongoDB.csproj" />
         <ProjectReference Include="../../../../Source\DotNET/Tools/ProxyGenerator.Build/ProxyGenerator.Build.csproj" />
-        <ProjectReference Include="../../../../Source\DotNET/Serilog/Serilog.csproj" />
         <ProjectReference Include="../../../../Source\DotNET/Swagger/Swagger.csproj" />
     </ItemGroup>
 
@@ -29,13 +28,6 @@
         <PackageReference Include="Microsoft.Orleans.Serialization.SystemTextJson" />
         <PackageReference Include="OrleansDashboard" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
-		<PackageReference Include="Serilog.Exceptions" />
-		<PackageReference Include="Serilog.Extensions.Logging" />
-        <PackageReference Include="Serilog.Settings.Configuration" />
-		<PackageReference Include="Serilog.Sinks.Console" />
-		<PackageReference Include="Serilog.Sinks.PeriodicBatching" />
-		<PackageReference Include="serilog.aspnetcore" />
-		<PackageReference Include="Serilog.Sinks.Seq" />
     </ItemGroup>
 
 </Project>
