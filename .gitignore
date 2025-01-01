@@ -301,3 +301,6 @@ yarn.lock
 coverage
 
 .DS_Store
+
+vite.*.js
+vite*.map

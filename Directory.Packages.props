@@ -5,7 +5,7 @@
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="6.0.3" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="6.1.0" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.12.6" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.12.6" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
@@ -29,11 +29,11 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
     <!-- Analysis -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" NoWarn="NU5104" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.10" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.181" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.184" />
     <!-- Specifications -->
     <PackageVersion Include="Cratis.Specifications.XUnit" Version="3.0.4" />
     <PackageVersion Include="xunit" Version="2.9.2" />
