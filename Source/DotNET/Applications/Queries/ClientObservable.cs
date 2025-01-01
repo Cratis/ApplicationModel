@@ -39,6 +39,7 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
+        var cancelled = false;
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult<object>();
@@ -47,7 +48,8 @@ public class ClientObservable<T>(
         using var subscription = subject.Subscribe(Next, Error, Complete);
 
         // If application is stopping, complete the observable
-        hostApplicationLifetime.ApplicationStopping.Register(Complete);
+        using var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, hostApplicationLifetime.ApplicationStopping);
+        linkedTokenSource.Token.Register(Complete);
 
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
         subject.OnCompleted();
@@ -89,9 +91,14 @@ public class ClientObservable<T>(
         }
         void Complete()
         {
+            if (cancelled)
+            {
+                return;
+            }
             logger.ObservableCompleted();
             cts.Cancel();
             tcs.SetResult();
+            cancelled = true;
         }
     }
 
