@@ -49,7 +49,8 @@ public class ClientObservable<T>(
         using var subscription = subject.Subscribe(Next, Error, Complete);
 
         // If application is stopping, complete the observable
-        hostApplicationLifetime.ApplicationStopping.Register(Complete);
+        using var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, hostApplicationLifetime.ApplicationStopping);
+        linkedTokenSource.Token.Register(Complete);
 
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
         subject.OnCompleted();
