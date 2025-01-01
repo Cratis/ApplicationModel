@@ -8,8 +8,6 @@ using Cratis.Applications.Swagger;
 using Cratis.Execution;
 using Cratis.Json;
 using Orleans.Serialization;
-using Serilog;
-using Serilog.Exceptions;
 
 // Force invariant culture for the Backend
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
@@ -18,14 +16,7 @@ CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
-Log.Logger = new LoggerConfiguration()
-    .Enrich.WithExceptionDetails()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-
 builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(Log.Logger);
-Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
 builder.UseCratisApplicationModel();
 builder.UseCratisMongoDB();
 
