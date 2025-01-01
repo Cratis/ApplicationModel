@@ -35,7 +35,7 @@
         "@types/sinon": "17.0.3",
         "@types/sinon-chai": "4.0.0",
         "@typescript-eslint/eslint-plugin": "8.19.0",
-        "@typescript-eslint/eslint-plugin": "8.18.1",
+        "@typescript-eslint/eslint-plugin": "8.19.0",
         "@typescript-eslint/parser": "8.19.0",
         "@vitest/coverage-v8": "2.1.8",
         "chai": "5.1.2",
