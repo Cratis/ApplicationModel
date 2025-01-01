@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reactive.Subjects;
+using System.Runtime.ConstrainedExecution;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +40,7 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(ActionExecutingContext context)
     {
+        var cancelled = false;
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult<object>();
@@ -89,9 +91,14 @@ public class ClientObservable<T>(
         }
         void Complete()
         {
+            if (cancelled)
+            {
+                return;
+            }
             logger.ObservableCompleted();
             cts.Cancel();
             tcs.SetResult();
+            cancelled = true;
         }
     }
 
