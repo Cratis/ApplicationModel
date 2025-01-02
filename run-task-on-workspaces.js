@@ -60,8 +60,6 @@ function updateDependencyVersionsFromLocalWorkspaces(file, packageJson, version)
         for (let dependencyName of Object.keys(dependencies)) {
             if (workspaceNames.includes(dependencyName)) {
                 console.log(`Updating workspace ${field} '${dependencyName}' to version ${version}`);
-                dependencyName = dependencyName.replace(/\./g, '\\.');
-                field = field.replace(/\./g, '\\.');
                 fileDependencies[dependencyName] = version;
             }
         }
@@ -78,7 +76,6 @@ for (const workspaceName in workspaces) {
     if (fs.existsSync(packageJsonFile)) {
         const file = editJsonFile(packageJsonFile, { stringify_width: 4 });
         const packageJson = file.toObject();
-        console.log('Process package', packageJson);
         if (packageJson.private === true) {
             console.log(`Workspace private '${workspaceName}' at '${workspaceRelativeLocation}'`);
             continue;
@@ -101,7 +98,6 @@ for (const workspaceName in workspaces) {
                 const result = spawn('npm', ['publish'], { cwd: workspaceAbsoluteLocation });
                 console.log(result.stdout.toString());
                 console.log(result.stderr.toString());
-                console.log('Processed package', file.toObject());
                 if (result.status !== 0) {
                     console.log(`Error publishing workspace '${workspaceName}'`);
                     process.exit(1);
