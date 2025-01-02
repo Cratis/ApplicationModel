@@ -4,7 +4,10 @@
     "description": "",
     "author": "Cratis",
     "license": "MIT",
-    "repository": "github:cratis/applicationmodel",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cratis/applicationmodel.git"
+    },
     "publishConfig": {
         "access": "public"
     },
