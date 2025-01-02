@@ -99,6 +99,7 @@ for (const workspaceName in workspaces) {
                 console.log(`Publishing workspace '${workspaceName}' at '${workspaceRelativeLocation}'`);
                 const result = spawn('npm', ['publish'], { cwd: workspaceAbsoluteLocation });
                 console.log(result.stdout.toString());
+                console.log(result.stderr.toString());
                 if (result.status !== 0) {
                     console.log(`Error publishing workspace '${workspaceName}'`);
                     process.exit(1);
