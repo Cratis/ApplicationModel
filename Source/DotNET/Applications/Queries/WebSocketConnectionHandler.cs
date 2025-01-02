@@ -27,6 +27,11 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
             {
                 do
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     received = null!;
                     received = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), token);
                     logger.ObservableReceivedMessage();
@@ -50,6 +55,10 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
         catch (WebSocketException ex)
         {
             logger.ObservableWebSocketErrorReceivingMessage(ex);
+        }
+        catch (OperationCanceledException)
+        {
+            logger.ObservableCloseConnection("Operation was cancelled");
         }
         catch (Exception ex)
         {
