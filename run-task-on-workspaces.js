@@ -77,6 +77,7 @@ for (const workspaceName in workspaces) {
 
     if (fs.existsSync(packageJsonFile)) {
         const file = editJsonFile(packageJsonFile, { stringify_width: 4 });
+        console.log('Process package', file.JSON);
         const packageJson = file.toObject();
         if (packageJson.private === true) {
             console.log(`Workspace private '${workspaceName}' at '${workspaceRelativeLocation}'`);
@@ -100,6 +101,7 @@ for (const workspaceName in workspaces) {
                 const result = spawn('npm', ['publish'], { cwd: workspaceAbsoluteLocation });
                 console.log(result.stdout.toString());
                 console.log(result.stderr.toString());
+                console.log('Processed package', file.JSON);
                 if (result.status !== 0) {
                     console.log(`Error publishing workspace '${workspaceName}'`);
                     process.exit(1);
