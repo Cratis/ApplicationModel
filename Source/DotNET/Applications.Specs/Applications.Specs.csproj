@@ -8,8 +8,4 @@
     <ItemGroup>
         <ProjectReference Include="../Applications/Applications.csproj"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    </ItemGroup>
 </Project>
