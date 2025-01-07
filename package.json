@@ -61,7 +61,7 @@
         "sinon-chai": "4.0.0",
         "ts-node": "10.9.2",
         "typescript": "5.7.2",
-        "typescript-eslint": "8.19.0",
+        "typescript-eslint": "8.19.1",
         "vite": "6.0.7",
         "vite-plugin-commonjs": "0.10.4",
         "vite-tsconfig-paths": "5.1.4",
