@@ -50,7 +50,7 @@ export interface IViewContext<T, TProps = object> {
  * @returns 
  */
 export function withViewModel<TViewModel extends object, TProps extends object = object>(
-viewModelType: Constructor<TViewModel>,
+    viewModelType: Constructor<TViewModel>,
     targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
 
     const renderComponent = (props: TProps) => {
