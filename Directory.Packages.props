@@ -43,12 +43,12 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
-    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="8.0.1" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="[8.0.1]" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="[8.0.1]" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="[8.0.1]" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="[8.0.2]" />
+    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="[8.0.1]" />
+    <PackageVersion Include="System.Text.Json" Version="[8.0.5]" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
