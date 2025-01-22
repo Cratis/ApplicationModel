@@ -51,7 +51,7 @@
         "globals": "15.14.0",
         "mocha": "11.1.0",
         "module-alias": "2.2.3",
-        "npm-check-updates": "17.1.13",
+        "npm-check-updates": "17.1.14",
         "prettier": "3.4.2",
         "rollup": "4.31.0",
         "rollup-plugin-commonjs": "10.1.0",
