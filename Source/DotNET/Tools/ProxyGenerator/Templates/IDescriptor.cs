@@ -21,5 +21,5 @@ public interface IDescriptor
     /// <summary>
     /// Gets a collection of types involved in the command.
     /// </summary>
-    IEnumerable<Type> TypesInvolved { get; }
+    IEnumerable<Type> TypesInvolved { get; }
 }
