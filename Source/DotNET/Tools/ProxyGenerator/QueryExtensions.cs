@@ -42,8 +42,9 @@ public static class QueryExtensions
         var argumentsWithComplexTypes = arguments.Where(_ => !_.OriginalType.IsKnownType());
         typesInvolved.AddRange(argumentsWithComplexTypes.Select(_ => _.OriginalType));
 
+        var relativePath = method.DeclaringType!.ResolveTargetPath(segmentsToSkip);
         var imports = typesInvolved
-                        .GetImports(targetPath, method.DeclaringType!.ResolveTargetPath(segmentsToSkip), segmentsToSkip)
+                        .GetImports(targetPath, relativePath, segmentsToSkip)
                         .DistinctBy(_ => _.Type)
                         .ToList();
 
@@ -52,12 +53,16 @@ public static class QueryExtensions
         {
             argument.CollectTypesInvolved(additionalTypesInvolved);
         }
+        var argumentsNeedingImportStatements = arguments.Where(_ => _.OriginalType.HasModule()).ToList();
+        imports.AddRange(argumentsNeedingImportStatements.Select(_ => _.OriginalType.GetImportStatement(targetPath, relativePath, segmentsToSkip)));
 
         var propertyDescriptors = responseModel.Type.GetPropertyDescriptors();
         foreach (var property in propertyDescriptors)
         {
             property.CollectTypesInvolved(additionalTypesInvolved);
         }
+
+        imports = imports.DistinctBy(_ => _.Type).ToList();
 
         var route = method.GetRoute();
 
