@@ -24,7 +24,11 @@ public class CommandActionFilter : IAsyncActionFilter
             ActionExecutedContext? result = null;
             object? response = null;
 
-            if (context.ModelState.IsValid || context.ShouldIgnoreValidation())
+            var ignoreValidation = context.ShouldIgnoreValidation();
+            var validationResult = ignoreValidation ?
+                                        Enumerable.Empty<ValidationResult>() :
+                                        context.ModelState.SelectMany(_ => _.Value!.Errors.Select(e => e.ToValidationResult(_.Key))).ToArray();
+            if (context.ModelState.IsValid || ignoreValidation)
             {
                 result = await next();
 
@@ -54,7 +58,7 @@ public class CommandActionFilter : IAsyncActionFilter
             var commandResult = new CommandResult<object>
             {
                 CorrelationId = context.HttpContext.GetCorrelationId(),
-                ValidationResults = context.ModelState.SelectMany(_ => _.Value!.Errors.Select(e => e.ToValidationResult(_.Key))),
+                ValidationResults = validationResult,
                 ExceptionMessages = [.. exceptionMessages],
                 ExceptionStackTrace = exceptionStackTrace ?? string.Empty,
                 Response = response
