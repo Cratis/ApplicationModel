@@ -3,6 +3,7 @@ name: PR Prerelase
 env:
   NUGET_OUTPUT: ./Artifacts/NuGet
   NUGET_SOURCE: https://nuget.pkg.github.com/cratis/index.json
+  DOTNET8_VERSION: "8.0.405"
   DOTNET_VERSION: "9.0.100"
 
 on:
@@ -43,6 +44,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
+            ${{ env.DOTNET8_VERSION }}
             ${{ env.DOTNET_VERSION }}
 
       - name: Remove any existing artifacts

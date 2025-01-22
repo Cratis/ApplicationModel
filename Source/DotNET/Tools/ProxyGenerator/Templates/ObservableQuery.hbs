@@ -58,9 +58,9 @@ class {{Name}}SortByWithoutQuery {
 export interface {{Name}}Arguments {
     {{#Arguments}}
     {{#if IsOptional}}
-    {{camelcase Name}}?: string;
+    {{camelcase Name}}?: {{Type}};
     {{else}}
-    {{camelcase Name}}: string;
+    {{camelcase Name}}: {{Type}};
     {{/if}}
     {{/Arguments}}
 }
