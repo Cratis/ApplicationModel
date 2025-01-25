@@ -46,10 +46,10 @@
   <Import Project="$(MSBuildThisFileDirectory)Directory.Packages.Net8.props" Condition=" '$(TargetFramework)' == 'net8.0' "/>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.1" />
   </ItemGroup>
 </Project>
