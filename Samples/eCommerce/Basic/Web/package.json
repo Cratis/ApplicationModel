@@ -16,7 +16,7 @@
         "@cratis/applications.react": "1.0.0",
         "@cratis/applications.react.mvvm": "1.0.0",
         "primeicons": "7.0.0",
-        "primereact": "10.9.1",
+        "primereact": "10.9.2",
         "react": "19.0.0",
         "react-dom": "19.0.0",
         "react-icons": "5.4.0",
@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@cratis/applications.vite": "1.0.0",
-        "@types/node": "22.10.9",
+        "@types/node": "22.10.10",
         "@types/react": "19.0.8",
         "@types/react-dom": "19.0.3",
         "@vitejs/plugin-react": "4.3.4",
