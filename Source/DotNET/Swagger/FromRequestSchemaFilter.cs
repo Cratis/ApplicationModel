@@ -41,11 +41,6 @@ public class FromRequestSchemaFilter : ISchemaFilter
             }
         }
 
-        if (context.Type.Name == "ChangeProfilePicture")
-        {
-            Console.WriteLine("ChangeProfilePicture");
-        }
-
         properties.ForEach(_ => schema.Properties.Remove(_.Name));
     }
 }
