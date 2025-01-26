@@ -134,11 +134,7 @@ public static class TypeExtensions
             var fullPath = Path.Combine(nugetCachePath, fundamentalsPackage.Path!, assetPaths[0]);
             if (File.Exists(fullPath))
             {
-                var directory = Path.GetDirectoryName(fullPath);
-                if (directory is not null)
-                {
-                    paths = [.. paths, directory!];
-                }
+                paths = [.. paths, fullPath];
             }
         }
 
@@ -628,12 +624,12 @@ public static class TypeExtensions
 
         try
         {
-            var fundamentals = _metadataLoadContext.LoadFromAssemblyName("Cratis.Fundamentals")!;
+            var fundamentals = _metadataLoadContext.LoadFromAssemblyName("Cratis.Fundamentals");
             _conceptType = fundamentals.GetType("Cratis.Concepts.ConceptAs`1")!;
         }
         catch
         {
-            Console.WriteLine("Could not load Cratis.Fundamentals, concepts will not be supported");
+            Console.WriteLine("  Could not load Cratis.Fundamentals, concepts will not be supported");
         }
 
         var aspNetCore = _metadataLoadContext.LoadFromAssemblyName("Microsoft.AspNetCore.Mvc.Core");
