@@ -27,7 +27,7 @@ public static class TypeExtensions
     public static readonly TargetType AnyTypeFinal = new(typeof(object), "any", "Object", Final: true);
 
 #pragma warning disable SA1600 // Elements should be documented
-    internal static Type _conceptType = typeof(object);
+    internal static Type _conceptType = typeof(NoConcept);
     internal static Type _nullableType = typeof(Nullable<>);
     internal static Type _expandoObjectType = typeof(ExpandoObject);
     internal static Type _stringType = typeof(string);
@@ -118,6 +118,29 @@ public static class TypeExtensions
         var aspNetCoreAssemblies = Directory.GetFiles(aspNetCoreAppPath, "*.dll");
         var appAssemblies = Directory.GetFiles(assemblyFolder, "*.dll");
         string[] paths = [.. runtimeAssemblies, .. aspNetCoreAssemblies, .. appAssemblies];
+
+        var fundamentalsPackage = dependencyContext.RuntimeLibraries.SingleOrDefault(_ => _.Type == "package" && _.Name == "Cratis.Fundamentals");
+        if (fundamentalsPackage is not null)
+        {
+            var assetPaths = fundamentalsPackage.RuntimeAssemblyGroups
+                .SelectMany(_ => _.AssetPaths)
+                .ToArray();
+
+            var nugetCachePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                ".nuget",
+                "packages");
+
+            var fullPath = Path.Combine(nugetCachePath, fundamentalsPackage.Path!, assetPaths[0]);
+            if (File.Exists(fullPath))
+            {
+                var directory = Path.GetDirectoryName(fullPath);
+                if (directory is not null)
+                {
+                    paths = [.. paths, directory!];
+                }
+            }
+        }
 
         var filtered = paths.Distinct(new FileNameComparer()).ToArray();
 
@@ -603,10 +626,22 @@ public static class TypeExtensions
         _taskType = assembly.GetType(typeof(Task).FullName!)!;
         _voidType = assembly.GetType(typeof(void).FullName!)!;
 
-        var fundamentals = _metadataLoadContext.LoadFromAssemblyName("Cratis.Fundamentals")!;
-        _conceptType = fundamentals.GetType("Cratis.Concepts.ConceptAs`1")!;
+        try
+        {
+            var fundamentals = _metadataLoadContext.LoadFromAssemblyName("Cratis.Fundamentals")!;
+            _conceptType = fundamentals.GetType("Cratis.Concepts.ConceptAs`1")!;
+        }
+        catch
+        {
+            Console.WriteLine("Could not load Cratis.Fundamentals, concepts will not be supported");
+        }
 
         var aspNetCore = _metadataLoadContext.LoadFromAssemblyName("Microsoft.AspNetCore.Mvc.Core");
         _controllerBaseType = aspNetCore.GetType("Microsoft.AspNetCore.Mvc.ControllerBase")!;
     }
+
+    /// <summary>
+    /// Type used when no ConceptAs from Fundamentals is available.
+    /// </summary>
+    sealed record NoConcept();
 }
