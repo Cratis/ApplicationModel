@@ -18,6 +18,8 @@ import {
 import { IViewModelDetached } from './IViewModelDetached';
 import { ApplicationModelContext } from '@cratis/applications.react';
 import { WellKnownBindings } from "./WellKnownBindings";
+import { deepEqual } from '@cratis/applications';
+import { IHandleParams } from 'IHandleParams';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -32,6 +34,13 @@ function disposeViewModel(viewModel: IViewModel) {
     if (viewModel.__childContainer) {
         const container = viewModel.__childContainer as DependencyContainer;
         container.dispose();
+    }
+}
+
+function handleParams(viewModel: IViewModel, params: object) { 
+    const vmWithHandleParams = (viewModel as unknown as IHandleParams);
+    if (typeof (vmWithHandleParams.handleParams) == 'function') {
+        vmWithHandleParams.handleParams(params);
     }
 }
 
@@ -56,6 +65,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
     const renderComponent = (props: TProps) => {
         const applicationContext = useContext(ApplicationModelContext);
         const params = useParams();
+        const [previousParams, setPreviousParams] = useState(params);
         const [queryParams] = useSearchParams();
         const queryParamsObject = Object.fromEntries(queryParams.entries());
         const dialogMediatorContext = useRef<IDialogMediatorHandler | null>(null);
@@ -84,6 +94,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
             currentViewModel.current = viewModel as TViewModel;
 
             setInitialRender(false);
+            handleParams(viewModel, params);
 
             return () => {
                 if (applicationContext.development === false) {
@@ -93,6 +104,11 @@ export function withViewModel<TViewModel extends object, TProps extends object =
         }, []);
 
         if (currentViewModel.current === null) return null;
+
+        if (!deepEqual(params, previousParams)) {
+            setPreviousParams(params);
+            handleParams(currentViewModel.current as IViewModel, params);
+        }
 
         const component = () => targetComponent({ viewModel: currentViewModel.current!, props }) as ReactElement<object, string>;
 
