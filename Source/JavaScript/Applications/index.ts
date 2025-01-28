@@ -5,6 +5,7 @@ import * as commands from './commands';
 import * as identity from './identity';
 import * as queries from './queries';
 import * as validation from './validation';
+export * from './deepEqual';
 export * from './Globals';
 
 export {
@@ -12,5 +13,4 @@ export {
     identity,
     queries,
     validation,
-
 };
