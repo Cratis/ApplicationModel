@@ -7,8 +7,8 @@
 export interface IHandleQueryParams<T = object> {
 
     /**
-     * Handle params.
-     * @param params Params to handle.
+     * Handle query params.
+     * @param queryParams Query Params to handle.
      */
-    handleQueryParams(params: T): void;
+    handleQueryParams(queryParams: T): void;
 }
