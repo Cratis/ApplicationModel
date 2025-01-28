@@ -11,6 +11,7 @@ export * from './withViewModel';
 export * from './IViewModelDetached';
 export * from './WellKnownBindings';
 export * from './IHandleParams';
+export * from './IHandleQueryParams';
 
 export {
     browser,
