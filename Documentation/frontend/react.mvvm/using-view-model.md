@@ -2,6 +2,35 @@
 
 Every React functional component can have a view model. This is accomplished using the `withViewModel()` method.
 
+```tsx
+export const Counter = withViewModel(CounterViewModel, ({viewModel}) => {
+    return (
+        <>
+            Counter is : {viewModel.counter}
+            <button onClick={() => viewModel.increaseCounter()}>Increase counter</button>
+        </>
+    )
+
+});
+```
+
+The component uses the `withViewModel` and passes the type `CounterViewModel` to be created for the view.
+As arguments you can then have the `viewModel`, this instance survives re-renders and can be stateful.
+
+```ts
+export class CounterViewModel {
+    counter: number;
+
+    increaseCounter() {
+        this.counter++;
+    }
+}
+```
+
+The `viewModel` is automatically observable, which means that all properties on it will notify the view
+if there are any changes to them. This means that the `increaseCounter()` method can just go ahead and
+increase the counter and the view will automatically re-render.
+
 ## Params
 
 Params defined as part of routes using `react-router` can easily be accessed by a view model in a couple of ways.
