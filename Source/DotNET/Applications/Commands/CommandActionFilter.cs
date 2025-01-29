@@ -6,6 +6,7 @@ using Cratis.Applications.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Cratis.Applications.Commands;
 
@@ -25,12 +26,18 @@ public class CommandActionFilter : IAsyncActionFilter
             object? response = null;
 
             var ignoreValidation = context.ShouldIgnoreValidation();
+
             var validationResult = ignoreValidation ?
-                                        Enumerable.Empty<ValidationResult>() :
-                                        context.ModelState.SelectMany(_ => _.Value!.Errors.Select(e => e.ToValidationResult(_.Key))).ToArray();
+                                        [] :
+                                        context.ModelState.SelectMany(_ => _.Value!.Errors.Select(e => e.ToValidationResult(_.Key))).ToList();
+
             if (context.ModelState.IsValid || ignoreValidation)
             {
+                var errorsBefore = context.ModelState.SelectMany(_ => _.Value!.Errors).ToArray();
+
                 result = await next();
+
+                AddAdditionalValidationResultsAfterActionExecute(context, validationResult, errorsBefore);
 
                 if (context.IsAspNetResult()) return;
 
@@ -91,6 +98,17 @@ public class CommandActionFilter : IAsyncActionFilter
         else
         {
             await next();
+        }
+    }
+
+    void AddAdditionalValidationResultsAfterActionExecute(ActionExecutingContext context, List<ValidationResult> validationResult, IEnumerable<ModelError> errorsBefore)
+    {
+        foreach (var (member, entry) in context.ModelState)
+        {
+            foreach (var error in entry.Errors.Where(_ => !errorsBefore.Contains(_)))
+            {
+                validationResult.Add(error.ToValidationResult(member));
+            }
         }
     }
 }
