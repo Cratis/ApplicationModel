@@ -19,7 +19,7 @@ public class CorrelationIdActionFilter(IOptions<ApplicationModelOptions> options
         var correlationIdAsString = context.HttpContext.Request.Headers[options.Value.CorrelationId.HttpHeader].ToString() ?? Guid.Empty.ToString();
         if (string.IsNullOrEmpty(correlationIdAsString))
         {
-            correlationIdAsString = Guid.NewGuid().ToString();
+            correlationIdAsString = CorrelationId.New().ToString();
             context.HttpContext.Request.Headers[Constants.DefaultCorrelationIdHeader] = correlationIdAsString;
         }
 
