@@ -21,6 +21,7 @@ import { WellKnownBindings } from "./WellKnownBindings";
 import { deepEqual } from '@cratis/applications';
 import { IHandleParams } from 'IHandleParams';
 import { IHandleQueryParams } from 'IHandleQueryParams';
+import { IHandleProps } from 'IHandleProps';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -35,6 +36,13 @@ function disposeViewModel(viewModel: IViewModel) {
     if (viewModel.__childContainer) {
         const container = viewModel.__childContainer as DependencyContainer;
         container.dispose();
+    }
+}
+
+function handleProps(viewModel: IViewModel, params: object) { 
+    const vmWithHandleParams = (viewModel as unknown as IHandleProps);
+    if (typeof (vmWithHandleParams.handleProps) == 'function') {
+        vmWithHandleParams.handleProps(params);
     }
 }
 
@@ -73,6 +81,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
     const renderComponent = (props: TProps) => {
         const applicationContext = useContext(ApplicationModelContext);
         const params = useParams();
+        const [currentProps, setCurrentProps] = useState(props);
         const [previousParams, setPreviousParams] = useState(params);
         const [queryParams] = useSearchParams();
         const [previousQueryParams, setPreviousQueryParams] = useState(queryParams);
@@ -103,7 +112,9 @@ export function withViewModel<TViewModel extends object, TProps extends object =
             currentViewModel.current = viewModel as TViewModel;
 
             setInitialRender(false);
+            handleProps(viewModel, props);
             handleParams(viewModel, params);
+            handleQueryParams(viewModel, queryParamsObject);
 
             return () => {
                 if (applicationContext.development === false) {
@@ -113,6 +124,11 @@ export function withViewModel<TViewModel extends object, TProps extends object =
         }, []);
 
         if (currentViewModel.current === null) return null;
+
+        if(!deepEqual(currentProps, props)) {
+            setCurrentProps(props);
+            handleProps(currentViewModel.current as IViewModel, props);
+        }
 
         if (!deepEqual(params, previousParams)) {
             setPreviousParams(params);
