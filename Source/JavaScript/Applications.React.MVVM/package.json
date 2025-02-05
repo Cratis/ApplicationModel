@@ -61,7 +61,7 @@
         "mobx-react": "9.2.0",
         "react": "19.0.0",
         "react-dom": "19.0.0",
-        "react-router-dom": "7.1.3",
+        "react-router-dom": "7.1.5",
         "reflect-metadata": "0.2.2",
         "rxjs": "7.8.1",
         "tsyringe": "4.8.0"
