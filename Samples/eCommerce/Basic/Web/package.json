@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@cratis/applications.vite": "1.0.0",
-        "@tailwindcss/postcss": "4.0.3",
+        "@tailwindcss/postcss": "4.0.4",
         "@types/node": "22.13.1",
         "@types/react": "19.0.8",
         "@types/react-dom": "19.0.3",
