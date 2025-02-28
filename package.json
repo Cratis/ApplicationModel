@@ -52,7 +52,7 @@
         "mocha": "11.1.0",
         "module-alias": "2.2.3",
         "npm-check-updates": "17.1.14",
-        "prettier": "3.5.1",
+        "prettier": "3.5.2",
         "rollup": "4.34.8",
         "rollup-plugin-commonjs": "10.1.0",
         "rollup-plugin-peer-deps-external": "2.2.4",
