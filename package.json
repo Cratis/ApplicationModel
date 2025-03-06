@@ -36,7 +36,7 @@
         "@types/sinon-chai": "4.0.0",
         "@typescript-eslint/eslint-plugin": "8.26.0",
         "@typescript-eslint/parser": "8.26.0",
-        "@vitest/coverage-v8": "3.0.7",
+        "@vitest/coverage-v8": "3.0.8",
         "chai": "5.2.0",
         "chai-as-promised": "8.0.1",
         "edit-json-file": "1.8.1",
