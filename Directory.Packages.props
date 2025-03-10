@@ -15,7 +15,7 @@
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.2.1" />
     <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
-    <PackageVersion Include="castle.core" Version="5.1.1" />
+    <PackageVersion Include="castle.core" Version="5.2.1" />
     <PackageVersion Include="polly.core" Version="8.5.2" />
     <!-- Orleans -->
     <PackageVersion Include="Microsoft.Orleans.SDK" Version="$(Orleans)" />
