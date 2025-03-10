@@ -6,7 +6,7 @@
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="6.1.6" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="6.1.8" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.13.9" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.13.9" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.3.1" />
