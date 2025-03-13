@@ -56,7 +56,7 @@
     "dependencies": {
         "@cratis/applications": "1.0.0",
         "@cratis/applications.react": "1.0.0",
-        "@cratis/fundamentals": "6.1.8",
+        "@cratis/fundamentals": "6.1.9",
         "mobx": "6.13.6",
         "mobx-react": "9.2.0",
         "react": "19.0.0",
