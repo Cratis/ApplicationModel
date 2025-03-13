@@ -213,11 +213,11 @@ public static class MongoCollectionExtensions
 
                 query = AddSorting(queryContext, query);
                 query = AddPaging(queryContext, query);
-                documents = query.ToList();
-                onNext(documents, subject);
 
                 using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
+                documents = query.ToList();
+                onNext(documents, subject);
 
                 await cursor.ForEachAsync(
                     async changeDocument =>
