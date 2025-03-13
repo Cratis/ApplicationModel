@@ -148,12 +148,11 @@ public static class TypeExtensions
         AssemblyLoadContext.Default.Resolving += (_, name) =>
             _assembliesByName[name.Name!] = _assemblyResolver.Resolve(_metadataLoadContext, name)!;
 
-        Assemblies = dependencyContext.RuntimeLibraries
+        Assemblies = [.. dependencyContext.RuntimeLibraries
                                         .Where(_ => _.Type.Equals("project"))
                                         .Select(_ => _metadataLoadContext.LoadFromAssemblyPath(Path.Join(assemblyFolder, $"{_.Name}.dll")))
                                         .Where(_ => _ is not null)
-                                        .Distinct()
-                                        .ToArray();
+                                        .Distinct()];
 
         foreach (var loadedAssembly in _metadataLoadContext.GetAssemblies())
         {
@@ -318,10 +317,9 @@ public static class TypeExtensions
         }
 
         imports.AddRange(typesInvolved.GetImports(targetPath, type!.ResolveTargetPath(segmentsToSkip), segmentsToSkip));
-        imports = imports
+        imports = [.. imports
                     .DistinctBy(_ => _.Type)
-                    .Where(_ => propertyDescriptors.Exists(pd => pd.Type == _.Type) && _.OriginalType != type)
-                    .ToList();
+                    .Where(_ => propertyDescriptors.Exists(pd => pd.Type == _.Type) && _.OriginalType != type)];
 
         return new TypeDescriptor(
             type,
@@ -427,7 +425,7 @@ public static class TypeExtensions
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
     /// <returns>A collection of <see cref="ImportStatement"/>.</returns>
     public static IEnumerable<ImportStatement> GetImports(this IEnumerable<Type> types, string targetPath, string relativePath, int segmentsToSkip) =>
-        types.Select(_ => _.GetImportStatement(targetPath, relativePath, segmentsToSkip)).ToArray();
+        [.. types.Select(_ => _.GetImportStatement(targetPath, relativePath, segmentsToSkip))];
 
     /// <summary>
     /// Collect types involved for a property, recursively.

@@ -14,7 +14,7 @@ public class for_async_methods : given.an_interceptor_selector
 
     void Establish()
     {
-        async_methods = typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => m.ReturnType == typeof(Task)).ToArray();
+        async_methods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => m.ReturnType == typeof(Task))];
     }
 
     void Because() => intercepted_methods = async_methods.Count(methodInfo =>

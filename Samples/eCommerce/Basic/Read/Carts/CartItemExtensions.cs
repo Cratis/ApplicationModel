@@ -18,6 +18,6 @@ public static class CartItemExtensions
     /// <returns>Converted order lines.</returns>
     public static IEnumerable<OrderLine> ToOrderLines(this IEnumerable<CartItem> cartItems)
     {
-        return cartItems.Select(cartItem => new OrderLine(cartItem.SKU, cartItem.Price, cartItem.Quantity)).ToArray();
+        return [.. cartItems.Select(cartItem => new OrderLine(cartItem.SKU, cartItem.Price, cartItem.Quantity))];
     }
 }
