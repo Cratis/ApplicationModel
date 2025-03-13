@@ -59,7 +59,7 @@ public static class CommandExtensions
             property.CollectTypesInvolved(additionalTypesInvolved);
         }
 
-        imports = imports.DistinctBy(_ => _.Type).ToList();
+        imports = [.. imports.DistinctBy(_ => _.Type)];
 
         var route = method.GetRoute();
 

@@ -62,7 +62,7 @@ public static class MongoCollectionExtensions
             () => collection.Find(filter, options),
             filter,
             documents => new BehaviorSubject<IEnumerable<TDocument>>(documents),
-            (cursor, observable) => observable.OnNext(cursor.ToList()));
+            (cursor, observable) => observable.OnNext([.. cursor]));
     }
 
     /// <summary>

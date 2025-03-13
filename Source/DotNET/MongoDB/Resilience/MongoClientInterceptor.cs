@@ -27,7 +27,7 @@ public class MongoClientInterceptor(
         invocation.Proceed();
 
         invocation.ReturnValue = proxyGenerator.CreateInterfaceProxyWithTarget(
-            invocation.ReturnValue as IMongoDatabase,
+            (invocation.ReturnValue as IMongoDatabase)!,
             new ProxyGenerationOptions
             {
                 Selector = new MongoDatabaseInterceptorSelector(proxyGenerator, resiliencePipeline, mongoClient)

@@ -14,7 +14,7 @@ public class for_sync_methods : given.an_interceptor_selector
 
     void Establish()
     {
-        sync_methods = typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => !m.ReturnType.IsAssignableTo(typeof(Task))).ToArray();
+        sync_methods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => !m.ReturnType.IsAssignableTo(typeof(Task)))];
     }
 
     void Because() => intercepted_methods = sync_methods.Count(methodInfo =>

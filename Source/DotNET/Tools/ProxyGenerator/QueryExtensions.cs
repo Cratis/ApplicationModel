@@ -62,7 +62,7 @@ public static class QueryExtensions
             property.CollectTypesInvolved(additionalTypesInvolved);
         }
 
-        imports = imports.DistinctBy(_ => _.Type).ToList();
+        imports = [.. imports.DistinctBy(_ => _.Type)];
 
         var route = method.GetRoute();
 
@@ -78,7 +78,7 @@ public static class QueryExtensions
             responseModel.IsObservable,
             imports.ToOrderedImports(),
             arguments,
-            arguments.Where(_ => !_.IsOptional).ToList(),
+            [.. arguments.Where(_ => !_.IsOptional)],
             propertyDescriptors,
             [.. typesInvolved, .. additionalTypesInvolved]);
     }
