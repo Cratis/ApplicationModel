@@ -222,16 +222,23 @@ public static class MongoCollectionExtensions
                 await cursor.ForEachAsync(
                     async changeDocument =>
                     {
-                        documents = await HandleChange(
-                            queryContext,
-                            onNext,
-                            changeDocument,
-                            invalidateFindOnAddOrDelete,
-                            baseQuery,
-                            query,
-                            documents,
-                            subject,
-                            idProperty);
+                        try
+                        {
+                            documents = await HandleChange(
+                                queryContext,
+                                onNext,
+                                changeDocument,
+                                invalidateFindOnAddOrDelete,
+                                baseQuery,
+                                query,
+                                documents,
+                                subject,
+                                idProperty);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.UnexpectedError(e);
+                        }
                     },
                     cancellationToken);
             }
@@ -282,7 +289,7 @@ public static class MongoCollectionExtensions
         PropertyInfo idProperty)
     {
         var hasChanges = false;
-        if (changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
+        if (changeDocument.DocumentKey is not null && changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
         {
             var id = GetId(idProperty, idValue);
             var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
