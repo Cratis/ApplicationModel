@@ -41,7 +41,7 @@ public record Paging
     public int Size { get; }
 
     /// <summary>
-    /// Whether or not paging is to be used.
+    /// Whether paging is to be used.
     /// </summary>
     public bool IsPaged { get; }
 

@@ -1,3 +1,6 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 import { withViewModel } from '@cratis/applications.react.mvvm';
 import { useState } from 'react';
 import { ObserveAllProducts } from './API/Products';
