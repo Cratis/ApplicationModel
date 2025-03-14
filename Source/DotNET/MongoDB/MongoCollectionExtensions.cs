@@ -62,7 +62,7 @@ public static class MongoCollectionExtensions
             () => collection.Find(filter, options),
             filter,
             documents => new BehaviorSubject<IEnumerable<TDocument>>(documents),
-            (cursor, observable) => observable.OnNext(cursor.ToList()));
+            (cursor, observable) => observable.OnNext([.. cursor]));
     }
 
     /// <summary>
@@ -213,25 +213,32 @@ public static class MongoCollectionExtensions
 
                 query = AddSorting(queryContext, query);
                 query = AddPaging(queryContext, query);
-                documents = query.ToList();
-                onNext(documents, subject);
 
                 using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
+                documents = query.ToList();
+                onNext(documents, subject);
 
                 await cursor.ForEachAsync(
                     async changeDocument =>
                     {
-                        documents = await HandleChange(
-                            queryContext,
-                            onNext,
-                            changeDocument,
-                            invalidateFindOnAddOrDelete,
-                            baseQuery,
-                            query,
-                            documents,
-                            subject,
-                            idProperty);
+                        try
+                        {
+                            documents = await HandleChange(
+                                queryContext,
+                                onNext,
+                                changeDocument,
+                                invalidateFindOnAddOrDelete,
+                                baseQuery,
+                                query,
+                                documents,
+                                subject,
+                                idProperty);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.UnexpectedError(e);
+                        }
                     },
                     cancellationToken);
             }
@@ -282,7 +289,7 @@ public static class MongoCollectionExtensions
         PropertyInfo idProperty)
     {
         var hasChanges = false;
-        if (changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
+        if (changeDocument.DocumentKey is not null && changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
         {
             var id = GetId(idProperty, idValue);
             var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));

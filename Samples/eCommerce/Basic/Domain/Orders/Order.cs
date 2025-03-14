@@ -30,7 +30,7 @@ public class Order : StateMachine<Read.Orders.Order>, IOrder
     /// <inheritdoc/>
     public async Task Initiate(Cart cart)
     {
-        State.Lines = cart.Items.ToOrderLines().ToList();
+        State.Lines = [.. cart.Items.ToOrderLines()];
         await TransitionTo<Initiated>();
     }
 

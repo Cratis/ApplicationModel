@@ -56,14 +56,14 @@
     "dependencies": {
         "@cratis/applications": "1.0.0",
         "@cratis/applications.react": "1.0.0",
-        "@cratis/fundamentals": "6.1.6",
+        "@cratis/fundamentals": "6.1.9",
         "mobx": "6.13.6",
         "mobx-react": "9.2.0",
         "react": "19.0.0",
         "react-dom": "19.0.0",
-        "react-router-dom": "7.1.5",
+        "react-router-dom": "7.3.0",
         "reflect-metadata": "0.2.2",
-        "rxjs": "7.8.1",
+        "rxjs": "7.8.2",
         "tsyringe": "4.8.0"
     },
     "devDependencies": {

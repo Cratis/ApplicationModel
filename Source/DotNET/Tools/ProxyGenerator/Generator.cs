@@ -74,7 +74,7 @@ public static class Generator
         var observableQueries = queryDescriptors.Where(_ => _.IsObservable).ToList();
         await observableQueries.Write(outputPath, typesInvolved, TemplateTypes.ObservableQuery, directories, segmentsToSkip, "observable queries", message);
 
-        typesInvolved = typesInvolved.Distinct().ToList();
+        typesInvolved = [.. typesInvolved.Distinct()];
         var enums = typesInvolved.Where(_ => _.IsEnum).ToList();
 
         var typeDescriptors = typesInvolved.Where(_ => !enums.Contains(_)).ToList().ConvertAll(_ => _.ToTypeDescriptor(outputPath, segmentsToSkip));
