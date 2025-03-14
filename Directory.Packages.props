@@ -4,9 +4,11 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <Orleans>9.0.1</Orleans>
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
+    <Fundamentals>6.1.6</Fundamentals>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="6.1.6" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="$(Fundamentals)" />
+    <PackageVersion Include="Cratis.Metrics.Roslyn" Version="$(Fundamentals)" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.13.9" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.12.6" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
