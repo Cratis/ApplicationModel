@@ -5,6 +5,7 @@
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <InternalsVisibleTo Include="Cratis.Applications.MongoDB.Specs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Cratis.Fundamentals" />
