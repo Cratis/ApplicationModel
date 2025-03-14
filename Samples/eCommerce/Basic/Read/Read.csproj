@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="../Concepts/Concepts.csproj" />
-        <ProjectReference Include="../../../../Source/DotNET/Orleans/Orleans.csproj" />
-        <ProjectReference Include="../../../../Source\DotNET/MongoDB/MongoDB.csproj" />
-    </ItemGroup>
-
-</Project>
