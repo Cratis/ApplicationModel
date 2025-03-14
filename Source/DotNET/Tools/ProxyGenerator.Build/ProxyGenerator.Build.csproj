@@ -37,7 +37,7 @@
     <ItemGroup>
         <Content Include="$(MSBuildThisFileDirectory)bin/Release/net8.0/**/*" PackagePath="tasks/net8.0" />
         <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\8.0.1\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
+        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\8.0.2\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
         <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\8.0.1\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
 
         <Content Include="$(MSBuildThisFileDirectory)bin/Release/net9.0/**/*" PackagePath="tasks/net9.0" />
