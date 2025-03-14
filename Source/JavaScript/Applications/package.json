@@ -60,7 +60,7 @@
         "up": "yarn g:up"
     },
     "dependencies": {
-        "@cratis/fundamentals": "6.1.9",
+        "@cratis/fundamentals": "6.1.10",
         "handlebars": "4.7.8"
     },
     "devDependencies": {
