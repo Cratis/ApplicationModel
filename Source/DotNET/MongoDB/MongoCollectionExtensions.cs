@@ -170,18 +170,21 @@ public static class MongoCollectionExtensions
         Action<IEnumerable<TDocument>, ISubject<TResult>> onNext)
     {
         var completedCleanup = false;
-        var documents = new List<TDocument>();
         var subject = createSubject([]);
         var logger = Internals.ServiceProvider.GetRequiredService<ILogger<MongoCollection>>();
         var queryContextManager = Internals.ServiceProvider.GetRequiredService<IQueryContextManager>();
         var queryContext = queryContextManager.Current;
+
+        // TODO: No customizable Id property?
+        var idProperty = typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!;
+        var documents = new QueryContextAwareSet<TDocument>(queryContext, idProperty);
         var invalidateFindOnAddOrDelete = queryContext.Paging.IsPaged || queryContext.Sorting != Sorting.None;
 
         var options = new ChangeStreamOptions
         {
             FullDocument = ChangeStreamFullDocumentOption.UpdateLookup
         };
-        var filterRendered = filter.Render(new RenderArgs<TDocument>(collection.DocumentSerializer, collection.Settings.SerializerRegistry));
+        var filterRendered = filter.Render(new(collection.DocumentSerializer, collection.Settings.SerializerRegistry));
         PrefixKeys(filterRendered);
 
         var fullFilter = Builders<ChangeStreamDocument<TDocument>>.Filter.Or(
@@ -194,7 +197,6 @@ public static class MongoCollectionExtensions
 
         var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<TDocument>>().Match(fullFilter);
 
-        var idProperty = typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!;
 #pragma warning disable CA2000 // Dispose objects before losing scope
         var cancellationTokenSource = new CancellationTokenSource();
 #pragma warning restore CA2000 // Dispose objects before losing scope
@@ -207,29 +209,28 @@ public static class MongoCollectionExtensions
         {
             try
             {
-                var baseQuery = findCall();
                 var query = findCall();
-                await UpdateTotalItems(queryContext, query);
-
                 query = AddSorting(queryContext, query);
                 query = AddPaging(queryContext, query);
 
                 using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
-                documents = query.ToList();
+                queryContext.TotalItems = (int)await findCall().CountDocumentsAsync();
+                foreach (var document in await query.ToListAsync())
+                {
+                    documents.Add(document);
+                }
                 onNext(documents, subject);
-
                 await cursor.ForEachAsync(
                     async changeDocument =>
                     {
                         try
                         {
-                            documents = await HandleChange(
+                            await HandleChange(
                                 queryContext,
                                 onNext,
                                 changeDocument,
                                 invalidateFindOnAddOrDelete,
-                                baseQuery,
                                 query,
                                 documents,
                                 subject,
@@ -272,19 +273,13 @@ public static class MongoCollectionExtensions
         }
     }
 
-    static async Task UpdateTotalItems<TDocument>(QueryContext queryContext, IFindFluent<TDocument, TDocument> query)
-    {
-        queryContext.TotalItems = (int)await query.CountDocumentsAsync();
-    }
-
-    static async Task<List<TDocument>> HandleChange<TDocument, TResult>(
+    static async Task HandleChange<TDocument, TResult>(
         QueryContext queryContext,
         Action<IEnumerable<TDocument>, ISubject<TResult>> onNext,
         ChangeStreamDocument<TDocument> changeDocument,
         bool invalidateFindOnAddOrDelete,
-        IFindFluent<TDocument, TDocument> baseQuery,
         IFindFluent<TDocument, TDocument> query,
-        List<TDocument> documents,
+        QueryContextAwareSet<TDocument> documents,
         ISubject<TResult> subject,
         PropertyInfo idProperty)
     {
@@ -292,43 +287,44 @@ public static class MongoCollectionExtensions
         if (changeDocument.DocumentKey is not null && changeDocument.DocumentKey.TryGetValue("_id", out var idValue))
         {
             var id = GetId(idProperty, idValue);
-            var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
-            if (changeDocument.OperationType == ChangeStreamOperationType.Delete && document is not null)
-            {
-                if (!invalidateFindOnAddOrDelete)
-                {
-                    documents.Remove(document);
-                }
-                hasChanges = true;
-            }
-            else if (document is not null)
-            {
-                var index = documents.IndexOf(document);
-                documents[index] = changeDocument.FullDocument;
-                hasChanges = true;
-            }
-            else if (changeDocument.OperationType == ChangeStreamOperationType.Insert)
-            {
-                if (!invalidateFindOnAddOrDelete)
-                {
-                    documents.Add(changeDocument.FullDocument);
-                }
-                hasChanges = true;
-            }
-
-            if (invalidateFindOnAddOrDelete)
-            {
-                await UpdateTotalItems(queryContext, baseQuery);
-                documents = await query.ToListAsync();
-            }
+            var fullDocument = changeDocument.FullDocument;
+            //     var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
+            //     if (changeDocument.OperationType == ChangeStreamOperationType.Delete && document is not null)
+            //     {
+            //         queryContext.TotalItems--;
+            //         if (!invalidateFindOnAddOrDelete)
+            //         {
+            //             documents.Remove(document);
+            //         }
+            //         hasChanges = true;
+            //     }
+            //     else if (document is not null)
+            //     {
+            //         var index = documents.IndexOf(document);
+            //         documents[index] = changeDocument.FullDocument;
+            //         hasChanges = true;
+            //     }
+            //     else if (changeDocument.OperationType == ChangeStreamOperationType.Insert)
+            //     {
+            //         queryContext.TotalItems++;
+            //         if (!invalidateFindOnAddOrDelete)
+            //         {
+            //             documents.Add(changeDocument.FullDocument);
+            //         }
+            //         hasChanges = true;
+            //     }
+            //
+            //     if (invalidateFindOnAddOrDelete)
+            //     {
+            //         documents = await query.ToListAsync();
+            //     }
+            // }
+            //
+            // if (hasChanges)
+            // {
+            //     onNext(documents, subject);
+            // }
         }
-
-        if (hasChanges)
-        {
-            onNext(documents, subject);
-        }
-
-        return documents;
     }
 
     static object GetId(PropertyInfo idProperty, BsonValue idValue)
