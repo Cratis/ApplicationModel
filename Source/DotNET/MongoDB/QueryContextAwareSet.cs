@@ -23,7 +23,7 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     bool _adding;
     bool _ignoreDirection;
 
-    readonly IEqualityComparer _idEqualityComparer;
+    readonly IComparer _idComparer;
     readonly Func<TDocument, object> _getId;
     SortedDictionary<(object Id, TDocument Document), byte> _items;
     QueryContext? _queryContext;
@@ -40,12 +40,12 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// <param name="idProperty">The id property.</param>
     public QueryContextAwareSet(QueryContext queryContext, PropertyInfo idProperty)
     {
-        _idEqualityComparer = (typeof(EqualityComparer<>)
+        _idComparer = (typeof(Comparer<>)
                 .MakeGenericType(idProperty.PropertyType)
-                .GetProperty(nameof(EqualityComparer<object>.Default), BindingFlags.Public | BindingFlags.Static)!
+                .GetProperty(nameof(Comparer<object>.Default), BindingFlags.Public | BindingFlags.Static)!
                 .GetValue(null)
-            as IEqualityComparer)!;
-        ArgumentNullException.ThrowIfNull(_idEqualityComparer);
+            as IComparer)!;
+        ArgumentNullException.ThrowIfNull(_idComparer);
         _getId = document =>
         {
             var id = idProperty.GetValue(document);
@@ -191,7 +191,11 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     {
         if (!SortingIsEnabled() || _compareForEquality)
         {
-            var compareValue = _idEqualityComparer.Equals(x.Id, y.Id) ? 0 : 1;
+            var compareValue = _idComparer.Compare(x.Id, y.Id);
+            if (!_compareForEquality)
+            {
+                return compareValue == 0 ? 0 : 1;
+            }
             if (_replacing.HasValue)
             {
                 if (_replacing.Value && _numCompares == _expectedNumCompares)
