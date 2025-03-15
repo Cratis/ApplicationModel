@@ -15,23 +15,13 @@ namespace MongoDB.Driver;
 /// <typeparam name="TDocument">The type of the document.</typeparam>
 internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
 {
-    const byte Value = 0;
-
-    int _numCompares;
-    int _expectedNumCompares;
-    bool? _replacing;
-    bool _adding;
-    bool _ignoreDirection;
-
-    readonly IComparer _idComparer;
+    readonly IEqualityComparer _idEqualityComparer;
     readonly Func<TDocument, object> _getId;
-    SortedDictionary<(object Id, TDocument Document), byte> _items;
+    LinkedList<(object Id, TDocument Document)> _items;
     QueryContext? _queryContext;
     int? _maxSize;
     Func<TDocument, object?> _getSortingField = _ => null;
     IComparer _sortingFieldComparer;
-
-    bool _compareForEquality;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryContextAwareSet{TDocument}"/> class.
@@ -40,12 +30,12 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// <param name="idProperty">The id property.</param>
     public QueryContextAwareSet(QueryContext queryContext, PropertyInfo idProperty)
     {
-        _idComparer = (typeof(Comparer<>)
+        _idEqualityComparer = (typeof(EqualityComparer<>)
                 .MakeGenericType(idProperty.PropertyType)
-                .GetProperty(nameof(Comparer<object>.Default), BindingFlags.Public | BindingFlags.Static)!
+                .GetProperty(nameof(EqualityComparer<object>.Default), BindingFlags.Public | BindingFlags.Static)!
                 .GetValue(null)
-            as IComparer)!;
-        ArgumentNullException.ThrowIfNull(_idComparer);
+            as IEqualityComparer)!;
+        ArgumentNullException.ThrowIfNull(_idEqualityComparer);
         _getId = document =>
         {
             var id = idProperty.GetValue(document);
@@ -69,82 +59,89 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// <param name="item">The item to add.</param>
     public void Add(TDocument item)
     {
-        _adding = false;
-        _replacing = null;
-        _numCompares = 0;
-        _expectedNumCompares = 0;
-        var key = (_getId(item), item);
-
-        _compareForEquality = true;
-        if (_items.ContainsKey(key))
+        var value = (_getId(item), item);
+        if (TryReplaceSameItem(value))
         {
-            if (SortingIsEnabled())
-            {
-                _items.Remove(key);
-                _compareForEquality = false;
-                _items.Add(key, Value);
-            }
-            else
-            {
-                _replacing = false;
-                _items.Remove(key);
-                _replacing = true;
-                _items.Add(key, Value);
-            }
             return;
         }
-        _compareForEquality = false;
+
         if (_maxSize is null || _items.Count < _maxSize)
         {
-            _adding = true;
-            _items.Add(key, Value);
+            AddWhenNotFull(value);
             return;
         }
+        AddWhenFull(value);
+    }
 
-        var minKey = _items.Last().Key;
-        _ignoreDirection = true;
-        var comparison = _items.Comparer.Compare(key, minKey);
-        _ignoreDirection = false;
-        if (!SortingIsEnabled() && comparison >= 0)
+    /// <summary>
+    /// Initializes the set from the <see cref="IFindFluent{TDocument,TProjection}"/> query.
+    /// </summary>
+    /// <param name="query">The sorted query.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public Task InitializeWithQuery(IFindFluent<TDocument, TDocument> query) => query.ForEachAsync(document => _items.AddLast((_getId(document), document)));
+
+    /// <summary>
+    /// Removes the document with the given id.
+    /// </summary>
+    /// <param name="id">The id.</param>
+    public void Remove(object id)
+    {
+        var node = _items.First;
+        while (node is not null)
         {
-            return;
-        }
-        if (SortingIsEnabled())
-        {
-            var shouldNotAdd = _queryContext.Sorting.Direction is Cratis.Applications.Queries.SortDirection.Descending
-                ? comparison <= 0
-                : comparison >= 0;
-            if (shouldNotAdd)
+            if (_idEqualityComparer.Equals(node.Value.Id, id))
             {
+                _items.Remove(node);
                 return;
             }
+            node = node.Next;
         }
-
-        _items.Remove(minKey);
-        _adding = true;
-        _items.Add(key, Value);
     }
 
+    /// <summary>
+    /// Removes the document with the given id and adds the last document from the given query.
+    /// </summary>
+    /// <param name="id">The id.</param>
+    /// <param name="query">The query.</param>
+    public async Task RemoveAndAddLastInQuery(object id, IFindFluent<TDocument, TDocument> query)
+    {
+        Remove(id);
+        if (_items.Count >= _maxSize)
+        {
+            return;
+        }
+        var countInQuery = (int)await query.CountDocumentsAsync();
+        if (countInQuery > 1)
+        {
+            query.Skip(countInQuery - 1);
+        }
+        var document = await query.SingleAsync();
+        _items.AddLast((_getId(document), document));
+    }
+
+    /// <inheritdoc/>
     public IEnumerator<TDocument> GetEnumerator()
     {
-        return _items.Keys.Select(key => key.Document).GetEnumerator();
+        return _items.Select(node => node.Document).GetEnumerator();
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     void Initialize(QueryContext newQueryContext)
     {
         var oldQueryContext = _queryContext;
         _queryContext = newQueryContext;
+        _maxSize = null;
         if (_queryContext.Paging.IsPaged)
         {
             _maxSize = _queryContext.Paging.Size;
         }
-
         if (_maxSize < 1)
         {
             throw new ArgumentException("Page size must be greater than 0", nameof(newQueryContext));
         }
+
         var createNewStorage = oldQueryContext?.Paging.IsPaged == true && _maxSize < oldQueryContext.Paging.Size;
         if (oldQueryContext is not null && oldQueryContext.Sorting != Sorting.None &&
             (newQueryContext.Sorting.Direction != oldQueryContext.Sorting.Direction || newQueryContext.Sorting.Field != oldQueryContext.Sorting.Field))
@@ -181,56 +178,91 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
 
         if (_items is null || createNewStorage)
         {
-            _items = CreateNewStorage();
+            _items = new();
         }
     }
 
-    SortedDictionary<(object Id, TDocument Document), byte> CreateNewStorage() => new(CreateComparer());
-
-    Comparer<(object Id, TDocument Document)> CreateComparer() => Comparer<(object Id, TDocument Document)>.Create((x, y) =>
+    bool TryReplaceSameItem((object Id, TDocument Item) value)
     {
-        if (!SortingIsEnabled() || _compareForEquality)
+        var node = _items.First;
+        while (node is not null && !_idEqualityComparer.Equals(node.Value.Id, value.Id))
         {
-            var compareValue = _idComparer.Compare(x.Id, y.Id);
-            if (!_compareForEquality)
-            {
-                return compareValue == 0 ? 0 : 1;
-            }
-            if (_replacing.HasValue)
-            {
-                if (_replacing.Value && _numCompares == _expectedNumCompares)
-                {
-                    return -1;
-                }
-                if (compareValue != 0)
-                {
-                    if (_replacing.Value)
-                    {
-                        _numCompares++;
-                    }
-                    else
-                    {
-                        _expectedNumCompares++;
-                    }
-                }
-            }
-            return compareValue;
+            node = node.Next;
         }
-        var sortingFieldX = _getSortingField(x.Document);
-        var sortingFieldY = _getSortingField(y.Document);
-        var comparison = _sortingFieldComparer.Compare(sortingFieldX, sortingFieldY);
-        if (!_ignoreDirection)
+        if (node is null)
         {
-            comparison = _queryContext!.Sorting.Direction is Cratis.Applications.Queries.SortDirection.Descending
-                ? comparison * -1
-                : comparison;
+            return false;
         }
-        if (comparison == 0 && _adding)
-        {
-            return 1;
-        }
-        return comparison;
-    });
+        node.Value = value;
+        return true;
+    }
 
-    bool SortingIsEnabled() => _queryContext.Sorting != Sorting.None;
+    void AddWhenNotFull((object Id, TDocument Item) value)
+    {
+        var node = _items.First;
+        if (node is null)
+        {
+            _items.AddFirst(value);
+            return;
+        }
+
+        if (ShouldAddBeforeNode(node, value))
+        {
+            _items.AddFirst(value);
+            return;
+        }
+        while (node.Next is not null)
+        {
+            if (!SortingIsEnabled())
+            {
+                node = node.Next;
+            }
+            else
+            {
+                if (ShouldAddBeforeNode(node.Next, value))
+                {
+                    _items.AddAfter(node, value);
+                    return;
+                }
+                node = node.Next;
+            }
+        }
+        _items.AddAfter(node, value);
+    }
+
+    void AddWhenFull((object Id, TDocument Item) value)
+    {
+        if (!SortingIsEnabled())
+        {
+            return;
+        }
+        var node = _items.First!;
+        if (ShouldAddBeforeNode(node, value))
+        {
+            _items.RemoveLast();
+            _items.AddFirst(value);
+            return;
+        }
+        while (node.Next is not null)
+        {
+            if (ShouldAddBeforeNode(node.Next, value))
+            {
+                _items.RemoveLast();
+                _items.AddAfter(node, value);
+                return;
+            }
+            node = node.Next;
+        }
+    }
+
+    bool ShouldAddBeforeNode(LinkedListNode<(object Id, TDocument Doucment)> node, (object Id, TDocument Document) value)
+    {
+        var sortingFieldX = _getSortingField(value.Document);
+        var sortingFieldY = _getSortingField(node.Value.Doucment);
+        var comparison = _sortingFieldComparer.Compare(sortingFieldX, sortingFieldY);
+        comparison = _queryContext!.Sorting.Direction is Cratis.Applications.Queries.SortDirection.Descending ? comparison * -1 : comparison;
+        return comparison < 0;
+    }
+
+    bool SortingIsEnabled() => _queryContext?.Sorting != Sorting.None;
 }
