@@ -18,8 +18,11 @@ internal static partial class MongoDBClientMetrics
     [Counter<int>("mongodb-open-connections", "Number of connections checked out from the pool")]
     internal static partial void CheckedOutConnections(this IMeterScope<IMongoClient> meter, int count);
 
-    [Counter<int>("mongodb-commands", "Number of commands performed")]
+    [Counter<int>("mongodb-commands", "Number of commands")]
     internal static partial void CommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
+
+    [Counter<int>("mongodb-aggregated-commands", "Number of aggregated commands")]
+    internal static partial void AggregatedCommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
 }
 
 internal static class MongoDBClientMetricsScopes
