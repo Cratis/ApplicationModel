@@ -126,7 +126,6 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
     {
         _commandsCount[serverKey] = count;
         scope.CommandsPerformed(count);
-        logger.LogInformation("Commands performed: {Count}", count);
     }
 
     void UpdateAggregatedCommandCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
