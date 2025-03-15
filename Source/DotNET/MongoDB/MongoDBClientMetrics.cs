@@ -12,16 +12,16 @@ namespace Cratis.Applications.MongoDB;
 
 internal static partial class MongoDBClientMetrics
 {
-    [Counter<int>("mongodb-open-connections", "Number of open connections")]
+    [Gauge<int>("mongodb-open-connections", "Number of open connections")]
     internal static partial void OpenConnections(this IMeterScope<IMongoClient> meter, int count);
 
-    [Counter<int>("mongodb-open-connections", "Number of connections checked out from the pool")]
+    [Gauge<int>("mongodb-open-connections", "Number of connections checked out from the pool")]
     internal static partial void CheckedOutConnections(this IMeterScope<IMongoClient> meter, int count);
 
-    [Counter<int>("mongodb-commands", "Number of commands")]
+    [Gauge<int>("mongodb-commands", "Number of commands")]
     internal static partial void CommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
 
-    [Counter<int>("mongodb-aggregated-commands", "Number of aggregated commands")]
+    [Gauge<int>("mongodb-aggregated-commands", "Number of aggregated commands")]
     internal static partial void AggregatedCommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
 }
 
