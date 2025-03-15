@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <Orleans>9.1.2</Orleans>
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
-    <Fundamentals>6.2.3</Fundamentals>
+    <Fundamentals>6.3.1</Fundamentals>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Cratis.Fundamentals" Version="$(Fundamentals)" />
