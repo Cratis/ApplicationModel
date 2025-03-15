@@ -53,6 +53,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
     {
         settings.DirectConnection = options.Value.DirectConnection;
         settings.ClusterConfigurator = builder => ClusterConfigurator(settings, builder);
+
         logger.CreateClient(settings.Server.ToString());
 #pragma warning disable CA2000 // Dispose objects before losing scope - we're returning the client
         var client = new MongoClient(settings);
@@ -81,42 +82,18 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
         var serverKey = settings.Server.ToString();
         var scope = meter.BeginScope(serverKey);
 
+        UpdateConnectionCount(serverKey, scope, 0);
+        UpdateCheckedOutConnections(serverKey, scope, 0);
+        UpdateCommandCount(serverKey, scope, 0);
+
         builder
-            .Subscribe<ConnectionOpenedEvent>(_ =>
-            {
-                _connectedClientsCount.AddOrUpdate(serverKey, (_) => 1, (_, count) => count + 1);
-                scope.OpenConnections(_connectedClientsCount[serverKey]);
-            })
-            .Subscribe<ConnectionClosedEvent>(_ =>
-            {
-                _connectedClientsCount.AddOrUpdate(serverKey, (_) => 0, (_, count) => count - 1);
-                scope.OpenConnections(_connectedClientsCount[serverKey]);
-            })
-            .Subscribe<ConnectionPoolCheckedOutConnectionEvent>(_ =>
-            {
-                _checkedOutConnectionsCount.AddOrUpdate(serverKey, (_) => 1, (_, count) => count + 1);
-                scope.CheckedOutConnections(_checkedOutConnectionsCount[serverKey]);
-            })
-            .Subscribe<ConnectionPoolCheckedInConnectionEvent>(_ =>
-            {
-                _checkedOutConnectionsCount.AddOrUpdate(serverKey, (_) => 0, (_, count) => count - 1);
-                scope.CheckedOutConnections(_checkedOutConnectionsCount[serverKey]);
-            })
-            .Subscribe<CommandStartedEvent>(_ =>
-            {
-                _commandsCount.AddOrUpdate(serverKey, (_) => 1, (_, count) => count + 1);
-                scope.CommandsPerformed(_commandsCount[serverKey]);
-            })
-            .Subscribe<CommandSucceededEvent>(_ =>
-            {
-                _commandsCount.AddOrUpdate(serverKey, (_) => 0, (_, count) => count - 1);
-                scope.CommandsPerformed(_commandsCount[serverKey]);
-            })
-            .Subscribe<CommandFailedEvent>(_ =>
-            {
-                _commandsCount.AddOrUpdate(serverKey, (_) => 0, (_, count) => count - 1);
-                scope.CommandsPerformed(_commandsCount[serverKey]);
-            });
+            .Subscribe<ConnectionOpenedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] + 1))
+            .Subscribe<ConnectionClosedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] - 1))
+            .Subscribe<ConnectionPoolCheckedOutConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] + 1))
+            .Subscribe<ConnectionPoolCheckedInConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] - 1))
+            .Subscribe<CommandStartedEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] + 1))
+            .Subscribe<CommandSucceededEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1))
+            .Subscribe<CommandFailedEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1));
 
         if (logger.IsEnabled(LogLevel.Trace))
         {
@@ -125,6 +102,24 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
                 .Subscribe<CommandFailedEvent>(CommandFailed)
                 .Subscribe<CommandSucceededEvent>(CommandSucceeded);
         }
+    }
+
+    void UpdateConnectionCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _connectedClientsCount[serverKey] = count;
+        scope.OpenConnections(count);
+    }
+
+    void UpdateCheckedOutConnections(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _checkedOutConnectionsCount[serverKey] = count;
+        scope.CheckedOutConnections(count);
+    }
+
+    void UpdateCommandCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _commandsCount[serverKey] = count;
+        scope.CommandsPerformed(count);
     }
 
     void CommandStarted(CommandStartedEvent command) => logger.CommandStarted(command.RequestId, command.CommandName, command.Command.ToJson());
