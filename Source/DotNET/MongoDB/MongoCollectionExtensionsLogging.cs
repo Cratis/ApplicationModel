@@ -9,7 +9,7 @@ namespace MongoDB.Driver;
 
 internal static partial class MongoCollectionExtensionsLogMessages
 {
-    [LoggerMessage(LogLevel.Information, "Iterating change stream cursor completed")]
+    [LoggerMessage(LogLevel.Trace, "Iterating change stream cursor completed")]
     internal static partial void IteratingChangeStreamCursorCompleted(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
 
     [LoggerMessage(LogLevel.Trace, "Object was disposed")]
@@ -17,6 +17,9 @@ internal static partial class MongoCollectionExtensionsLogMessages
 
     [LoggerMessage(LogLevel.Trace, "Operation was cancelled")]
     internal static partial void OperationCancelled(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
+
+    [LoggerMessage(LogLevel.Trace, "Disposing cursor")]
+    internal static partial void DisposingCursor(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
 
     [LoggerMessage(LogLevel.Trace, "Cleaning up")]
     internal static partial void CleaningUp(this ILogger<MongoCollectionExtensions.MongoCollection> logger);

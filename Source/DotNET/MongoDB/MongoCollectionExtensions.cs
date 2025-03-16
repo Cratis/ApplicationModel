@@ -261,6 +261,7 @@ public static class MongoCollectionExtensions
             }
             finally
             {
+                logger.DisposingCursor();
                 watchTask.Dispose();
                 cursor?.Dispose();
                 Cleanup();
