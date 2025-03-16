@@ -75,8 +75,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
             Selector = new MongoClientInterceptorSelector(proxyGenerator, resiliencePipeline, client)
         };
 
-        // return proxyGenerator.CreateInterfaceProxyWithTarget<IMongoClient>(client, proxyGeneratorOptions);
-        return client;
+        return proxyGenerator.CreateInterfaceProxyWithTarget<IMongoClient>(client, proxyGeneratorOptions);
     }
 
     void ClusterConfigurator(MongoClientSettings settings, ClusterBuilder builder)
