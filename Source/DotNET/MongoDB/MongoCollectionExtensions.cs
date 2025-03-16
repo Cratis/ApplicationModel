@@ -222,6 +222,9 @@ public static class MongoCollectionExtensions
                 documents = query.ToList();
                 onNext(documents, subject);
 
+                var hasDocuments = await cursor.MoveNextAsync(cancellationToken);
+                Console.WriteLine(hasDocuments);
+
                 // await cursor.ForEachAsync(
                 //     async changeDocument =>
                 //     {
