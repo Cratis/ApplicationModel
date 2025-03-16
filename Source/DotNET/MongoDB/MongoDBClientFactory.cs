@@ -84,6 +84,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
         var scope = meter.BeginScope(serverKey);
 
         UpdateConnectionCount(serverKey, scope, 0);
+        UpdateConnectionsAddedToPool(serverKey, scope, 0);
         UpdateCheckedOutConnections(serverKey, scope, 0);
         UpdateCommandCount(serverKey, scope, 0);
 
