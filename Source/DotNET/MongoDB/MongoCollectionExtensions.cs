@@ -226,7 +226,7 @@ public static class MongoCollectionExtensions
                 while (await cursor.MoveNextAsync(cancellationToken))
                 {
                     logger.LogInformation("Change stream cursor moved next");
-                    if (cancellationToken.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested || !watching)
                     {
                         break;
                     }
@@ -235,7 +235,7 @@ public static class MongoCollectionExtensions
                     {
                         foreach (var changeDocument in cursor.Current)
                         {
-                            if (cancellationToken.IsCancellationRequested)
+                            if (cancellationToken.IsCancellationRequested || !watching)
                             {
                                 break;
                             }
