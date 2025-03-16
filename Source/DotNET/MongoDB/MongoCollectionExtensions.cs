@@ -201,6 +201,7 @@ public static class MongoCollectionExtensions
         var cancellationToken = cancellationTokenSource.Token;
         cancellationToken.ThrowIfCancellationRequested();
 
+        var watching = true;
         var watchTask = Task.CompletedTask;
         watchTask = Task.Run(Watch, cancellationToken);
         return subject;
@@ -308,6 +309,7 @@ public static class MongoCollectionExtensions
             {
                 return;
             }
+            watching = false;
             logger.CleaningUp();
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
