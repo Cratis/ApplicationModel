@@ -18,9 +18,6 @@ internal static partial class MongoCollectionExtensionsLogMessages
     [LoggerMessage(LogLevel.Trace, "Operation was cancelled")]
     internal static partial void OperationCancelled(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
 
-    [LoggerMessage(LogLevel.Trace, "Disposing cursor")]
-    internal static partial void DisposingCursor(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
-
     [LoggerMessage(LogLevel.Trace, "Cleaning up")]
     internal static partial void CleaningUp(this ILogger<MongoCollectionExtensions.MongoCollection> logger);
 

@@ -201,14 +201,11 @@ public static class MongoCollectionExtensions
         var cancellationToken = cancellationTokenSource.Token;
         cancellationToken.ThrowIfCancellationRequested();
 
-        var watching = true;
-        var watchTask = Task.CompletedTask;
-        watchTask = Task.Run(Watch, cancellationToken);
+        _ = Task.Run(Watch, cancellationToken);
         return subject;
 
         async Task Watch()
         {
-            IChangeStreamCursor<ChangeStreamDocument<TDocument>>? cursor = null;
             try
             {
                 var baseQuery = findCall();
@@ -218,28 +215,16 @@ public static class MongoCollectionExtensions
                 query = AddSorting(queryContext, query);
                 query = AddPaging(queryContext, query);
 
-                cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
+                using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
                 documents = query.ToList();
                 onNext(documents, subject);
 
-                while (await cursor.MoveNextAsync(cancellationToken))
-                {
-                    logger.LogInformation($"Change stream cursor moved next - {cursor.GetHashCode()} - {typeof(TDocument).FullName}");
-                    if (cancellationToken.IsCancellationRequested || !watching)
+                await cursor.ForEachAsync(
+                    async changeDocument =>
                     {
-                        break;
-                    }
-
-                    try
-                    {
-                        foreach (var changeDocument in cursor.Current)
+                        try
                         {
-                            if (cancellationToken.IsCancellationRequested || !watching)
-                            {
-                                break;
-                            }
-
                             documents = await HandleChange(
                                 queryContext,
                                 onNext,
@@ -251,35 +236,12 @@ public static class MongoCollectionExtensions
                                 subject,
                                 idProperty);
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        logger.UnexpectedError(e);
-                    }
-                }
-
-                // await cursor.ForEachAsync(
-                //     async changeDocument =>
-                //     {
-                //         try
-                //         {
-                //             documents = await HandleChange(
-                //                 queryContext,
-                //                 onNext,
-                //                 changeDocument,
-                //                 invalidateFindOnAddOrDelete,
-                //                 baseQuery,
-                //                 query,
-                //                 documents,
-                //                 subject,
-                //                 idProperty);
-                //         }
-                //         catch (Exception e)
-                //         {
-                //             logger.UnexpectedError(e);
-                //         }
-                //     },
-                //     cancellationToken);
+                        catch (Exception e)
+                        {
+                            logger.UnexpectedError(e);
+                        }
+                    },
+                    cancellationToken);
                 logger.IteratingChangeStreamCursorCompleted();
             }
             catch (ObjectDisposedException)
@@ -296,9 +258,6 @@ public static class MongoCollectionExtensions
             }
             finally
             {
-                logger.DisposingCursor();
-                watchTask.Dispose();
-                cursor?.Dispose();
                 Cleanup();
             }
         }
@@ -309,7 +268,6 @@ public static class MongoCollectionExtensions
             {
                 return;
             }
-            watching = false;
             logger.CleaningUp();
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
