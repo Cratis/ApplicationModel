@@ -225,7 +225,7 @@ public static class MongoCollectionExtensions
 
                 while (await cursor.MoveNextAsync(cancellationToken))
                 {
-                    logger.LogInformation($"Change stream cursor moved next - {cursor.GetHashCode()}");
+                    logger.LogInformation($"Change stream cursor moved next - {cursor.GetHashCode()} - {typeof(TDocument).FullName}");
                     if (cancellationToken.IsCancellationRequested || !watching)
                     {
                         break;
