@@ -19,10 +19,10 @@ internal static partial class MongoDBClientMetrics
     internal static partial void CheckedOutConnections(this IMeterScope<IMongoClient> meter, int count);
 
     [Gauge<int>("mongodb-commands", "Number of commands")]
-    internal static partial void CommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
+    internal static partial void Commands(this IMeterScope<IMongoClient> meter, int count);
 
-    [Gauge<int>("mongodb-aggregated-commands", "Number of aggregated commands")]
-    internal static partial void AggregatedCommandsPerformed(this IMeterScope<IMongoClient> meter, int count);
+    [Counter<int>("mongodb-aggregated-commands", "Number of aggregated commands")]
+    internal static partial void AggregatedCommands(this IMeterScope<IMongoClient> meter);
 }
 
 internal static class MongoDBClientMetricsScopes

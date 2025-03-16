@@ -34,7 +34,6 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
     readonly ConcurrentDictionary<string, int> _connectedClientsCount = new();
     readonly ConcurrentDictionary<string, int> _checkedOutConnectionsCount = new();
     readonly ConcurrentDictionary<string, int> _commandsCount = new();
-    readonly ConcurrentDictionary<string, int> _aggregatedCommandsCount = new();
 
     /// <inheritdoc/>
     public IMongoClient Create() => Create(serverResolver.Resolve());
@@ -86,7 +85,6 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
         UpdateConnectionCount(serverKey, scope, 0);
         UpdateCheckedOutConnections(serverKey, scope, 0);
         UpdateCommandCount(serverKey, scope, 0);
-        UpdateAggregatedCommandCount(serverKey, scope, 0);
 
         builder
             .Subscribe<ConnectionOpenedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] + 1))
@@ -96,7 +94,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
             .Subscribe<CommandStartedEvent>(_ =>
             {
                 UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] + 1);
-                UpdateAggregatedCommandCount(serverKey, scope, _aggregatedCommandsCount[serverKey] + 1);
+                scope.AggregatedCommands();
             })
             .Subscribe<CommandSucceededEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1))
             .Subscribe<CommandFailedEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1));
@@ -125,13 +123,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
     void UpdateCommandCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
     {
         _commandsCount[serverKey] = count;
-        scope.CommandsPerformed(count);
-    }
-
-    void UpdateAggregatedCommandCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
-    {
-        _aggregatedCommandsCount[serverKey] = count;
-        scope.AggregatedCommandsPerformed(count);
+        scope.Commands(count);
     }
 
     void CommandStarted(CommandStartedEvent command) => logger.CommandStarted(command.RequestId, command.CommandName, command.Command.ToJson());
