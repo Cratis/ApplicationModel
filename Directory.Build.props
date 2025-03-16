@@ -25,6 +25,7 @@
         <RunAnalyzers>True</RunAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
 
+        <NoWarn>NU1507</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'==''">
