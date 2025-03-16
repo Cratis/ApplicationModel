@@ -279,8 +279,7 @@ public static class MongoCollectionExtensions
                 //         }
                 //     },
                 //     cancellationToken);
-
-                // logger.IteratingChangeStreamCursorCompleted();
+                logger.IteratingChangeStreamCursorCompleted();
             }
             catch (ObjectDisposedException)
             {
