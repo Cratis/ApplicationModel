@@ -200,7 +200,7 @@ public static class MongoCollectionExtensions
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var cancellationToken = cancellationTokenSource.Token;
 
-        _ = Task.Run(Watch);
+        _ = Task.Run(Watch, cancellationToken);
         return subject;
 
         async Task Watch()
