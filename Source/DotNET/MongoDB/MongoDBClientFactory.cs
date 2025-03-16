@@ -32,6 +32,7 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
 {
     readonly ConcurrentDictionary<string, IMongoClient> _clients = new();
     readonly ConcurrentDictionary<string, int> _connectedClientsCount = new();
+    readonly ConcurrentDictionary<string, int> _connectionsAddedToPoolCount = new();
     readonly ConcurrentDictionary<string, int> _checkedOutConnectionsCount = new();
     readonly ConcurrentDictionary<string, int> _commandsCount = new();
 
@@ -89,6 +90,13 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
         builder
             .Subscribe<ConnectionOpenedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] + 1))
             .Subscribe<ConnectionClosedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] - 1))
+            .Subscribe<ConnectionOpeningFailedEvent>(_ =>
+            {
+                UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] - 1);
+                scope.FailedConnections();
+            })
+            .Subscribe<ConnectionPoolAddedConnectionEvent>(_ => UpdateConnectionsAddedToPool(serverKey, scope, _connectionsAddedToPoolCount[serverKey] + 1))
+            .Subscribe<ConnectionPoolRemovedConnectionEvent>(_ => UpdateConnectionsAddedToPool(serverKey, scope, _connectionsAddedToPoolCount[serverKey] - 1))
             .Subscribe<ConnectionPoolCheckedOutConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] + 1))
             .Subscribe<ConnectionPoolCheckedInConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] - 1))
             .Subscribe<CommandStartedEvent>(_ =>
@@ -112,6 +120,12 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IM
     {
         _connectedClientsCount[serverKey] = count;
         scope.OpenConnections(count);
+    }
+
+    void UpdateConnectionsAddedToPool(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _connectionsAddedToPoolCount[serverKey] = count;
+        scope.ConnectionsAddedToPool(count);
     }
 
     void UpdateCheckedOutConnections(string serverKey, IMeterScope<IMongoClient> scope, int count)
