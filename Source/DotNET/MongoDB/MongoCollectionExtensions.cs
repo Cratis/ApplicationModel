@@ -205,6 +205,7 @@ public static class MongoCollectionExtensions
 
         async Task Watch()
         {
+            IChangeStreamCursor<ChangeStreamDocument<TDocument>>? cursor = null;
             try
             {
                 var baseQuery = findCall();
@@ -214,7 +215,7 @@ public static class MongoCollectionExtensions
                 query = AddSorting(queryContext, query);
                 query = AddPaging(queryContext, query);
 
-                using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
+                cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
                 documents = query.ToList();
                 onNext(documents, subject);
@@ -244,9 +245,11 @@ public static class MongoCollectionExtensions
             }
             catch (ObjectDisposedException)
             {
+                logger.ObjectDisposed();
             }
             catch (OperationCanceledException)
             {
+                logger.OperationCancelled();
             }
             catch (Exception ex)
             {
@@ -254,6 +257,7 @@ public static class MongoCollectionExtensions
             }
             finally
             {
+                cursor?.Dispose();
                 Cleanup();
             }
         }
@@ -264,7 +268,7 @@ public static class MongoCollectionExtensions
             {
                 return;
             }
-            logger.CursorDisposed();
+            logger.CleaningUp();
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
             subject?.OnCompleted();
