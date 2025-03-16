@@ -26,44 +26,43 @@ public class MongoCollectionInterceptor(
 
         invocation.ReturnValue = tcs.Task;
 
-#pragma warning disable CA2012 // Use ValueTasks correctly
-        resiliencePipeline.ExecuteAsync(async (_) =>
-        {
-            await openConnectionSemaphore.WaitAsync(1000);
-            try
-            {
-                var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
-                await result.ConfigureAwait(false);
+        var cancellationToken = invocation.Arguments.FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
 
-                openConnectionSemaphore.Release(1);
-                if (result.IsCanceled)
+#pragma warning disable CA2012 // Use ValueTasks correctly
+        resiliencePipeline.ExecuteAsync(
+            async (_) =>
+            {
+                await openConnectionSemaphore.WaitAsync(1000);
+                try
                 {
+                    var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
+                    await result.ConfigureAwait(false);
+
+                    openConnectionSemaphore.Release(1);
+                    if (result.IsCanceled)
+                    {
+                        tcs.SetCanceled();
+                    }
+                    else
+                    {
+                        tcs.SetResult();
+                    }
+                }
+                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                {
+                    openConnectionSemaphore.Release(1);
                     tcs.SetCanceled();
                 }
-                else
+                catch (Exception ex)
                 {
-                    tcs.SetResult();
+                    openConnectionSemaphore.Release(1);
+                    tcs.SetException(ex);
+                    return ValueTask.FromException(ex);
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                openConnectionSemaphore.Release(1);
-                tcs.SetCanceled();
-            }
-            catch (OperationCanceledException)
-            {
-                openConnectionSemaphore.Release(1);
-                tcs.SetCanceled();
-            }
-            catch (Exception ex)
-            {
-                openConnectionSemaphore.Release(1);
-                tcs.SetException(ex);
-                return ValueTask.FromException(ex);
-            }
 
-            return ValueTask.CompletedTask;
-        });
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken);
 #pragma warning restore CA2012 // Use ValueTasks correctly
     }
 }

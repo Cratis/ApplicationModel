@@ -38,47 +38,45 @@ public class MongoCollectionInterceptorForReturnValues(
         returnTask = (tcsType.GetProperty(nameof(TaskCompletionSource<object>.Task))!.GetValue(tcs) as Task)!;
 
         invocation.ReturnValue = returnTask!;
+        var cancellationToken = invocation.Arguments.FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
 
 #pragma warning disable CA2012 // Use ValueTasks correctly
-        resiliencePipeline.ExecuteAsync(async (_) =>
-        {
-            await openConnectionSemaphore.WaitAsync(1000);
-            try
+        resiliencePipeline.ExecuteAsync(
+            async (_) =>
             {
-                var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
-                await result.ConfigureAwait(false);
-
-                openConnectionSemaphore.Release(1);
-                if (result.IsCanceled)
+                await openConnectionSemaphore.WaitAsync(1000);
+                try
                 {
+                    var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
+                    await result.ConfigureAwait(false);
+
+                    openConnectionSemaphore.Release(1);
+                    if (result.IsCanceled)
+                    {
+                        setCanceledMethod.Invoke(tcs, []);
+                    }
+                    else
+                    {
+#pragma warning disable CA1849 // Synchronous blocks
+                        var taskResult = result.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(result);
+                        setResultMethod.Invoke(tcs, [taskResult]);
+#pragma warning restore CA1849 // Synchronous blocks
+                    }
+                }
+                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                {
+                    openConnectionSemaphore.Release(1);
                     setCanceledMethod.Invoke(tcs, []);
                 }
-                else
+                catch (Exception ex)
                 {
-#pragma warning disable CA1849 // Synchronous blocks
-                    var taskResult = result.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(result);
-                    setResultMethod.Invoke(tcs, [taskResult]);
-#pragma warning restore CA1849 // Synchronous blocks
+                    openConnectionSemaphore.Release(1);
+                    setExceptionMethod.Invoke(tcs, [ex]);
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                openConnectionSemaphore.Release(1);
-                setCanceledMethod.Invoke(tcs, []);
-            }
-            catch (OperationCanceledException)
-            {
-                openConnectionSemaphore.Release(1);
-                setCanceledMethod.Invoke(tcs, []);
-            }
-            catch (Exception ex)
-            {
-                openConnectionSemaphore.Release(1);
-                setExceptionMethod.Invoke(tcs, [ex]);
-            }
 
-            return ValueTask.CompletedTask;
-        });
+                return ValueTask.CompletedTask;
+            },
+            cancellationToken);
 #pragma warning restore CA2012 // Use ValueTasks correctly
     }
 }
