@@ -222,8 +222,39 @@ public static class MongoCollectionExtensions
                 documents = query.ToList();
                 onNext(documents, subject);
 
-                var hasDocuments = await cursor.MoveNextAsync(cancellationToken);
-                Console.WriteLine(hasDocuments);
+                while (await cursor.MoveNextAsync(cancellationToken))
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        foreach (var changeDocument in cursor.Current)
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                break;
+                            }
+
+                            documents = await HandleChange(
+                                queryContext,
+                                onNext,
+                                changeDocument,
+                                invalidateFindOnAddOrDelete,
+                                baseQuery,
+                                query,
+                                documents,
+                                subject,
+                                idProperty);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logger.UnexpectedError(e);
+                    }
+                }
 
                 // await cursor.ForEachAsync(
                 //     async changeDocument =>
