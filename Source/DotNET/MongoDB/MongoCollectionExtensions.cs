@@ -222,30 +222,30 @@ public static class MongoCollectionExtensions
                 documents = query.ToList();
                 onNext(documents, subject);
 
-                await cursor.ForEachAsync(
-                    async changeDocument =>
-                    {
-                        try
-                        {
-                            documents = await HandleChange(
-                                queryContext,
-                                onNext,
-                                changeDocument,
-                                invalidateFindOnAddOrDelete,
-                                baseQuery,
-                                query,
-                                documents,
-                                subject,
-                                idProperty);
-                        }
-                        catch (Exception e)
-                        {
-                            logger.UnexpectedError(e);
-                        }
-                    },
-                    cancellationToken);
+                // await cursor.ForEachAsync(
+                //     async changeDocument =>
+                //     {
+                //         try
+                //         {
+                //             documents = await HandleChange(
+                //                 queryContext,
+                //                 onNext,
+                //                 changeDocument,
+                //                 invalidateFindOnAddOrDelete,
+                //                 baseQuery,
+                //                 query,
+                //                 documents,
+                //                 subject,
+                //                 idProperty);
+                //         }
+                //         catch (Exception e)
+                //         {
+                //             logger.UnexpectedError(e);
+                //         }
+                //     },
+                //     cancellationToken);
 
-                logger.IteratingChangeStreamCursorCompleted();
+                // logger.IteratingChangeStreamCursorCompleted();
             }
             catch (ObjectDisposedException)
             {
