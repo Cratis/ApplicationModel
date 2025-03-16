@@ -199,8 +199,10 @@ public static class MongoCollectionExtensions
         var cancellationTokenSource = new CancellationTokenSource();
 #pragma warning restore CA2000 // Dispose objects before losing scope
         var cancellationToken = cancellationTokenSource.Token;
+        cancellationToken.ThrowIfCancellationRequested();
 
-        _ = Task.Run(Watch, cancellationToken);
+        var watchTask = Task.CompletedTask;
+        watchTask = Task.Run(Watch, cancellationToken);
         return subject;
 
         async Task Watch()
@@ -242,6 +244,8 @@ public static class MongoCollectionExtensions
                         }
                     },
                     cancellationToken);
+
+                logger.IteratingChangeStreamCursorCompleted();
             }
             catch (ObjectDisposedException)
             {
@@ -257,6 +261,7 @@ public static class MongoCollectionExtensions
             }
             finally
             {
+                watchTask.Dispose();
                 cursor?.Dispose();
                 Cleanup();
             }
