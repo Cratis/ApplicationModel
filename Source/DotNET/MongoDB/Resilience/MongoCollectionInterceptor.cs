@@ -50,6 +50,11 @@ public class MongoCollectionInterceptor(
                 openConnectionSemaphore.Release(1);
                 tcs.SetCanceled();
             }
+            catch (OperationCanceledException)
+            {
+                openConnectionSemaphore.Release(1);
+                tcs.SetCanceled();
+            }
             catch (Exception ex)
             {
                 openConnectionSemaphore.Release(1);

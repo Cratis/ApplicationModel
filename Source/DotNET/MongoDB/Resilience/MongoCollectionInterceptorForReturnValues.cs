@@ -66,6 +66,11 @@ public class MongoCollectionInterceptorForReturnValues(
                 openConnectionSemaphore.Release(1);
                 setCanceledMethod.Invoke(tcs, []);
             }
+            catch (OperationCanceledException)
+            {
+                openConnectionSemaphore.Release(1);
+                setCanceledMethod.Invoke(tcs, []);
+            }
             catch (Exception ex)
             {
                 openConnectionSemaphore.Release(1);
