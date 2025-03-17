@@ -78,7 +78,8 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// </summary>
     /// <param name="query">The sorted query.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task InitializeWithQuery(IFindFluent<TDocument, TDocument> query) => query.ForEachAsync(document => _items.AddLast((_getId(document), document)));
+    public Task InitializeWithQuery(IFindFluent<TDocument, TDocument> query) =>
+        query.ForEachAsync(document => _items.AddLast((_getId(document), document)));
 
     /// <summary>
     /// Removes the document with the given id.
@@ -111,9 +112,13 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
             return;
         }
         var countInQuery = (int)await query.CountDocumentsAsync();
-        if (countInQuery > 1)
+        switch (countInQuery)
         {
-            query.Skip(countInQuery - 1);
+            case 0:
+                return;
+            case >1:
+                query = query.Skip(countInQuery - 1);
+                break;
         }
         var document = await query.SingleAsync();
         _items.AddLast((_getId(document), document));
