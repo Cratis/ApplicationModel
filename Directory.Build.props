@@ -25,6 +25,7 @@
         <RunAnalyzers>True</RunAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
 
+        <NoWarn>NU1507</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'==''">
@@ -45,9 +46,6 @@
         <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All"/>
         <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All"/>
         <PackageReference Include="Meziantou.Analyzer" PrivateAssets="All"/>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
         <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 </Project>

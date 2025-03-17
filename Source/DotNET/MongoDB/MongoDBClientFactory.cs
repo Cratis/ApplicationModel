@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using Castle.DynamicProxy;
 using Cratis.Applications.MongoDB.Resilience;
 using Cratis.DependencyInjection;
+using Cratis.Metrics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -23,12 +24,17 @@ namespace Cratis.Applications.MongoDB;
 /// Initializes a new instance of the <see cref="MongoDBClientFactory"/> class.
 /// </remarks>
 /// <param name="serverResolver"><see cref="IMongoServerResolver"/> for resolving the server.</param>
+/// <param name="meter"><see cref="IMeter{T}"/> for metering.</param>
 /// <param name="options"><see cref="IOptions{TOptions}"/> for getting the options.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 [Singleton]
-public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<MongoDBOptions> options, ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
+public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IMongoClient> meter, IOptions<MongoDBOptions> options, ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
 {
     readonly ConcurrentDictionary<string, IMongoClient> _clients = new();
+    readonly ConcurrentDictionary<string, int> _connectedClientsCount = new();
+    readonly ConcurrentDictionary<string, int> _connectionsAddedToPoolCount = new();
+    readonly ConcurrentDictionary<string, int> _checkedOutConnectionsCount = new();
+    readonly ConcurrentDictionary<string, int> _commandsCount = new();
 
     /// <inheritdoc/>
     public IMongoClient Create() => Create(serverResolver.Resolve());
@@ -47,7 +53,8 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<
     IMongoClient CreateImplementation(MongoClientSettings settings)
     {
         settings.DirectConnection = options.Value.DirectConnection;
-        settings.ClusterConfigurator = ClusterConfigurator;
+        settings.ClusterConfigurator = builder => ClusterConfigurator(settings, builder);
+
         logger.CreateClient(settings.Server.ToString());
 #pragma warning disable CA2000 // Dispose objects before losing scope - we're returning the client
         var client = new MongoClient(settings);
@@ -71,8 +78,36 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<
         return proxyGenerator.CreateInterfaceProxyWithTarget<IMongoClient>(client, proxyGeneratorOptions);
     }
 
-    void ClusterConfigurator(ClusterBuilder builder)
+    void ClusterConfigurator(MongoClientSettings settings, ClusterBuilder builder)
     {
+        var serverKey = settings.Server.ToString();
+        var scope = meter.BeginScope(serverKey);
+
+        UpdateConnectionCount(serverKey, scope, 0);
+        UpdateConnectionsAddedToPool(serverKey, scope, 0);
+        UpdateCheckedOutConnections(serverKey, scope, 0);
+        UpdateCommandCount(serverKey, scope, 0);
+
+        builder
+            .Subscribe<ConnectionOpenedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] + 1))
+            .Subscribe<ConnectionClosedEvent>(_ => UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] - 1))
+            .Subscribe<ConnectionOpeningFailedEvent>(_ =>
+            {
+                UpdateConnectionCount(serverKey, scope, _connectedClientsCount[serverKey] - 1);
+                scope.FailedConnections();
+            })
+            .Subscribe<ConnectionPoolAddedConnectionEvent>(_ => UpdateConnectionsAddedToPool(serverKey, scope, _connectionsAddedToPoolCount[serverKey] + 1))
+            .Subscribe<ConnectionPoolRemovedConnectionEvent>(_ => UpdateConnectionsAddedToPool(serverKey, scope, _connectionsAddedToPoolCount[serverKey] - 1))
+            .Subscribe<ConnectionPoolCheckedOutConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] + 1))
+            .Subscribe<ConnectionPoolCheckedInConnectionEvent>(_ => UpdateCheckedOutConnections(serverKey, scope, _checkedOutConnectionsCount[serverKey] - 1))
+            .Subscribe<CommandStartedEvent>(_ =>
+            {
+                UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] + 1);
+                scope.AggregatedCommands();
+            })
+            .Subscribe<CommandSucceededEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1))
+            .Subscribe<CommandFailedEvent>(_ => UpdateCommandCount(serverKey, scope, _commandsCount[serverKey] - 1));
+
         if (logger.IsEnabled(LogLevel.Trace))
         {
             builder
@@ -80,6 +115,30 @@ public class MongoDBClientFactory(IMongoServerResolver serverResolver, IOptions<
                 .Subscribe<CommandFailedEvent>(CommandFailed)
                 .Subscribe<CommandSucceededEvent>(CommandSucceeded);
         }
+    }
+
+    void UpdateConnectionCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _connectedClientsCount[serverKey] = count;
+        scope.OpenConnections(count);
+    }
+
+    void UpdateConnectionsAddedToPool(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _connectionsAddedToPoolCount[serverKey] = count;
+        scope.ConnectionsAddedToPool(count);
+    }
+
+    void UpdateCheckedOutConnections(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _checkedOutConnectionsCount[serverKey] = count;
+        scope.CheckedOutConnections(count);
+    }
+
+    void UpdateCommandCount(string serverKey, IMeterScope<IMongoClient> scope, int count)
+    {
+        _commandsCount[serverKey] = count;
+        scope.Commands(count);
     }
 
     void CommandStarted(CommandStartedEvent command) => logger.CommandStarted(command.RequestId, command.CommandName, command.Command.ToJson());
