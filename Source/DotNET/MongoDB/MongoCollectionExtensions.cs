@@ -202,7 +202,7 @@ public static class MongoCollectionExtensions
         var cancellationToken = cancellationTokenSource.Token;
         cancellationToken.ThrowIfCancellationRequested();
 
-        _ = Task.Run(Watch, cancellationToken);
+        _ = Task.Run(Watch);
         return subject;
 
         async Task Watch()

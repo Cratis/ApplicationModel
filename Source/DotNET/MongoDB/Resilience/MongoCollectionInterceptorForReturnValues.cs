@@ -63,7 +63,7 @@ public class MongoCollectionInterceptorForReturnValues(
 #pragma warning restore CA1849 // Synchronous blocks
                     }
                 }
-                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     openConnectionSemaphore.Release(1);
                     setCanceledMethod.Invoke(tcs, []);

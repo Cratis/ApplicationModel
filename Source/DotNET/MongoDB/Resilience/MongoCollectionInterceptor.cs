@@ -48,7 +48,7 @@ public class MongoCollectionInterceptor(
                         tcs.SetResult();
                     }
                 }
-                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     openConnectionSemaphore.Release(1);
                     tcs.SetCanceled();
