@@ -3,9 +3,9 @@
 
 using MongoDB.Driver;
 using SortDirection = Cratis.Applications.Queries.SortDirection;
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_adding;
+namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_removing;
 
-public class and_there_is_ascending_sorting_and_paging : Specification
+public class and_there_is_descending_sorting_and_paging : Specification
 {
     QueryContextAwareSet<SomeClassWithSomeId> set;
     SomeClassWithSomeId firstItem;
@@ -18,19 +18,17 @@ public class and_there_is_ascending_sorting_and_paging : Specification
     void Establish()
     {
         set = new(QueryContextBuilder.New()
-            .WithSorting(new(nameof(SomeClassWithSomeId.Value), SortDirection.Ascending))
+            .WithSorting(new(nameof(SomeClassWithSomeId.Value), SortDirection.Descending))
             .WithPageSize(4)
             .Build());
-        firstItem = new(Guid.NewGuid(), 40);
-        secondItem = new(Guid.NewGuid(), 41);
-        thirdItem = new(Guid.NewGuid(), 42);
-        fourthItem = new(Guid.NewGuid(), 42);
-        fifthItem = new(Guid.NewGuid(), 44);
-        sixthItem = new(Guid.NewGuid(), 45);
-    }
 
-    void Because()
-    {
+        firstItem = new(Guid.NewGuid(), 45);
+        secondItem = new(Guid.NewGuid(), 44);
+        thirdItem = new(Guid.NewGuid(), 43);
+        fourthItem = new(Guid.NewGuid(), 43);
+        fifthItem = new(Guid.NewGuid(), 42);
+        sixthItem = new(Guid.NewGuid(), 41);
+
         set.Add(sixthItem);
         set.Add(secondItem);
         set.Add(thirdItem);
@@ -39,5 +37,10 @@ public class and_there_is_ascending_sorting_and_paging : Specification
         set.Add(firstItem);
     }
 
-    [Fact] void should_have_items_in_correct_order() => Assert.Equal([firstItem, secondItem, thirdItem, fourthItem], set);
+    void Because()
+    {
+        set.Remove(secondItem.Id);
+    }
+
+    [Fact] void should_have_items_in_correct_order() => Assert.Equal([firstItem, thirdItem, fourthItem], set);
 }
