@@ -57,20 +57,21 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// Adds item to the set.
     /// </summary>
     /// <param name="item">The item to add.</param>
-    public void Add(TDocument item)
+    /// <returns>True if added new item or changed stored item, false if not.</returns>
+    public bool Add(TDocument item)
     {
         var value = (_getId(item), item);
         if (TryReplaceSameItem(value))
         {
-            return;
+            return true;
         }
 
         if (_maxSize is null || _items.Count < _maxSize)
         {
             AddWhenNotFull(value);
-            return;
+            return true;
         }
-        AddWhenFull(value);
+        return AddWhenFull(value);
     }
 
     /// <summary>
@@ -85,7 +86,8 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// Removes the document with the given id.
     /// </summary>
     /// <param name="id">The id.</param>
-    public void Remove(object id)
+    /// <returns>True if removed an item, false if not.</returns>
+    public bool Remove(object id)
     {
         var node = _items.First;
         while (node is not null)
@@ -93,10 +95,11 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
             if (_idEqualityComparer.Equals(node.Value.Id, id))
             {
                 _items.Remove(node);
-                return;
+                return true;
             }
             node = node.Next;
         }
+        return false;
     }
 
     /// <summary>
@@ -104,24 +107,27 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// </summary>
     /// <param name="id">The id.</param>
     /// <param name="query">The query.</param>
-    public async Task RemoveAndAddLastInQuery(object id, IFindFluent<TDocument, TDocument> query)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public async Task<bool> RemoveAndAddLastInQuery(object id, IFindFluent<TDocument, TDocument> query)
     {
-        Remove(id);
-        if (_items.Count >= _maxSize)
+        var removed = Remove(id);
+        if (_items.Count >= _maxSize || NotFilledUpPage())
         {
-            return;
+            return removed;
         }
         var countInQuery = (int)await query.CountDocumentsAsync();
         switch (countInQuery)
         {
             case 0:
-                return;
+                return removed;
             case >1:
                 query = query.Skip(countInQuery - 1);
                 break;
         }
         var document = await query.SingleAsync();
         _items.AddLast((_getId(document), document));
+        return removed;
+        bool NotFilledUpPage() => _items.Count < _maxSize - 1;
     }
 
     /// <inheritdoc/>
@@ -235,18 +241,18 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
         _items.AddAfter(node, value);
     }
 
-    void AddWhenFull((object Id, TDocument Item) value)
+    bool AddWhenFull((object Id, TDocument Item) value)
     {
         if (!SortingIsEnabled())
         {
-            return;
+            return false;
         }
         var node = _items.First!;
         if (ShouldAddBeforeNode(node, value))
         {
             _items.RemoveLast();
             _items.AddFirst(value);
-            return;
+            return true;
         }
         while (node.Next is not null)
         {
@@ -254,10 +260,12 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
             {
                 _items.RemoveLast();
                 _items.AddAfter(node, value);
-                return;
+                return true;
             }
             node = node.Next;
         }
+
+        return false;
     }
 
     bool ShouldAddBeforeNode(LinkedListNode<(object Id, TDocument Doucment)> node, (object Id, TDocument Document) value)
