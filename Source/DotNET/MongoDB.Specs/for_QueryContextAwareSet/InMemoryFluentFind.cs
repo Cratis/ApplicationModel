@@ -11,8 +11,12 @@ public class InMemoryFluentFind<TDocument>(IEnumerable<TDocument> collection, in
     public override FindOptions<TDocument, TDocument> Options { get; } = new FindOptions<TDocument>();
 
     public override IFindFluent<TDocument, TResult> As<TResult>(IBsonSerializer<TResult> resultSerializer) => throw new NotImplementedException();
-    public override Task<long> CountAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.FromResult<long>(collection.Count());
-    public override Task<long> CountDocumentsAsync(CancellationToken cancellationToken = new CancellationToken()) => CountAsync(cancellationToken);
+#pragma warning disable CS0672 // Member overrides obsolete member
+    public override Task<long> CountAsync(CancellationToken cancellationToken = default) => Task.FromResult<long>(collection.Count());
+#pragma warning restore CS0672 // Member overrides obsolete member
+#pragma warning disable CS0618 // Type or member is obsolete
+    public override Task<long> CountDocumentsAsync(CancellationToken cancellationToken = default) => CountAsync(cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
     public override IFindFluent<TDocument, TDocument> Limit(int? limit) => new InMemoryFluentFind<TDocument>(collection, limit);
     public override IFindFluent<TDocument, TNewProjection> Project<TNewProjection>(ProjectionDefinition<TDocument, TNewProjection> projection) => throw new NotImplementedException();
     public override IFindFluent<TDocument, TDocument> Skip(int? skip) => new InMemoryFluentFind<TDocument>(collection.Skip(skip ?? 0));
@@ -24,8 +28,8 @@ public class InMemoryFluentFind<TDocument>(IEnumerable<TDocument> collection, in
     public class Cursor(IEnumerator<TDocument> enumerator, int? limit) : IAsyncCursor<TDocument>
     {
         public void Dispose() { }
-        public bool MoveNext(CancellationToken cancellationToken = new CancellationToken()) => enumerator.MoveNext();
-        public Task<bool> MoveNextAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.FromResult(enumerator.MoveNext());
+        public bool MoveNext(CancellationToken cancellationToken = default) => enumerator.MoveNext();
+        public Task<bool> MoveNextAsync(CancellationToken cancellationToken = default) => Task.FromResult(enumerator.MoveNext());
         public IEnumerable<TDocument> Current
         {
             get

@@ -17,11 +17,11 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
 {
     readonly IEqualityComparer _idEqualityComparer;
     readonly Func<TDocument, object> _getId;
-    LinkedList<(object Id, TDocument Document)> _items;
+    LinkedList<(object Id, TDocument Document)> _items = null!;
     QueryContext? _queryContext;
     int? _maxSize;
     Func<TDocument, object?> _getSortingField = _ => null;
-    IComparer _sortingFieldComparer;
+    IComparer _sortingFieldComparer = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryContextAwareSet{TDocument}"/> class.
@@ -164,11 +164,7 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
 
         if (SortingIsEnabled())
         {
-            var sortingFieldProperty = typeof(TDocument).GetProperty(_queryContext.Sorting.Field.ToPascalCase(), BindingFlags.Instance | BindingFlags.Public);
-            if (sortingFieldProperty is null)
-            {
-                throw new ArgumentException($"Sorting field could not be found on {typeof(TDocument)}", nameof(newQueryContext));
-            }
+            var sortingFieldProperty = typeof(TDocument).GetProperty(_queryContext.Sorting.Field.ToPascalCase(), BindingFlags.Instance | BindingFlags.Public) ?? throw new ArgumentException($"Sorting field could not be found on {typeof(TDocument)}", nameof(newQueryContext));
             _sortingFieldComparer = (typeof(Comparer<>)
                 .MakeGenericType(sortingFieldProperty.PropertyType)
                 .GetProperty(nameof(Comparer<object>.Default), BindingFlags.Public | BindingFlags.Static)!
