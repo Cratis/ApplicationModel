@@ -178,7 +178,6 @@ public static class MongoCollectionExtensions
         // TODO: No customizable Id property?
         var idProperty = typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!;
         var documents = new QueryContextAwareSet<TDocument>(queryContext, idProperty);
-        var invalidateFindOnAddOrDelete = queryContext.Paging.IsPaged || queryContext.Sorting != Sorting.None;
 
         var options = new ChangeStreamOptions
         {
@@ -216,10 +215,7 @@ public static class MongoCollectionExtensions
                 using var cursor = await collection.WatchAsync(pipeline, options, cancellationToken);
                 _ = subject.Subscribe(_ => { }, _ => { }, Cleanup);
                 queryContext.TotalItems = (int)await findCall().CountDocumentsAsync();
-                foreach (var document in await query.ToListAsync())
-                {
-                    documents.Add(document);
-                }
+                await documents.InitializeWithQuery(query);
                 onNext(documents, subject);
                 await cursor.ForEachAsync(
                     async changeDocument =>
@@ -230,7 +226,6 @@ public static class MongoCollectionExtensions
                                 queryContext,
                                 onNext,
                                 changeDocument,
-                                invalidateFindOnAddOrDelete,
                                 query,
                                 documents,
                                 subject,
@@ -277,7 +272,6 @@ public static class MongoCollectionExtensions
         QueryContext queryContext,
         Action<IEnumerable<TDocument>, ISubject<TResult>> onNext,
         ChangeStreamDocument<TDocument> changeDocument,
-        bool invalidateFindOnAddOrDelete,
         IFindFluent<TDocument, TDocument> query,
         QueryContextAwareSet<TDocument> documents,
         ISubject<TResult> subject,
@@ -288,42 +282,31 @@ public static class MongoCollectionExtensions
         {
             var id = GetId(idProperty, idValue);
             var fullDocument = changeDocument.FullDocument;
-            //     var document = documents.Find(_ => idProperty.GetValue(_)!.Equals(id));
-            //     if (changeDocument.OperationType == ChangeStreamOperationType.Delete && document is not null)
-            //     {
-            //         queryContext.TotalItems--;
-            //         if (!invalidateFindOnAddOrDelete)
-            //         {
-            //             documents.Remove(document);
-            //         }
-            //         hasChanges = true;
-            //     }
-            //     else if (document is not null)
-            //     {
-            //         var index = documents.IndexOf(document);
-            //         documents[index] = changeDocument.FullDocument;
-            //         hasChanges = true;
-            //     }
-            //     else if (changeDocument.OperationType == ChangeStreamOperationType.Insert)
-            //     {
-            //         queryContext.TotalItems++;
-            //         if (!invalidateFindOnAddOrDelete)
-            //         {
-            //             documents.Add(changeDocument.FullDocument);
-            //         }
-            //         hasChanges = true;
-            //     }
-            //
-            //     if (invalidateFindOnAddOrDelete)
-            //     {
-            //         documents = await query.ToListAsync();
-            //     }
-            // }
-            //
-            // if (hasChanges)
-            // {
-            //     onNext(documents, subject);
-            // }
+            if (changeDocument.OperationType == ChangeStreamOperationType.Delete)
+            {
+                queryContext.TotalItems--;
+                if (queryContext.Paging.IsPaged)
+                {
+                    hasChanges = await documents.RemoveAndAddLastInQuery(id, query);
+                }
+                else
+                {
+                   hasChanges = documents.Remove(id);
+                }
+            }
+            else if (changeDocument.OperationType == ChangeStreamOperationType.Insert)
+            {
+                queryContext.TotalItems++;
+                hasChanges = documents.Add(fullDocument);
+            }
+            else if (fullDocument is not null)
+            {
+                hasChanges = documents.Add(fullDocument);
+            }
+        }
+        if (hasChanges)
+        {
+            onNext(documents, subject);
         }
     }
 
