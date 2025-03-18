@@ -23,41 +23,42 @@ public class MongoCollectionInterceptor(
     public void Intercept(IInvocation invocation)
     {
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-
         invocation.ReturnValue = tcs.Task;
 
-        var cancellationToken = invocation.Arguments.FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
+        var cancellationToken = invocation.Arguments
+            .FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
 
 #pragma warning disable CA2012 // Use ValueTasks correctly
         resiliencePipeline.ExecuteAsync(
-            async (_) =>
+            async _ =>
             {
-                await openConnectionSemaphore.WaitAsync(1000);
+                if (!await openConnectionSemaphore.WaitAsync(1000, cancellationToken))
+                {
+                    tcs.SetException(new TimeoutException("Failed to acquire semaphore."));
+                    return ValueTask.CompletedTask;
+                }
+
                 try
                 {
                     var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
                     await result.ConfigureAwait(false);
 
-                    openConnectionSemaphore.Release(1);
                     if (result.IsCanceled)
-                    {
                         tcs.SetCanceled();
-                    }
                     else
-                    {
                         tcs.SetResult();
-                    }
                 }
-                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                catch (OperationCanceledException)
                 {
-                    openConnectionSemaphore.Release(1);
                     tcs.SetCanceled();
                 }
                 catch (Exception ex)
                 {
-                    openConnectionSemaphore.Release(1);
                     tcs.SetException(ex);
-                    return ValueTask.FromException(ex);
+                }
+                finally
+                {
+                    openConnectionSemaphore.Release();
                 }
 
                 return ValueTask.CompletedTask;
