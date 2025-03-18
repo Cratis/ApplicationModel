@@ -60,7 +60,7 @@ public class QueryResult<T>
     /// <summary>
     /// Gets any exception messages that might have occurred.
     /// </summary>
-    public IEnumerable<string> ExceptionMessages { get; init; } = [];
+    public IEnumerable<string> ExceptionMessages { get; set; } = [];
 
     /// <summary>
     /// Gets the stack trace if there was an exception.
