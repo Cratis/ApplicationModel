@@ -106,7 +106,7 @@ public class QueryActionFilter(
             else
             {
                 logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                var response = queryProviders.Execute(callResult.Response!);
+                var response = callResult.Response is not null ? queryProviders.Execute(callResult.Response!) : new QueryProviderResult(0, default!);
                 var queryContext = queryContextManager.Current;
                 var queryResult = new QueryResult<object>
                 {
@@ -120,6 +120,11 @@ public class QueryActionFilter(
                     ExceptionStackTrace = callResult.ExceptionStackTrace ?? string.Empty,
                     Data = response.Data
                 };
+
+                if (response.Data is null && queryResult.IsSuccess)
+                {
+                    queryResult.ExceptionMessages = ["Null data returned"];
+                }
 
                 if (!queryResult.IsAuthorized)
                 {
