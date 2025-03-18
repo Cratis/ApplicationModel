@@ -44,13 +44,15 @@ public class MongoCollectionInterceptorForReturnValues(
         resiliencePipeline.ExecuteAsync(
             async (_) =>
             {
-                await openConnectionSemaphore.WaitAsync(1000);
+                if (!await openConnectionSemaphore.WaitAsync(1000, cancellationToken))
+                {
+                    setExceptionMethod.Invoke(tcs, [new TimeoutException("Failed to acquire semaphore.")]);
+                    return ValueTask.CompletedTask;
+                }
                 try
                 {
                     var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
                     await result.ConfigureAwait(false);
-
-                    openConnectionSemaphore.Release(1);
                     if (result.IsCanceled)
                     {
                         setCanceledMethod.Invoke(tcs, []);
@@ -63,7 +65,7 @@ public class MongoCollectionInterceptorForReturnValues(
 #pragma warning restore CA1849 // Synchronous blocks
                     }
                 }
-                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     openConnectionSemaphore.Release(1);
                     setCanceledMethod.Invoke(tcs, []);
@@ -72,6 +74,10 @@ public class MongoCollectionInterceptorForReturnValues(
                 {
                     openConnectionSemaphore.Release(1);
                     setExceptionMethod.Invoke(tcs, [ex]);
+                }
+                finally
+                {
+                    openConnectionSemaphore.Release();
                 }
 
                 return ValueTask.CompletedTask;
