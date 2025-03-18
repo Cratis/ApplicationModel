@@ -20,7 +20,7 @@ public static class ParameterInfoExtensions
     {
         var type = parameterInfo.ParameterType.GetTargetType();
         var optional = parameterInfo.IsOptional() || parameterInfo.HasDefaultValue;
-        return new RequestArgumentDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional);
+        return new RequestArgumentDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, parameterInfo.IsFromQueryArgument());
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public static class ParameterInfoExtensions
     }
 
     /// <summary>
-    /// Check if a a parameter is adorned with the FromRequestAttribute from Application Model, which means we need to investigate the internals for any request arguments.
+    /// Check if a parameter is adorned with the FromRequestAttribute from Application Model, which means we need to investigate the internals for any request arguments.
     /// </summary>
     /// <param name="parameter">Method to check.</param>
     /// <returns>True if it is a from request argument, false otherwise.</returns>
@@ -69,5 +69,16 @@ public static class ParameterInfoExtensions
     {
         var attributes = parameter.GetCustomAttributesData().Select(_ => _.AttributeType.Name);
         return attributes.Any(_ => _ == WellKnownTypes.FromRequestAttribute);
+    }
+
+    /// <summary>
+    /// Check if a parameter is adorned with the FromQueryAttribute, which means we need to treat it as a query string parameter and include it in the route template.
+    /// </summary>
+    /// <param name="parameter">Method to check.</param>
+    /// <returns>True if it is a from request argument, false otherwise.</returns>
+    public static bool IsFromQueryArgument(this ParameterInfo parameter)
+    {
+        var attributes = parameter.GetCustomAttributesData().Select(_ => _.AttributeType.Name);
+        return attributes.Any(_ => _ == WellKnownTypes.FromQueryAttribute);
     }
 }

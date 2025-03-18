@@ -61,7 +61,8 @@ public static class CommandExtensions
 
         imports = [.. imports.DistinctBy(_ => _.Type)];
 
-        var route = method.GetRoute();
+        var arguments = method.GetArgumentDescriptors();
+        var route = method.GetRoute(arguments);
 
         return new(
             method.DeclaringType!,
@@ -71,7 +72,7 @@ public static class CommandExtensions
             method.Name,
             properties,
             imports.OrderBy(_ => _.Module),
-            method.GetArgumentDescriptors(),
+            arguments,
             hasResponse,
             responseModel,
             [.. typesInvolved, .. additionalTypesInvolved]);
