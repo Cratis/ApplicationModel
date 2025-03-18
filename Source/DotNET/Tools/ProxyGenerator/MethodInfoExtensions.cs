@@ -15,8 +15,9 @@ public static class MethodInfoExtensions
     /// Get the route for a method.
     /// </summary>
     /// <param name="method">Method to get for.</param>
+    /// <param name="arguments">Arguments for the method.</param>
     /// <returns>The full route.</returns>
-    public static string GetRoute(this MethodInfo method)
+    public static string GetRoute(this MethodInfo method, IEnumerable<RequestArgumentDescriptor> arguments)
     {
         var routeTemplates = new string[]
         {
@@ -33,6 +34,13 @@ public static class MethodInfoExtensions
         }
 
         if (!route.StartsWith('/')) route = $"/{route}";
+
+        var queryStringParameters = arguments.Where(argument => argument.IsQueryStringParameter).ToArray();
+        if (queryStringParameters.Length > 0)
+        {
+            var queryString = string.Join('&', queryStringParameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
+            route = $"{route}?{queryString}";
+        }
         return route;
     }
 
