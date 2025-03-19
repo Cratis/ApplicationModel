@@ -11,7 +11,7 @@
     <PackageVersion Include="Cratis.Metrics.Roslyn" Version="$(Fundamentals)" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.13.9" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.13.9" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.3.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
