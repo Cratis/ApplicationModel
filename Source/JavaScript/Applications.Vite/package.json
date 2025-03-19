@@ -45,6 +45,6 @@
         "react": "19.0.0"
     },
     "devDependencies": {
-        "@types/react": "19.0.11"
+        "@types/react": "19.0.12"
     }
 }
