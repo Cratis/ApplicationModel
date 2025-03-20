@@ -20,7 +20,7 @@ import { {{Type}} } from '{{Module}}';
 {{/Imports}}
 import Handlebars from 'handlebars';
 
-const routeTemplate = Handlebars.compile('{{RouteTemplate}}');
+const routeTemplate = Handlebars.compile('{{{RouteTemplate}}}');
 
 {{#if IsEnumerable}}
 class {{Name}}SortBy {
