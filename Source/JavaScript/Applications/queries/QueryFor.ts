@@ -10,6 +10,7 @@ import { Paging } from './Paging';
 import { Globals } from '../Globals';
 import { Sorting } from './Sorting';
 import { SortDirection } from './SortDirection';
+import { joinPaths } from '../joinPaths';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
@@ -17,6 +18,7 @@ import { SortDirection } from './SortDirection';
  */
 export abstract class QueryFor<TDataType, TArguments = object> implements IQueryFor<TDataType, TArguments> {
     private _microservice: string;
+    private _apiBasePath: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract get requiredRequestArguments(): string[];
@@ -35,11 +37,17 @@ export abstract class QueryFor<TDataType, TArguments = object> implements IQuery
         this.sorting = Sorting.none;
         this.paging = Paging.noPaging;
         this._microservice = Globals.microservice ?? '';
+        this._apiBasePath = '';
     }
 
     /** @inheritdoc */
     setMicroservice(microservice: string) {
         this._microservice = microservice;
+    }
+
+    /** @inheritdoc */
+    setApiBasePath(apiBasePath: string): void {
+        this._apiBasePath = apiBasePath;
     }
 
     /** @inheritdoc */
@@ -62,6 +70,7 @@ export abstract class QueryFor<TDataType, TArguments = object> implements IQuery
         this.abortController = new AbortController();
 
         actualRoute = this.routeTemplate(args);
+        actualRoute = joinPaths(this._apiBasePath, actualRoute);
 
         const headers = {
             'Accept': 'application/json',

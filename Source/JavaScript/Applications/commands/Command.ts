@@ -6,6 +6,7 @@ import { CommandResult } from "./CommandResult";
 import { CommandValidator } from './CommandValidator';
 import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { Globals } from '../Globals';
+import { joinPaths } from '../joinPaths';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
@@ -17,6 +18,7 @@ type Callback = {
  */
 export abstract class Command<TCommandContent = object, TCommandResponse = object> implements ICommand<TCommandContent, TCommandResponse> {
     private _microservice: string;
+    private _apiBasePath: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
@@ -34,11 +36,17 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
      */
     constructor(readonly _responseType: Constructor = Object, readonly _isResponseTypeEnumerable: boolean) {
         this._microservice = Globals.microservice ?? '';
+        this._apiBasePath = '';
     }
 
     /** @inheritdoc */
     setMicroservice(microservice: string) {
         this._microservice = microservice;
+    }
+
+    /** @inheritdoc */
+    setApiBasePath(apiBasePath: string): void {
+        this._apiBasePath = apiBasePath;
     }
 
     /** @inheritdoc */
@@ -61,6 +69,8 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         if (this._microservice?.length > 0) {
             headers[Globals.microserviceHttpHeader] = this._microservice;
         }
+
+        actualRoute = joinPaths(this._apiBasePath, actualRoute);
 
         try {
             const response = await fetch(actualRoute, {

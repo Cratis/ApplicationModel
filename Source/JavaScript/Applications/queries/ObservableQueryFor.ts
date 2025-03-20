@@ -15,6 +15,7 @@ import { Sorting } from './Sorting';
 import { Paging } from './Paging';
 import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
+import { joinPaths } from '../joinPaths';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -24,6 +25,7 @@ import { Globals } from '../Globals';
  */
 export abstract class ObservableQueryFor<TDataType, TArguments = object> implements IObservableQueryFor<TDataType, TArguments> {
     private _microservice: string;
+    private _apiBasePath: string;
     private _connection?: IObservableQueryConnection<TDataType>;
 
     abstract readonly route: string;
@@ -42,6 +44,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
         this.sorting = Sorting.none;
         this.paging = Paging.noPaging;
         this._microservice = Globals.microservice ?? '';
+        this._apiBasePath = '';
     }
 
     /**
@@ -54,6 +57,11 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
     /** @inheritdoc */
     setMicroservice(microservice: string) {
         this._microservice = microservice;
+    }
+
+    /** @inheritdoc */
+    setApiBasePath(apiBasePath: string): void {
+        this._apiBasePath = apiBasePath;
     }
 
     /** @inheritdoc */
@@ -79,6 +87,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
             this._connection = new NullObservableQueryConnection(this.defaultValue);
         } else {
             actualRoute = this.routeTemplate(args);
+            actualRoute = joinPaths(this._apiBasePath, actualRoute);
             this._connection = new ObservableQueryConnection<TDataType>(actualRoute, this._microservice);
         }
 
