@@ -52,6 +52,12 @@ export interface ICommand<TCommandContent = object, TCommandResponse = object> {
     setMicroservice(microservice: string);
 
     /**
+     * Set the base path for the API to use for the query. This is used to prepend to the path of the command.
+     * @param apiBasePath Base path for the API
+     */
+    setApiBasePath(apiBasePath: string): void;
+
+    /**
      * Notify about a property that has had its value changed.
      * @param {string} property Name of property that changes.
      */

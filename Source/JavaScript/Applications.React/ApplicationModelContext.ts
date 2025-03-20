@@ -7,9 +7,11 @@ import React from 'react';
 export interface ApplicationModelConfiguration {
     microservice: string;
     development?: boolean
+    apiBasePath?: string;
 }
 
 export const ApplicationModelContext = React.createContext<ApplicationModelConfiguration>({
     microservice: Globals.microservice,
-    development: false
+    development: false,
+    apiBasePath: ''
 });

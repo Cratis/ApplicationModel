@@ -33,4 +33,10 @@ export interface IQuery {
      * @param microservice Name of microservice
      */
     setMicroservice(microservice: string);
+
+    /**
+     * Set the base path for the API to use for the query. This is used to prepend to the path of the query.
+     * @param apiBasePath Base path for the API
+     */
+    setApiBasePath(apiBasePath: string): void;
 }
