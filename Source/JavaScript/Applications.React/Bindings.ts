@@ -9,6 +9,6 @@ import { WellKnownBindings } from './WellKnownBindings';
 export class Bindings {
     static initialize(microservice: string, apiBasePath?: string) {
         container.registerSingleton(WellKnownBindings.microservice, microservice);
-        container.register(IQueryProvider as Constructor<IQueryProvider>, { useValue: new QueryProvider(microservice, apiBasePath) });
+        container.register(IQueryProvider as Constructor<IQueryProvider>, { useValue: new QueryProvider(microservice, apiBasePath ?? '') });
     }
 }
