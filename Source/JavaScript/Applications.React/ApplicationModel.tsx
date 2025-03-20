@@ -8,14 +8,14 @@ import { ApplicationModelConfiguration, ApplicationModelContext } from './Applic
 
 export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
-    microservice: string;
+    microservice?: string;
     development?: boolean;
     apiBasePath?: string;
 }
 
 export const ApplicationModel = (props: ApplicationModelProps) => {
     const configuration: ApplicationModelConfiguration = {
-        microservice: props.microservice,
+        microservice: props.microservice ?? '',
         development: props.development ?? false,
         apiBasePath: props.apiBasePath ?? ''
     };
