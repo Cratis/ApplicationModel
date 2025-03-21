@@ -8,6 +8,7 @@ import * as validation from './validation';
 export * from './joinPaths';
 export * from './deepEqual';
 export * from './Globals';
+export * from './ICanBeConfigured';
 
 export {
     commands,

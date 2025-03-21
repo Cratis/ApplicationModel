@@ -22,6 +22,9 @@ import { deepEqual } from '@cratis/applications';
 import { IHandleParams } from 'IHandleParams';
 import { IHandleQueryParams } from 'IHandleQueryParams';
 import { IHandleProps } from 'IHandleProps';
+import { ObservableQueryFor, QueryFor } from '@cratis/applications/queries';
+import { Command } from '@cratis/applications/commands';
+import { ICanBeConfigured } from '@cratis/applications/ICanBeConfigured';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -39,21 +42,21 @@ function disposeViewModel(viewModel: IViewModel) {
     }
 }
 
-function handleProps(viewModel: IViewModel, params: object) { 
+function handleProps(viewModel: IViewModel, params: object) {
     const vmWithHandleParams = (viewModel as unknown as IHandleProps);
     if (typeof (vmWithHandleParams.handleProps) == 'function') {
         vmWithHandleParams.handleProps(params);
     }
 }
 
-function handleParams(viewModel: IViewModel, params: object) { 
+function handleParams(viewModel: IViewModel, params: object) {
     const vmWithHandleParams = (viewModel as unknown as IHandleParams);
     if (typeof (vmWithHandleParams.handleParams) == 'function') {
         vmWithHandleParams.handleParams(params);
     }
 }
 
-function handleQueryParams(viewModel: IViewModel, queryParams: object) { 
+function handleQueryParams(viewModel: IViewModel, queryParams: object) {
     const vmWithHandleParams = (viewModel as unknown as IHandleQueryParams);
     if (typeof (vmWithHandleParams.handleQueryParams) == 'function') {
         vmWithHandleParams.handleQueryParams(queryParams);
@@ -90,6 +93,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
         const currentViewModel = useRef<TViewModel | null>(null);
         const [, setInitialRender] = useState(true);
         const parentDialogMediator = useDialogMediator();
+
         useEffect(() => {
             if (currentViewModel.current !== null) {
                 return () => {
@@ -103,6 +107,23 @@ export function withViewModel<TViewModel extends object, TProps extends object =
             child.registerInstance(WellKnownBindings.props, props);
             child.registerInstance(WellKnownBindings.params, params);
             child.registerInstance(WellKnownBindings.queryParams, queryParamsObject);
+
+            const originalResolve = child.resolve;
+
+            child.resolve = function <T>(type: Constructor<T>) {
+                // eslint-disable-next-line prefer-rest-params
+                const instance = originalResolve.apply(child, arguments as never);
+
+                if (type.prototype instanceof ObservableQueryFor ||
+                    type.prototype instanceof QueryFor ||
+                    type.prototype instanceof Command) {
+                    const query = instance as ICanBeConfigured;
+                    query.setMicroservice(applicationContext.microservice);
+                    query.setApiBasePath(applicationContext.apiBasePath ?? '');
+                }
+
+                return instance;
+            } as never;
 
             const dialogService = new Dialogs(dialogMediatorContext.current!);
             child.registerInstance<IDialogs>(IDialogs as Constructor<IDialogs>, dialogService);
@@ -125,7 +146,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
 
         if (currentViewModel.current === null) return null;
 
-        if(!deepEqual(currentProps, props)) {
+        if (!deepEqual(currentProps, props)) {
             setCurrentProps(props);
             handleProps(currentViewModel.current as IViewModel, props);
         }
