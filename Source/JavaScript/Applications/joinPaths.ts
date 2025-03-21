@@ -2,5 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 export function joinPaths(...paths) {
-    return paths.map(p => p.replace(/^\/+|\/+$/g, '')).join('/');
+    const joined = paths.join('/');
+    return joined.replace('//', '/');
 }
