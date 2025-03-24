@@ -175,8 +175,8 @@ public static class MongoCollectionExtensions
         var queryContextManager = Internals.ServiceProvider.GetRequiredService<IQueryContextManager>();
         var queryContext = queryContextManager.Current;
 
-        // TODO: No customizable Id property?
-        var idProperty = typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!;
+        var classMap = BsonClassMap.LookupClassMap(typeof(TDocument));
+        var idProperty = typeof(TDocument).GetProperty(classMap.IdMemberMap?.MemberName ?? "Id", BindingFlags.Instance | BindingFlags.Public) ?? throw new MissingIdMapping(typeof(TDocument));
         var documents = new QueryContextAwareSet<TDocument>(queryContext, idProperty);
 
         var options = new ChangeStreamOptions
