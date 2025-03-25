@@ -10,6 +10,7 @@ export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
     microservice?: string;
     development?: boolean;
+    basePath?: string;
     apiBasePath?: string;
 }
 
@@ -17,6 +18,7 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
     const configuration: ApplicationModelConfiguration = {
         microservice: props.microservice ?? '',
         development: props.development ?? false,
+        basePath: props.basePath ?? '',
         apiBasePath: props.apiBasePath ?? ''
     };
 
