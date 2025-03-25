@@ -49,6 +49,9 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
     /// Initializes a new instance of the <see cref="QueryContextAwareSet{TDocument}"/> class.
     /// </summary>
     /// <param name="queryContext">The query context.</param>
+    /// <remarks>
+    /// Primarily used for testing.
+    /// </remarks>
     public QueryContextAwareSet(QueryContext queryContext) : this(queryContext, typeof(TDocument).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)!)
     {
     }
