@@ -3,6 +3,6 @@
         <CratisProxiesInputAssembly></CratisProxiesInputAssembly>
         <CratisProxiesOutputPath></CratisProxiesOutputPath>
         <CratisProxiesSegmentsToSkip></CratisProxiesSegmentsToSkip>
-        <CratisProxiesDeleteOutput>true</CratisProxiesDeleteOutput>
+        <CratisProxiesSkipOutputDeletion>false</CratisProxiesSkipOutputDeletion>
     </PropertyGroup>
 </Project>
