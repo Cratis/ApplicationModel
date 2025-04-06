@@ -17,7 +17,8 @@
         <Message Text="AssemblyName : $(AssemblyName)" Importance="high" />
         <Message Text="ProxyGenerator base directory : $(CratisProxyGeneratorAssemblyDirectory)" Importance="high" />
         <Message Text="Full path to assembly : $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll" Importance="high" />
+        <SkipOutputDeletion Condition=" '$(CratisProxiesDeleteOutput)' == 'false' " Value="--skip-output-deletion"></SkipOutputDeletion>
 
-        <Exec ConsoleToMsBuild="true" Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
+        <Exec ConsoleToMsBuild="true" Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip) $(SkipOutputDeletion)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
     </Target>
 </Project>
