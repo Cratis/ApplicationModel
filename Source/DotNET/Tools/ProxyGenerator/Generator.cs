@@ -20,8 +20,9 @@ public static class Generator
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
     /// <param name="message">Logger to use for outputting messages.</param>
     /// <param name="errorMessage">Logger to use for outputting error messages.</param>
+    /// <param name="skipOutputDeletion">True if the output path should be deleted before generating, false if not.</param>
     /// <returns>True if successful, false if not.</returns>
-    public static async Task<bool> Generate(string assemblyFile, string outputPath, int segmentsToSkip, Action<string> message, Action<string> errorMessage)
+    public static async Task<bool> Generate(string assemblyFile, string outputPath, int segmentsToSkip, Action<string> message, Action<string> errorMessage, bool skipOutputDeletion = false)
     {
         assemblyFile = Path.GetFullPath(assemblyFile);
         if (!File.Exists(assemblyFile))
@@ -54,7 +55,7 @@ public static class Generator
 
         message($"  Found {commands.Count} commands and {queries.Count} queries");
 
-        if (Directory.Exists(outputPath)) Directory.Delete(outputPath, true);
+        if (Directory.Exists(outputPath) && !skipOutputDeletion) Directory.Delete(outputPath, true);
         if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
 
         var typesInvolved = new List<Type>();
