@@ -92,6 +92,15 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     }
 
     /** @inheritdoc */
+    clear(): void {
+        this.properties.forEach(property => {
+            this[property] = undefined;
+        });
+        this._initialValues = {};
+        this._hasChanges = false;
+    }
+
+    /** @inheritdoc */
     setInitialValues(values: TCommandContent) {
         this.properties.forEach(property => {
             if (Object.prototype.hasOwnProperty.call(values, property)) {
