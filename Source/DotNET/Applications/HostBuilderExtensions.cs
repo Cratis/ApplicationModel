@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.Metrics;
 using Cratis.Applications;
 using Cratis.Conversion;
 using Cratis.DependencyInjection;
@@ -80,6 +81,7 @@ public static class HostBuilderExtensions
         builder
             .ConfigureServices(services =>
             {
+                services.AddKeyedSingleton(Internals.MeterName, new Meter(Internals.MeterName));
                 services
                     .AddTypeDiscovery()
                     .AddSingleton<IDerivedTypes>(derivedTypes)

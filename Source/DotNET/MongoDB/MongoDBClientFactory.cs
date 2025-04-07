@@ -6,6 +6,7 @@ using Castle.DynamicProxy;
 using Cratis.Applications.MongoDB.Resilience;
 using Cratis.DependencyInjection;
 using Cratis.Metrics;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -28,7 +29,11 @@ namespace Cratis.Applications.MongoDB;
 /// <param name="options"><see cref="IOptions{TOptions}"/> for getting the options.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 [Singleton]
-public class MongoDBClientFactory(IMongoServerResolver serverResolver, IMeter<IMongoClient> meter, IOptions<MongoDBOptions> options, ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
+public class MongoDBClientFactory(
+    IMongoServerResolver serverResolver,
+    [FromKeyedServices(Internals.MeterName)] IMeter<IMongoClient> meter,
+    IOptions<MongoDBOptions> options,
+    ILogger<MongoDBClientFactory> logger) : IMongoDBClientFactory
 {
     readonly ConcurrentDictionary<string, IMongoClient> _clients = new();
     readonly ConcurrentDictionary<string, int> _connectedClientsCount = new();
