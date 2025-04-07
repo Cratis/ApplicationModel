@@ -1,7 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.Metrics;
+using Cratis.Applications;
 using Cratis.Applications.MongoDB;
+using Cratis.Metrics;
 using Cratis.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,6 +80,12 @@ public static class HostBuilderExtensions
         {
             optionsBuilder.BindConfiguration(mongoDBConfigSectionPath);
         }
+
+        services.AddKeyedSingleton<IMeter<IMongoClient>>(Internals.MeterName, (sp, key) =>
+        {
+            var meter = sp.GetRequiredKeyedService<Meter>(key);
+            return new Meter<IMongoClient>(meter);
+        });
 
         services.AddHostedService<MongoDBInitializer>();
 
