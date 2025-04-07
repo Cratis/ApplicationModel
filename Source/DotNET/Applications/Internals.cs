@@ -10,6 +10,10 @@ namespace Cratis.Applications;
 /// </summary>
 internal static class Internals
 {
+    /// <summary>
+    /// Gets the name of the meter used by the Application Model.
+    /// </summary>
+    internal const string MeterName = "Cratis.Applications";
     static IServiceProvider? _serviceProvider;
     static ITypes? _types;
 
