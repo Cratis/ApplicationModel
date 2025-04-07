@@ -26,6 +26,12 @@ export interface ICommand<TCommandContent = object, TCommandResponse = object> e
     execute(): Promise<CommandResult<TCommandResponse>>;
 
     /**
+     * Clear the command properties and reset them to their default values. This will also clear the initial values.
+     * This is used when the command is not needed anymore and should be cleared.
+     */
+    clear(): void;
+
+    /**
      * Set the initial values for the command. This is used for tracking if there are changes to a command or not.
      * @param {*} values Values to set.
      */
