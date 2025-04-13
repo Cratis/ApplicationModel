@@ -9,6 +9,7 @@ using Cratis.Serialization;
 using Cratis.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.Hosting;
@@ -55,6 +56,19 @@ public static class HostBuilderExtensions
         return builder.UseApplicationModelImplementation(options.IdentityDetailsProvider);
     }
 
+    /// <summary>
+    /// Add the Meter for the Application Model.
+    /// </summary>
+    /// <param name="services"><see cref="IServiceCollection"/> to add the meter to.</param>
+    /// <returns><see cref="IServiceCollection"/> for building continuation.</returns>
+    public static IServiceCollection AddCratisApplicationModelMeter(this IServiceCollection services)
+    {
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        services.TryAddKeyedSingleton(Internals.MeterName, new Meter(Internals.MeterName));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        return services;
+    }
+
     static OptionsBuilder<ApplicationModelOptions> AddOptions(IServiceCollection services, Action<ApplicationModelOptions>? configureOptions = default)
     {
         var builder = services
@@ -81,7 +95,7 @@ public static class HostBuilderExtensions
         builder
             .ConfigureServices(services =>
             {
-                services.AddKeyedSingleton(Internals.MeterName, new Meter(Internals.MeterName));
+                services.AddCratisApplicationModelMeter();
                 services
                     .AddTypeDiscovery()
                     .AddSingleton<IDerivedTypes>(derivedTypes)
