@@ -67,7 +67,7 @@
         "tsyringe": "4.9.1"
     },
     "devDependencies": {
-        "@types/react": "19.1.1",
+        "@types/react": "19.1.2",
         "@types/react-dom": "19.1.2"
     }
 }
