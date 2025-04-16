@@ -63,7 +63,7 @@
         "@cratis/fundamentals": "6.3.2",
         "handlebars": "4.7.8",
         "react": "19.1.0",
-        "tsyringe": "4.9.1"
+        "tsyringe": "4.10.0"
     },
     "devDependencies": {
         "@types/react": "19.1.2",
