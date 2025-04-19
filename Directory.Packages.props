@@ -2,6 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <HandlebarsVersion>2.1.6</HandlebarsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Cratis.Fundamentals" Version="6.3.2" />
@@ -13,7 +14,7 @@
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.3.0" />
-    <PackageVersion Include="handlebars.net" Version="2.1.6" />
+    <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
     <PackageVersion Include="castle.core" Version="5.2.1" />
     <PackageVersion Include="polly.core" Version="8.5.2" />
     <!-- Orleans -->
