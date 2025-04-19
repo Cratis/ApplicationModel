@@ -23,7 +23,6 @@ public static class WebApplicationBuilderExtensions
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
     public static WebApplicationBuilder UseCratisApplicationModel(this WebApplicationBuilder builder, string? configSectionPath = null)
     {
-        builder.AddCorrelationIdLogEnricher();
         builder.Host.UseCratisApplicationModel(configSectionPath);
         return builder;
     }
@@ -36,7 +35,6 @@ public static class WebApplicationBuilderExtensions
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
     public static WebApplicationBuilder UseCratisApplicationModel(this WebApplicationBuilder builder, Action<ApplicationModelOptions> configureOptions)
     {
-        builder.AddCorrelationIdLogEnricher();
         builder.Host.UseCratisApplicationModel(configureOptions);
         return builder;
     }
