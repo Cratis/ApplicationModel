@@ -1,9 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Execution;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -19,8 +17,7 @@ public static class CorrelationIdWebApplicationExtensions
     /// <returns>The web application builder for chaining.</returns>
     public static WebApplicationBuilder AddCorrelationIdLogEnricher(this WebApplicationBuilder builder)
     {
-        builder.Logging.EnableEnrichment();
-        builder.Services.AddLogEnricher<CorrelationIdLogEnricher>();
+        builder.Host.AddCorrelationIdLogEnricher();
         return builder;
     }
 }

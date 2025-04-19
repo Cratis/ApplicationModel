@@ -91,6 +91,7 @@ public static class HostBuilderExtensions
         var derivedTypes = DerivedTypes.Instance;
 
         builder.UseDefaultServiceProvider(_ => _.ValidateOnBuild = false);
+        builder.AddCorrelationIdLogEnricher();
 
         builder
             .ConfigureServices(services =>
