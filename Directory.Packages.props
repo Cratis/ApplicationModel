@@ -2,13 +2,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <Orleans>9.1.2</Orleans>
-    <HandlebarsVersion>2.1.6</HandlebarsVersion>
-    <Fundamentals>6.3.2</Fundamentals>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="$(Fundamentals)" />
-    <PackageVersion Include="Cratis.Metrics.Roslyn" Version="$(Fundamentals)" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="6.3.2" />
+    <PackageVersion Include="Cratis.Metrics.Roslyn" Version="6.3.2" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.13.9" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.13.9" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.1.1" />
@@ -16,16 +13,16 @@
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.3.0" />
-    <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
+    <PackageVersion Include="handlebars.net" Version="2.1.6" />
     <PackageVersion Include="castle.core" Version="5.2.1" />
     <PackageVersion Include="polly.core" Version="8.5.2" />
     <!-- Orleans -->
-    <PackageVersion Include="Microsoft.Orleans.SDK" Version="$(Orleans)" />
-    <PackageVersion Include="Microsoft.Orleans.Runtime" Version="$(Orleans)" />
-    <PackageVersion Include="Microsoft.Orleans.Server" Version="$(Orleans)" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="$(Orleans)" />
-    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="$(Orleans)" />
-    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="$(Orleans)" />
+    <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.1.2" />
+    <PackageVersion Include="Microsoft.Orleans.Runtime" Version="9.1.2" />
+    <PackageVersion Include="Microsoft.Orleans.Server" Version="9.1.2" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization" Version="9.1.2" />
+    <PackageVersion Include="Microsoft.Orleans.Serialization.SystemTextJson" Version="9.1.2" />
+    <PackageVersion Include="Microsoft.Orleans.Core.Abstractions" Version="9.1.2" />
     <PackageVersion Include="OrleansTestKit" Version="8.2.2" />
     <PackageVersion Include="OrleansDashboard" Version="8.2.0" />
     <!-- Roslyn-->
@@ -46,7 +43,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Telemetry" Version="9.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Telemetry" Version="9.4.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.4" />
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.4" />
     <PackageVersion Include="System.Text.Json" Version="9.0.4" />
