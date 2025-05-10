@@ -11,21 +11,48 @@ namespace Cratis.Applications.Execution;
 /// Represents an implementation of <see cref="IAsyncActionFilter"/> that sets the correlation ID for the request.
 /// </summary>
 /// <param name="options">The options for the correlation ID.</param>
-public class CorrelationIdActionFilter(IOptions<ApplicationModelOptions> options) : IAsyncActionFilter
+/// <param name="correlationIdAccessor">The accessor for the correlation ID.</param>
+public class CorrelationIdActionFilter(IOptions<ApplicationModelOptions> options, ICorrelationIdAccessor correlationIdAccessor) : IAsyncActionFilter
 {
     /// <inheritdoc/>
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var correlationIdAsString = context.HttpContext.Request.Headers[options.Value.CorrelationId.HttpHeader].ToString() ?? Guid.Empty.ToString();
-        if (string.IsNullOrEmpty(correlationIdAsString))
+        CorrelationId correlationId;
+        var setCurrent = false;
+        if (string.IsNullOrEmpty(correlationIdAsString) ||
+            correlationIdAsString == Guid.Empty.ToString() ||
+            !Guid.TryParse(correlationIdAsString, out _))
         {
-            correlationIdAsString = CorrelationId.New().ToString();
+            correlationId = correlationIdAccessor.Current;
+            if (correlationId == CorrelationId.NotSet)
+            {
+                correlationId = CorrelationId.New();
+                setCurrent = true;
+            }
+
+            correlationIdAsString = correlationId.ToString();
             context.HttpContext.Request.Headers[Constants.DefaultCorrelationIdHeader] = correlationIdAsString;
         }
+        else
+        {
+            setCurrent = true;
+            correlationId = Guid.Parse(correlationIdAsString);
+        }
 
-        var correlationId = Guid.Parse(correlationIdAsString);
         context.HttpContext.Items[Constants.CorrelationIdItemKey] = correlationId;
-        CorrelationIdAccessor.SetCurrent(correlationId);
+
+        if (setCurrent)
+        {
+            if (correlationIdAccessor is ICorrelationIdModifier correlationIdModifier)
+            {
+                correlationIdModifier.Modify(correlationId);
+            }
+            else
+            {
+                CorrelationIdAccessor.SetCurrent(correlationId);
+            }
+        }
 
         await next();
     }
