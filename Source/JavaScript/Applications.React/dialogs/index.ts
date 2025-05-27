@@ -3,3 +3,5 @@
 
 export * from './useDialog';
 export * from './DialogResult';
+export * from './DialogResolver';
+export * from './DialogContext';

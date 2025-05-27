@@ -1,23 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogResolver } from './DialogRegistration';
+import { DialogContext, IDialogContext, DialogResolver } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
-
-
-export interface IDialogContext<TRequest extends object, TResponse> {
-    request: TRequest;
-    resolver: DialogResolver<TResponse>;
-    actualResolver?: DialogResolver<TResponse>;
-}
-
-export const DialogContext = React.createContext<IDialogContext<object, object>>(undefined!);
-
-export const useDialogContext = <TRequest extends object, TResponse>(): IDialogContext<TRequest, TResponse> => {
-    return useContext(DialogContext) as unknown as IDialogContext<TRequest, TResponse>;
-};
 
 interface DialogWrapperProps {
     children?: JSX.Element | JSX.Element[];
@@ -25,7 +12,7 @@ interface DialogWrapperProps {
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const DialogWrapper = <TRequest extends object, TResponse>(props: DialogWrapperProps) => {
+const DialogWrapper = <TResponse, TRequest extends object>(props: DialogWrapperProps) => {
     return (
         <div>
             {props.isVisible && props.children}
