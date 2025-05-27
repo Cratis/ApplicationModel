@@ -3,11 +3,11 @@
 
 import { useEffect, useMemo, useRef, useState, ComponentType, FC } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogContext, IDialogContext, CloseDialog, DialogResult } from '@cratis/applications.react/dialogs';
+import { DialogContext, DialogContextContent, CloseDialog, DialogResult } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
 export interface DialogProps<TResponse> {
-    closeDialog: CloseDialog<TResponse>
+    closeDialog?: CloseDialog<TResponse>
 }
 
 type ActualDialogProps<T> = Omit<T, 'closeDialog'>;
@@ -18,7 +18,7 @@ type ActualDialogProps<T> = Omit<T, 'closeDialog'>;
  * @param DialogComponent The dialog component to render.
  * @returns A tuple with a component to use for rendering the dialog.
  */
-export function useDialogRequest<TRequest extends object, TResponse, TProps extends DialogProps<TResponse>>(
+export function useDialogRequest<TRequest extends object, TResponse, TProps extends DialogProps<TResponse> = {}>(
     requestType: Constructor<TRequest>,
     DialogComponent: ComponentType<TProps>
 ): [FC<ActualDialogProps<TProps>>] {
@@ -26,10 +26,10 @@ export function useDialogRequest<TRequest extends object, TResponse, TProps exte
     const [visible, setVisible] = useState(false);
     const [dialogProps, setDialogProps] = useState<ActualDialogProps<TProps> | undefined>();
     const closeDialogRef = useRef<CloseDialog<TResponse> | undefined>(undefined);
-    const dialogContextValue = useRef<IDialogContext<TRequest, TResponse>>(undefined!);
+    const dialogContextValue = useRef<DialogContextContent<TRequest, TResponse>>(undefined!);
 
     const requester = (request: TRequest, closeDialog: CloseDialog<TResponse>) => {
-        dialogContextValue.current.request = request;
+        dialogContextValue.current = new DialogContextContent(request, closeDialog);
         closeDialogRef.current = closeDialog;
         setVisible(true);
     };
@@ -41,20 +41,16 @@ export function useDialogRequest<TRequest extends object, TResponse, TProps exte
     };
 
     dialogContextValue.current = useMemo(() => {
-        return {
-            request: undefined!,
-            closeDialog: closeDialog
-        };
+        return new DialogContextContent(undefined!, closeDialog);
     }, []);
 
     useEffect(() => {
         mediator.subscribe(requestType, requester, closeDialog);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const DialogWrapper: FC<ActualDialogProps<TProps>> = (extraProps) => {
         return visible ? (
-            <DialogContext.Provider value={dialogContextValue.current as unknown as IDialogContext<object, object>}>
+            <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
                 <DialogComponent
                     {...(dialogProps as TProps)}
                     {...extraProps}

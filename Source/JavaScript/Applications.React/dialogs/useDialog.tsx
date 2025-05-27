@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogContext, IDialogContext } from './DialogContext';
+import { DialogContext, DialogContextContent } from './DialogContext';
 import { CloseDialog } from './CloseDialog';
 import { DialogResult } from './DialogResult';
 import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
@@ -44,24 +44,21 @@ export function useDialog<TResponse = {}, TProps extends DialogProps<TResponse> 
         setVisible(false);
     }, []);
 
-    const dialogContextValue = useRef<IDialogContext<TProps, TResponse>>(undefined!);
+    const dialogContextValue = useRef<DialogContextContent<TProps, TResponse>>(undefined!);
     dialogContextValue.current = useMemo(() => {
-        return {
-            request: undefined!,
-            closeDialog: (result, response) => closeDialog(result, response)
-        };
+        return new DialogContextContent(undefined!, closeDialog);
     }, []);
 
-    const DialogWrapper: WrappedDialogComponent<TProps> = (extraProps) => {
-        return visible ? (
-            <DialogContext.Provider value={dialogContextValue.current as unknown as IDialogContext<object, object>}>
-                <DialogComponent
-                    {...(props as TProps)}
-                    {...extraProps}
-                    closeDialog={closeDialog} />
-            </DialogContext.Provider>
-        ) : null;
-    };
+const DialogWrapper: WrappedDialogComponent<TProps> = (extraProps) => {
+    return visible ? (
+        <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
+            <DialogComponent
+                {...(props as TProps)}
+                {...extraProps}
+                closeDialog={closeDialog} />
+        </DialogContext.Provider>
+    ) : null;
+};
 
-    return [DialogWrapper, showDialog];
+return [DialogWrapper, showDialog];
 }

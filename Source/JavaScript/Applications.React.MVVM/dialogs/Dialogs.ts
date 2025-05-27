@@ -35,7 +35,7 @@ export class Dialogs extends IDialogs {
     showBusyIndicator(title: string, message: string): BusyIndicator {
         this.show<BusyIndicatorDialogRequest, void>(new BusyIndicatorDialogRequest(title, message));
         const registration = this._dialogMediatorHandler.getRegistration<BusyIndicatorDialogRequest, void>(BusyIndicatorDialogRequest);
-        const busyIndicator = new BusyIndicator(registration.resolver);
+        const busyIndicator = new BusyIndicator(registration.closeDialog);
         return busyIndicator;
     }
 }

@@ -2,7 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { DialogRegistration, DialogRequest, DialogResolver } from './DialogRegistration';
+import { CloseDialog } from '@cratis/applications.react/dialogs';
+import { DialogRegistration, DialogRequest } from './DialogRegistration';
 
 /**
  * Defines a system that can handle dialog requests and responses.
@@ -13,9 +14,9 @@ export abstract class IDialogMediatorHandler {
      * Subscribes to a request type.
      * @param {Constructor} requestType Type of request.
      * @param {DialogRequest} requester The delegate that will be called when a request is made.
-     * @param {DialogResolver} resolver The delegate that will be called when dialog is typically closed and response is resolved.
+     * @param {CloseDialog} closeDialog The delegate that will be called when dialog is typically closed and response is resolved.
      */
-    abstract subscribe<TRequest extends object, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, resolver: DialogResolver<TResponse>): void;
+    abstract subscribe<TRequest extends object, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, closeDialog: CloseDialog<TResponse>): void;
 
     /**
      * Check if there is a subscriber for a given request type.

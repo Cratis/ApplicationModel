@@ -24,22 +24,18 @@ export interface DialogComponentsProps {
 }
 
 const DialogComponentsWrapper = (props: DialogComponentsProps) => {
-    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogResult>(ConfirmationDialogRequest);
-    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogResult>(BusyIndicatorDialogRequest);
+    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
+    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
 
     return (
         <DialogComponentsContext.Provider value={{}}>
             <Fragment>
                 {props.children}
                 {props.confirmation &&
-                    <ConfirmationDialog>
-                        <props.confirmation />
-                    </ConfirmationDialog>}
+                    <ConfirmationDialog/>}
 
                 {props.busyIndicator &&
-                    <BusyIndicatorDialog>
-                        <props.busyIndicator />
-                    </BusyIndicatorDialog>}
+                    <BusyIndicatorDialog/>}
             </Fragment>
         </DialogComponentsContext.Provider>
     );

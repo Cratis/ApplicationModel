@@ -6,7 +6,7 @@ import { CloseDialog } from '@cratis/applications.react/dialogs/CloseDialog';
 /**
  * Represents the delegate for a dialog request.
  */
-export type DialogRequest<TRequest extends object, TResponse> = (request: TRequest, resolve: CloseDialog<TResponse>) => void;
+export type DialogRequest<TRequest extends object, TResponse> = (request: TRequest, closeDialog: CloseDialog<TResponse>) => void;
 
 /**
  * Represents the registration of a dialog.
@@ -16,10 +16,10 @@ export class DialogRegistration<TRequest extends object, TResponse> {
     /**
      * Initializes a new instance of {@link DialogRegistration}.
      * @param requester The requester for the dialog.
-     * @param resolver The resolver for the dialog.
+     * @param closeDialog The resolver for the dialog.
      */
     constructor(
         readonly requester: DialogRequest<TRequest, TResponse>,
-        readonly resolver: CloseDialog<TResponse>) {
+        readonly closeDialog: CloseDialog<TResponse>) {
     }
 }
