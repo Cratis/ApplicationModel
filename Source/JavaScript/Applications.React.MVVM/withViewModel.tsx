@@ -25,6 +25,7 @@ import { IHandleProps } from 'IHandleProps';
 import { ObservableQueryFor, QueryFor } from '@cratis/applications/queries';
 import { Command } from '@cratis/applications/commands';
 import { ICanBeConfigured } from '@cratis/applications/ICanBeConfigured';
+import { DialogContextContent, useDialogContext } from '@cratis/applications.react/dialogs';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -93,6 +94,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
         const currentViewModel = useRef<TViewModel | null>(null);
         const [, setInitialRender] = useState(true);
         const parentDialogMediator = useDialogMediator();
+        const dialogContext = useDialogContext();
 
         useEffect(() => {
             if (currentViewModel.current !== null) {
@@ -107,6 +109,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
             child.registerInstance(WellKnownBindings.props, props);
             child.registerInstance(WellKnownBindings.params, params);
             child.registerInstance(WellKnownBindings.queryParams, queryParamsObject);
+            child.registerInstance(DialogContextContent, dialogContext);
 
             const originalResolve = child.resolve;
 
