@@ -3,16 +3,15 @@
 
 import * as React from 'react';
 import { useContext } from 'react';
-import { DialogResolver } from './DialogResolver';
+import { CloseDialog } from './CloseDialog';
 
 export interface IDialogContext<TRequest extends object, TResponse> {
     request: TRequest;
-    resolver: DialogResolver<TResponse>;
-    actualResolver?: DialogResolver<TResponse>;
+    closeDialog: CloseDialog<TResponse>;
 }
 
 export const DialogContext = React.createContext<IDialogContext<object, object>>(undefined!);
 
-export const useDialogContext = <TRequest extends object, TResponse>(): IDialogContext<TRequest, TResponse> => {
+export const useDialogContext = <TResponse = {}, TRequest extends object = {}>(): IDialogContext<TRequest, TResponse> => {
     return useContext(DialogContext) as unknown as IDialogContext<TRequest, TResponse>;
 };

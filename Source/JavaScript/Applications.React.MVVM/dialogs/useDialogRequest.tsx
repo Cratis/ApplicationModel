@@ -1,80 +1,68 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState, ComponentType, FC } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogContext, IDialogContext, DialogResolver } from '@cratis/applications.react/dialogs';
+import { DialogContext, IDialogContext, CloseDialog, DialogResult } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
-interface DialogWrapperProps {
-    children?: JSX.Element | JSX.Element[];
-    isVisible: boolean;
+export interface DialogProps<TResponse> {
+    closeDialog: CloseDialog<TResponse>
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const DialogWrapper = <TResponse, TRequest extends object>(props: DialogWrapperProps) => {
-    return (
-        <div>
-            {props.isVisible && props.children}
-        </div>
-    );
-};
-/* eslint-enable @typescript-eslint/no-unused-vars */
+type ActualDialogProps<T> = Omit<T, 'closeDialog'>;
 
-interface IDialogRequestProps {
-    children?: JSX.Element | JSX.Element[];
-}
-
-const useConfiguredWrapper = <TRequest extends object, TResponse>(type: Constructor<TRequest>):
-    [React.FC<IDialogRequestProps>, IDialogContext<TRequest, TResponse>, DialogResolver<TResponse>] => {
+/**
+ * Use a dialog request for showing a dialog, similar to useDialog.
+ * @param requestType Type of request to use that represents a request that will be made by your view model.
+ * @param DialogComponent The dialog component to render.
+ * @returns A tuple with a component to use for rendering the dialog.
+ */
+export function useDialogRequest<TRequest extends object, TResponse, TProps extends DialogProps<TResponse>>(
+    requestType: Constructor<TRequest>,
+    DialogComponent: ComponentType<TProps>
+): [FC<ActualDialogProps<TProps>>] {
     const mediator = useDialogMediator();
-    const [isVisible, setIsVisible] = React.useState(false);
-
+    const [visible, setVisible] = useState(false);
+    const [dialogProps, setDialogProps] = useState<ActualDialogProps<TProps> | undefined>();
+    const closeDialogRef = useRef<CloseDialog<TResponse> | undefined>(undefined);
     const dialogContextValue = useRef<IDialogContext<TRequest, TResponse>>(undefined!);
 
-    const requester = (request: TRequest, resolver: DialogResolver<TResponse>) => {
+    const requester = (request: TRequest, closeDialog: CloseDialog<TResponse>) => {
         dialogContextValue.current.request = request;
-        dialogContextValue.current.actualResolver = resolver;
-        setIsVisible(true);
+        closeDialogRef.current = closeDialog;
+        setVisible(true);
     };
 
-    const resolver = (response: TResponse) => {
-        setIsVisible(false);
-        dialogContextValue.current.actualResolver?.(response);
+    const closeDialog = (result: DialogResult, response?: TResponse) => {
+        closeDialogRef.current?.(result, response);
+        closeDialogRef.current = undefined;
+        setVisible(false);
     };
 
     dialogContextValue.current = useMemo(() => {
         return {
             request: undefined!,
-            actualResolver: undefined!,
-            resolver
+            closeDialog: closeDialog
         };
     }, []);
 
     useEffect(() => {
-        mediator.subscribe(type, requester, resolver);
+        mediator.subscribe(requestType, requester, closeDialog);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const ConfiguredWrapper: React.FC<IDialogRequestProps> = useMemo(() => {
-        return (props: IDialogRequestProps) => {
-            return (
-                <DialogWrapper isVisible={isVisible}>
-                    <DialogContext.Provider value={dialogContextValue.current as unknown as IDialogContext<object, object>}>
-                        {props.children}
-                    </DialogContext.Provider>
-                </DialogWrapper>);
-        };
-    }, [isVisible]);
+    const DialogWrapper: FC<ActualDialogProps<TProps>> = (extraProps) => {
+        return visible ? (
+            <DialogContext.Provider value={dialogContextValue.current as unknown as IDialogContext<object, object>}>
+                <DialogComponent
+                    {...(dialogProps as TProps)}
+                    {...extraProps}
+                    closeDialog={closeDialog}
+                />
+            </DialogContext.Provider>
+        ) : null;
+    };
 
-    return [ConfiguredWrapper, dialogContextValue.current, resolver];
-};
-
-/**
- * Use a dialog request for showing a dialog.
- * @param request Type of request to use that represents a request that will be made by your view model.
- * @returns A tuple with a component to use for wrapping your dialog and a delegate used when the dialog is resolved with the result expected.
- */
-export const useDialogRequest = <TRequest extends object, TResponse>(request: Constructor<TRequest>): [React.FC<IDialogRequestProps>, IDialogContext<TRequest, TResponse>, DialogResolver<TResponse>] => {
-    const [DialogWrapper, dialogContext, resolver] = useConfiguredWrapper<TRequest, TResponse>(request);
-    return [DialogWrapper, dialogContext, resolver];
-};
+    return [DialogWrapper];
+}
