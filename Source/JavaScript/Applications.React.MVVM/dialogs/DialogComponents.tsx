@@ -4,8 +4,8 @@
 import React, { useMemo, useRef, Fragment } from 'react';
 import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { useDialogRequest } from './useDialogRequest';
+import { DialogProps, DialogResult } from '@cratis/applications.react/dialogs';
+import { useDialog } from './useDialog';
 import { DialogMediator } from './DialogMediator';
 import { DialogMediatorHandler } from './DialogMediatorHandler';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
@@ -17,29 +17,25 @@ export interface IDialogComponentsContext {
 
 export const DialogComponentsContext = React.createContext<IDialogComponentsContext>({});
 
-export interface DialogComponentsProps {
+export interface DialogComponentsProps extends DialogProps {
     children?: JSX.Element | JSX.Element[];
     confirmation?: React.FC | React.FC<object>;
     busyIndicator?: React.FC | React.FC<object>;
 }
 
 const DialogComponentsWrapper = (props: DialogComponentsProps) => {
-    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogResult>(ConfirmationDialogRequest);
-    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogResult>(BusyIndicatorDialogRequest);
+    const [ConfirmationDialog] = useDialog<ConfirmationDialogRequest, DialogComponentsProps, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
+    const [BusyIndicatorDialog] = useDialog<BusyIndicatorDialogRequest, DialogComponentsProps, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
 
     return (
         <DialogComponentsContext.Provider value={{}}>
             <Fragment>
                 {props.children}
                 {props.confirmation &&
-                    <ConfirmationDialog>
-                        <props.confirmation />
-                    </ConfirmationDialog>}
+                    <ConfirmationDialog/>}
 
                 {props.busyIndicator &&
-                    <BusyIndicatorDialog>
-                        <props.busyIndicator />
-                    </BusyIndicatorDialog>}
+                    <BusyIndicatorDialog/>}
             </Fragment>
         </DialogComponentsContext.Provider>
     );

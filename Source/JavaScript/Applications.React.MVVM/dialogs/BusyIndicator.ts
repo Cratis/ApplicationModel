@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogResolver } from './DialogRegistration';
+import { CloseDialog, DialogResult } from '@cratis/applications.react/dialogs';
 
 /**
  * Represents a busy indicator dialog.
@@ -10,15 +10,15 @@ export class BusyIndicator {
 
     /**
      * Initializes a new instance of {@link BusyIndicator}.
-     * @param {DialogResolver<void>} _dialogResolver The dialog resolver to use for closing the dialog.
+     * @param {CloseDialog<void>} _closeDialog The dialog resolver to use for closing the dialog.
      */
-    constructor(private readonly _dialogResolver: DialogResolver<void>) {
+    constructor(private readonly _closeDialog: CloseDialog<void>) {
     }
 
     /**
      * Close the busy indicator dialog.
      */
     close() {
-        this._dialogResolver();
+        this._closeDialog(DialogResult.None);
     }
 }

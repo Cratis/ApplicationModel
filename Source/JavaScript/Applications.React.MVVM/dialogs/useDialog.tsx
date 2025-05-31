@@ -1,0 +1,39 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+import { useEffect, ComponentType, FC, useCallback } from 'react';
+import { Constructor } from '@cratis/fundamentals';
+import { DialogResult, DialogProps, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext, DialogContextContent } from '@cratis/applications.react/dialogs';
+import { useDialogMediator } from './DialogMediator';
+
+/**
+ * Use a dialog request for showing a dialog, similar to useDialog.
+ * @param requestType Type of request to use that represents a request that will be made by your view model.
+ * @param DialogComponent The dialog component to render.
+ * @returns A tuple with a component to use for rendering the dialog.
+ */
+export function useDialog<TProps extends object = {}, TResponse = {}>(
+    requestType: Constructor<TProps>,
+    DialogComponent: ComponentType<TProps>
+): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
+    const mediator = useDialogMediator();
+
+    let dialogContext: DialogContextContent<TProps, TResponse>;
+
+    const [DialogWrapper, showDialog, actualDialogContext] = useDialogBase<TResponse, TProps>(DialogComponent);
+    dialogContext = actualDialogContext;
+
+    const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
+        dialogContext.closeDialog(result, value as TResponse);
+    }, []);
+
+    useEffect(() => {
+        mediator.subscribe(requestType, async (request) => {
+            const [result, response] = await showDialog(request as unknown as TProps);
+            const registration = mediator.getRegistration(requestType);
+            registration?.resolver(result, response as TResponse);
+        }, closeDialog);
+}, []);
+
+return [DialogWrapper, showDialog];
+}

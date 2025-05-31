@@ -1,5 +1,7 @@
 - name: Identity
   href: identity.md
+- name: Dialogs
+  href: dialogs.md
 - name: Commands
   href: commands.md
 - name: Command Scope
