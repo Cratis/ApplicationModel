@@ -54,8 +54,8 @@
         "up": "yarn g:up"
     },
     "dependencies": {
-        "@cratis/applications": "1.0.0",
-        "@cratis/applications.react": "1.0.0",
+        "@cratis/applications": "file:/Volumes/Code/Cratis/ApplicationModel/Source/JavaScript/Applications",
+        "@cratis/applications.react": "file:/Volumes/Code/Cratis/ApplicationModel/Source/JavaScript/Applications.React",
         "@cratis/fundamentals": "6.3.2",
         "mobx": "6.13.7",
         "mobx-react": "9.2.0",

@@ -14,7 +14,7 @@ export abstract class IDialogs {
      * @param {*} input The input to pass to the dialog.
      * @returns {Promise<*>} The output from the dialog.
      */
-    abstract show<TInput extends object, TOutput>(input: TInput): Promise<TOutput>;
+    abstract show<TInput extends object, TOutput = {}>(input: TInput): Promise<TOutput>;
 
     /**
      * Show a standard confirmation dialog.

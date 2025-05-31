@@ -4,7 +4,7 @@
 import React, { useMemo, useRef, Fragment } from 'react';
 import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
-import { DialogResult } from '@cratis/applications.react/dialogs';
+import { DialogProps, DialogResult } from '@cratis/applications.react/dialogs';
 import { useDialogRequest } from './useDialogRequest';
 import { DialogMediator } from './DialogMediator';
 import { DialogMediatorHandler } from './DialogMediatorHandler';
@@ -17,15 +17,15 @@ export interface IDialogComponentsContext {
 
 export const DialogComponentsContext = React.createContext<IDialogComponentsContext>({});
 
-export interface DialogComponentsProps {
+export interface DialogComponentsProps extends DialogProps {
     children?: JSX.Element | JSX.Element[];
     confirmation?: React.FC | React.FC<object>;
     busyIndicator?: React.FC | React.FC<object>;
 }
 
 const DialogComponentsWrapper = (props: DialogComponentsProps) => {
-    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
-    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
+    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogComponentsProps, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
+    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogComponentsProps, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
 
     return (
         <DialogComponentsContext.Provider value={{}}>

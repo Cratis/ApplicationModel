@@ -12,6 +12,6 @@ export class DialogContextContent<TRequest extends object, TResponse> {
 
 export const DialogContext = React.createContext<DialogContextContent<object, object>>(undefined!);
 
-export const useDialogContext = <TResponse = {}, TRequest extends object = {}>(): DialogContextContent<TRequest, TResponse> => {
+export const useDialogContext = <TRequest extends object = {}, TResponse = {}>(): DialogContextContent<TRequest, TResponse> => {
     return useContext(DialogContext) as unknown as DialogContextContent<TRequest, TResponse>;
 };
