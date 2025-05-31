@@ -12,14 +12,14 @@ import { useDialogMediator } from './DialogMediator';
  * @param DialogComponent The dialog component to render.
  * @returns A tuple with a component to use for rendering the dialog.
  */
-export function useDialog<TRequest extends object, TProps extends DialogProps<TResponse> = { closeDialog: () => void }, TResponse = {}>(
-    requestType: Constructor<TRequest>,
+export function useDialog<TProps extends object = {}, TResponse = {}>(
+    requestType: Constructor<TProps>,
     DialogComponent: ComponentType<TProps>
 ): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
     const mediator = useDialogMediator();
 
     const [DialogWrapper, showDialog] = useDialogBase<TResponse, TProps>(DialogComponent);
-    const dialogContext = useDialogContext<TRequest, TResponse>();
+    const dialogContext = useDialogContext<TProps, TResponse>();
 
     const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
         dialogContext.closeDialog(result, value as TResponse);
