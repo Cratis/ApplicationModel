@@ -8,7 +8,6 @@ import { useCallback, useRef, useState, ComponentType, FC, useMemo, use } from '
 import { WrappedDialogComponent } from './WrappedDialogComponent';
 import { ActualDialogProps } from './ActualDialogProps';
 import { ShowDialog } from './ShowDialog';
-import { CloseDialog } from './CloseDialog';
 
 /**
  * Use a dialog component in you application. This hook manages the visibility and properties of the dialog.
