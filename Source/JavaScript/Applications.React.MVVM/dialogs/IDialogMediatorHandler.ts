@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { CloseDialog } from '@cratis/applications.react/dialogs';
+import { CloseDialog, DialogResponse } from '@cratis/applications.react/dialogs';
 import { DialogRegistration, DialogRequest } from './DialogRegistration';
 
 /**
@@ -29,7 +29,7 @@ export abstract class IDialogMediatorHandler {
      * Show a dialog based on a request.
      * @param {*} request An instance of the dialog request.
      */
-    abstract show<TRequest extends object, TResponse>(request: TRequest): Promise<TResponse>;
+    abstract show<TRequest extends object, TResponse>(request: TRequest): Promise<DialogResponse<TResponse>>;
 
     /**
      * Get the registration for a given request type.

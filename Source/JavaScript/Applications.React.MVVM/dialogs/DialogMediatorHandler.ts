@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { CloseDialog } from '@cratis/applications.react/dialogs';
+import { CloseDialog, DialogResponse } from '@cratis/applications.react/dialogs';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
 import { DialogRegistration, DialogRequest } from './DialogRegistration';
 
@@ -33,7 +33,7 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
     }
 
     /** @inheritdoc */
-    show<TRequest extends object, TResponse>(request: TRequest): Promise<TResponse> {
+    show<TRequest extends object, TResponse>(request: TRequest): Promise<DialogResponse<TResponse>> {
         if (!this.hasSubscriber(request.constructor as Constructor)) {
             if (this._parent) {
                 return this._parent.show(request);
@@ -42,9 +42,9 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
             return Promise.reject('No registration found for request');
         }
 
-        const promise = new Promise<TResponse>((resolve) => {
+        const promise = new Promise<DialogResponse<TResponse>>((resolve) => {
             const registration = this._registrations.get(request.constructor as Constructor)!;
-            registration.requester(request, resolve as unknown as CloseDialog<object>);
+            registration.requester(request, (result, response) => resolve([result, response as TResponse]));
         });
 
         return promise;

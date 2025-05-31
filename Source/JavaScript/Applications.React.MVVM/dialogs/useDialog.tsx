@@ -3,7 +3,7 @@
 
 import { useEffect, ComponentType, FC, useCallback } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogResult, DialogProps, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext } from '@cratis/applications.react/dialogs';
+import { DialogResult, DialogProps, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext, DialogContextContent } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
 /**
@@ -18,16 +18,22 @@ export function useDialog<TProps extends object = {}, TResponse = {}>(
 ): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
     const mediator = useDialogMediator();
 
-    const [DialogWrapper, showDialog] = useDialogBase<TResponse, TProps>(DialogComponent);
-    const dialogContext = useDialogContext<TProps, TResponse>();
+    let dialogContext: DialogContextContent<TProps, TResponse>;
+
+    const [DialogWrapper, showDialog, actualDialogContext] = useDialogBase<TResponse, TProps>(DialogComponent);
+    dialogContext = actualDialogContext;
 
     const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
         dialogContext.closeDialog(result, value as TResponse);
     }, []);
 
     useEffect(() => {
-        mediator.subscribe(requestType, (request) => showDialog(request as unknown as TProps), closeDialog);
-    }, []);
+        mediator.subscribe(requestType, async (request) => {
+            const [result, response] = await showDialog(request as unknown as TProps);
+            const registration = mediator.getRegistration(requestType);
+            registration?.resolver(result, response as TResponse);
+        }, closeDialog);
+}, []);
 
-    return [DialogWrapper, showDialog];
+return [DialogWrapper, showDialog];
 }

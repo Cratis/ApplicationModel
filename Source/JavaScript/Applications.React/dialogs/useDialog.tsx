@@ -2,13 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { DialogContext, DialogContextContent, useDialogContext } from './DialogContext';
-import { DialogProps } from './DialogProps';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
 import { useCallback, useRef, useState, ComponentType, FC, useMemo, use } from 'react';
 import { WrappedDialogComponent } from './WrappedDialogComponent';
 import { ActualDialogProps } from './ActualDialogProps';
 import { ShowDialog } from './ShowDialog';
+import { CloseDialog } from './CloseDialog';
 
 /**
  * Use a dialog component in you application. This hook manages the visibility and properties of the dialog.
@@ -18,7 +18,7 @@ import { ShowDialog } from './ShowDialog';
  */
 export function useDialog<TResponse = {}, TProps = {}>(
     DialogComponent: ComponentType<TProps>
-): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
+): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>, DialogContextContent<TProps, TResponse>] {
 
     const [visible, setVisible] = useState(false);
     const [dialogProps, setDialogProps] = useState<ActualDialogProps<TProps> | undefined>();
@@ -57,5 +57,5 @@ export function useDialog<TResponse = {}, TProps = {}>(
         ) : null;
     };
 
-    return [DialogWrapper, showDialog];
+    return [DialogWrapper, showDialog, dialogContextValue.current];
 }
