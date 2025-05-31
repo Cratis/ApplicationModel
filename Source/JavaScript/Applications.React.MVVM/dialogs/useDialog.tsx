@@ -3,7 +3,7 @@
 
 import { useEffect, ComponentType, FC, useCallback } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogResult, DialogProps, DialogResponse, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext } from '@cratis/applications.react/dialogs';
+import { DialogResult, DialogProps, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
 /**

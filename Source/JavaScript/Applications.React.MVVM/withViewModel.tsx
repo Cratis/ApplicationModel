@@ -109,7 +109,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
             child.registerInstance(WellKnownBindings.props, props);
             child.registerInstance(WellKnownBindings.params, params);
             child.registerInstance(WellKnownBindings.queryParams, queryParamsObject);
-            child.registerInstance(DialogContextContent, dialogContext);
+            child.registerInstance(DialogContextContent, dialogContext as unknown);
 
             const originalResolve = child.resolve;
 

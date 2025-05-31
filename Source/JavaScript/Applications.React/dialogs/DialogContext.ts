@@ -5,13 +5,13 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { CloseDialog } from './CloseDialog';
 
-export class DialogContextContent<TRequest extends object, TResponse> {
+export class DialogContextContent<TRequest, TResponse> {
     constructor(readonly request: TRequest, readonly closeDialog: CloseDialog<TResponse>) {
     }
 }
 
 export const DialogContext = React.createContext<DialogContextContent<object, object>>(undefined!);
 
-export const useDialogContext = <TRequest extends object = {}, TResponse = {}>(): DialogContextContent<TRequest, TResponse> => {
+export const useDialogContext = <TRequest = {}, TResponse = {}>(): DialogContextContent<TRequest, TResponse> => {
     return useContext(DialogContext) as unknown as DialogContextContent<TRequest, TResponse>;
 };

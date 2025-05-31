@@ -16,7 +16,7 @@ import { ShowDialog } from './ShowDialog';
  * @returns A tuple containing the wrapped dialog component and a function to show the dialog. 
  * The wrapped dialog component will receive the properties passed to it, excluding the `closeDialog` property.
  */
-export function useDialog<TResponse = {}, TProps extends DialogProps<TResponse> = { closeDialog: () => void }>(
+export function useDialog<TResponse = {}, TProps = {}>(
     DialogComponent: ComponentType<TProps>
 ): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
 
@@ -49,8 +49,8 @@ export function useDialog<TResponse = {}, TProps extends DialogProps<TResponse> 
                 {console.log('useDialog Context3 = ', dialogContextValue.current)},
                 <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
                     <DialogComponent
-                        {...(dialogProps as TProps)}
                         {...extraProps}
+                        {...(dialogProps as TProps)}
                         closeDialog={closeDialog} />
                 </DialogContext.Provider>
             </>
