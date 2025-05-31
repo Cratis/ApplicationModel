@@ -1,12 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { CloseDialog } from './CloseDialog';
-import { DialogContext, DialogContextContent } from './DialogContext';
+import { DialogContext, DialogContextContent, useDialogContext } from './DialogContext';
 import { DialogProps } from './DialogProps';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
-import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
+import { useCallback, useRef, useState, ComponentType, FC, useMemo, use } from 'react';
 import { WrappedDialogComponent } from './WrappedDialogComponent';
 import { ActualDialogProps } from './ActualDialogProps';
 import { ShowDialog } from './ShowDialog';
@@ -23,31 +22,31 @@ export function useDialog<TResponse = {}, TProps extends DialogProps<TResponse> 
 
     const [visible, setVisible] = useState(false);
     const [dialogProps, setDialogProps] = useState<ActualDialogProps<TProps> | undefined>();
-    const closeDialogRef = useRef<CloseDialog<TResponse>>(undefined);
+    const resolverRef = useRef<((value: DialogResponse<TResponse>) => void) | undefined>(undefined);
+    const dialogContext = useDialogContext<TProps, TResponse>();
 
     const showDialog = useCallback((p?: ActualDialogProps<TProps>) => {
         setDialogProps(p);
         setVisible(true);
-        return new Promise<DialogResponse<TResponse>>(() => {
-            closeDialogRef.current = closeDialog;
+        return new Promise<DialogResponse<TResponse>>((resolve) => {
+            resolverRef.current = resolve;
         });
     }, []);
 
     const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
-        closeDialogRef.current?.(result, value);
-        closeDialogRef.current = undefined;
         setVisible(false);
+        resolverRef.current?.([result, value]);
     }, []);
 
     const dialogContextValue = useRef<DialogContextContent<TProps, TResponse>>(undefined!);
     dialogContextValue.current = useMemo(() => {
-        return new DialogContextContent(undefined!, closeDialog);
+        return new DialogContextContent(dialogContext?.request, closeDialog);
     }, []);
 
     const DialogWrapper: WrappedDialogComponent<TProps> = (extraProps) => {
         return visible ? (
             <>
-                {console.log(dialogContextValue.current)},
+                {console.log('useDialog Context3 = ', dialogContextValue.current)},
                 <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
                     <DialogComponent
                         {...(dialogProps as TProps)}

@@ -59,7 +59,7 @@
         "up": "yarn g:up"
     },
     "dependencies": {
-        "@cratis/applications": "file:/Volumes/Code/Cratis/ApplicationModel/Source/JavaScript/Applications",
+        "@cratis/applications": "1.0.0",
         "@cratis/fundamentals": "6.3.2",
         "handlebars": "4.7.8",
         "react": "19.1.0",

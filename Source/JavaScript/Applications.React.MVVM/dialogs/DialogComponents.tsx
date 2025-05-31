@@ -5,7 +5,7 @@ import React, { useMemo, useRef, Fragment } from 'react';
 import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
 import { DialogProps, DialogResult } from '@cratis/applications.react/dialogs';
-import { useDialogRequest } from './useDialogRequest';
+import { useDialog } from './useDialog';
 import { DialogMediator } from './DialogMediator';
 import { DialogMediatorHandler } from './DialogMediatorHandler';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
@@ -24,8 +24,8 @@ export interface DialogComponentsProps extends DialogProps {
 }
 
 const DialogComponentsWrapper = (props: DialogComponentsProps) => {
-    const [ConfirmationDialog] = useDialogRequest<ConfirmationDialogRequest, DialogComponentsProps, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
-    const [BusyIndicatorDialog] = useDialogRequest<BusyIndicatorDialogRequest, DialogComponentsProps, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
+    const [ConfirmationDialog] = useDialog<ConfirmationDialogRequest, DialogComponentsProps, DialogResult>(ConfirmationDialogRequest, props.confirmation!);
+    const [BusyIndicatorDialog] = useDialog<BusyIndicatorDialogRequest, DialogComponentsProps, DialogResult>(BusyIndicatorDialogRequest, props.busyIndicator!);
 
     return (
         <DialogComponentsContext.Provider value={{}}>

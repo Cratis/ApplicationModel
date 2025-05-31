@@ -13,4 +13,4 @@ export * from './IDialogs';
 export * from './Dialogs';
 export * from './ConfirmationDialogRequest';
 export * from './DialogComponents';
-export * from './useDialogRequest';
+export * from './useDialog';
