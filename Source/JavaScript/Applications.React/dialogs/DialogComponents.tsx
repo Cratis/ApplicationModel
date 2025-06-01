@@ -10,25 +10,65 @@ import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
 import { DialogButtons } from './DialogButtons';
 import { CloseDialog } from './CloseDialog';
 
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/**
+ * Defines the interface representing the context of dialog components.
+ */
 export interface IDialogComponents {
+
+    /**
+     * The confirmation dialog component.
+     */
     confirmation?: React.FC<ConfirmationDialogRequest>;
+
+    /**
+     * Shows a confirmation dialog with the specified request.
+     */
     showConfirmation: ShowDialog<ConfirmationDialogRequest>;
+
+    /**
+     * The busy indicator dialog component, typically used for spinners.
+     */
     busyIndicator?: React.FC<BusyIndicatorDialogRequest>;
+
+    /**
+     * Shows a busy indicator dialog with the specified request.
+     */
     showBusyIndicator: ShowDialog<BusyIndicatorDialogRequest>;
+
+    /**
+     * Closes the busy indicator dialog.
+     */
     closeBusyIndicator: CloseDialog<object>;
 }
-/* eslint-enable @typescript-eslint/no-empty-object-type */
 
+/**
+ * The context for dialog components.
+ */
 export const DialogComponentsContext = React.createContext<IDialogComponents>({
     showConfirmation: () => Promise.resolve([DialogResult.Cancelled, {}]),
     showBusyIndicator: () => Promise.resolve([DialogResult.Cancelled, {}]),
-    closeBusyIndicator: () => {}
+    closeBusyIndicator: () => {},
 });
 
+/**
+ * Props for the DialogComponentsWrapper component.
+ */
 export interface DialogComponentsProps {
+    /**
+     * Optional children elements to render within the dialog components context.
+     */
     children?: JSX.Element | JSX.Element[];
+
+    /**
+     * Optional confirmation dialog component to use.
+     * If not provided, a default empty fragment will be used.
+     */
     confirmation?: React.FC<ConfirmationDialogRequest>;
+
+    /**
+     * Optional busy indicator dialog component to use.
+     * If not provided, a default empty fragment will be used.
+     */
     busyIndicator?: React.FC<BusyIndicatorDialogRequest>;
 }
 
@@ -58,6 +98,11 @@ const DialogComponentsWrapper = (props: DialogComponentsProps) => {
     );
 };
 
+/**
+ * A React component that provides a context for dialog components.
+ * @param props The properties for the dialog components wrapper.
+ * @returns A React component that provides the dialog components context.
+ */
 export const DialogComponents = (props: DialogComponentsProps) => {
     return (
         <DialogComponentsWrapper {...props}>

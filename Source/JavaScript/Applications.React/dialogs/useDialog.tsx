@@ -4,8 +4,9 @@
 import { DialogContext, DialogContextContent } from './DialogContext';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
-import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
+import { useCallback, useRef, useState, ComponentType, FC, useMemo, useContext } from 'react';
 import { ShowDialog } from './ShowDialog';
+import { DialogComponentsContext, IDialogComponents } from './DialogComponents';
 
 /**
  * Use a dialog component in you application. This hook manages the visibility and properties of the dialog.
@@ -20,7 +21,8 @@ export function useDialog<TResponse = {}, TProps = {}>(
     const [visible, setVisible] = useState(false);
     const [dialogProps, setDialogProps] = useState<TProps | undefined>();
     const resolverRef = useRef<((value: DialogResponse<TResponse>) => void) | undefined>(undefined);
-    
+    const dialogComponents = useContext<IDialogComponents>(DialogComponentsContext);
+
     const showDialog = useCallback((p?: TProps) => {
         setDialogProps(p);
         setVisible(true);
