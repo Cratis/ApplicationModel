@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { DialogResponse, DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons } from './DialogButtons';
+import { DialogButtons } from '@cratis/applications.react/dialogs/DialogButtons';
 import { BusyIndicator } from './BusyIndicator';
 
 /**

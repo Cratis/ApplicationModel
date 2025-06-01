@@ -25,7 +25,7 @@ import { IHandleProps } from 'IHandleProps';
 import { ObservableQueryFor, QueryFor } from '@cratis/applications/queries';
 import { Command } from '@cratis/applications/commands';
 import { ICanBeConfigured } from '@cratis/applications/ICanBeConfigured';
-import { DialogContextContent, useDialogContext } from '@cratis/applications.react/dialogs';
+import { DialogComponentsContext, DialogContextContent, IDialogComponents, useDialogContext } from '@cratis/applications.react/dialogs';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -84,6 +84,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
 
     const renderComponent = (props: TProps) => {
         const applicationContext = useContext(ApplicationModelContext);
+        const dialogComponentsContext = useContext<IDialogComponents>(DialogComponentsContext);
         const params = useParams();
         const [currentProps, setCurrentProps] = useState(props);
         const [previousParams, setPreviousParams] = useState(params);
@@ -128,7 +129,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
                 return instance;
             } as never;
 
-            const dialogService = new Dialogs(dialogMediatorContext.current!);
+            const dialogService = new Dialogs(dialogMediatorContext.current!, dialogComponentsContext);
             child.registerInstance<IDialogs>(IDialogs as Constructor<IDialogs>, dialogService);
             const viewModel = child.resolve<TViewModel>(viewModelType) as IViewModel;
             makeAutoObservable(viewModel);

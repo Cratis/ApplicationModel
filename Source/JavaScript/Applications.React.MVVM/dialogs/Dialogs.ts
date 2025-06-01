@@ -1,14 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons } from './DialogButtons';
+import { DialogResponse, DialogResult, IDialogComponents, ConfirmationDialogRequest, BusyIndicatorDialogRequest, CloseDialog } from '@cratis/applications.react/dialogs';
+import { DialogButtons } from '@cratis/applications.react/dialogs/DialogButtons';
 import { IDialogs } from './IDialogs';
 import { BusyIndicator } from './BusyIndicator';
-import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
-import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
-import { DialogResponse } from '../../Applications.React/dist/cjs/dialogs/DialogResponse';
 
 /**
  * Represents an implementation of {@link IDialogs}.
@@ -18,8 +15,24 @@ export class Dialogs extends IDialogs {
     /**
      * Initializes a new instance of the {@link Dialogs} class.
      */
-    constructor(private readonly _dialogMediatorHandler: IDialogMediatorHandler) {
+    constructor(
+        private readonly _dialogMediatorHandler: IDialogMediatorHandler,
+        dialogComponents: IDialogComponents) {
         super();
+
+        _dialogMediatorHandler.subscribe(ConfirmationDialogRequest, async (request, resolver) => {
+            const [result] = await dialogComponents.showConfirmation(request as ConfirmationDialogRequest);
+            resolver(result);
+        }, () => { });
+
+        let busyIndicatorResolver: CloseDialog<void>;
+
+        _dialogMediatorHandler.subscribe(BusyIndicatorDialogRequest, (request, resolver) => {
+            busyIndicatorResolver = resolver;
+            return dialogComponents.showBusyIndicator(request as BusyIndicatorDialogRequest);
+        }, () => {
+            dialogComponents.closeBusyIndicator(DialogResult.Cancelled);
+        });
     }
 
     /** @inheritdoc */

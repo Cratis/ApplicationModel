@@ -4,9 +4,7 @@
 import { DialogContext, DialogContextContent, useDialogContext } from './DialogContext';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
-import { useCallback, useRef, useState, ComponentType, FC, useMemo, use } from 'react';
-import { WrappedDialogComponent } from './WrappedDialogComponent';
-import { ActualDialogProps } from './ActualDialogProps';
+import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
 import { ShowDialog } from './ShowDialog';
 
 /**
@@ -17,14 +15,13 @@ import { ShowDialog } from './ShowDialog';
  */
 export function useDialog<TResponse = {}, TProps = {}>(
     DialogComponent: ComponentType<TProps>
-): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>, DialogContextContent<TProps, TResponse>] {
+): [FC<TProps>, ShowDialog<TProps, TResponse>, DialogContextContent<TProps, TResponse>] {
 
     const [visible, setVisible] = useState(false);
-    const [dialogProps, setDialogProps] = useState<ActualDialogProps<TProps> | undefined>();
+    const [dialogProps, setDialogProps] = useState<TProps | undefined>();
     const resolverRef = useRef<((value: DialogResponse<TResponse>) => void) | undefined>(undefined);
-    const dialogContext = useDialogContext<TProps, TResponse>();
-
-    const showDialog = useCallback((p?: ActualDialogProps<TProps>) => {
+    
+    const showDialog = useCallback((p?: TProps) => {
         setDialogProps(p);
         setVisible(true);
         return new Promise<DialogResponse<TResponse>>((resolve) => {
@@ -39,10 +36,10 @@ export function useDialog<TResponse = {}, TProps = {}>(
 
     const dialogContextValue = useRef<DialogContextContent<TProps, TResponse>>(undefined!);
     dialogContextValue.current = useMemo(() => {
-        return new DialogContextContent(dialogContext?.request, closeDialog);
-    }, []);
+        return new DialogContextContent(dialogProps!, closeDialog);
+    }, [dialogProps]);
 
-    const DialogWrapper: WrappedDialogComponent<TProps> = (extraProps) => {
+    const DialogWrapper: FC<TProps> = (extraProps) => {
         return visible ? (
             <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
                 <DialogComponent

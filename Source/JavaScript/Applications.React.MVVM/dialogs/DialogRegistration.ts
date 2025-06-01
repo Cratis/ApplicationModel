@@ -21,5 +21,5 @@ export class DialogRegistration<TRequest extends object, TResponse> {
     constructor(
         readonly requester: DialogRequest<TRequest, TResponse>,
         readonly resolver: CloseDialog<TResponse>) {
-    }
+    }   
 }

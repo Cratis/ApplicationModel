@@ -3,7 +3,7 @@
 
 import { useEffect, ComponentType, FC, useCallback } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogResult, DialogProps, ShowDialog, WrappedDialogComponent, useDialog as useDialogBase, useDialogContext, DialogContextContent } from '@cratis/applications.react/dialogs';
+import { DialogResult, ShowDialog, useDialog as useDialogBase, DialogContextContent } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
 /**
@@ -15,7 +15,7 @@ import { useDialogMediator } from './DialogMediator';
 export function useDialog<TProps extends object = {}, TResponse = {}>(
     requestType: Constructor<TProps>,
     DialogComponent: ComponentType<TProps>
-): [WrappedDialogComponent<TProps>, ShowDialog<TProps, TResponse>] {
+): [FC<TProps>, ShowDialog<TProps, TResponse>] {
     const mediator = useDialogMediator();
 
     let dialogContext: DialogContextContent<TProps, TResponse>;
