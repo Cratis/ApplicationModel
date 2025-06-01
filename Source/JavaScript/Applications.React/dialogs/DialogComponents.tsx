@@ -12,7 +12,9 @@ import { CloseDialog } from './CloseDialog';
 
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 export interface IDialogComponents {
+    confirmation?: React.FC<ConfirmationDialogRequest>;
     showConfirmation: ShowDialog<ConfirmationDialogRequest>;
+    busyIndicator?: React.FC<BusyIndicatorDialogRequest>;
     showBusyIndicator: ShowDialog<BusyIndicatorDialogRequest>;
     closeBusyIndicator: CloseDialog<object>;
 }
@@ -35,7 +37,9 @@ const DialogComponentsWrapper = (props: DialogComponentsProps) => {
     const [BusyIndicator, showBusyIndicator, closeBusyIndicatorDialogContext] = useDialog(props.busyIndicator ?? React.Fragment as React.FC<BusyIndicatorDialogRequest>);
 
     const configuration: IDialogComponents = {
+        confirmation: Confirmation,
         showConfirmation,
+        busyIndicator: BusyIndicator,
         showBusyIndicator,
         closeBusyIndicator: closeBusyIndicatorDialogContext.closeDialog
     };

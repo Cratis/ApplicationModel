@@ -11,4 +11,6 @@ export * from './DialogProps';
 export * from './DialogResponse';
 export * from './DialogResult';
 export * from './ShowDialog';
+export * from './useBusyIndicator';
+export * from './useConfirmationDialog';
 export * from './useDialog';

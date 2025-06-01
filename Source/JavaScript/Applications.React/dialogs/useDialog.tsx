@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogContext, DialogContextContent, useDialogContext } from './DialogContext';
+import { DialogContext, DialogContextContent } from './DialogContext';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
 import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
