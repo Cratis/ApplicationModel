@@ -1,8 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons } from './DialogButtons';
+import { DialogResponse, DialogResult } from '@cratis/applications.react/dialogs';
+import { DialogButtons } from '@cratis/applications.react/dialogs/DialogButtons';
 import { BusyIndicator } from './BusyIndicator';
 
 /**
@@ -14,7 +14,7 @@ export abstract class IDialogs {
      * @param {*} input The input to pass to the dialog.
      * @returns {Promise<*>} The output from the dialog.
      */
-    abstract show<TInput extends object, TOutput>(input: TInput): Promise<TOutput>;
+    abstract show<TRequest extends object, TResponse = object>(input: TRequest): Promise<DialogResponse<TResponse>>;
 
     /**
      * Show a standard confirmation dialog.

@@ -2,8 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
+import { CloseDialog, DialogResponse } from '@cratis/applications.react/dialogs';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
-import { DialogRegistration, DialogRequest, DialogResolver } from './DialogRegistration';
+import { DialogRegistration, DialogRequest } from './DialogRegistration';
 
 /**
  * Represents an implementation of {@link IDialogMediatorHandler}
@@ -20,10 +21,10 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
     }
 
     /** @inheritdoc */
-    subscribe<TRequest extends object, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, resolver: DialogResolver<TResponse>): void {
+    subscribe<TRequest extends object, TResponse>(requestType: Constructor<TRequest>, requester: DialogRequest<TRequest, TResponse>, closeDialog: CloseDialog<TResponse>): void {
         this._registrations.set(
             requestType,
-            new DialogRegistration<TRequest, TResponse>(requester, resolver) as unknown as DialogRegistration<object, object>);
+            new DialogRegistration<TRequest, TResponse>(requester, closeDialog) as unknown as DialogRegistration<object, object>);
     }
 
     /** @inheritdoc */
@@ -32,7 +33,7 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
     }
 
     /** @inheritdoc */
-    show<TRequest extends object, TResponse>(request: TRequest): Promise<TResponse> {
+    show<TRequest extends object, TResponse>(request: TRequest): Promise<DialogResponse<TResponse>> {
         if (!this.hasSubscriber(request.constructor as Constructor)) {
             if (this._parent) {
                 return this._parent.show(request);
@@ -41,9 +42,11 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
             return Promise.reject('No registration found for request');
         }
 
-        const promise = new Promise<TResponse>((resolve) => {
+        const promise = new Promise<DialogResponse<TResponse>>((resolve) => {
             const registration = this._registrations.get(request.constructor as Constructor)!;
-            registration.requester(request, resolve as unknown as DialogResolver<object>);
+            registration.requester(request, (result, response) => {
+                resolve([result, response as TResponse]);
+            });
         });
 
         return promise;

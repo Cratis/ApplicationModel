@@ -1,15 +1,12 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-/**
- * Represents the delegate when a dialog is resolved (closed with a response).
- */
-export type DialogResolver<TResponse> = (response: TResponse) => void;
+import { CloseDialog } from '@cratis/applications.react/dialogs';
 
 /**
  * Represents the delegate for a dialog request.
  */
-export type DialogRequest<TRequest extends object, TResponse> = (request: TRequest, resolve: DialogResolver<TResponse>) => void;
+export type DialogRequest<TRequest extends object, TResponse> = (request: TRequest, closeDialog: CloseDialog<TResponse>) => void;
 
 /**
  * Represents the registration of a dialog.
@@ -23,6 +20,6 @@ export class DialogRegistration<TRequest extends object, TResponse> {
      */
     constructor(
         readonly requester: DialogRequest<TRequest, TResponse>,
-        readonly resolver: DialogResolver<TResponse>) {
-    }
+        readonly resolver: CloseDialog<TResponse>) {
+    }   
 }

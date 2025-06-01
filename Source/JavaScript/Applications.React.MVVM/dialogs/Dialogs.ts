@@ -1,13 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons } from './DialogButtons';
+import { DialogResponse, DialogResult, IDialogComponents, ConfirmationDialogRequest, BusyIndicatorDialogRequest, CloseDialog } from '@cratis/applications.react/dialogs';
+import { DialogButtons } from '@cratis/applications.react/dialogs/DialogButtons';
 import { IDialogs } from './IDialogs';
 import { BusyIndicator } from './BusyIndicator';
-import { ConfirmationDialogRequest } from './ConfirmationDialogRequest';
 import { IDialogMediatorHandler } from './IDialogMediatorHandler';
-import { BusyIndicatorDialogRequest } from './BusyIndicatorDialogRequest';
 
 /**
  * Represents an implementation of {@link IDialogs}.
@@ -17,18 +15,37 @@ export class Dialogs extends IDialogs {
     /**
      * Initializes a new instance of the {@link Dialogs} class.
      */
-    constructor(private readonly _dialogMediatorHandler: IDialogMediatorHandler) {
+    constructor(
+        private readonly _dialogMediatorHandler: IDialogMediatorHandler,
+        dialogComponents: IDialogComponents) {
         super();
+
+        /* eslint-disable @typescript-eslint/no-empty-function */
+        _dialogMediatorHandler.subscribe(ConfirmationDialogRequest, async (request, resolver) => {
+            const [result] = await dialogComponents.showConfirmation(request as ConfirmationDialogRequest);
+            resolver(result);
+        }, () => { });
+        /* eslint-enable @typescript-eslint/no-empty-function */
+
+        let busyIndicatorResolver: CloseDialog<void> | undefined = undefined;
+
+        _dialogMediatorHandler.subscribe(BusyIndicatorDialogRequest, (request, resolver) => {
+            busyIndicatorResolver = resolver;
+            return dialogComponents.showBusyIndicator(request as BusyIndicatorDialogRequest);
+        }, () => { 
+            busyIndicatorResolver?.(DialogResult.Cancelled, undefined);
+        });
     }
 
     /** @inheritdoc */
-    show<TInput extends object, TOutput>(input: TInput): Promise<TOutput> {
-        return this._dialogMediatorHandler.show<TInput, TOutput>(input);
+    show<TRequest extends object, TResponse = object>(request: TRequest): Promise<DialogResponse<TResponse>> {
+        return this._dialogMediatorHandler.show<TRequest, TResponse>(request);
     }
 
     /** @inheritdoc */
-    showConfirmation(title: string, message: string, buttons: DialogButtons): Promise<DialogResult> {
-        return this.show<ConfirmationDialogRequest, DialogResult>(new ConfirmationDialogRequest(title, message, buttons));
+    async showConfirmation(title: string, message: string, buttons: DialogButtons): Promise<DialogResult> {
+        const [result] = await this.show<ConfirmationDialogRequest>(new ConfirmationDialogRequest(title, message, buttons));
+        return result;
     }
 
     /** @inheritdoc */
