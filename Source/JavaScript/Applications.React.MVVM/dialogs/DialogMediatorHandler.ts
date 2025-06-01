@@ -44,7 +44,9 @@ export class DialogMediatorHandler extends IDialogMediatorHandler {
 
         const promise = new Promise<DialogResponse<TResponse>>((resolve) => {
             const registration = this._registrations.get(request.constructor as Constructor)!;
-            registration.requester(request, (result, response) => resolve([result, response as TResponse]));
+            registration.requester(request, (result, response) => {
+                resolve([result, response as TResponse]);
+            });
         });
 
         return promise;

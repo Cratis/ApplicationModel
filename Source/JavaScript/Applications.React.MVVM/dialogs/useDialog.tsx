@@ -28,12 +28,11 @@ export function useDialog<TProps extends object = {}, TResponse = {}>(
     }, []);
 
     useEffect(() => {
-        mediator.subscribe(requestType, async (request) => {
+        mediator.subscribe(requestType, async (request, resolver) => {
             const [result, response] = await showDialog(request as unknown as TProps);
-            const registration = mediator.getRegistration(requestType);
-            registration?.resolver(result, response as TResponse);
+            resolver(result, response);
         }, closeDialog);
-}, []);
+    }, []);
 
-return [DialogWrapper, showDialog];
+    return [DialogWrapper, showDialog];
 }

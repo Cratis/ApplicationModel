@@ -44,15 +44,12 @@ export function useDialog<TResponse = {}, TProps = {}>(
 
     const DialogWrapper: WrappedDialogComponent<TProps> = (extraProps) => {
         return visible ? (
-            <>
-                {console.log('useDialog Context3 = ', dialogContextValue.current)},
-                <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
-                    <DialogComponent
-                        {...extraProps}
-                        {...(dialogProps as TProps)}
-                        closeDialog={closeDialog} />
-                </DialogContext.Provider>
-            </>
+            <DialogContext.Provider value={dialogContextValue.current as unknown as DialogContextContent<object, object>}>
+                <DialogComponent
+                    {...extraProps}
+                    {...(dialogProps as TProps)}
+                    closeDialog={closeDialog} />
+            </DialogContext.Provider>
         ) : null;
     };
 
