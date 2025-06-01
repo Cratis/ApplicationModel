@@ -13,7 +13,7 @@ The beauty of this is that you can quite easily also write automated unit tests 
 
 ## Confirmation Dialogs
 
-The most common use of modal dialogs are the standard confirmation dialogs. These are dialogs where you ask the user to confirm
+A common use of modal dialogs are the standard confirmation dialogs. These are dialogs where you ask the user to confirm
 a specific action. The Application Model supports these out of the box and you have options for what type of confirmation you're
 looking for in the form of passing it which buttons to show.
 
@@ -60,113 +60,8 @@ export class YourViewModel {
 }
 ```
 
-Since you haven't defined how a confirmation dialog looks like, you will not see anything, nor will the `showConfirmation()` ever return.
-
-### Defining the Confirmation Dialog
-
-You define a confirmation dialog on the application level. It is then the dialog that will be used across your entire application.
-
-The anatomy of any dialog is that it uses the `useDialogContext()` in the dialog itself to get what context it is in.
-With the context you get access to the actual request payload and the method to call when the dialog should close; `closeDialog`.
-
-Below is an example using [Prime React](http://primereact.org) to create a confirmation dialog supporting the different button types.
-
-```tsx
-import { Dialog } from 'primereact/dialog';
-import { DialogButtons, ConfirmationDialogRequest, useDialogContext } from '@cratis/applications.react.mvvm/dialogs';
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { Button } from 'primereact/button';
-
-export const ConfirmationDialog = () => {
-    const { request, closeDialog } = useDialogContext<ConfirmationDialogRequest, DialogResult>();
-
-    const headerElement = (
-        <div className="inline-flex align-items-center justify-content-center gap-2">
-            <span className="font-bold white-space-nowrap">{request.title}</span>
-        </div>
-    );
-
-    const okFooter = (
-        <>
-            {/* Hook up buttons with function to close the dialog with expected DialogResult */}
-            <Button label="Ok" icon="pi pi-check" onClick={() => closeDialog(DialogResult.Ok)} autoFocus />
-        </>
-    );
-
-    const okCancelFooter = (
-        <>
-            {/* Hook up buttons with function to close the dialog with expected DialogResult */}
-            <Button label="Ok" icon="pi pi-check" onClick={() => closeDialog(DialogResult.Ok)} autoFocus />
-            <Button label="Cancel" icon="pi pi-times" severity='secondary' onClick={() => closeDialog(DialogResult.Cancelled)} />
-        </>
-    );
-
-    const yesNoFooter = (
-        <>
-            {/* Hook up buttons with function to close the dialog with expected DialogResult */}
-            <Button label="Yes" icon="pi pi-check" onClick={() => closeDialog(DialogResult.Yes)} autoFocus />
-            <Button label="No" icon="pi pi-times" severity='secondary' onClick={() => closeDialog(DialogResult.No)} />
-        </>
-    );
-
-    const yesNoCancelFooter = (
-        <>
-            {/* Hook up buttons with function to close the dialog with expected DialogResult */}
-            <Button label="Yes" icon="pi pi-check" onClick={() => closeDialog(DialogResult.Yes)} autoFocus />
-            <Button label="No" icon="pi pi-times" severity='secondary' onClick={() => closeDialog(DialogResult.No)} />
-        </>
-    );
-
-    const getFooterInterior = () => {
-        switch (request.buttons) {
-            case DialogButtons.Ok:
-                return okFooter;
-            case DialogButtons.OkCancel:
-                return okCancelFooter;
-            case DialogButtons.YesNo:
-                return yesNoFooter;
-            case DialogButtons.YesNoCancel:
-                return yesNoCancelFooter;
-        }
-
-        return (<></>)
-    }
-
-    const footer = (
-        <div className="card flex flex-wrap justify-content-center gap-3">
-            {getFooterInterior()}
-        </div>
-    );
-
-    return (
-        <>
-            {/* On hide we call the closeDialog with cancelled */}
-            <Dialog header={headerElement} modal footer={footer} onHide={() => closeDialog(DialogResult.Cancelled)} visible={true}>
-                <p className="m-0">
-                    {request.message}
-                </p>
-            </Dialog>
-        </>
-    );
-};
-```
-
-The code above uses the `useDialogContext()` with the `ConfirmationDialogRequest` and `DialogResult` as the types expected from
-the request and response type. Within the rendering of the component you'll notice that buttons are hooked up to close the
-dialog with the expected `DialogResult`. Once a button is called, it closes the dialog with a response that will be passed
-onto the `Promise` created within the `IDialogs` service.
-
-To enable the new `ConfirmationDialog` all you need to do is hook it up in your application like below.
-
-```tsx
-export const App = () => {
-    return (
-        <DialogComponents confirmation={ConfirmationDialog}>
-            {/* Your application */}
-        </DialogComponents>
-    );
-};
-```
+In order for the dialogs to show, you need to configure the component that represent it.
+You can read more about that [here](../react/dialogs.md)
 
 ## Busy indicator dialogs
 
@@ -202,60 +97,8 @@ export class YourViewModel {
 
 The `showBusyIndicator()` returns an object that has a method called `close()`. This method is then something you use to close the dialog.
 
-Since you haven't defined how a busy indicator dialog looks like, you will not see anything.
-
-### Defining the Busy Indicator Dialog
-
-As with the confirmation dialog, you define a busy indicator dialog on the application level. It is then the dialog that will be used across your entire application.
-
-The anatomy of any dialog is that it uses the `useDialogContext()` in the dialog itself to get what context it is in.
-With the context you get access to the actual request payload and the method to call when the dialog should close, or the `closeDialog`
-as it is called.
-
-Below is an example using [Prime React](http://primereact.org) to create a confirmation dialog supporting the different button types.
-
-```tsx
-import { Dialog } from 'primereact/dialog';
-import { BusyIndicatorDialogRequest } from '@cratis/applications.react.mvvm/dialogs';
-import { useDialogContext, DialogResult } from '@cratis/applications.react/dialogs';
-import { ProgressSpinner } from 'primereact/progressspinner';
-
-export const BusyIndicatorDialog = () => {
-    const { request } = useDialogContext<BusyIndicatorDialogRequest, DialogResult>();
-
-    const headerElement = (
-        <div className="inline-flex align-items-center justify-content-center gap-2">
-            <span className="font-bold white-space-nowrap">{request.title}</span>
-        </div>
-    );
-
-    return (
-        <>
-            <Dialog header={headerElement} modal visible={true} onHide={() => { }}>
-                <ProgressSpinner />
-                <p className="m-0">
-                    {request.message}
-                </p>
-            </Dialog>
-        </>
-    );
-};
-```
-
-The code above uses the `useDialogContext()` with the `BusyIndicatorDialogRequest` and `DialogResult` as the types expected from
-the request and response type. For this implementation, it shows a spinner.
-
-To enable the new `BusyIndicatorDialog` all you need to do is hook it up in your application like below.
-
-```tsx
-export const App = () => {
-    return (
-        <DialogComponents busyIndicator={BusyIndicatorDialog}>
-            {/* Your application */}
-        </DialogComponents>
-    );
-};
-```
+In order for the dialogs to show, you need to configure the component that represent it.
+You can read more about that [here](../react/dialogs.md)
 
 ## Custom dialogs
 
