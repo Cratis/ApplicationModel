@@ -47,7 +47,8 @@ export interface IDialogComponents {
 export const DialogComponentsContext = React.createContext<IDialogComponents>({
     showConfirmation: () => Promise.resolve([DialogResult.Cancelled, {}]),
     showBusyIndicator: () => Promise.resolve([DialogResult.Cancelled, {}]),
-    closeBusyIndicator: () => {},
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    closeBusyIndicator: () => { }
 });
 
 /**

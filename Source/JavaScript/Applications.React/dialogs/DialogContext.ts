@@ -28,6 +28,6 @@ export const DialogContext = React.createContext<DialogContextContent<object, ob
  * A custom hook to access the dialog context in your components.
  * @returns The current dialog context, which includes the request and a method to close the dialog.
  */
-export const useDialogContext = <TRequest = {}, TResponse = {}>(): DialogContextContent<TRequest, TResponse> => {
+export const useDialogContext = <TRequest = object, TResponse = object>(): DialogContextContent<TRequest, TResponse> => {
     return useContext(DialogContext) as unknown as DialogContextContent<TRequest, TResponse>;
 };

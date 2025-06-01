@@ -6,4 +6,4 @@ import { DialogResult } from './DialogResult';
 /**
  * Represents the response from a dialog, including the result and an optional response object.
  */
-export type DialogResponse<TResponse = {}> = [DialogResult, TResponse?];
+export type DialogResponse<TResponse = object> = [DialogResult, TResponse?];

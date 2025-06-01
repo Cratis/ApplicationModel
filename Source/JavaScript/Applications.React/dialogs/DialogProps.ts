@@ -6,10 +6,9 @@ import { CloseDialog } from './CloseDialog';
 /**
  * Represents the properties for a dialog component, including a method to close the dialog.
  */
-export interface DialogProps<TResponse = {}> {
+export interface DialogProps<TResponse = object> {
     /**
      * A function to close the dialog, which takes a result and an optional response.
      */
     closeDialog: CloseDialog<TResponse>;
 }
-

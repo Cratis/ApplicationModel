@@ -4,9 +4,8 @@
 import { DialogContext, DialogContextContent } from './DialogContext';
 import { DialogResponse } from './DialogResponse';
 import { DialogResult } from './DialogResult';
-import { useCallback, useRef, useState, ComponentType, FC, useMemo, useContext } from 'react';
+import { useCallback, useRef, useState, ComponentType, FC, useMemo } from 'react';
 import { ShowDialog } from './ShowDialog';
-import { DialogComponentsContext, IDialogComponents } from './DialogComponents';
 
 /**
  * Use a dialog component in you application. This hook manages the visibility and properties of the dialog.
@@ -14,14 +13,13 @@ import { DialogComponentsContext, IDialogComponents } from './DialogComponents';
  * @returns A tuple containing the wrapped dialog component and a function to show the dialog. 
  * The wrapped dialog component will receive the properties passed to it, excluding the `closeDialog` property.
  */
-export function useDialog<TResponse = {}, TProps = {}>(
+export function useDialog<TResponse = object, TProps = object>(
     DialogComponent: ComponentType<TProps>
 ): [FC<TProps>, ShowDialog<TProps, TResponse>, DialogContextContent<TProps, TResponse>] {
 
     const [visible, setVisible] = useState(false);
     const [dialogProps, setDialogProps] = useState<TProps | undefined>();
     const resolverRef = useRef<((value: DialogResponse<TResponse>) => void) | undefined>(undefined);
-    const dialogComponents = useContext<IDialogComponents>(DialogComponentsContext);
 
     const showDialog = useCallback((p?: TProps) => {
         setDialogProps(p);

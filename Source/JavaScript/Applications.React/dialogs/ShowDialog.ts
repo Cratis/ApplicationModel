@@ -6,4 +6,4 @@ import { DialogResponse } from './DialogResponse';
 /**
  * Represents a function that shows a dialog and returns a promise that resolves with the dialog response.
  */
-export type ShowDialog<TProps, TResponse = {}> = (props?: TProps) => Promise<DialogResponse<TResponse>>;
+export type ShowDialog<TProps, TResponse = object> = (props?: TProps) => Promise<DialogResponse<TResponse>>;
