@@ -14,7 +14,7 @@ export abstract class IDialogs {
      * @param {*} input The input to pass to the dialog.
      * @returns {Promise<*>} The output from the dialog.
      */
-    abstract show<TRequest extends object, TResponse = {}>(input: TRequest): Promise<DialogResponse<TResponse>>;
+    abstract show<TRequest extends object, TResponse = object>(input: TRequest): Promise<DialogResponse<TResponse>>;
 
     /**
      * Show a standard confirmation dialog.

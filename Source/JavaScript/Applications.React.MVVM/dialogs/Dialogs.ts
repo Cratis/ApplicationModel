@@ -20,23 +20,25 @@ export class Dialogs extends IDialogs {
         dialogComponents: IDialogComponents) {
         super();
 
+        /* eslint-disable @typescript-eslint/no-empty-function */
         _dialogMediatorHandler.subscribe(ConfirmationDialogRequest, async (request, resolver) => {
             const [result] = await dialogComponents.showConfirmation(request as ConfirmationDialogRequest);
             resolver(result);
         }, () => { });
+        /* eslint-enable @typescript-eslint/no-empty-function */
 
-        let busyIndicatorResolver: CloseDialog<void>;
+        let busyIndicatorResolver: CloseDialog<void> | undefined = undefined;
 
         _dialogMediatorHandler.subscribe(BusyIndicatorDialogRequest, (request, resolver) => {
             busyIndicatorResolver = resolver;
             return dialogComponents.showBusyIndicator(request as BusyIndicatorDialogRequest);
-        }, () => {
-            dialogComponents.closeBusyIndicator(DialogResult.Cancelled);
+        }, () => { 
+            busyIndicatorResolver?.(DialogResult.Cancelled, undefined);
         });
     }
 
     /** @inheritdoc */
-    show<TRequest extends object, TResponse = {}>(request: TRequest): Promise<DialogResponse<TResponse>> {
+    show<TRequest extends object, TResponse = object>(request: TRequest): Promise<DialogResponse<TResponse>> {
         return this._dialogMediatorHandler.show<TRequest, TResponse>(request);
     }
 

@@ -3,7 +3,7 @@
 
 import { useEffect, ComponentType, FC, useCallback } from 'react';
 import { Constructor } from '@cratis/fundamentals';
-import { DialogResult, ShowDialog, useDialog as useDialogBase, DialogContextContent } from '@cratis/applications.react/dialogs';
+import { DialogResult, ShowDialog, useDialog as useDialogBase } from '@cratis/applications.react/dialogs';
 import { useDialogMediator } from './DialogMediator';
 
 /**
@@ -12,19 +12,15 @@ import { useDialogMediator } from './DialogMediator';
  * @param DialogComponent The dialog component to render.
  * @returns A tuple with a component to use for rendering the dialog.
  */
-export function useDialog<TProps extends object = {}, TResponse = {}>(
+export function useDialog<TProps extends object = object, TResponse = object>(
     requestType: Constructor<TProps>,
     DialogComponent: ComponentType<TProps>
 ): [FC<TProps>, ShowDialog<TProps, TResponse>] {
     const mediator = useDialogMediator();
-
-    let dialogContext: DialogContextContent<TProps, TResponse>;
-
     const [DialogWrapper, showDialog, actualDialogContext] = useDialogBase<TResponse, TProps>(DialogComponent);
-    dialogContext = actualDialogContext;
 
     const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
-        dialogContext.closeDialog(result, value as TResponse);
+        actualDialogContext.closeDialog(result, value as TResponse);
     }, []);
 
     useEffect(() => {
