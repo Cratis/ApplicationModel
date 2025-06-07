@@ -31,6 +31,6 @@ public abstract class an_interceptor : Specification
         invocation.Method.Returns(typeof(for_MongoCollectionInterceptorForReturnValue.InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
         target = new();
         invocation.InvocationTarget.Returns(target);
-        invocation.When(_ => _.ReturnValue = Arg.Any<Task>()).Do((CallInfo? _) => return_value = _.Arg<Task>());
+        invocation.When(_ => _.ReturnValue = Arg.Any<Task>()).Do((_) => return_value = _.Arg<Task>());
     }
 }

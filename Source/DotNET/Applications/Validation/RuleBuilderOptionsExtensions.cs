@@ -20,7 +20,7 @@ public static class RuleBuilderOptionsExtensions
     /// <typeparam name="TProperty">Property type.</typeparam>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
     public static IRuleBuilderOptions<T, TProperty> WhenCommand<T, TProperty>(this IRuleBuilderOptions<T, TProperty> rule, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) =>
-        rule.When((T x, ValidationContext<T> ctx) => ctx.IsCommand(), applyConditionTo);
+        rule.When((x, ctx) => ctx.IsCommand(), applyConditionTo);
 
     /// <summary>
     /// Specifies a condition for when the context is a query.
@@ -31,5 +31,5 @@ public static class RuleBuilderOptionsExtensions
     /// <typeparam name="TProperty">Property type.</typeparam>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
     public static IRuleBuilderOptions<T, TProperty> WhenQuery<T, TProperty>(this IRuleBuilderOptions<T, TProperty> rule, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) =>
-        rule.When((T x, ValidationContext<T> ctx) => ctx.IsQuery(), applyConditionTo);
+        rule.When((x, ctx) => ctx.IsQuery(), applyConditionTo);
 }

@@ -23,7 +23,7 @@ public abstract class a_valid_identity_request : an_identity_provider_endpoint
         headers[MicrosoftIdentityPlatformHeaders.PrincipalHeader] =
             Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(client_principal, Globals.JsonSerializerOptions));
 
-        identity_provider.Provide(Arg.Any<IdentityProviderContext>()).Returns((CallInfo x) =>
+        identity_provider.Provide(Arg.Any<IdentityProviderContext>()).Returns((x) =>
         {
             identity_provider_context = x.Arg<IdentityProviderContext>();
             return Task.FromResult(details_result);

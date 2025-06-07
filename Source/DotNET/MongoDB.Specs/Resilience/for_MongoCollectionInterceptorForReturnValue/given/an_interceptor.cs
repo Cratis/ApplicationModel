@@ -30,6 +30,6 @@ public abstract class an_interceptor : Specification
         invocation.Method.Returns(typeof(InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
         target = new();
         invocation.InvocationTarget.Returns(target);
-        invocation.When(_ => _.ReturnValue = Arg.Any<Task<string>>()).Do((CallInfo? _) => return_value = _.Arg<Task<string>>());
+        invocation.When(_ => _.ReturnValue = Arg.Any<Task<string>>()).Do((_) => return_value = _.Arg<Task<string>>());
     }
 }

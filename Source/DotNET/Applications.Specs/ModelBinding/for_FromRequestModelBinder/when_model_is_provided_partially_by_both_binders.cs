@@ -30,14 +30,14 @@ public class when_model_is_provided_partially_by_both_binders : Specification
         context.When(_ => _.Result = Arg.Any<ModelBindingResult>()).Do(_ => final_result = _.Arg<ModelBindingResult>());
 
         body_binder = Substitute.For<IModelBinder>();
-        body_binder.BindModelAsync(context).Returns((CallInfo _) =>
+        body_binder.BindModelAsync(context).Returns((_) =>
         {
             result = ModelBindingResult.Success(body_model);
             return Task.CompletedTask;
         });
 
         complex_binder = Substitute.For<IModelBinder>();
-        complex_binder.BindModelAsync(context).Returns((CallInfo _) =>
+        complex_binder.BindModelAsync(context).Returns((_) =>
         {
             result = ModelBindingResult.Success(complex_model);
             return Task.CompletedTask;
