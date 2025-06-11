@@ -16,7 +16,7 @@
     <PackageVersion Include="MongoDB.Driver" Version="3.4.0" />
     <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
     <PackageVersion Include="castle.core" Version="5.2.1" />
-    <PackageVersion Include="polly.core" Version="8.5.2" />
+    <PackageVersion Include="polly.core" Version="8.6.0" />
     <!-- Orleans -->
     <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.1.2" />
     <PackageVersion Include="Microsoft.Orleans.Runtime" Version="9.1.2" />
