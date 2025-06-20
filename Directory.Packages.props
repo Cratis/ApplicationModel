@@ -5,8 +5,8 @@
     <HandlebarsVersion>2.1.6</HandlebarsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Cratis.Fundamentals" Version="6.5.0" />
-    <PackageVersion Include="Cratis.Metrics.Roslyn" Version="6.5.0" />
+    <PackageVersion Include="Cratis.Fundamentals" Version="6.5.1" />
+    <PackageVersion Include="Cratis.Metrics.Roslyn" Version="6.5.1" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.8" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.1" />
