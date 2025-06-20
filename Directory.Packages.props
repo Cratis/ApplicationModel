@@ -9,14 +9,14 @@
     <PackageVersion Include="Cratis.Metrics.Roslyn" Version="6.4.0" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.8" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="MongoDB.Driver" Version="3.4.0" />
     <PackageVersion Include="handlebars.net" Version="$(HandlebarsVersion)" />
     <PackageVersion Include="castle.core" Version="5.2.1" />
-    <PackageVersion Include="polly.core" Version="8.5.2" />
+    <PackageVersion Include="polly.core" Version="8.6.1" />
     <!-- Orleans -->
     <PackageVersion Include="Microsoft.Orleans.SDK" Version="9.1.2" />
     <PackageVersion Include="Microsoft.Orleans.Runtime" Version="9.1.2" />
@@ -34,19 +34,19 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" NoWarn="NU5104" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.13.1" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.201" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.202" />
     <!-- Specifications -->
     <PackageVersion Include="Cratis.Specifications.XUnit" Version="3.0.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.1" />
     <PackageVersion Include="Microsoft.NET.Test.SDK" Version="17.14.1" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.Telemetry" Version="9.5.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.5" />
-    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.5" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Telemetry" Version="9.6.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.6" />
+    <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.6" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.6" />
   </ItemGroup>
 </Project>
