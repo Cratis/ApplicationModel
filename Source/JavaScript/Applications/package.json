@@ -60,8 +60,8 @@
         "up": "yarn g:up"
     },
     "dependencies": {
-        "@cratis/fundamentals": "6.4.0",
-        "handlebars": "4.7.8"
+        "@cratis/fundamentals": "^6.4.0",
+        "handlebars": "^4.7.8"
     },
     "devDependencies": {
         "reflect-metadata": "0.2.2",
