@@ -18,7 +18,7 @@ namespace Cratis.Applications.Orleans.Concepts;
 public class ConceptSerializer : IGeneralizedCodec, IGeneralizedCopier, ITypeFilter
 {
     /// <inheritdoc/>
-    public object DeepCopy(object input, CopyContext context) => input;
+    public object? DeepCopy(object? input, CopyContext context) => input;
 
     /// <inheritdoc/>
     public bool IsSupportedType(Type type) => type.IsConcept();

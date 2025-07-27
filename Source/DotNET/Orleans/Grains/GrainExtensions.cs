@@ -34,7 +34,7 @@ public static class GrainExtensions
     public static TGrainInterface GetReference<TGrainInterface>(this IGrainFactory grainFactory, IGrainWithGuidCompoundKey grain)
     {
         var id = grain.GetPrimaryKey(out var keyExt);
-        var grainResult = grainFactory.GetGrain(grain.GetGrainType(), id, keyExt);
+        var grainResult = grainFactory.GetGrain(grain.GetGrainType(), id, keyExt!);
         if (!(grainResult is IGrainBase))
         {
             // We're doing an assumption here that if the grain is not a grain base, it is probably coming from a test scenario
