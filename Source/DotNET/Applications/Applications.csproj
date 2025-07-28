@@ -7,7 +7,7 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cratis.Fundamentals"/>
+        <PackageReference Include="Cratis.Fundamentals" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
