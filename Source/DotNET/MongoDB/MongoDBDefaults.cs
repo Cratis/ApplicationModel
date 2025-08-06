@@ -55,7 +55,7 @@ public static class MongoDBDefaults
             BsonSerializer
                 .RegisterSerializer(new ObjectSerializer(CustomObjectDiscriminatorConvention.Instance, GuidRepresentation.Standard, t => true));
 
-            RegisterConventionAsPack(conventionPackFilters, AcronymFriendlyCamelCaseElementNameConvention.ConventionName, new AcronymFriendlyCamelCaseElementNameConvention());
+            RegisterConventionAsPack(conventionPackFilters, NamingPolicyNameConvention.ConventionName, new NamingPolicyNameConvention());
             RegisterConventionAsPack(conventionPackFilters, ConventionPacks.IgnoreExtraElements, new IgnoreExtraElementsConvention(true));
 
             RegisterClassMaps(builder);

@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Applications.MongoDB;
-using Cratis.Models;
+using Cratis.Serialization;
 
 namespace MongoDB.Driver;
 
@@ -11,14 +11,14 @@ namespace MongoDB.Driver;
 /// </summary>
 public static class DatabaseExtensions
 {
-    static IModelNameResolver? _modelNameResolver;
+    static INamingPolicy? _namingPolicy;
 
     /// <summary>
-    /// The <see cref="IModelNameResolver"/> to use.
+    /// The <see cref="INamingPolicy"/> to use.
     /// </summary>
-    /// <exception cref="ModelNameResolverNotConfigured">Thrown when the resolver is not configured.</exception>
-    static IModelNameResolver ModelNameResolver =>
-        _modelNameResolver ?? throw new ModelNameResolverNotConfigured($"Cannot use {nameof(IMongoDatabase)}.{nameof(GetCollection)}() before it has been configured. Please configure it using {nameof(MongoDBBuilderExtensions.WithModelNameConvention)}");
+    /// <exception cref="NamingPolicyNotConfigured">Thrown when the resolver is not configured.</exception>
+    internal static INamingPolicy NamingPolicy =>
+        _namingPolicy ?? throw new NamingPolicyNotConfigured($"Cannot use {nameof(IMongoDatabase)}.{nameof(GetCollection)}() before it has been configured. Please configure it using {nameof(MongoDBBuilderExtensions.WithNamingPolicy)}");
 
     /// <summary>
     /// Get a collection - with name of collection as convention (camelCase of typename).
@@ -29,12 +29,12 @@ public static class DatabaseExtensions
     /// <returns>The collection for your type.</returns>
     public static IMongoCollection<T> GetCollection<T>(this IMongoDatabase database, MongoCollectionSettings? settings = default)
     {
-        return database.GetCollection<T>(ModelNameResolver!.GetNameFor(typeof(T)), settings);
+        return database.GetCollection<T>(NamingPolicy!.GetReadModelName(typeof(T)), settings);
     }
 
     /// <summary>
-    /// Sets the <see cref="ModelNameResolver"/>.
+    /// Sets the <see cref="INamingPolicy"/>.
     /// </summary>
-    /// <param name="resolver">The <see cref="IModelNameResolver"/>.</param>
-    internal static void SetModelNameResolver(IModelNameResolver resolver) => _modelNameResolver = resolver;
+    /// <param name="namingPolicy">The <see cref="INamingPolicy"/>.</param>
+    internal static void SetNamingPolicy(INamingPolicy namingPolicy) => _namingPolicy = namingPolicy;
 }

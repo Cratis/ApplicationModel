@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Models;
+using Cratis.Serialization;
 
 namespace Cratis.Applications.MongoDB;
 
@@ -33,16 +33,16 @@ public class MongoDBBuilder : IMongoDBBuilder
     public Type DatabaseNameResolverType { get; set; } = typeof(DefaultMongoDatabaseNameResolver);
 
     /// <inheritdoc/>
-    public IModelNameConvention? ModelNameConventionInstance { get; set; }
+    public INamingPolicy? NamingPolicy { get; set; }
 
     /// <inheritdoc/>
-    public Type? ModelNameConventionType { get; set; } = typeof(DefaultModelNameConvention);
+    public Type? NamingPolicyType { get; set; } = typeof(DefaultNamingPolicy);
 
     /// <inheritdoc/>
     public void Validate()
     {
         MongoServerResolverNotConfigured.ThrowIfNotConfigured(ServerResolverType);
         MongoDatabaseNameResolverNotConfigured.ThrowIfNotConfigured(DatabaseNameResolverType);
-        ModelNameResolverNotConfigured.ThrowIfNotConfigured(ModelNameConventionInstance, ModelNameConventionType);
+        NamingPolicyNotConfigured.ThrowIfNotConfigured(NamingPolicy, NamingPolicyType);
     }
 }
