@@ -9,9 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="handlebars.net" GeneratePathProperty="true" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.MetadataLoadContext" GeneratePathProperty="true" PrivateAssets="all"/>
+        <PackageReference Include="handlebars.net" />
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" />
+        <PackageReference Include="System.Reflection.MetadataLoadContext" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,16 +33,30 @@
         </EmbeddedResource>
     </ItemGroup>
 
+    <!-- Copy dependency files during pack using resolved assembly references -->
+    <Target Name="IncludeDependencyFiles" BeforeTargets="GenerateNuspec" AfterTargets="ResolveReferences">
+        <ItemGroup>
+            <!-- Find the actual resolved assemblies -->
+            <HandlebarsAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'Handlebars'" />
+            <DependencyModelAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'Microsoft.Extensions.DependencyModel'" />
+            <MetadataLoadContextAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'System.Reflection.MetadataLoadContext'" />
+        </ItemGroup>
+        
+        <ItemGroup>
+            <!-- Include the resolved assemblies in both net8.0 and net9.0 task folders -->
+            <Content Include="@(HandlebarsAssembly)" PackagePath="tasks/net8.0/" />
+            <Content Include="@(DependencyModelAssembly)" PackagePath="tasks/net8.0/" />
+            <Content Include="@(MetadataLoadContextAssembly)" PackagePath="tasks/net8.0/" />
+            
+            <Content Include="@(HandlebarsAssembly)" PackagePath="tasks/net9.0/" />
+            <Content Include="@(DependencyModelAssembly)" PackagePath="tasks/net9.0/" />
+            <Content Include="@(MetadataLoadContextAssembly)" PackagePath="tasks/net9.0/" />
+        </ItemGroup>
+    </Target>
+
     <!-- Include output from the ProxyGenerator -->
     <ItemGroup>
         <Content Include="$(MSBuildThisFileDirectory)bin/Release/net8.0/**/*" PackagePath="tasks/net8.0" />
-        <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\9.0.8\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net8.0/" />
-        <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\9.0.8\lib\net8.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net8.0/" />
-
         <Content Include="$(MSBuildThisFileDirectory)bin/Release/net9.0/**/*" PackagePath="tasks/net9.0" />
-        <Content Include="$(NuGetPackageRoot)\handlebars.net\$(HandlebarsVersion)\lib\netstandard2.0\Handlebars.dll" PackagePath="tasks/net9.0/" />
-        <Content Include="$(NuGetPackageRoot)\microsoft.extensions.dependencymodel\9.0.8\lib\netstandard2.0\Microsoft.Extensions.DependencyModel.dll" PackagePath="tasks/net9.0/" />
-        <Content Include="$(NuGetPackageRoot)\system.reflection.metadataloadcontext\9.0.8\lib\net9.0\System.Reflection.MetadataLoadContext.dll" PackagePath="tasks/net9.0/" />
     </ItemGroup>       
 </Project>
