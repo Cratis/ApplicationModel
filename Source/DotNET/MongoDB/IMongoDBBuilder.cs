@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Models;
+using Cratis.Serialization;
 
 namespace Cratis.Applications.MongoDB;
 
@@ -31,14 +31,14 @@ public interface IMongoDBBuilder
     Type DatabaseNameResolverType { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="IModelNameConvention"/> instance.
+    /// Gets or sets the <see cref="INamingPolicy"/> instance.
     /// </summary>
-    IModelNameConvention? ModelNameConventionInstance { get; set; }
+    INamingPolicy? NamingPolicy { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="IModelNameConvention"/> type.
+    /// Gets or sets the <see cref="INamingPolicy"/> type.
     /// </summary>
-    Type? ModelNameConventionType { get; set; }
+    Type? NamingPolicyType { get; set; }
 
     /// <summary>
     /// Validate the builder.

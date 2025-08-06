@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Models;
+using Cratis.Serialization;
 
 namespace Cratis.Applications.MongoDB;
 
@@ -61,29 +61,42 @@ public static class MongoDBBuilderExtensions
     }
 
     /// <summary>
-    /// Configures the MongoDB builder with a <see cref="IModelNameConvention"/>.
+    /// Configures the MongoDB builder with a <see cref="INamingPolicy"/>.
     /// </summary>
-    /// <typeparam name="TConvention">The <see cref="IModelNameConvention"/> type.</typeparam>
+    /// <typeparam name="TNamingPolicy">The <see cref="INamingPolicy"/> type.</typeparam>
     /// <param name="builder">The MongoDB builder.</param>
     /// <returns>The updated MongoDB builder.</returns>
-    public static IMongoDBBuilder WithModelNameConvention<TConvention>(this IMongoDBBuilder builder)
-        where TConvention : IModelNameConvention
+    public static IMongoDBBuilder WithNamingPolicy<TNamingPolicy>(this IMongoDBBuilder builder)
+        where TNamingPolicy : INamingPolicy
     {
-        builder.ModelNameConventionInstance = null;
-        builder.ModelNameConventionType = typeof(TConvention);
+        builder.NamingPolicy = null;
+        builder.NamingPolicyType = typeof(TNamingPolicy);
         return builder;
     }
 
     /// <summary>
-    /// Configures the MongoDB builder with a <see cref="IModelNameConvention"/>.
+    /// Configures the MongoDB builder with a camel case naming policy.
     /// </summary>
     /// <param name="builder">The MongoDB builder.</param>
-    /// <param name="convention">The <see cref="IModelNameConvention"/>.</param>
+    /// <param name="pluralizeReadModels">Whether to pluralize read model names.</param>
     /// <returns>The updated MongoDB builder.</returns>
-    public static IMongoDBBuilder WithModelNameConvention(this IMongoDBBuilder builder, IModelNameConvention convention)
+    public static IMongoDBBuilder WithCamelCaseNamingPolicy(this IMongoDBBuilder builder, bool pluralizeReadModels = true)
     {
-        builder.ModelNameConventionInstance = convention;
-        builder.ModelNameConventionType = null;
+        builder.NamingPolicy = new CamelCaseNamingPolicy(pluralizeReadModels);
+        builder.NamingPolicyType = null;
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures the MongoDB builder with a <see cref="INamingPolicy"/>.
+    /// </summary>
+    /// <param name="builder">The MongoDB builder.</param>
+    /// <param name="convention">The <see cref="INamingPolicy"/>.</param>
+    /// <returns>The updated MongoDB builder.</returns>
+    public static IMongoDBBuilder WithNamingPolicy(this IMongoDBBuilder builder, INamingPolicy convention)
+    {
+        builder.NamingPolicy = convention;
+        builder.NamingPolicyType = null;
         return builder;
     }
 }

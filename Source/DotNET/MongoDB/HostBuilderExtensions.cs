@@ -5,7 +5,7 @@ using System.Diagnostics.Metrics;
 using Cratis.Applications;
 using Cratis.Applications.MongoDB;
 using Cratis.Metrics;
-using Cratis.Models;
+using Cratis.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -89,15 +89,15 @@ public static class HostBuilderExtensions
 
         services.AddHostedService<MongoDBInitializer>();
 
-        if (mongoDBBuilder.ModelNameConventionInstance is not null)
+        if (mongoDBBuilder.NamingPolicy is not null)
         {
-            services.AddSingleton(mongoDBBuilder.ModelNameConventionInstance);
+            services.AddSingleton(mongoDBBuilder.NamingPolicy);
         }
         else
         {
-            services.AddSingleton(typeof(IModelNameConvention), mongoDBBuilder.ModelNameConventionType ?? typeof(DefaultModelNameConvention));
+            services.AddSingleton(typeof(INamingPolicy), mongoDBBuilder.NamingPolicyType ?? typeof(DefaultNamingPolicy));
         }
-        services.AddSingleton<IModelNameResolver, ModelNameResolver>();
+        services.AddSingleton<INamingPolicy, NamingPolicy>();
         services.AddSingleton(typeof(IMongoServerResolver), mongoDBBuilder.ServerResolverType);
         services.AddSingleton(typeof(IMongoDatabaseNameResolver), mongoDBBuilder.DatabaseNameResolverType);
         services.AddSingleton<IMongoDBClientFactory, MongoDBClientFactory>();
