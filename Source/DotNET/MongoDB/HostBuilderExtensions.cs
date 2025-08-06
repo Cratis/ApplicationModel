@@ -87,8 +87,6 @@ public static class HostBuilderExtensions
             return new Meter<IMongoClient>(meter);
         });
 
-        services.AddHostedService<MongoDBInitializer>();
-
         if (mongoDBBuilder.NamingPolicy is not null)
         {
             services.AddSingleton(mongoDBBuilder.NamingPolicy);
