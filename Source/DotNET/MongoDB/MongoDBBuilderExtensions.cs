@@ -75,19 +75,6 @@ public static class MongoDBBuilderExtensions
     }
 
     /// <summary>
-    /// Configures the MongoDB builder with a camel case naming policy.
-    /// </summary>
-    /// <param name="builder">The MongoDB builder.</param>
-    /// <param name="pluralizeReadModels">Whether to pluralize read model names.</param>
-    /// <returns>The updated MongoDB builder.</returns>
-    public static IMongoDBBuilder WithCamelCaseNamingPolicy(this IMongoDBBuilder builder, bool pluralizeReadModels = true)
-    {
-        builder.NamingPolicy = new CamelCaseNamingPolicy(pluralizeReadModels);
-        builder.NamingPolicyType = null;
-        return builder;
-    }
-
-    /// <summary>
     /// Configures the MongoDB builder with a <see cref="INamingPolicy"/>.
     /// </summary>
     /// <param name="builder">The MongoDB builder.</param>
@@ -96,6 +83,19 @@ public static class MongoDBBuilderExtensions
     public static IMongoDBBuilder WithNamingPolicy(this IMongoDBBuilder builder, INamingPolicy convention)
     {
         builder.NamingPolicy = convention;
+        builder.NamingPolicyType = null;
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures the MongoDB builder with a camel case naming policy.
+    /// </summary>
+    /// <param name="builder">The MongoDB builder.</param>
+    /// <param name="pluralizeReadModels">Whether to pluralize read model names.</param>
+    /// <returns>The updated MongoDB builder.</returns>
+    public static IMongoDBBuilder WithCamelCaseNamingPolicy(this IMongoDBBuilder builder, bool pluralizeReadModels = true)
+    {
+        builder.NamingPolicy = new CamelCaseNamingPolicy(pluralizeReadModels);
         builder.NamingPolicyType = null;
         return builder;
     }
