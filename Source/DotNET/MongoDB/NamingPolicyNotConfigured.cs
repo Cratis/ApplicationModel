@@ -6,7 +6,7 @@ using Cratis.Serialization;
 namespace Cratis.Applications.MongoDB;
 
 /// <summary>
-/// The exception that is thrown when the <see cref="IMongoServerResolver"/> is missing.
+/// The exception that is thrown when the naming policy for MongoDB has not been configured.
 /// </summary>
 /// <param name="message">The additional message of the error.</param>
 public class NamingPolicyNotConfigured(string message)
