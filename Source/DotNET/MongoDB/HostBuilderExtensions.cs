@@ -97,6 +97,14 @@ public static class HostBuilderExtensions
         {
             services.AddSingleton(typeof(INamingPolicy), mongoDBBuilder.NamingPolicyType ?? typeof(DefaultNamingPolicy));
         }
+
+        services.AddSingleton(sp =>
+        {
+            var policy = mongoDBBuilder.NamingPolicy ?? sp.GetRequiredService<INamingPolicy>() ?? new DefaultNamingPolicy();
+            DatabaseExtensions.SetNamingPolicy(policy);
+            return policy;
+        });
+
         services.AddSingleton(typeof(IMongoServerResolver), mongoDBBuilder.ServerResolverType);
         services.AddSingleton(typeof(IMongoDatabaseNameResolver), mongoDBBuilder.DatabaseNameResolverType);
         services.AddSingleton<IMongoDBClientFactory, MongoDBClientFactory>();
