@@ -33,7 +33,7 @@ public class MongoDBBuilder : IMongoDBBuilder
     public Type DatabaseNameResolverType { get; set; } = typeof(DefaultMongoDatabaseNameResolver);
 
     /// <inheritdoc/>
-    public INamingPolicy? NamingPolicy { get; set; }
+    public INamingPolicy? NamingPolicy { get; set; } = new DefaultNamingPolicy();
 
     /// <inheritdoc/>
     public void Validate()
