@@ -10,7 +10,7 @@ namespace Cratis.Applications.MongoDB;
 /// </summary>
 /// <param name="message">The additional message of the error.</param>
 public class NamingPolicyNotConfigured(string message)
-    : Exception($"A model name convention for MongoDB has not been configured. {message}")
+    : Exception($"A naming policy for MongoDB has not been configured. {message}")
 {
     /// <summary>
     /// Throw if not configured.
