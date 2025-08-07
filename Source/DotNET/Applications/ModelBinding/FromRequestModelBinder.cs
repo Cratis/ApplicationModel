@@ -3,7 +3,6 @@
 
 using System.Reflection;
 using System.Text.Json;
-using Cratis.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Cratis.Applications.ModelBinding;
