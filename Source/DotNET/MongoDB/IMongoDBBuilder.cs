@@ -36,11 +36,6 @@ public interface IMongoDBBuilder
     INamingPolicy? NamingPolicy { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="INamingPolicy"/> type.
-    /// </summary>
-    Type? NamingPolicyType { get; set; }
-
-    /// <summary>
     /// Validate the builder.
     /// </summary>
     void Validate();

@@ -63,27 +63,12 @@ public static class MongoDBBuilderExtensions
     /// <summary>
     /// Configures the MongoDB builder with a <see cref="INamingPolicy"/>.
     /// </summary>
-    /// <typeparam name="TNamingPolicy">The <see cref="INamingPolicy"/> type.</typeparam>
-    /// <param name="builder">The MongoDB builder.</param>
-    /// <returns>The updated MongoDB builder.</returns>
-    public static IMongoDBBuilder WithNamingPolicy<TNamingPolicy>(this IMongoDBBuilder builder)
-        where TNamingPolicy : INamingPolicy
-    {
-        builder.NamingPolicy = null;
-        builder.NamingPolicyType = typeof(TNamingPolicy);
-        return builder;
-    }
-
-    /// <summary>
-    /// Configures the MongoDB builder with a <see cref="INamingPolicy"/>.
-    /// </summary>
     /// <param name="builder">The MongoDB builder.</param>
     /// <param name="convention">The <see cref="INamingPolicy"/>.</param>
     /// <returns>The updated MongoDB builder.</returns>
     public static IMongoDBBuilder WithNamingPolicy(this IMongoDBBuilder builder, INamingPolicy convention)
     {
         builder.NamingPolicy = convention;
-        builder.NamingPolicyType = null;
         return builder;
     }
 
@@ -96,7 +81,6 @@ public static class MongoDBBuilderExtensions
     public static IMongoDBBuilder WithCamelCaseNamingPolicy(this IMongoDBBuilder builder, bool pluralizeReadModels = true)
     {
         builder.NamingPolicy = new CamelCaseNamingPolicy(pluralizeReadModels);
-        builder.NamingPolicyType = null;
         return builder;
     }
 }
