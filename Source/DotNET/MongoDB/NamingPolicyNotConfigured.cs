@@ -16,28 +16,12 @@ public class NamingPolicyNotConfigured(string message)
     /// Throw if not configured.
     /// </summary>
     /// <param name="convention">The <see cref="INamingPolicy"/>.</param>
-    /// <param name="conventionType">The type of the model name convention.</param>
     /// <exception cref="NamingPolicyNotConfigured">Thrown if the resolver is not configured.</exception>
-    public static void ThrowIfNotConfigured(INamingPolicy? convention, Type? conventionType)
+    public static void ThrowIfNotConfigured(INamingPolicy? convention)
     {
-        if (convention is not null)
-        {
-            if (conventionType is not null)
-            {
-                throw new NamingPolicyNotConfigured($"Two naming policies are configured. Use {nameof(MongoDBBuilderExtensions.WithNamingPolicy)} to configure a specific naming policy.");
-            }
-
-            return;
-        }
-
-        if (conventionType is null)
+        if (convention is null)
         {
             throw new NamingPolicyNotConfigured($"Please configure it using the {nameof(MongoDBBuilderExtensions.WithNamingPolicy)} method");
-        }
-
-        if (!conventionType.IsAssignableTo(typeof(INamingPolicy)))
-        {
-            throw new NamingPolicyNotConfigured($"The given type {conventionType} is not assignable to {typeof(INamingPolicy)}");
         }
     }
 }

@@ -36,13 +36,10 @@ public class MongoDBBuilder : IMongoDBBuilder
     public INamingPolicy? NamingPolicy { get; set; }
 
     /// <inheritdoc/>
-    public Type? NamingPolicyType { get; set; } = typeof(DefaultNamingPolicy);
-
-    /// <inheritdoc/>
     public void Validate()
     {
         MongoServerResolverNotConfigured.ThrowIfNotConfigured(ServerResolverType);
         MongoDatabaseNameResolverNotConfigured.ThrowIfNotConfigured(DatabaseNameResolverType);
-        NamingPolicyNotConfigured.ThrowIfNotConfigured(NamingPolicy, NamingPolicyType);
+        NamingPolicyNotConfigured.ThrowIfNotConfigured(NamingPolicy);
     }
 }

@@ -5,7 +5,6 @@ using System.Diagnostics.Metrics;
 using Cratis.Applications;
 using Cratis.Applications.MongoDB;
 using Cratis.Metrics;
-using Cratis.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -40,7 +39,8 @@ public static class HostBuilderExtensions
         string? mongoDBConfigSectionPath = null)
     {
         var mongoDBBuilder = CreateMongoDBBuilder(configureMongoDB);
-        ConfigureNamingPolicy(builder, mongoDBBuilder);
+
+        ConfigureNamingPolicy(mongoDBBuilder);
         MongoDBDefaults.Initialize(mongoDBBuilder);
         builder.ConfigureServices((_, services) => AddServices(
             services,
@@ -48,6 +48,14 @@ public static class HostBuilderExtensions
             mongoDBConfigSectionPath ?? ConfigurationPath.Combine("Cratis", "MongoDB"),
             configureOptions));
         return builder;
+    }
+
+    static void ConfigureNamingPolicy(MongoDBBuilder mongoDBBuilder)
+    {
+        if (mongoDBBuilder.NamingPolicy is not null)
+        {
+            DatabaseExtensions.SetNamingPolicy(mongoDBBuilder.NamingPolicy!);
+        }
     }
 
     static void AddServices(
@@ -71,10 +79,6 @@ public static class HostBuilderExtensions
         if (mongoDBBuilder.NamingPolicy is not null)
         {
             services.AddSingleton(mongoDBBuilder.NamingPolicy);
-        }
-        else
-        {
-            services.AddSingleton(typeof(INamingPolicy), mongoDBBuilder.NamingPolicyType ?? typeof(DefaultNamingPolicy));
         }
 
         services.AddSingleton(typeof(IMongoServerResolver), mongoDBBuilder.ServerResolverType);
@@ -104,27 +108,6 @@ public static class HostBuilderExtensions
         configure?.Invoke(builder);
         builder.Validate();
         return builder;
-    }
-
-    static void ConfigureNamingPolicy(IHostBuilder hostBuilder, MongoDBBuilder builder)
-    {
-        hostBuilder.ConfigureServices((_, services) =>
-        {
-            services.AddSingleton(sp =>
-            {
-                var policy = builder.NamingPolicy;
-                if (policy is null && builder.NamingPolicyType is not null)
-                {
-                    policy = sp.GetRequiredService(builder.NamingPolicyType) as INamingPolicy;
-                }
-                policy ??= new DefaultNamingPolicy();
-                return policy;
-            });
-
-            var serviceProvider = services.BuildServiceProvider();
-            var namingPolicy = serviceProvider.GetRequiredService<INamingPolicy>();
-            DatabaseExtensions.SetNamingPolicy(namingPolicy);
-        });
     }
 
     static OptionsBuilder<MongoDBOptions> AddOptions(IServiceCollection services, Action<MongoDBOptions>? configureOptions = default)
