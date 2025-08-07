@@ -56,8 +56,8 @@ public class FromRequestModelBinder(IModelBinder bodyModelBinder, IModelBinder c
 
     object CloneObject(object source)
     {
-        var sourceAsString = JsonSerializer.Serialize(source, Globals.JsonSerializerOptions);
-        return JsonSerializer.Deserialize(sourceAsString, source.GetType(), Globals.JsonSerializerOptions)!;
+        var sourceAsString = JsonSerializer.Serialize(source);
+        return JsonSerializer.Deserialize(sourceAsString, source.GetType())!;
     }
 
     bool IsDefaultValue(Type type, object value)
