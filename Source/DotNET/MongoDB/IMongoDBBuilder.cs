@@ -21,6 +21,11 @@ public interface IMongoDBBuilder
     IList<Type> ConventionPackFilters { get; }
 
     /// <summary>
+    /// Gets the convention pack providers, implementations of <see cref="ICanProvideMongoDBConventionPacks"/>.
+    /// </summary>
+    IList<Type> ConventionPackProviders { get; }
+
+    /// <summary>
     /// Gets or sets the URL resolver type.
     /// </summary>
     Type ServerResolverType { get; set; }
