@@ -36,6 +36,8 @@ public static class MongoDBDefaults
                 .Select(_ => (Activator.CreateInstance(_) as ICanFilterMongoDBConventionPacksForType)!)
                 .ToArray();
 
+            RegisterConventionPacks(builder, conventionPackFilters);
+
             BsonSerializer
                 .RegisterSerializationProvider(new ConceptSerializationProvider());
             BsonSerializer
@@ -59,6 +61,21 @@ public static class MongoDBDefaults
             RegisterConventionAsPack(conventionPackFilters, ConventionPacks.IgnoreExtraElements, new IgnoreExtraElementsConvention(true));
 
             RegisterClassMaps(builder);
+        }
+    }
+
+    static void RegisterConventionPacks(IMongoDBBuilder builder, IEnumerable<ICanFilterMongoDBConventionPacksForType> conventionPackFilters)
+    {
+        foreach (var providerType in builder.ConventionPackProviders)
+        {
+            var provider = Activator.CreateInstance(providerType) as ICanProvideMongoDBConventionPacks;
+            if (provider is not null)
+            {
+                foreach (var pack in provider.Provide())
+                {
+                    ConventionRegistry.Register(pack.Name, pack.ConventionPack, type => ShouldInclude(conventionPackFilters, pack.Name, pack.ConventionPack, type));
+                }
+            }
         }
     }
 
