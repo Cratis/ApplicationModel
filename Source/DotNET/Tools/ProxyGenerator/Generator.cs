@@ -89,7 +89,7 @@ public static class Generator
         foreach (var directory in directoriesWithContent)
         {
             var exports = directory
-                .GetFiles("*.ts")
+                .GetFiles("*.ts*")
                 .Where(_ => _.Name != "index.ts")
                 .Select(_ => $"./{Path.GetFileNameWithoutExtension(_.Name)}")
                 .OrderBy(_ => _.Split('/')[^1]);
