@@ -4,7 +4,7 @@
 using System.Reflection;
 using Cratis.Applications.ProxyGenerator.Templates;
 
-namespace Cratis.Applications.ProxyGenerator;
+namespace Cratis.Applications.ProxyGenerator.ControllerBased;
 
 /// <summary>
 /// Extension methods for working with commands.
