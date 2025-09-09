@@ -1,7 +1,15 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text.Json;
 using Cratis.Applications;
+using Cratis.Applications.Commands;
+using Cratis.Applications.Execution;
+using Cratis.Execution;
+using Cratis.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -18,6 +26,46 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseCratisApplicationModel(this IApplicationBuilder app)
     {
         Internals.ServiceProvider = app.ApplicationServices;
+
+        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
+            var options = appModelOptions.Commands;
+            var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
+            var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
+            var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
+            var jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            {
+                Converters =
+                {
+                    new ConceptAsJsonConverterFactory()
+                }
+            };
+            foreach (var handler in commandHandlerProviders.Handlers)
+            {
+                var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
+                var baseUrl = $"/{options.RoutePrefix}/{string.Join('/', segments)}";
+                var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
+                url = url.ToLowerInvariant();
+                endpoints.MapPost(url, async context =>
+                {
+                    CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
+                    var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                    CommandResult commandResult;
+                    if (command is null)
+                    {
+                        commandResult = CommandResult.Error($"Could not deserialize command of type '{handler.CommandType}' from request body.");
+                    }
+                    else
+                    {
+                        commandResult = await commandPipeline.Execute(command);
+                    }
+                    await context.Response.WriteAsJsonAsync(commandResult, cancellationToken: context.RequestAborted);
+                });
+            }
+        });
+
         return app;
     }
 }

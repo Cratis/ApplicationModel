@@ -1,0 +1,32 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Cratis.DependencyInjection;
+using Cratis.Types;
+
+namespace Cratis.Applications.Commands;
+
+/// <summary>
+/// Represents an implementation of <see cref="ICommandResponseValueHandlers"/>.
+/// </summary>
+/// <param name="handlers">The available <see cref="ICommandResponseValueHandler"/>.</param>
+[Singleton]
+public class CommandResponseValueHandlers(IInstancesOf<ICommandResponseValueHandler> handlers) : ICommandResponseValueHandlers
+{
+    /// <inheritdoc/>
+    public async Task<CommandResult> Handle(CommandContext context, object value)
+    {
+        var handlersThatCanHandle = handlers.Where(handler => handler.CanHandle(value));
+        var commandResult = CommandResult.Success(context.CorrelationId);
+        if (handlersThatCanHandle.Any())
+        {
+            foreach (var handler in handlersThatCanHandle)
+            {
+                var result = await handler.Handle(context, value);
+                commandResult.MergeWith(result);
+            }
+        }
+
+        return commandResult;
+    }
+}
