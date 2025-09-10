@@ -11,7 +11,7 @@ public class CommandOptions
     /// <summary>
     /// Gets or sets the route prefix to use for commands.
     /// </summary>
-    public string RoutePrefix { get; set; } = "commands";
+    public string RoutePrefix { get; set; } = "api";
 
     /// <summary>
     /// Number of segments to skip from the start of the command type's namespace when constructing the route.
