@@ -16,15 +16,17 @@ public class CommandFilters(IInstancesOf<ICommandFilter> filters) : ICommandFilt
     /// <inheritdoc/>
     public async Task<CommandResult> OnExecution(CommandContext context)
     {
+        var result = CommandResult.Success(context.CorrelationId);
+
         foreach (var filter in filters)
         {
-            var result = await filter.OnExecution(context);
-            if (result is not null)
+            var filterResult = await filter.OnExecution(context);
+            if (filterResult is not null)
             {
-                return result;
+                result.MergeWith(filterResult);
             }
         }
 
-        return CommandResult.Success(context.CorrelationId);
+        return result;
     }
 }
