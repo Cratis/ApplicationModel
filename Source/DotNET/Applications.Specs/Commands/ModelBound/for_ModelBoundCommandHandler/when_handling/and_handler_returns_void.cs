@@ -9,16 +9,21 @@ public class and_handler_returns_void : Specification
 {
     record Command()
     {
-        public void Handle() { }
+        public IEnumerable<object> Dependencies;
+        public void Handle(int firstDependency, string secondDependency)
+        {
+            Dependencies = [firstDependency, secondDependency];
+        }
     }
 
     ModelBoundCommandHandler _handler;
     object _result;
     CommandContext _context;
+    object[] _dependencies = [42, "The answer to life, the universe and everything"];
 
     void Establish()
     {
-        _context = new(CorrelationId.New(), typeof(Command), new Command(), []);
+        _context = new(CorrelationId.New(), typeof(Command), new Command(), _dependencies);
         _handler = new ModelBoundCommandHandler(
             typeof(Command),
             typeof(Command).GetMethod(nameof(Command.Handle))!);
@@ -27,4 +32,5 @@ public class and_handler_returns_void : Specification
     async Task Because() => _result = await _handler.Handle(_context);
 
     [Fact] void should_return_null() => _result.ShouldBeNull();
+    [Fact] void should_pass_dependencies_to_handler() => ((Command)_context.Command).Dependencies.ShouldEqual(_dependencies);
 }

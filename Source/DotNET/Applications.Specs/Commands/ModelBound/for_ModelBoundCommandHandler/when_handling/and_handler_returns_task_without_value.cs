@@ -9,16 +9,22 @@ public class and_handler_returns_task_without_value : Specification
 {
     record Command()
     {
-        public Task Handle() => Task.CompletedTask;
+        public IEnumerable<object> Dependencies;
+        public Task Handle(int firstDependency, string secondDependency)
+        {
+            Dependencies = [firstDependency, secondDependency];
+            return Task.CompletedTask;
+        }
     }
 
     ModelBoundCommandHandler _handler;
     object _result;
     CommandContext _context;
+    object[] _dependencies = [42, "The answer to life, the universe and everything"];
 
     void Establish()
     {
-        _context = new(CorrelationId.New(), typeof(Command), new Command(), []);
+        _context = new(CorrelationId.New(), typeof(Command), new Command(), _dependencies);
         _handler = new ModelBoundCommandHandler(
             typeof(Command),
             typeof(Command).GetMethod(nameof(Command.Handle))!);
@@ -27,4 +33,5 @@ public class and_handler_returns_task_without_value : Specification
     async Task Because() => _result = await _handler.Handle(_context);
 
     [Fact] void should_return_null() => _result.ShouldBeNull();
+    [Fact] void should_pass_dependencies_to_handler() => ((Command)_context.Command).Dependencies.ShouldEqual(_dependencies);
 }
