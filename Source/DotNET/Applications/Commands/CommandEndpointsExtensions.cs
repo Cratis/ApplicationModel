@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.Json;
 using Cratis.Applications;
 using Cratis.Applications.Commands;
 using Cratis.Applications.Execution;
@@ -33,13 +32,7 @@ public static class CommandEndpointsExtensions
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
             var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
-            var jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
-            {
-                Converters =
-                {
-                    new ConceptAsJsonConverterFactory()
-                }
-            };
+            var jsonSerializerOptions = Globals.JsonSerializerOptions;
             foreach (var handler in commandHandlerProviders.Handlers)
             {
                 var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
