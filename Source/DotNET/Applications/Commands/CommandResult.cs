@@ -80,7 +80,7 @@ public class CommandResult
     /// <param name="commandResults">Params of <see cref="CommandResult"/> to merge with.</param>
     public void MergeWith(params CommandResult[] commandResults)
     {
-        IsAuthorized = commandResults.All(r => r.IsAuthorized);
+        IsAuthorized = IsAuthorized && commandResults.All(r => r.IsAuthorized);
         ValidationResults = [.. ValidationResults, .. commandResults.SelectMany(r => r.ValidationResults)];
         ExceptionMessages = [.. ExceptionMessages, .. commandResults.SelectMany(r => r.ExceptionMessages)];
         ExceptionStackTrace = string.Join(Environment.NewLine, new[] { ExceptionStackTrace }.Concat(commandResults.Select(r => r.ExceptionStackTrace)));
