@@ -28,27 +28,28 @@ public class CommandPipeline(
     /// <inheritdoc/>
     public async Task<CommandResult> Execute(object command)
     {
-        handlerProviders.TryGetHandlerFor(command, out var commandHandler);
-        if (commandHandler is null)
-        {
-            return CommandResult.MissingHandler(command.GetType());
-        }
-
-        var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
-        var correlationId = correlationIdAccessor.Current;
-        if (correlationId == CorrelationId.NotSet)
-        {
-            correlationId = CorrelationId.New();
-        }
-        var commandContext = new CommandContext(correlationId, command.GetType(), command, dependencies);
-        var result = await commandFilters.OnExecution(commandContext);
-        if (!result.IsSuccess)
-        {
-            return result;
-        }
-
+        var result = CommandResult.Success(correlationIdAccessor.Current);
         try
         {
+            handlerProviders.TryGetHandlerFor(command, out var commandHandler);
+            if (commandHandler is null)
+            {
+                return CommandResult.MissingHandler(command.GetType());
+            }
+
+            var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
+            var correlationId = correlationIdAccessor.Current;
+            if (correlationId == CorrelationId.NotSet)
+            {
+                correlationId = CorrelationId.New();
+            }
+            var commandContext = new CommandContext(correlationId, command.GetType(), command, dependencies);
+            result = await commandFilters.OnExecution(commandContext);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
             var response = await commandHandler.Handle(commandContext);
             if (response is not null)
             {
