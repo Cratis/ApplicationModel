@@ -12,7 +12,28 @@ To add the application model, you simply add the following to your application:
 ```tsx
 export const App = () => {
     return (
-        <ApplicationModel microservice='{the name of your microservice}'>
+        <ApplicationModel>
+            {/* Your application */}
+        </ApplicationModel>
+    );
+};
+```
+
+It has a set of configuration options you can pass it:
+
+| Option | Type | Purpose |
+| ------ | ---- | ------- |
+| microservice | String | Name of the microservice, which will add necessary HTTP headers on Commands and Queries |
+| development | Boolean | Whether or not we're running in development, defaults to false |
+| basePath | String | Base path for the application |
+| apiBasePath | String | Base for prepended to the Command and Query requests |
+
+Example:
+
+```tsx
+export const App = () => {
+    return (
+        <ApplicationModel apiBasePath="/some/location">
             {/* Your application */}
         </ApplicationModel>
     );
