@@ -16,9 +16,9 @@ public class CommandResponseValueHandlers(IInstancesOf<ICommandResponseValueHand
     /// <inheritdoc/>
     public async Task<CommandResult> Handle(CommandContext context, object value)
     {
-        var handlersThatCanHandle = handlers.Where(handler => handler.CanHandle(value));
+        var handlersThatCanHandle = handlers.Where(handler => handler.CanHandle(value)).ToArray();
         var commandResult = CommandResult.Success(context.CorrelationId);
-        if (handlersThatCanHandle.Any())
+        if (handlersThatCanHandle.Length != 0)
         {
             foreach (var handler in handlersThatCanHandle)
             {
