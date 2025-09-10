@@ -18,7 +18,7 @@ public class and_correlation_id_is_part_of_request_with_not_set_guid : given.a_c
         _headers[Constants.DefaultCorrelationIdHeader].Returns(new StringValues(_correlationIdAsString));
     }
 
-    Task Because() => _correlationIdActionFilter.OnActionExecutionAsync(_actionExecutingContext, _next);
+    Task Because() => correlationIdActionFilter.OnActionExecutionAsync(_actionExecutingContext, _next);
 
     [Fact] void should_not_set_an_empty_correlation_id() => _currentCorrelationId.ShouldNotEqual(CorrelationId.NotSet);
     [Fact] void should_set_current_correlation_id() => _correlationIdModifier.Received(1).Modify(_currentCorrelationId);

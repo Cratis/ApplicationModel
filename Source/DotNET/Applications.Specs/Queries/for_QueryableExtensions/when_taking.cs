@@ -5,13 +5,13 @@ namespace Cratis.Applications.Queries.for_QueryableExtensions;
 
 public class when_taking : Specification
 {
-    IQueryable queryable;
-    int[] actual_collection = [1, 2, 3, 4];
-    int[] result;
+    IQueryable _queryable;
+    int[] _actualCollection = [1, 2, 3, 4];
+    int[] _result;
 
-    void Establish() => queryable = actual_collection.AsQueryable();
+    void Establish() => _queryable = _actualCollection.AsQueryable();
 
-    void Because() => result = [.. queryable.Take(2).Cast<int>()];
+    void Because() => _result = [.. _queryable.Take(2).Cast<int>()];
 
-    [Fact] void should_contain_expected_items() => result.ShouldContainOnly(actual_collection.Take(2));
+    [Fact] void should_contain_expected_items() => _result.ShouldContainOnly(_actualCollection.Take(2));
 }

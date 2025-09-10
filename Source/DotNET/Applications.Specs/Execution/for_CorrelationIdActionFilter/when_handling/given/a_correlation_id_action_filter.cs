@@ -49,7 +49,7 @@ public class a_correlation_id_action_filter : Specification
         _httpRequest.Headers.Returns(_headers);
         var actionContext = new ActionContext(_httpContext, new Microsoft.AspNetCore.Routing.RouteData(), new ControllerActionDescriptor());
         _actionExecutingContext = new ActionExecutingContext(actionContext, [], new Dictionary<string, object?>(), null!);
-        _correlationIdActionFilter = new CorrelationIdActionFilter(_options, _correlationIdAccessor);
+        correlationIdActionFilter = new CorrelationIdActionFilter(_options, _correlationIdAccessor);
         _next = Substitute.For<ActionExecutionDelegate>();
     }
 }

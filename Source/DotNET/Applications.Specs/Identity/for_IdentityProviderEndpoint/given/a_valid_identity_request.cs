@@ -16,14 +16,14 @@ public abstract class a_valid_identity_request : an_identity_provider_endpoint
 
     void Establish()
     {
-        headers[MicrosoftIdentityPlatformHeaders.IdentityIdHeader] = "123";
-        headers[MicrosoftIdentityPlatformHeaders.IdentityNameHeader] = "Test User";
+        _headers[MicrosoftIdentityPlatformHeaders.IdentityIdHeader] = "123";
+        _headers[MicrosoftIdentityPlatformHeaders.IdentityNameHeader] = "Test User";
 
         client_principal = CreateClientPrincipal();
-        headers[MicrosoftIdentityPlatformHeaders.PrincipalHeader] =
+        _headers[MicrosoftIdentityPlatformHeaders.PrincipalHeader] =
             Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(client_principal, Globals.JsonSerializerOptions));
 
-        identity_provider.Provide(Arg.Any<IdentityProviderContext>()).Returns((x) =>
+        _identityProvider.Provide(Arg.Any<IdentityProviderContext>()).Returns((x) =>
         {
             identity_provider_context = x.Arg<IdentityProviderContext>();
             return Task.FromResult(details_result);
