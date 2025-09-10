@@ -24,15 +24,30 @@ public class ModelBoundCommandHandler(Type commandType, MethodInfo handleMethod)
     /// <inheritdoc/>
     public async Task<object?> Handle(CommandContext commandContext)
     {
-        var result = handleMethod.Invoke(commandContext.Command, [.. commandContext.Dependencies]);
-        if (result is not null && result is Task taskResult)
-        {
-            if (taskResult.GetType().IsGenericType && taskResult.GetType().GetGenericTypeDefinition() == typeof(Task<>))
-            {
-                return (Task<object?>)taskResult;
-            }
+        var parameters = handleMethod.GetParameters();
+        var args = parameters.Length == 0
+            ? null
+            : commandContext.Dependencies.Take(parameters.Length).ToArray();
+        var result = handleMethod.Invoke(commandContext.Command, args);
 
-            await taskResult;
+        if (result is null)
+        {
+            return null;
+        }
+
+        if (result is Task task)
+        {
+            if (handleMethod.ReturnType != typeof(Task))
+            {
+                var type = task.GetType();
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
+                {
+                    var property = type.GetProperty(nameof(Task<object>.Result));
+                    await task;
+                    return property?.GetValue(task);
+                }
+            }
+            await task;
             return null;
         }
 
