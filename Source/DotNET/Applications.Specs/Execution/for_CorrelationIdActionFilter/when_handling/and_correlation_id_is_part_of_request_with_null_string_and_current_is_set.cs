@@ -18,7 +18,7 @@ public class and_correlation_id_is_part_of_request_with_null_string_and_current_
         _correlationId = _currentCorrelationId = CorrelationId.New();
     }
 
-    Task Because() => correlationIdActionFilter.OnActionExecutionAsync(_actionExecutingContext, _next);
+    Task Because() => _correlationIdActionFilter.OnActionExecutionAsync(_actionExecutingContext, _next);
 
     [Fact] void should_set_current_correlation_id() => _correlationIdModifier.DidNotReceive().Modify(Arg.Any<CorrelationId>());
     [Fact] void should_set_correlation_id_in_http_context_items() => _actionExecutingContext.HttpContext.Items[Constants.CorrelationIdItemKey].ShouldEqual(_correlationId);

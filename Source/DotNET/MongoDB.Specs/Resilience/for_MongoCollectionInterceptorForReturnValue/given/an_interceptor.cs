@@ -8,28 +8,28 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorF
 
 public abstract class an_interceptor : Specification
 {
-    protected const int pool_size = 10;
-    protected ResiliencePipeline resilience_pipeline;
-    protected MongoClientSettings settings;
-    protected MongoCollectionInterceptorForReturnValues interceptor;
-    protected Castle.DynamicProxy.IInvocation invocation;
-    protected Task<string> return_value;
-    protected InvocationTarget target;
-    protected SemaphoreSlim semaphore;
+    protected const int PoolSize = 10;
+    protected ResiliencePipeline _resiliencePipeline;
+    protected MongoClientSettings _settings;
+    protected MongoCollectionInterceptorForReturnValues _interceptor;
+    protected Castle.DynamicProxy.IInvocation _invocation;
+    protected Task<string> _returnValue;
+    protected InvocationTarget _target;
+    protected SemaphoreSlim _semaphore;
 
     protected abstract string GetInvocationTargetMethod();
 
     void Establish()
     {
-        resilience_pipeline = new ResiliencePipelineBuilder().Build();
-        semaphore = new SemaphoreSlim(pool_size, pool_size);
+        _resiliencePipeline = new ResiliencePipelineBuilder().Build();
+        _semaphore = new SemaphoreSlim(PoolSize, PoolSize);
 
-        interceptor = new(resilience_pipeline, semaphore);
+        _interceptor = new(_resiliencePipeline, _semaphore);
 
-        invocation = Substitute.For<Castle.DynamicProxy.IInvocation>();
-        invocation.Method.Returns(typeof(InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
-        target = new();
-        invocation.InvocationTarget.Returns(target);
-        invocation.When(_ => _.ReturnValue = Arg.Any<Task<string>>()).Do((_) => return_value = _.Arg<Task<string>>());
+        _invocation = Substitute.For<Castle.DynamicProxy.IInvocation>();
+        _invocation.Method.Returns(typeof(InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
+        _target = new();
+        _invocation.InvocationTarget.Returns(_target);
+        _invocation.When(_ => _.ReturnValue = Arg.Any<Task<string>>()).Do((_) => _returnValue = _.Arg<Task<string>>());
     }
 }

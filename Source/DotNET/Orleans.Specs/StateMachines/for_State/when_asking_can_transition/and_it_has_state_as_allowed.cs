@@ -5,12 +5,12 @@ namespace Cratis.Applications.Orleans.StateMachines.for_State.when_asking_can_tr
 
 public class and_it_has_state_as_allowed : Specification
 {
-    bool result;
-    StateWithAllowedTransitionState state;
+    bool _result;
+    StateWithAllowedTransitionState _state;
 
-    void Establish() => state = new();
+    void Establish() => _state = new();
 
-    async Task Because() => result = await state.CanTransitionTo<StateThatSupportsTransitioningFrom>(null!);
+    async Task Because() => _result = await _state.CanTransitionTo<StateThatSupportsTransitioningFrom>(null!);
 
-    [Fact] void should_return_true() => result.ShouldBeTrue();
+    [Fact] void should_return_true() => _result.ShouldBeTrue();
 }

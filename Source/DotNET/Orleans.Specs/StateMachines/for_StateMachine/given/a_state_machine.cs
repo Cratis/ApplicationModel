@@ -2,39 +2,37 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Orleans.Core;
-using Orleans.Runtime;
 using Orleans.TestKit;
-using Orleans.TestKit.Storage;
 
 namespace Cratis.Applications.Orleans.StateMachines.given;
 
 public abstract class a_state_machine : Specification
 {
-    object lock_object = new();
-    StateMachineForTesting? state_machine_private;
+    object _lockObject = new();
+    StateMachineForTesting? _stateMachinePrivate;
 
-    protected StateMachineForTesting state_machine
+    protected StateMachineForTesting StateMachine
     {
         get
         {
-            lock (lock_object)
+            lock (_lockObject)
             {
-                state_machine_private ??= silo.CreateGrainAsync<StateMachineForTesting>(IdSpan.Create(string.Empty)).GetAwaiter().GetResult();
-                return state_machine_private;
+                _stateMachinePrivate ??= _silo.CreateGrainAsync<StateMachineForTesting>(IdSpan.Create(string.Empty)).GetAwaiter().GetResult();
+                return _stateMachinePrivate;
             }
         }
     }
-    protected virtual Type? initial_state => null;
-    protected IStorage<StateMachineStateForTesting> state_storage;
-    protected TestKitSilo silo = new();
+    protected virtual Type? InitialState => null;
+    protected IStorage<StateMachineStateForTesting> _stateStorage;
+    protected TestKitSilo _silo = new();
 
     void Establish()
     {
         var states = CreateStates();
-        silo.AddService(states);
-        silo.AddService(initial_state ?? typeof(NoOpState<StateMachineStateForTesting>));
+        _silo.AddService(states);
+        _silo.AddService(InitialState ?? typeof(NoOpState<StateMachineStateForTesting>));
 
-        state_storage = silo.StorageManager.GetStorage<StateMachineStateForTesting>(typeof(StateMachineForTesting).FullName);
+        _stateStorage = _silo.StorageManager.GetStorage<StateMachineStateForTesting>(typeof(StateMachineForTesting).FullName);
     }
 
     protected abstract IEnumerable<IState<StateMachineStateForTesting>> CreateStates();

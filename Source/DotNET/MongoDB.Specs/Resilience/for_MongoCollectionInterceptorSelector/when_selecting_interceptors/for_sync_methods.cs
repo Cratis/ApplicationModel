@@ -9,19 +9,19 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorS
 
 public class for_sync_methods : given.an_interceptor_selector
 {
-    IEnumerable<MethodInfo> sync_methods;
-    int intercepted_methods;
+    IEnumerable<MethodInfo> _syncMethods;
+    int _interceptedMethods;
 
     void Establish()
     {
-        sync_methods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => !m.ReturnType.IsAssignableTo(typeof(Task)))];
+        _syncMethods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => !m.ReturnType.IsAssignableTo(typeof(Task)))];
     }
 
-    void Because() => intercepted_methods = sync_methods.Count(methodInfo =>
+    void Because() => _interceptedMethods = _syncMethods.Count(methodInfo =>
     {
         var interceptors = selector.SelectInterceptors(typeof(IMongoCollection<BsonDocument>), methodInfo, []);
         return interceptors.Length == 0;
     });
 
-    [Fact] void should_have_no_mongo_collection_interceptor_for_all() => intercepted_methods.ShouldEqual(sync_methods.Count());
+    [Fact] void should_have_no_mongo_collection_interceptor_for_all() => _interceptedMethods.ShouldEqual(_syncMethods.Count());
 }

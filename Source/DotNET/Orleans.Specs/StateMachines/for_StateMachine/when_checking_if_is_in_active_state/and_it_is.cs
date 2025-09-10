@@ -5,11 +5,11 @@ namespace Cratis.Applications.Orleans.StateMachines.when_checking_if_is_in_activ
 
 public class and_it_is : given.a_state_machine_with_well_known_states
 {
-    bool result;
+    bool _result;
 
-    protected override Type initial_state => typeof(StateThatSupportsTransitioningFrom);
+    protected override Type InitialState => typeof(StateThatSupportsTransitioningFrom);
 
-    void Because() => result = state_machine.IsInActiveState;
+    void Because() => _result = StateMachine.IsInActiveState;
 
-    [Fact] void should_be_in_state() => result.ShouldBeTrue();
+    [Fact] void should_be_in_state() => _result.ShouldBeTrue();
 }

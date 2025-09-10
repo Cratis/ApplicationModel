@@ -20,7 +20,7 @@ public class and_identity_is_valid_with_multiple_roles : given.a_valid_identity_
     Task Because() => _endpoint.Handler(_request, _response);
 
     [Fact] void should_invoke_identity_provider() => _identityProvider.Received(1).Provide(Arg.Any<IdentityProviderContext>());
-    [Fact] void should_pass_first_role_to_identity_provider() => identity_provider_context.Claims.ShouldContain(_ => _.Key == ClaimTypes.Role && _.Value == "role1");
-    [Fact] void should_pass_second_role_to_identity_provider() => identity_provider_context.Claims.ShouldContain(_ => _.Key == ClaimTypes.Role && _.Value == "role2");
+    [Fact] void should_pass_first_role_to_identity_provider() => _identityProviderContext.Claims.ShouldContain(_ => _.Key == ClaimTypes.Role && _.Value == "role1");
+    [Fact] void should_pass_second_role_to_identity_provider() => _identityProviderContext.Claims.ShouldContain(_ => _.Key == ClaimTypes.Role && _.Value == "role2");
     [Fact] void should_set_status_code_to_200() => _response.StatusCode.ShouldEqual(200);
 }

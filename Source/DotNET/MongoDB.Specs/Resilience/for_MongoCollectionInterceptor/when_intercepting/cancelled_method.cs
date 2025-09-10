@@ -6,15 +6,15 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor.
 public class cancelled_method : given.an_interceptor
 {
     protected override string GetInvocationTargetMethod() => nameof(for_MongoCollectionInterceptorForReturnValue.InvocationTarget.CancelledMethod);
-    Exception exception;
+    Exception _exception;
 
     async Task Because()
     {
-        interceptor.Intercept(invocation);
-        exception = await Catch.Exception(async () => await return_value);
+        _interceptor.Intercept(_invocation);
+        _exception = await Catch.Exception(async () => await _returnValue);
     }
 
-    [Fact] void should_bubble_up_cancelled_exception() => exception.ShouldBeOfExactType<TaskCanceledException>();
-    [Fact] void should_have_cancelled_task() => return_value.IsCanceled.ShouldBeTrue();
-    [Fact] void should_have_freed_up_semaphore() => semaphore.CurrentCount.ShouldEqual(pool_size);
+    [Fact] void should_bubble_up_cancelled_exception() => _exception.ShouldBeOfExactType<TaskCanceledException>();
+    [Fact] void should_have_cancelled_task() => _returnValue.IsCanceled.ShouldBeTrue();
+    [Fact] void should_have_freed_up_semaphore() => _semaphore.CurrentCount.ShouldEqual(PoolSize);
 }

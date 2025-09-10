@@ -9,19 +9,19 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorS
 
 public class for_async_methods : given.an_interceptor_selector
 {
-    protected IEnumerable<MethodInfo> async_methods;
-    int intercepted_methods;
+    protected IEnumerable<MethodInfo> _asyncMethods;
+    int _interceptedMethods;
 
     void Establish()
     {
-        async_methods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => m.ReturnType == typeof(Task))];
+        _asyncMethods = [.. typeof(IMongoCollection<BsonDocument>).GetMethods().Where(m => m.ReturnType == typeof(Task))];
     }
 
-    void Because() => intercepted_methods = async_methods.Count(methodInfo =>
+    void Because() => _interceptedMethods = _asyncMethods.Count(methodInfo =>
     {
         var interceptors = selector.SelectInterceptors(typeof(IMongoCollection<BsonDocument>), methodInfo, []);
         return interceptors.Length == 1 && interceptors[0] is MongoCollectionInterceptor;
     });
 
-    [Fact] void should_have_the_mongo_collection_interceptor_for_all() => intercepted_methods.ShouldEqual(async_methods.Count());
+    [Fact] void should_have_the_mongo_collection_interceptor_for_all() => _interceptedMethods.ShouldEqual(_asyncMethods.Count());
 }

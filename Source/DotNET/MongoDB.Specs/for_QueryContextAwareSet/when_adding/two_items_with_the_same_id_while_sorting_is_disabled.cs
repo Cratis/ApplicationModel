@@ -2,26 +2,27 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using MongoDB.Driver;
+
 namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_adding;
 
 public class two_items_with_the_same_id_while_sorting_is_disabled : Specification
 {
-    QueryContextAwareSet<SomeClassWithSomeId> set;
-    SomeClassWithSomeId theItem;
-    SomeId id;
+    QueryContextAwareSet<SomeClassWithSomeId> _set;
+    SomeClassWithSomeId _theItem;
+    SomeId _id;
 
     void Establish()
     {
-        set = new(QueryContextBuilder.New().Build());
-        id = Guid.NewGuid();
-        theItem = new(id, 50);
+        _set = new(QueryContextBuilder.New().Build());
+        _id = Guid.NewGuid();
+        _theItem = new(_id, 50);
     }
 
     void Because()
     {
-        set.Add(new(id, 42));
-        set.Add(theItem);
+        _set.Add(new(_id, 42));
+        _set.Add(_theItem);
     }
 
-    [Fact] void should_have_items_in_correct_order() => Assert.Equal([theItem], set);
+    [Fact] void should_have_items_in_correct_order() => Assert.Equal([_theItem], _set);
 }
