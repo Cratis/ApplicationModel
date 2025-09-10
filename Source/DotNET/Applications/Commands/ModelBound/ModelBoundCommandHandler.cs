@@ -36,6 +36,6 @@ public class ModelBoundCommandHandler(Type commandType, MethodInfo handleMethod)
             return null;
         }
 
-        return Task.FromResult(result);
+        return result;
     }
 }
