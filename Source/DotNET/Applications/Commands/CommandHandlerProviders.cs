@@ -10,17 +10,27 @@ namespace Cratis.Applications.Commands;
 /// <summary>
 /// Represents an implementation of <see cref="ICommandHandlerProviders"/>.
 /// </summary>
-/// <param name="providers">The collection of <see cref="ICommandHandlerProvider"/> to use for providing command handlers.</param>
 [Singleton]
-public class CommandHandlerProviders(IInstancesOf<ICommandHandlerProvider> providers) : ICommandHandlerProviders
+public class CommandHandlerProviders : ICommandHandlerProviders
 {
-    /// <inheritdoc/>
-    public IEnumerable<ICommandHandler> Handlers => providers.SelectMany(p => p.Handlers);
+    readonly IDictionary<Type, ICommandHandler> _providers;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CommandHandlerProviders"/> class.
+    /// </summary>
+    /// <param name="providers">The collection of <see cref="ICommandHandlerProvider"/> to use for providing command handlers.</param>
+    public CommandHandlerProviders(IInstancesOf<ICommandHandlerProvider> providers)
+    {
+        var handlers = providers.SelectMany(p => p.Handlers);
+        MultipleCommandHandlersForSameCommandType.ThrowIfDuplicates(handlers);
+        _providers = handlers.ToDictionary(h => h.CommandType, h => h);
+    }
 
     /// <inheritdoc/>
-    public bool TryGetHandlerFor(object command, [NotNullWhen(true)] out ICommandHandler? handler)
-    {
-        handler = Handlers.FirstOrDefault(h => h.CommandType == command.GetType());
-        return handler is not null;
-    }
+    public IEnumerable<ICommandHandler> Handlers => _providers.Values;
+
+    /// <inheritdoc/>
+    public bool TryGetHandlerFor(object command, [NotNullWhen(true)] out ICommandHandler? handler) =>
+        _providers.TryGetValue(command.GetType(), out handler);
 }
+
