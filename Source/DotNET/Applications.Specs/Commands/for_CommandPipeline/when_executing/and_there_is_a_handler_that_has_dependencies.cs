@@ -3,27 +3,28 @@
 
 namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
 
-public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipeline
+public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipeline_and_a_handler_for_command
 {
-    string _command;
     CommandResult _result;
-    ICommandHandler _commandHandler;
+    object[] _expectedDependencies;
+    List<object> _dependencies = [];
 
     void Establish()
     {
-        _command = Guid.NewGuid().ToString();
-        _commandHandler = Substitute.For<ICommandHandler>();
-        var anyHandler = Arg.Any<ICommandHandler>();
-        _commandHandlerProviders
-            .TryGetHandlerFor(_command, out anyHandler)
-            .Returns(r =>
-            {
-                r[1] = _commandHandler;
-                return true;
-            });
+        _expectedDependencies = ["Forty two", 42];
+        _commandHandler.Dependencies.Returns([typeof(string), typeof(int)]);
+        _serviceProvider.GetService(typeof(string)).Returns(_expectedDependencies[0]);
+        _serviceProvider.GetService(typeof(int)).Returns(_expectedDependencies[1]);
+
+        _commandHandler.When(x => x.Handle(Arg.Any<CommandContext>())).Do(x =>
+        {
+            var context = x.Arg<CommandContext>();
+            _dependencies.AddRange(context.Dependencies);
+        });
     }
 
     async Task Because() => _result = await _commandPipeline.Execute(_command);
 
     [Fact] void should_call_command_handler() => _commandHandler.Received(1).Handle(Arg.Any<CommandContext>());
+    [Fact] void should_pass_dependencies_to_handler() => _dependencies.ShouldContainOnly(_expectedDependencies);
 }
