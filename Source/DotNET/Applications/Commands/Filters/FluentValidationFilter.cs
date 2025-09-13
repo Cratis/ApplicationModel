@@ -10,7 +10,7 @@ namespace Cratis.Applications.Commands.Filters;
 /// Represents a command filter that validates commands before they are handled.
 /// </summary>
 /// <param name="discoverableValidators">The <see cref="IDiscoverableValidators"/> to use for finding validators.</param>
-public class ValidationFilter(IDiscoverableValidators discoverableValidators) : ICommandFilter
+public class FluentValidationFilter(IDiscoverableValidators discoverableValidators) : ICommandFilter
 {
     /// <inheritdoc/>
     public async Task<CommandResult> OnExecution(CommandContext context)
