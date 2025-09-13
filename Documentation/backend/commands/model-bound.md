@@ -6,7 +6,7 @@ and implementing a `Handle()` method.
 
 ```csharp
 [Command]  // The command attribute is needed
-public record AddItemToCart(string sku, int quantity)
+public record AddItemToCart(string Sku, int Quantity)
 {
     public void Handle()
     {
@@ -36,7 +36,7 @@ using Cratis.Applications.Validation;
 using OneOf;
 
 [Command]
-public record AddItemToCart(string sku, int quantity)
+public record AddItemToCart(string Sku, int Quantity)
 {
     public OneOf<Guid, ValidationResult> Handle()
     {
@@ -66,7 +66,7 @@ value that will then invoke any relevant [response handler](./response-value-han
 using Cratis.Applications.Validation;
 
 [Command]
-public record AddItemToCart(string sku, int quantity)
+public record AddItemToCart(string Sku, int Quantity)
 {
     public (Guid, ItemAddedToCart) Handle()
     {
@@ -89,7 +89,7 @@ service collection. This is done by just specifying your dependencies on the met
 using Cratis.Applications.Validation;
 
 [Command]
-public record AddItemToCart(string sku, int quantity)
+public record AddItemToCart(string Sku, int Quantity)
 {
     public void Handle(ICartService carts)
     {
