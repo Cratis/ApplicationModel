@@ -11,9 +11,10 @@ public interface ICommandResponseValueHandler
     /// <summary>
     /// Determines whether this handler can handle the given value.
     /// </summary>
+    /// <param name="commandContext">Context for the command resulting in the value.</param>
     /// <param name="value">Value to evaluate.</param>
     /// <returns>True if the handler can handle the value, false otherwise.</returns>
-    bool CanHandle(object value);
+    bool CanHandle(CommandContext commandContext, object value);
 
     /// <summary>
     /// Handles the given value.
