@@ -30,5 +30,11 @@ public class and_first_filter_returns_null : Specification
 
     [Fact] void should_call_first_filter() => _filter1.Received(1).OnExecution(_context);
     [Fact] void should_call_second_filter() => _filter2.Received(1).OnExecution(_context);
-    [Fact] void should_return_result_from_first_filter_that_returns_non_null() => _result.ShouldEqual(_filterResult);
+    [Fact]
+    void should_contain_errors_from_second_filter()
+    {
+        _result.IsSuccess.ShouldBeFalse();
+        _result.ExceptionMessages.Count().ShouldEqual(1);
+        _result.ExceptionMessages.First().ShouldEqual(_filterResult.ExceptionMessages.First());
+    }
 }
