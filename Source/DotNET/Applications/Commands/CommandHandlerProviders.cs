@@ -33,4 +33,3 @@ public class CommandHandlerProviders : ICommandHandlerProviders
     public bool TryGetHandlerFor(object command, [NotNullWhen(true)] out ICommandHandler? handler) =>
         _providers.TryGetValue(command.GetType(), out handler);
 }
-
