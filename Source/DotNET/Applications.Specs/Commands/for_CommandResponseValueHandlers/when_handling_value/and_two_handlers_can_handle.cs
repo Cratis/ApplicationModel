@@ -26,7 +26,7 @@ public class and_two_handlers_can_handle : Specification
             IsAuthorized = false
         };
         _firstHandler = Substitute.For<ICommandResponseValueHandler>();
-        _firstHandler.CanHandle(Arg.Any<object>()).Returns(true);
+        _firstHandler.CanHandle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(true);
         _firstHandler.Handle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(_firstCommandResult);
 
         _secondCommandResult = new()
@@ -34,7 +34,7 @@ public class and_two_handlers_can_handle : Specification
             ValidationResults = [new ValidationResult(ValidationResultSeverity.Warning, "Something is wrong", [], null!)]
         };
         _secondHandler = Substitute.For<ICommandResponseValueHandler>();
-        _secondHandler.CanHandle(Arg.Any<object>()).Returns(true);
+        _secondHandler.CanHandle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(true);
         _secondHandler.Handle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(_secondCommandResult);
 
         _handlers = new(new KnownInstancesOf<ICommandResponseValueHandler>([_firstHandler, _secondHandler]));

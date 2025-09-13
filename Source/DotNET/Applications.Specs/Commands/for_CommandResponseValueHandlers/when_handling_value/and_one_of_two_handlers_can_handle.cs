@@ -17,9 +17,9 @@ public class and_one_of_two_handlers_can_handle : Specification
     void Establish()
     {
         _firstHandler = Substitute.For<ICommandResponseValueHandler>();
-        _firstHandler.CanHandle(Arg.Any<object>()).Returns(false);
+        _firstHandler.CanHandle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(false);
         _secondHandler = Substitute.For<ICommandResponseValueHandler>();
-        _secondHandler.CanHandle(Arg.Any<object>()).Returns(true);
+        _secondHandler.CanHandle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(true);
         _secondHandler.Handle(Arg.Any<CommandContext>(), Arg.Any<object>()).Returns(CommandResult.Success(CorrelationId.New()));
 
         _handlers = new(new KnownInstancesOf<ICommandResponseValueHandler>([_firstHandler, _secondHandler]));
