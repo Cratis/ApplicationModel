@@ -3,36 +3,37 @@
 
 using MongoDB.Driver;
 using SortDirection = Cratis.Applications.Queries.SortDirection;
+
 namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_remove_and_add_last_in_query;
 
 public class and_there_are_no_documents_in_the_query : Specification
 {
-    QueryContextAwareSet<SomeClassWithSomeId> set;
+    QueryContextAwareSet<SomeClassWithSomeId> _set;
 
-    SomeClassWithSomeId firstItem;
-    SomeClassWithSomeId secondItem;
-    SomeClassWithSomeId thirdItem;
-    SomeClassWithSomeId fourthItem;
-    IEnumerable<SomeClassWithSomeId> queryDocuments;
+    SomeClassWithSomeId _firstItem;
+    SomeClassWithSomeId _secondItem;
+    SomeClassWithSomeId _thirdItem;
+    SomeClassWithSomeId _fourthItem;
+    IEnumerable<SomeClassWithSomeId> _queryDocuments;
 
     void Establish()
     {
-        set = new(QueryContextBuilder.New()
+        _set = new(QueryContextBuilder.New()
             .WithSorting(new(nameof(SomeClassWithSomeId.Value), SortDirection.Ascending))
             .WithPageSize(4)
             .Build());
-        queryDocuments = [];
-        firstItem = new(Guid.NewGuid(), 40);
-        secondItem = new(Guid.NewGuid(), 41);
-        thirdItem = new(Guid.NewGuid(), 42);
-        fourthItem = new(Guid.NewGuid(), 42);
-        set.Add(secondItem);
-        set.Add(thirdItem);
-        set.Add(fourthItem);
-        set.Add(firstItem);
+        _queryDocuments = [];
+        _firstItem = new(Guid.NewGuid(), 40);
+        _secondItem = new(Guid.NewGuid(), 41);
+        _thirdItem = new(Guid.NewGuid(), 42);
+        _fourthItem = new(Guid.NewGuid(), 42);
+        _set.Add(_secondItem);
+        _set.Add(_thirdItem);
+        _set.Add(_fourthItem);
+        _set.Add(_firstItem);
     }
 
-    async Task Because() => await set.RemoveAndAddLastInQuery(thirdItem.Id, new InMemoryFluentFind<SomeClassWithSomeId>(queryDocuments));
+    async Task Because() => await _set.RemoveAndAddLastInQuery(_thirdItem.Id, new InMemoryFluentFind<SomeClassWithSomeId>(_queryDocuments));
 
-    [Fact] void should_have_items_in_correct_order() => Assert.Equal([firstItem, secondItem, fourthItem], set);
+    [Fact] void should_have_items_in_correct_order() => Assert.Equal([_firstItem, _secondItem, _fourthItem], _set);
 }

@@ -7,13 +7,13 @@ public class when_ordering_descending : Specification
 {
     record item(int Value);
 
-    IQueryable queryable;
-    item[] actual_collection = [new(1), new(2), new(3), new(4)];
-    item[] result;
+    IQueryable _queryable;
+    item[] _actualCollection = [new(1), new(2), new(3), new(4)];
+    item[] _result;
 
-    void Establish() => queryable = actual_collection.AsQueryable();
+    void Establish() => _queryable = _actualCollection.AsQueryable();
 
-    void Because() => result = [.. queryable.OrderByDescending(nameof(item.Value)).Cast<item>()];
+    void Because() => _result = [.. _queryable.OrderByDescending(nameof(item.Value)).Cast<item>()];
 
-    [Fact] void should_be_ordered_correctly() => result.ShouldEqual(actual_collection.OrderByDescending(_ => _.Value));
+    [Fact] void should_be_ordered_correctly() => _result.ShouldEqual(_actualCollection.OrderByDescending(_ => _.Value));
 }

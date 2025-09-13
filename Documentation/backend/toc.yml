@@ -1,5 +1,7 @@
 - name: Identity
   href: identity.md
+- name: Commands
+  href: commands/toc.yml
 - name: Queries
   href: queries.md
 - name: Validation

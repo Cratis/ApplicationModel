@@ -10,13 +10,13 @@ public class when_asking_should_include_for_convention_same_as_specified_in_igno
     [IgnoreConventions("SomePack")]
     record TheType();
 
-    IgnoreConventionsAttributeFilter filter;
+    IgnoreConventionsAttributeFilter _filter;
 
-    bool result;
+    bool _result;
 
-    void Establish() => filter = new();
+    void Establish() => _filter = new();
 
-    void Because() => result = filter.ShouldInclude("SomePack", Substitute.For<IConventionPack>(), typeof(TheType));
+    void Because() => _result = _filter.ShouldInclude("SomePack", Substitute.For<IConventionPack>(), typeof(TheType));
 
-    [Fact] void should_not_include_it() => result.ShouldBeFalse();
+    [Fact] void should_not_include_it() => _result.ShouldBeFalse();
 }

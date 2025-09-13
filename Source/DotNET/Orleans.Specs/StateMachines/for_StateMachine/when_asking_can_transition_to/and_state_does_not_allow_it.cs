@@ -5,11 +5,11 @@ namespace Cratis.Applications.Orleans.StateMachines.when_asking_can_transition_t
 
 public class and_state_does_not_allow_it : given.a_state_machine_with_well_known_states
 {
-    bool result;
+    bool _result;
 
-    protected override Type initial_state => typeof(StateThatDoesNotSupportTransitioningFrom);
+    protected override Type InitialState => typeof(StateThatDoesNotSupportTransitioningFrom);
 
-    async Task Because() => result = await state_machine.CanTransitionTo<StateThatSupportsTransitioningFrom>();
+    async Task Because() => _result = await StateMachine.CanTransitionTo<StateThatSupportsTransitioningFrom>();
 
-    [Fact] void should_not_be_able_to_transition() => result.ShouldBeFalse();
+    [Fact] void should_not_be_able_to_transition() => _result.ShouldBeFalse();
 }

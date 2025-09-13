@@ -5,9 +5,9 @@ namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.when_handlin
 
 public class and_identity_name_header_is_missing : given.a_valid_identity_request
 {
-    void Establish() => headers.Remove(MicrosoftIdentityPlatformHeaders.IdentityNameHeader);
+    void Establish() => _headers.Remove(MicrosoftIdentityPlatformHeaders.IdentityNameHeader);
 
-    Task Because() => endpoint.Handler(request, response);
+    Task Because() => _endpoint.Handler(_request, _response);
 
-    [Fact] void should_not_invoke_identity_provider() => identity_provider.DidNotReceive().Provide(Arg.Any<IdentityProviderContext>());
+    [Fact] void should_not_invoke_identity_provider() => _identityProvider.DidNotReceive().Provide(Arg.Any<IdentityProviderContext>());
 }

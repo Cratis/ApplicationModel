@@ -6,25 +6,25 @@ namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_removing;
 
 public class and_there_is_paging_but_no_sorting : Specification
 {
-    QueryContextAwareSet<SomeClassWithSomeId> set;
-    SomeClassWithSomeId firstItem;
-    SomeClassWithSomeId secondItem;
-    SomeClassWithSomeId thirdItem;
+    QueryContextAwareSet<SomeClassWithSomeId> _set;
+    SomeClassWithSomeId _firstItem;
+    SomeClassWithSomeId _secondItem;
+    SomeClassWithSomeId _thirdItem;
     void Establish()
     {
-        set = new(QueryContextBuilder.New().WithPageSize(2).Build());
-        firstItem = new(Guid.NewGuid(), 42);
-        secondItem = new(Guid.NewGuid(), 43);
-        thirdItem = new(Guid.NewGuid(), 44);
-        set.Add(firstItem);
-        set.Add(secondItem);
-        set.Add(thirdItem);
+        _set = new(QueryContextBuilder.New().WithPageSize(2).Build());
+        _firstItem = new(Guid.NewGuid(), 42);
+        _secondItem = new(Guid.NewGuid(), 43);
+        _thirdItem = new(Guid.NewGuid(), 44);
+        _set.Add(_firstItem);
+        _set.Add(_secondItem);
+        _set.Add(_thirdItem);
     }
 
     void Because()
     {
-        set.Remove(secondItem.Id);
+        _set.Remove(_secondItem.Id);
     }
 
-    [Fact] void should_have_items_in_correct_order() => Assert.Equal([firstItem], set);
+    [Fact] void should_have_items_in_correct_order() => Assert.Equal([_firstItem], _set);
 }

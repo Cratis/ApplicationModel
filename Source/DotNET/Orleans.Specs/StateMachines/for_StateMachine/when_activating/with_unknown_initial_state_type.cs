@@ -5,17 +5,16 @@ namespace Cratis.Applications.Orleans.StateMachines.when_activating;
 
 public class with_unknown_initial_state_type : given.a_state_machine
 {
-    Exception exception;
+    Exception _exception;
 
-
-    protected override Type initial_state => typeof(StateThatDoesNotSupportTransitioningFrom);
+    protected override Type InitialState => typeof(StateThatDoesNotSupportTransitioningFrom);
 
     protected override IEnumerable<IState<StateMachineStateForTesting>> CreateStates() =>
     [
         new StateThatSupportsTransitioningFrom()
     ];
 
-    void Because() => exception = Catch.Exception(() => _ = state_machine);
+    void Because() => _exception = Catch.Exception(() => _ = StateMachine);
 
-    [Fact] void should_throw_invalid_type_for_state_exception() => exception.ShouldBeOfExactType<UnknownStateTypeInStateMachine>();
+    [Fact] void should_throw_invalid_type_for_state_exception() => _exception.ShouldBeOfExactType<UnknownStateTypeInStateMachine>();
 }

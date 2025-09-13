@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Reflection;
+using Cratis.Applications.ProxyGenerator.ControllerBased;
 using Cratis.Applications.ProxyGenerator.Templates;
 
 namespace Cratis.Applications.ProxyGenerator;
@@ -40,18 +40,12 @@ public static class Generator
 
         TypeExtensions.InitializeProjectAssemblies(assemblyFile, message, errorMessage);
 
-        var commands = new List<MethodInfo>();
-        var queries = new List<MethodInfo>();
+        var commands = new List<CommandDescriptor>();
+        var queries = new List<QueryDescriptor>();
 
-        message($"  Discover controllers from {TypeExtensions.Assemblies.Count()} assemblies");
-
-        foreach (var controller in TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsController()))
-        {
-            var methods = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-            methods.Where(_ => _.IsQueryMethod()).ToList().ForEach(queries.Add);
-            methods.Where(_ => _.IsCommandMethod()).ToList().ForEach(commands.Add);
-        }
+        var controllerBasedArtifactsProvider = new ControllerBasedArtifactsProvider(message, outputPath, segmentsToSkip);
+        commands.AddRange(controllerBasedArtifactsProvider.Commands);
+        queries.AddRange(controllerBasedArtifactsProvider.Queries);
 
         message($"  Found {commands.Count} commands and {queries.Count} queries");
 
@@ -61,18 +55,15 @@ public static class Generator
         var typesInvolved = new List<Type>();
         var directories = new List<string>();
 
-        var commandDescriptors = commands.ConvertAll(_ => _.ToCommandDescriptor(outputPath, segmentsToSkip));
-        await commandDescriptors.Write(outputPath, typesInvolved, TemplateTypes.Command, directories, segmentsToSkip, "commands", message);
+        await commands.Write(outputPath, typesInvolved, TemplateTypes.Command, directories, segmentsToSkip, "commands", message);
 
-        var queryDescriptors = queries.ConvertAll(_ => _.ToQueryDescriptor(outputPath, segmentsToSkip));
-
-        var singleModelQueries = queryDescriptors.Where(_ => !_.IsEnumerable && !_.IsObservable).ToList();
+        var singleModelQueries = queries.Where(_ => !_.IsEnumerable && !_.IsObservable).ToList();
         await singleModelQueries.Write(outputPath, typesInvolved, TemplateTypes.Query, directories, segmentsToSkip, "single model queries", message);
 
-        var enumerableQueries = queryDescriptors.Where(_ => _.IsEnumerable).ToList();
+        var enumerableQueries = queries.Where(_ => _.IsEnumerable).ToList();
         await enumerableQueries.Write(outputPath, typesInvolved, TemplateTypes.Query, directories, segmentsToSkip, "queries", message);
 
-        var observableQueries = queryDescriptors.Where(_ => _.IsObservable).ToList();
+        var observableQueries = queries.Where(_ => _.IsObservable).ToList();
         await observableQueries.Write(outputPath, typesInvolved, TemplateTypes.ObservableQuery, directories, segmentsToSkip, "observable queries", message);
 
         typesInvolved = [.. typesInvolved.Distinct()];

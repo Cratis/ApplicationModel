@@ -5,13 +5,13 @@ namespace Cratis.Applications.Queries.for_QueryableExtensions;
 
 public class when_counting : Specification
 {
-    IQueryable queryable;
-    int[] actual_collection = [1, 2, 3, 4];
-    int result;
+    IQueryable _queryable;
+    int[] _actualCollection = [1, 2, 3, 4];
+    int _result;
 
-    void Establish() => queryable = actual_collection.AsQueryable();
+    void Establish() => _queryable = _actualCollection.AsQueryable();
 
-    void Because() => result = queryable.Count();
+    void Because() => _result = _queryable.Count();
 
-    [Fact] void should_have_same_count() => result.ShouldEqual(actual_collection.Length);
+    [Fact] void should_have_same_count() => _result.ShouldEqual(_actualCollection.Length);
 }

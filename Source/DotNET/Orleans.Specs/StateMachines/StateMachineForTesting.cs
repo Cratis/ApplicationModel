@@ -15,7 +15,6 @@ public class StateMachineForTesting(IEnumerable<IState<StateMachineStateForTesti
     public List<IState<StateMachineStateForTesting>> OnBeforeLeavingStates { get; } = [];
     public List<IState<StateMachineStateForTesting>> OnAfterLeavingStates { get; } = [];
 
-
     protected override Type InitialState => _initialState ?? base.InitialState;
 
     public override IImmutableList<IState<StateMachineStateForTesting>> CreateStates() => _states;

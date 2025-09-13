@@ -5,9 +5,9 @@ namespace Cratis.Applications.Orleans.StateMachines.when_checking_if_is_in_activ
 
 public class and_it_is_not : given.a_state_machine_with_well_known_states
 {
-    bool result;
+    bool _result;
 
-    void Because() => result = state_machine.IsInActiveState;
+    void Because() => _result = StateMachine.IsInActiveState;
 
-    [Fact] void should_not_be_in_state() => result.ShouldBeFalse();
+    [Fact] void should_not_be_in_state() => _result.ShouldBeFalse();
 }

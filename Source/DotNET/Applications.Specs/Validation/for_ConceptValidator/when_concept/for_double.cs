@@ -7,20 +7,20 @@ namespace Cratis.Applications.Validation.for_ConceptValidator.when_concept;
 
 public class for_double : Specification
 {
-    class validator : ConceptValidator<double_concept>
+    class validator : ConceptValidator<DoubleConcept>
     {
         public validator()
         {
             RuleFor(x => x).NotEmpty();
         }
     }
-    validator the_validator;
+    validator _validator;
 
-    void Because() => the_validator = new validator();
-
-    [Fact]
-    void should_not_fail_when_validating_non_empty_value() => the_validator.Validate(new double_concept(double.MaxValue)).IsValid.ShouldBeTrue();
+    void Because() => _validator = new validator();
 
     [Fact]
-    void should_fail_when_validating_empty_value() => the_validator.Validate(new double_concept(default)).IsValid.ShouldBeFalse();
+    void should_not_fail_when_validating_non_empty_value() => _validator.Validate(new DoubleConcept(double.MaxValue)).IsValid.ShouldBeTrue();
+
+    [Fact]
+    void should_fail_when_validating_empty_value() => _validator.Validate(new DoubleConcept(default)).IsValid.ShouldBeFalse();
 }

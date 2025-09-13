@@ -1,9 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications;
 using Cratis.Applications.Validation;
-using Cratis.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -17,11 +15,11 @@ public static class ValidationMvcOptionsExtensions
     /// Add CQRS setup.
     /// </summary>
     /// <param name="options"><see cref="MvcOptions"/> to build on.</param>
-    /// <param name="types"><see cref="ITypes"/> for type discovery.</param>
+    /// <param name="discoverableValidators"><see cref="IDiscoverableValidators"/> for looking up validators.</param>
     /// <returns><see cref="MvcOptions"/> for building continuation.</returns>
-    public static MvcOptions AddValidation(this MvcOptions options, ITypes types)
+    public static MvcOptions AddValidation(this MvcOptions options, IDiscoverableValidators discoverableValidators)
     {
-        options.ModelValidatorProviders.Add(new DiscoverableModelValidatorProvider(types, Internals.ServiceProvider));
+        options.ModelValidatorProviders.Add(new DiscoverableModelValidatorProvider(discoverableValidators));
         return options;
     }
 }

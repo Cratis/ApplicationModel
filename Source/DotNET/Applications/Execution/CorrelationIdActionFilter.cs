@@ -17,43 +17,7 @@ public class CorrelationIdActionFilter(IOptions<ApplicationModelOptions> options
     /// <inheritdoc/>
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        var correlationIdAsString = context.HttpContext.Request.Headers[options.Value.CorrelationId.HttpHeader].ToString() ?? Guid.Empty.ToString();
-        CorrelationId correlationId;
-        var setCurrent = false;
-        if (string.IsNullOrEmpty(correlationIdAsString) ||
-            correlationIdAsString == Guid.Empty.ToString() ||
-            !Guid.TryParse(correlationIdAsString, out _))
-        {
-            correlationId = correlationIdAccessor.Current;
-            if (correlationId == CorrelationId.NotSet)
-            {
-                correlationId = CorrelationId.New();
-                setCurrent = true;
-            }
-
-            correlationIdAsString = correlationId.ToString();
-            context.HttpContext.Request.Headers[Constants.DefaultCorrelationIdHeader] = correlationIdAsString;
-        }
-        else
-        {
-            setCurrent = true;
-            correlationId = Guid.Parse(correlationIdAsString);
-        }
-
-        context.HttpContext.Items[Constants.CorrelationIdItemKey] = correlationId;
-
-        if (setCurrent)
-        {
-            if (correlationIdAccessor is ICorrelationIdModifier correlationIdModifier)
-            {
-                correlationIdModifier.Modify(correlationId);
-            }
-            else
-            {
-                CorrelationIdAccessor.SetCurrent(correlationId);
-            }
-        }
-
+        CorrelationIdHelpers.Handle(correlationIdAccessor, options.Value.CorrelationId, context.HttpContext);
         await next();
     }
 }

@@ -25,4 +25,10 @@ public class ApplicationModelOptions
     /// Gets or sets what type of identity details provider to use. If none is specified it will use type discovery to try to find one.
     /// </summary>
     public Type? IdentityDetailsProvider { get; set; }
+
+    /// <summary>
+    /// Gets or sets the options for command handling.
+    /// </summary>
+    public CommandOptions Commands { get; set; } = new();
 }
+

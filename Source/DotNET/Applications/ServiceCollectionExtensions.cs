@@ -3,6 +3,7 @@
 
 using System.Text.Json.Serialization;
 using Cratis.Applications.ModelBinding;
+using Cratis.Applications.Validation;
 using Cratis.Json;
 using Cratis.Reflection;
 using Cratis.Serialization;
@@ -29,6 +30,9 @@ public static class ServiceCollectionExtensions
     {
         Globals.Configure(derivedTypes);
 
+        var discoverableValidators = new DiscoverableValidators(types);
+        services.AddSingleton<IDiscoverableValidators>(discoverableValidators);
+
         var controllerBuilder = services
             .AddControllers(options =>
             {
@@ -36,7 +40,7 @@ public static class ServiceCollectionExtensions
                 var complexObjectModelBinderProvider = options.ModelBinderProviders.First(_ => _ is ComplexObjectModelBinderProvider) as ComplexObjectModelBinderProvider;
                 options.ModelBinderProviders.Insert(0, new FromRequestModelBinderProvider(bodyModelBinderProvider!, complexObjectModelBinderProvider!));
                 options
-                    .AddValidation(types)
+                    .AddValidation(discoverableValidators)
                     .AddCorrelationId()
                     .AddTenancy()
                     .AddCQRS();

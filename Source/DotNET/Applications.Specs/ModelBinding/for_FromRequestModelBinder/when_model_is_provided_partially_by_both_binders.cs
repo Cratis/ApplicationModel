@@ -3,53 +3,52 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-
 namespace Cratis.Applications.ModelBinding.for_FromRequestModelBinder;
 
 public class when_model_is_provided_partially_by_both_binders : Specification
 {
-    FromRequestModelBinder binder;
-    IModelBinder body_binder;
-    IModelBinder complex_binder;
+    FromRequestModelBinder _binder;
+    IModelBinder _bodyBinder;
+    IModelBinder _complexBinder;
 
-    ModelBindingContext context;
-    ModelBindingResult result;
+    ModelBindingContext _context;
+    ModelBindingResult _result;
 
-    ModelBindingResult final_result;
+    ModelBindingResult _finalResult;
 
-    TheModel body_model;
-    TheModel complex_model;
+    TheModel _bodyModel;
+    TheModel _complexModel;
 
     void Establish()
     {
-        body_model = new TheModel(42, "forty two", 0, null!);
-        complex_model = new TheModel(0, null!, 43, "forty three");
+        _bodyModel = new TheModel(42, "forty two", 0, null!);
+        _complexModel = new TheModel(0, null!, 43, "forty three");
 
-        context = Substitute.For<ModelBindingContext>();
-        context.Result.Returns(_ => result);
-        context.When(_ => _.Result = Arg.Any<ModelBindingResult>()).Do(_ => final_result = _.Arg<ModelBindingResult>());
+        _context = Substitute.For<ModelBindingContext>();
+        _context.Result.Returns(_ => _result);
+        _context.When(_ => _.Result = Arg.Any<ModelBindingResult>()).Do(_ => _finalResult = _.Arg<ModelBindingResult>());
 
-        body_binder = Substitute.For<IModelBinder>();
-        body_binder.BindModelAsync(context).Returns((_) =>
+        _bodyBinder = Substitute.For<IModelBinder>();
+        _bodyBinder.BindModelAsync(_context).Returns((_) =>
         {
-            result = ModelBindingResult.Success(body_model);
+            _result = ModelBindingResult.Success(_bodyModel);
             return Task.CompletedTask;
         });
 
-        complex_binder = Substitute.For<IModelBinder>();
-        complex_binder.BindModelAsync(context).Returns((_) =>
+        _complexBinder = Substitute.For<IModelBinder>();
+        _complexBinder.BindModelAsync(_context).Returns((_) =>
         {
-            result = ModelBindingResult.Success(complex_model);
+            _result = ModelBindingResult.Success(_complexModel);
             return Task.CompletedTask;
         });
 
-        binder = new(body_binder, complex_binder);
+        _binder = new(_bodyBinder, _complexBinder);
     }
 
-    Task Because() => binder.BindModelAsync(context);
+    Task Because() => _binder.BindModelAsync(_context);
 
-    [Fact] void should_hold_body_model_int() => ((TheModel)final_result.Model).intValue.ShouldEqual(body_model.intValue);
-    [Fact] void should_hold_body_model_string() => ((TheModel)final_result.Model).stringValue.ShouldEqual(body_model.stringValue);
-    [Fact] void should_hold_complex_model_int() => ((TheModel)final_result.Model).secondIntValue.ShouldEqual(complex_model.secondIntValue);
-    [Fact] void should_hold_complex_model_string() => ((TheModel)final_result.Model).secondStringValue.ShouldEqual(complex_model.secondStringValue);
+    [Fact] void should_hold_body_model_int() => ((TheModel)_finalResult.Model).intValue.ShouldEqual(_bodyModel.intValue);
+    [Fact] void should_hold_body_model_string() => ((TheModel)_finalResult.Model).stringValue.ShouldEqual(_bodyModel.stringValue);
+    [Fact] void should_hold_complex_model_int() => ((TheModel)_finalResult.Model).secondIntValue.ShouldEqual(_complexModel.secondIntValue);
+    [Fact] void should_hold_complex_model_string() => ((TheModel)_finalResult.Model).secondStringValue.ShouldEqual(_complexModel.secondStringValue);
 }

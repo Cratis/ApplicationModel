@@ -14,20 +14,20 @@ public class when_applying_conventions : Specification
         public string SomeOtherProperty { get; init; }
     }
 
-    BsonClassMap<SomeType> class_map;
-    IMemberMapConvention convention;
+    BsonClassMap<SomeType> _classMap;
+    IMemberMapConvention _convention;
 
     void Establish()
     {
-        class_map = new BsonClassMap<SomeType>();
-        class_map.AutoMap();
-        convention = Substitute.For<IMemberMapConvention>();
-        ConventionRegistry.Register(Guid.NewGuid().ToString(), new ConventionPack { convention }, type => type == typeof(SomeType));
+        _classMap = new BsonClassMap<SomeType>();
+        _classMap.AutoMap();
+        _convention = Substitute.For<IMemberMapConvention>();
+        ConventionRegistry.Register(Guid.NewGuid().ToString(), new ConventionPack { _convention }, type => type == typeof(SomeType));
     }
 
-    void Because() => class_map.ApplyConventions();
+    void Because() => _classMap.ApplyConventions();
 
-    [Fact] void should_have_two_members() => class_map.DeclaredMemberMaps.Count().ShouldEqual(2);
-    [Fact] void should_call_convention_for_first_property() => convention.Received(1).Apply(class_map.DeclaredMemberMaps.First());
-    [Fact] void should_call_convention_for_second_property() => convention.Received(1).Apply(class_map.DeclaredMemberMaps.ToArray()[1]);
+    [Fact] void should_have_two_members() => _classMap.DeclaredMemberMaps.Count().ShouldEqual(2);
+    [Fact] void should_call_convention_for_first_property() => _convention.Received(1).Apply(_classMap.DeclaredMemberMaps.First());
+    [Fact] void should_call_convention_for_second_property() => _convention.Received(1).Apply(_classMap.DeclaredMemberMaps.ToArray()[1]);
 }
