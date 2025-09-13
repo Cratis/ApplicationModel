@@ -58,8 +58,9 @@ public record AddItemToCart(string sku, int quantity)
 
 Sometimes you want to return a value that is part of the `CommandResult` and returned to the
 caller that invoked the command. By returning a tuple, the command pipeline will use the
-first value of the tuple as the value for the `CommandResult`, any other values in the tuple
-is then used to invoke any relevant [response handler](./response-value-handlers.md).
+first value of the tuple as the value for the `CommandResult`, the second value is then considered
+will then be the value, which can then be a discriminated union as shown earlier, or a direct
+value that will then invoke any relevant [response handler](./response-value-handlers.md).
 
 ```csharp
 using Cratis.Applications.Validation;

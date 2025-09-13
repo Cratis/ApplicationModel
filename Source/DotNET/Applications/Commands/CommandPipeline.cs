@@ -53,19 +53,20 @@ public class CommandPipeline(
             var response = await commandHandler.Handle(commandContext);
             if (response is not null)
             {
-                if (response is IOneOf oneOf)
-                {
-                    result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
-                }
-                else if (response is ITuple tuple)
+                if (response is ITuple tuple)
                 {
                     var actualResponse = tuple[0];
                     var commandResultType = typeof(CommandResult<>).MakeGenericType(actualResponse?.GetType() ?? typeof(object));
                     result = (Activator.CreateInstance(commandResultType, actualResponse) as CommandResult)!;
                     if (tuple.Length > 1 && tuple[1] is not null)
                     {
-                        result.MergeWith(await valueHandlers.Handle(commandContext, tuple[1]!));
+                        response = tuple[1]!;
                     }
+                }
+
+                if (response is IOneOf oneOf)
+                {
+                    result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
                 }
                 else
                 {
