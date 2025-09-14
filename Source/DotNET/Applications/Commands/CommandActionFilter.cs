@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net;
 using Cratis.Applications.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -71,18 +70,7 @@ public class CommandActionFilter : IAsyncActionFilter
                 Response = response
             };
 
-            if (!commandResult.IsAuthorized)
-            {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;            // Forbidden: https://www.rfc-editor.org/rfc/rfc9110.html#name-403-forbidden
-            }
-            else if (!commandResult.IsValid)
-            {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;           // Bad request: https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request
-            }
-            else if (commandResult.HasExceptions)
-            {
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;  // Internal Server error: https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error
-            }
+            context.HttpContext.Response.SetResponseStatusCode(commandResult);
 
             var actualResult = new ObjectResult(commandResult);
 

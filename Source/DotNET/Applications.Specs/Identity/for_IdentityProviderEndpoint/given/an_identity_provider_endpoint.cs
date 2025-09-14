@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.IO.Pipelines;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
@@ -9,26 +8,26 @@ namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.given;
 
 public class an_identity_provider_endpoint : Specification
 {
-    protected JsonSerializerOptions serializer_options;
-    protected IProvideIdentityDetails identity_provider;
-    protected IdentityProviderEndpoint endpoint;
-    protected HttpRequest request;
-    protected HttpResponse response;
-    protected HeaderDictionary headers;
-    protected HttpContext http_context;
+    protected JsonSerializerOptions _serializerOptions;
+    protected IProvideIdentityDetails _identityProvider;
+    protected IdentityProviderEndpoint _endpoint;
+    protected HttpRequest _request;
+    protected HttpResponse _response;
+    protected HeaderDictionary _headers;
+    protected HttpContext _httpContext;
 
     void Establish()
     {
-        http_context = new DefaultHttpContext();
-        serializer_options = new JsonSerializerOptions();
-        identity_provider = Substitute.For<IProvideIdentityDetails>();
-        endpoint = new(serializer_options, identity_provider);
+        _httpContext = new DefaultHttpContext();
+        _serializerOptions = new JsonSerializerOptions();
+        _identityProvider = Substitute.For<IProvideIdentityDetails>();
+        _endpoint = new(_serializerOptions, _identityProvider);
 
-        request = Substitute.For<HttpRequest>();
-        request.HttpContext.Returns(http_context);
-        headers = [];
-        request.Headers.Returns(headers);
+        _request = Substitute.For<HttpRequest>();
+        _request.HttpContext.Returns(_httpContext);
+        _headers = [];
+        _request.Headers.Returns(_headers);
 
-        response = http_context.Response;
+        _response = _httpContext.Response;
     }
 }

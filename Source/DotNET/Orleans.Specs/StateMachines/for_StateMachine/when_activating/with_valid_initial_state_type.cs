@@ -5,12 +5,12 @@ namespace Cratis.Applications.Orleans.StateMachines.when_activating;
 
 public class with_valid_initial_state_type : given.a_state_machine
 {
-    Exception exception;
+    Exception _exception;
 
-    protected override Type initial_state => typeof(StateThatSupportsTransitioningFrom);
+    protected override Type InitialState => typeof(StateThatSupportsTransitioningFrom);
     protected override IEnumerable<IState<StateMachineStateForTesting>> CreateStates() => [new StateThatSupportsTransitioningFrom()];
 
-    async Task Because() => exception = await Catch.Exception(async () => await state_machine.OnActivateAsync(CancellationToken.None));
+    async Task Because() => _exception = await Catch.Exception(async () => await StateMachine.OnActivateAsync(CancellationToken.None));
 
-    [Fact] void should_not_throw_invalid_type_for_state_exception() => exception.ShouldBeNull();
+    [Fact] void should_not_throw_invalid_type_for_state_exception() => _exception.ShouldBeNull();
 }

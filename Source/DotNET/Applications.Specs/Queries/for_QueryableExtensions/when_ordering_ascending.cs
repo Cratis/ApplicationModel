@@ -7,13 +7,13 @@ public class when_ordering_ascending : Specification
 {
     record item(int Value);
 
-    IQueryable queryable;
-    item[] actual_collection = [new(4), new(3), new(2), new(1)];
-    item[] result;
+    IQueryable _queryable;
+    item[] _actualCollection = [new(4), new(3), new(2), new(1)];
+    item[] _result;
 
-    void Establish() => queryable = actual_collection.AsQueryable();
+    void Establish() => _queryable = _actualCollection.AsQueryable();
 
-    void Because() => result = [.. queryable.OrderBy(nameof(item.Value), SortDirection.Ascending).Cast<item>()];
+    void Because() => _result = [.. _queryable.OrderBy(nameof(item.Value), SortDirection.Ascending).Cast<item>()];
 
-    [Fact] void should_be_ordered_correctly() => result.ShouldEqual(actual_collection.OrderBy(_ => _.Value));
+    [Fact] void should_be_ordered_correctly() => _result.ShouldEqual(_actualCollection.OrderBy(_ => _.Value));
 }

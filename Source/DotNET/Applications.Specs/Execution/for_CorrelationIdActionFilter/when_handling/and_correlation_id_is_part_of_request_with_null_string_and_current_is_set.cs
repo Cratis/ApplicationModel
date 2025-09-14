@@ -3,7 +3,6 @@
 
 using Cratis.Execution;
 using Microsoft.Extensions.Primitives;
-using NSubstitute;
 
 namespace Cratis.Applications.Execution.for_CorrelationIdActionFilter.when_handling;
 

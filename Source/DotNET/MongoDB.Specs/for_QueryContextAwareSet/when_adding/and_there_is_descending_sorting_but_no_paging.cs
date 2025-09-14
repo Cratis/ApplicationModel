@@ -3,28 +3,29 @@
 
 using MongoDB.Driver;
 using SortDirection = Cratis.Applications.Queries.SortDirection;
+
 namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_adding;
 
 public class and_there_is_descending_sorting_but_no_paging : Specification
 {
-    QueryContextAwareSet<SomeClassWithSomeId> set;
-    SomeClassWithSomeId firstItem;
-    SomeClassWithSomeId secondItem;
-    SomeClassWithSomeId thirdItem;
+    QueryContextAwareSet<SomeClassWithSomeId> _set;
+    SomeClassWithSomeId _firstItem;
+    SomeClassWithSomeId _secondItem;
+    SomeClassWithSomeId _thirdItem;
     void Establish()
     {
-        set = new(QueryContextBuilder.New().WithSorting(new(nameof(SomeClassWithSomeId.Value), SortDirection.Descending)).Build());
-        firstItem = new(Guid.NewGuid(), 44);
-        secondItem = new(Guid.NewGuid(), 43);
-        thirdItem = new(Guid.NewGuid(), 42);
+        _set = new(QueryContextBuilder.New().WithSorting(new(nameof(SomeClassWithSomeId.Value), SortDirection.Descending)).Build());
+        _firstItem = new(Guid.NewGuid(), 44);
+        _secondItem = new(Guid.NewGuid(), 43);
+        _thirdItem = new(Guid.NewGuid(), 42);
     }
 
     void Because()
     {
-        set.Add(secondItem);
-        set.Add(firstItem);
-        set.Add(thirdItem);
+        _set.Add(_secondItem);
+        _set.Add(_firstItem);
+        _set.Add(_thirdItem);
     }
 
-    [Fact] void should_have_items_in_correct_order() => Assert.Equal([firstItem, secondItem, thirdItem], set);
+    [Fact] void should_have_items_in_correct_order() => Assert.Equal([_firstItem, _secondItem, _thirdItem], _set);
 }

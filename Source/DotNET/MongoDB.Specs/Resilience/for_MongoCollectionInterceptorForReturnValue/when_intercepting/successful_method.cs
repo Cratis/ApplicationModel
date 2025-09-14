@@ -5,16 +5,16 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorF
 
 public class successful_method : given.an_interceptor
 {
-    string result;
+    string _result;
     protected override string GetInvocationTargetMethod() => nameof(for_MongoCollectionInterceptor.InvocationTarget.SuccessfulMethod);
 
     async Task Because()
     {
-        interceptor.Intercept(invocation);
-        result = await return_value;
+        _interceptor.Intercept(_invocation);
+        _result = await _returnValue;
     }
 
-    [Fact] void should_return_value_from_invocation() => result.ShouldEqual("Hello");
-    [Fact] void should_return_successful_task() => return_value.IsCompletedSuccessfully.ShouldBeTrue();
-    [Fact] void should_have_freed_up_semaphore() => semaphore.CurrentCount.ShouldEqual(pool_size);
+    [Fact] void should_return_value_from_invocation() => _result.ShouldEqual("Hello");
+    [Fact] void should_return_successful_task() => _returnValue.IsCompletedSuccessfully.ShouldBeTrue();
+    [Fact] void should_have_freed_up_semaphore() => _semaphore.CurrentCount.ShouldEqual(PoolSize);
 }

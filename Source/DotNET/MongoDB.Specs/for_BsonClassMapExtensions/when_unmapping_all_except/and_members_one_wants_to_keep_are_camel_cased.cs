@@ -14,17 +14,17 @@ public class and_members_one_wants_to_keep_are_camel_cased : Specification
         public string SomeOtherProperty { get; init; }
     }
 
-    BsonClassMap<SomeType> class_map;
+    BsonClassMap<SomeType> _classMap;
 
     void Establish()
     {
-        class_map = new BsonClassMap<SomeType>();
-        class_map.MapMember(_ => _.SomeProperty).SetElementName(nameof(SomeType.SomeProperty).ToCamelCase());
-        class_map.MapMember(_ => _.SomeOtherProperty).SetElementName(nameof(SomeType.SomeOtherProperty).ToCamelCase());
+        _classMap = new BsonClassMap<SomeType>();
+        _classMap.MapMember(_ => _.SomeProperty).SetElementName(nameof(SomeType.SomeProperty).ToCamelCase());
+        _classMap.MapMember(_ => _.SomeOtherProperty).SetElementName(nameof(SomeType.SomeOtherProperty).ToCamelCase());
     }
 
-    void Because() => class_map.UnmapAllMembersExcept(_ => _.SomeOtherProperty);
+    void Because() => _classMap.UnmapAllMembersExcept(_ => _.SomeOtherProperty);
 
-    [Fact] void should_have_one_member() => class_map.DeclaredMemberMaps.Count().ShouldEqual(1);
-    [Fact] void should_have_the_correct_member() => class_map.DeclaredMemberMaps.First().ElementName.ShouldEqual(nameof(SomeType.SomeOtherProperty).ToCamelCase());
+    [Fact] void should_have_one_member() => _classMap.DeclaredMemberMaps.Count().ShouldEqual(1);
+    [Fact] void should_have_the_correct_member() => _classMap.DeclaredMemberMaps.First().ElementName.ShouldEqual(nameof(SomeType.SomeOtherProperty).ToCamelCase());
 }

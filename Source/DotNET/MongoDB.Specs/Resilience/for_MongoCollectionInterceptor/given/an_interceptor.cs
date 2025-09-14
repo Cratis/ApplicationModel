@@ -8,29 +8,29 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor.
 
 public abstract class an_interceptor : Specification
 {
-    protected const int pool_size = 10;
-    protected ResiliencePipeline resilience_pipeline;
-    protected MongoClientSettings settings;
-    protected MongoCollectionInterceptor interceptor;
-    protected Castle.DynamicProxy.IInvocation invocation;
-    protected Task return_value;
-    protected for_MongoCollectionInterceptorForReturnValue.InvocationTarget target;
-    protected SemaphoreSlim semaphore;
+    protected const int PoolSize = 10;
+    protected ResiliencePipeline _resiliencePipeline;
+    protected MongoClientSettings _settings;
+    protected MongoCollectionInterceptor _interceptor;
+    protected Castle.DynamicProxy.IInvocation _invocation;
+    protected Task _returnValue;
+    protected for_MongoCollectionInterceptorForReturnValue.InvocationTarget _target;
+    protected SemaphoreSlim _semaphore;
 
     protected abstract string GetInvocationTargetMethod();
 
     void Establish()
     {
-        resilience_pipeline = new ResiliencePipelineBuilder().Build();
+        _resiliencePipeline = new ResiliencePipelineBuilder().Build();
 
-        semaphore = new SemaphoreSlim(pool_size, pool_size);
+        _semaphore = new SemaphoreSlim(PoolSize, PoolSize);
 
-        interceptor = new(resilience_pipeline, semaphore);
+        _interceptor = new(_resiliencePipeline, _semaphore);
 
-        invocation = Substitute.For<Castle.DynamicProxy.IInvocation>();
-        invocation.Method.Returns(typeof(for_MongoCollectionInterceptorForReturnValue.InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
-        target = new();
-        invocation.InvocationTarget.Returns(target);
-        invocation.When(_ => _.ReturnValue = Arg.Any<Task>()).Do((_) => return_value = _.Arg<Task>());
+        _invocation = Substitute.For<Castle.DynamicProxy.IInvocation>();
+        _invocation.Method.Returns(typeof(for_MongoCollectionInterceptorForReturnValue.InvocationTarget).GetMethod(GetInvocationTargetMethod())!);
+        _target = new();
+        _invocation.InvocationTarget.Returns(_target);
+        _invocation.When(_ => _.ReturnValue = Arg.Any<Task>()).Do((_) => _returnValue = _.Arg<Task>());
     }
 }

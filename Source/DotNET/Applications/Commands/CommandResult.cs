@@ -16,7 +16,7 @@ public class CommandResult
     /// <summary>
     /// Gets the <see cref="CorrelationId"/> associated with the command.
     /// </summary>
-    public CorrelationId CorrelationId { get; init; } = new(Guid.Empty);
+    public CorrelationId CorrelationId { get; init; } = CorrelationId.NotSet;
 
     /// <summary>
     /// Gets whether or not the command executed successfully.
@@ -26,7 +26,7 @@ public class CommandResult
     /// <summary>
     /// Gets whether or not the command was authorized to execute.
     /// </summary>
-    public bool IsAuthorized { get; init; } = true;
+    public bool IsAuthorized { get; set; } = true;
 
     /// <summary>
     /// Gets whether or not the command is valid.
@@ -34,39 +34,94 @@ public class CommandResult
     public bool IsValid => !ValidationResults.Any();
 
     /// <summary>
-    /// Gets whether or not there are any exceptions that occurred.
+    /// Gets or sets whether or not there are any exceptions that occurred.
     /// </summary>
     public bool HasExceptions => ExceptionMessages.Any();
 
     /// <summary>
-    /// Gets any validation result.
+    /// Gets or sets any validation result.
     /// </summary>
-    public IEnumerable<ValidationResult> ValidationResults { get; init; } = [];
+    public IEnumerable<ValidationResult> ValidationResults { get; set; } = [];
 
     /// <summary>
-    /// Gets any exception messages that might have occurred.
+    /// Gets or sets any exception messages that might have occurred.
     /// </summary>
-    public IEnumerable<string> ExceptionMessages { get; init; } = [];
+    public IEnumerable<string> ExceptionMessages { get; set; } = [];
 
     /// <summary>
-    /// Gets the stack trace if there was an exception.
+    /// Gets or sets the stack trace if there was an exception.
     /// </summary>
-    public string ExceptionStackTrace { get; init; } = string.Empty;
+    public string ExceptionStackTrace { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing a successful command execution.
+    /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
+    /// <returns>A <see cref="CommandResult"/>.</returns>
+    public static CommandResult Success(CorrelationId correlationId) => new() { CorrelationId = correlationId };
+
+    /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing a missing handler.
+    /// </summary>
+    /// <param name="type">The type of command that is missing a handler.</param>
+    /// <returns>A <see cref="CommandResult"/>.</returns>
+    public static CommandResult MissingHandler(Type type) => new() { ExceptionMessages = [$"No handler found for command of type {type}"] };
+
+    /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing an error.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <returns>A <see cref="CommandResult"/>.</returns>
+    public static CommandResult Error(string message) => new() { ExceptionMessages = [message] };
+
+    /// <summary>
+    /// Merges the results of one or more <see cref="CommandResult"/> instances into this.
+    /// </summary>
+    /// <param name="commandResults">Params of <see cref="CommandResult"/> to merge with.</param>
+    public void MergeWith(params CommandResult[] commandResults)
+    {
+        IsAuthorized = IsAuthorized && commandResults.All(r => r.IsAuthorized);
+        ValidationResults = [.. ValidationResults, .. commandResults.SelectMany(r => r.ValidationResults)];
+        ExceptionMessages = [.. ExceptionMessages, .. commandResults.SelectMany(r => r.ExceptionMessages)];
+        ExceptionStackTrace = string.Join(Environment.NewLine, new[] { ExceptionStackTrace }.Concat(commandResults.Select(r => r.ExceptionStackTrace)));
+        if (ExceptionStackTrace.StartsWith(Environment.NewLine))
+        {
+            ExceptionStackTrace = ExceptionStackTrace[Environment.NewLine.Length..];
+        }
+    }
 }
 
 /// <summary>
 /// Represents the result coming from executing a command with a response.
 /// </summary>
-/// <typeparam name="T">Type of the data returned.</typeparam>
-public class CommandResult<T> : CommandResult
+/// <typeparam name="TResponse">Type of the data returned.</typeparam>
+public class CommandResult<TResponse> : CommandResult
 {
     /// <summary>
-    /// Represents a successful command result.
+    /// Initializes a new instance of the <see cref="CommandResult{T}"/> class.
     /// </summary>
-    public static readonly CommandResult<T> Success = new();
+    public CommandResult()
+    {
+    }
 
     /// <summary>
-    /// Optional response object. Controller actions representing a command can optionally return a response as any type, this is where it would be.
+    /// Initializes a new instance of the <see cref="CommandResult{T}"/> class.
     /// </summary>
-    public T? Response { get; init; }
+    /// <param name="response">The response.</param>
+    public CommandResult(TResponse? response)
+    {
+        Response = response;
+    }
+
+    /// <summary>
+    /// Gets or sets the optional response object that will be returned from the command handler.
+    /// </summary>
+    public TResponse? Response { get; set; }
+
+    /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing a successful command execution.
+    /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
+    /// <returns>A <see cref="CommandResult{T}"/>.</returns>
+    public static new CommandResult<TResponse> Success(CorrelationId correlationId) => new() { CorrelationId = correlationId };
 }

@@ -15,27 +15,17 @@ public static class CommandExtensions
     /// Convert a <see cref="MethodInfo"/> to a <see cref="CommandDescriptor"/>.
     /// </summary>
     /// <param name="method">Method to convert.</param>
+    /// <param name="commandName">Name of the command.</param>
+    /// <param name="properties">Properties of the command.</param>
+    /// <param name="arguments">Arguments of the command.</param>
+    /// <param name="route">Route of the command.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
     /// <returns>Converted <see cref="CommandDescriptor"/>.</returns>
-    public static CommandDescriptor ToCommandDescriptor(this MethodInfo method, string targetPath, int segmentsToSkip)
+    public static CommandDescriptor ToCommandDescriptor(this MethodInfo method, string commandName, IEnumerable<PropertyDescriptor> properties, IEnumerable<RequestArgumentDescriptor> arguments, string route, string targetPath, int segmentsToSkip)
     {
+        var (hasResponse, responseModel) = method.GetResponseModel();
         var typesInvolved = new List<Type>();
-        var properties = method.GetPropertyDescriptors();
-        var hasResponse = false;
-        var responseModel = ModelDescriptor.Empty;
-
-        if (method.ReturnType.IsAssignableTo<Task>() && method.ReturnType.IsGenericType)
-        {
-            hasResponse = true;
-            var responseType = method.ReturnType.GetGenericArguments()[0];
-            responseModel = responseType.ToModelDescriptor();
-        }
-        else if (method.ReturnType != TypeExtensions._voidType && method.ReturnType != TypeExtensions._taskType)
-        {
-            hasResponse = true;
-            responseModel = method.ReturnType.ToModelDescriptor();
-        }
 
         if (!(responseModel.Type?.IsKnownType() ?? true))
         {
@@ -61,15 +51,12 @@ public static class CommandExtensions
 
         imports = [.. imports.DistinctBy(_ => _.Type)];
 
-        var arguments = method.GetArgumentDescriptors();
-        var route = method.GetRoute(arguments);
-
         return new(
             method.DeclaringType!,
             method,
             route,
             route.MakeRouteTemplate(),
-            method.Name,
+            commandName,
             properties,
             imports.OrderBy(_ => _.Module),
             arguments,

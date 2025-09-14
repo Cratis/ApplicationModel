@@ -7,12 +7,12 @@ namespace Cratis.Applications.Validation.for_ModelErrorExtensions;
 
 public class when_converting_nested_member_with_array : Specification
 {
-    const string member = "FirstLevel[0].SecondLevel[1].TheMember";
-    readonly ModelError model_error = new("Some message");
-    ValidationResult validation_error;
+    const string Member = "FirstLevel[0].SecondLevel[1].TheMember";
+    readonly ModelError _modelError = new("Some message");
+    ValidationResult _validationError;
 
-    void Because() => validation_error = model_error.ToValidationResult(member);
+    void Because() => _validationError = _modelError.ToValidationResult(Member);
 
-    [Fact] void should_hold_message() => validation_error.Message.ShouldEqual(model_error.ErrorMessage);
-    [Fact] void should_hold_camel_cased_member() => validation_error.Members.First().ShouldEqual("firstLevel[0].secondLevel[1].theMember");
+    [Fact] void should_hold_message() => _validationError.Message.ShouldEqual(_modelError.ErrorMessage);
+    [Fact] void should_hold_camel_cased_member() => _validationError.Members.First().ShouldEqual("firstLevel[0].secondLevel[1].theMember");
 }

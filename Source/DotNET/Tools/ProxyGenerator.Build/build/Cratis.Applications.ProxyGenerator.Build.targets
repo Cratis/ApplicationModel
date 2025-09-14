@@ -20,8 +20,12 @@
         
         <PropertyGroup>
             <SkipOutputDeletion Condition=" '$(CratisProxiesSkipOutputDeletion)' == 'true' ">--skip-output-deletion</SkipOutputDeletion>
+            <SkipCommandNameInRoute Condition=" '$(CratisProxiesSkipCommandNameInRoute)' == 'true' ">--skip-command-name-in-route</SkipCommandNameInRoute>
+            <ApiPrefix Condition=" '$(CratisProxiesApiPrefix)' != '' ">--api-prefix=$(CratisProxiesApiPrefix)</ApiPrefix>
         </PropertyGroup>
 
-        <Exec ConsoleToMsBuild="true" Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip) $(SkipOutputDeletion)" WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
+        <Exec ConsoleToMsBuild="true" 
+            Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip) $(SkipOutputDeletion) $(SkipCommandNameInRoute) $(ApiPrefix)"
+            WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
     </Target>
 </Project>
