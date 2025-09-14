@@ -30,6 +30,6 @@ public static class CommandExtensions
         route = route.ToLowerInvariant();
         var handleMethod = commandType.GetHandleMethod();
 
-        return handleMethod.ToCommandDescriptor(properties, [], route, targetPath, segmentsToSkip);
+        return handleMethod.ToCommandDescriptor(commandType.Name, properties, [], route, targetPath, segmentsToSkip);
     }
 }
