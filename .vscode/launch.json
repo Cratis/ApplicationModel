@@ -25,15 +25,11 @@
             "cwd": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator",
             "program": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net9.0/Cratis.Applications.ProxyGenerator.dll",
             "args": [
-                "/Volumes/Code/Cratis/Samples/Library/Api/bin/Debug/net9.0/Api.dll",
-                "/Volumes/Code/Cratis/Samples/Library/Web/Api",
-                // "/Volumes/Code/KDI/Ocean/Source/Exercises/Main/bin/Debug/net9.0/Kongsberg.KSim.Ocean.Exercises.Main.dll",
-                // "/Volumes/Code/KDI/Ocean/Source/Exercises/Web/Api",
-                // "/Volumes/Code/Cratis/Chronicle/Source/Api/bin/Debug/net9.0/Cratis.Chronicle.Api.dll",
-                // "/Volumes/Code/Cratis/Chronicle/Source/Workbench/Api",
-                // "${workspaceFolder}/Samples/eCommerce/Basic/Main/bin/Debug/net8.0/Main.dll",
-                // "${workspaceFolder}/Samples/eCommerce/Basic/Web/API",
-                "1"
+                "/Volumes/Code/Bliksund/ewa-multiplatform/Source/Core/bin/Debug/net9.0/Core.dll",
+                "/Volumes/Code/Bliksund/ewa-multiplatform/Source/Core",
+                "1",
+                "--skip-output-deletion",
+                "--skip-command-name-in-route"
             ],
             "stopAtEntry": false,
             "env": {
