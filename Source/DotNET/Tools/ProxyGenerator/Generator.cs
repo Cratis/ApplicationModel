@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using Cratis.Applications.ProxyGenerator.ControllerBased;
+using Cratis.Applications.ProxyGenerator.ModelBound;
 using Cratis.Applications.ProxyGenerator.Templates;
 
 namespace Cratis.Applications.ProxyGenerator;
@@ -21,8 +22,18 @@ public static class Generator
     /// <param name="message">Logger to use for outputting messages.</param>
     /// <param name="errorMessage">Logger to use for outputting error messages.</param>
     /// <param name="skipOutputDeletion">True if the output path should be deleted before generating, false if not.</param>
+    /// <param name="skipCommandNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>True if successful, false if not.</returns>
-    public static async Task<bool> Generate(string assemblyFile, string outputPath, int segmentsToSkip, Action<string> message, Action<string> errorMessage, bool skipOutputDeletion = false)
+    public static async Task<bool> Generate(
+        string assemblyFile,
+        string outputPath,
+        int segmentsToSkip,
+        Action<string> message,
+        Action<string> errorMessage,
+        bool skipOutputDeletion = false,
+        bool skipCommandNameInRoute = false,
+        string apiPrefix = "api")
     {
         assemblyFile = Path.GetFullPath(assemblyFile);
         if (!File.Exists(assemblyFile))
@@ -46,6 +57,9 @@ public static class Generator
         var controllerBasedArtifactsProvider = new ControllerBasedArtifactsProvider(message, outputPath, segmentsToSkip);
         commands.AddRange(controllerBasedArtifactsProvider.Commands);
         queries.AddRange(controllerBasedArtifactsProvider.Queries);
+
+        var modelBoundArtifactsProvider = new ModelBoundArtifactsProvider(message, outputPath, segmentsToSkip, skipCommandNameInRoute, apiPrefix);
+        commands.AddRange(modelBoundArtifactsProvider.Commands);
 
         message($"  Found {commands.Count} commands and {queries.Count} queries");
 

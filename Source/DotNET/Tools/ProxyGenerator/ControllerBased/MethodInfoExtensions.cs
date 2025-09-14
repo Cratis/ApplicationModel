@@ -45,14 +45,6 @@ public static class MethodInfoExtensions
     }
 
     /// <summary>
-    /// Make a route template from a route.
-    /// </summary>
-    /// <param name="route">String representing the route.</param>
-    /// <returns>A template version of the route.</returns>
-    public static string MakeRouteTemplate(this string route) =>
-        route.Replace("{", "{{").Replace("}", "}}");
-
-    /// <summary>
     /// Get argument descriptors for a method.
     /// </summary>
     /// <param name="methodInfo">Method to get for.</param>

@@ -17,7 +17,10 @@ public class ControllerBasedArtifactsProvider : IArtifactsProvider
     /// <param name="message">Logger to use for outputting messages.</param>
     /// <param name="outputPath">Output path for command.</param>
     /// <param name="segmentsToSkip">Segments to skip when generating output paths.</param>
-    public ControllerBasedArtifactsProvider(Action<string> message, string outputPath, int segmentsToSkip)
+    public ControllerBasedArtifactsProvider(
+        Action<string> message,
+        string outputPath,
+        int segmentsToSkip)
     {
         var commands = new List<MethodInfo>();
         var queries = new List<MethodInfo>();
