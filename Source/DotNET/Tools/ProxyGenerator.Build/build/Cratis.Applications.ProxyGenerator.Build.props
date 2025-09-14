@@ -4,5 +4,7 @@
         <CratisProxiesOutputPath></CratisProxiesOutputPath>
         <CratisProxiesSegmentsToSkip></CratisProxiesSegmentsToSkip>
         <CratisProxiesSkipOutputDeletion>false</CratisProxiesSkipOutputDeletion>
+        <CratisProxiesSkipCommandNameInRoute>false</CratisProxiesSkipCommandNameInRoute>
+        <CratisProxiesApiPrefix>api</CratisProxiesApiPrefix>
     </PropertyGroup>
 </Project>
