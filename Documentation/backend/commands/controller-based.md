@@ -5,7 +5,7 @@ You can represent commands as regular ASP.NET Core Controller actions.
 ```csharp
 public record AddItemToCart(string sku, int quantity);
 
-[Route("api/carts)]
+[Route("api/carts")]
 public class Carts : ControllerBase
 {
     [HttpPost("add")]
