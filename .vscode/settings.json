@@ -9,6 +9,7 @@
     "datatable",
     "Expando",
     "MVVM",
+    "Npgsql",
     "primeicons",
     "primereact",
     "Swashbuckle",
