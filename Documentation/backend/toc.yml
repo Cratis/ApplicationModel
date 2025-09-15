@@ -10,3 +10,5 @@
   href: without-wrappers.md
 - name: MongoDB
   href: mongodb.md
+- name: Entity Framework
+  href: entity-framework/toc.yml
