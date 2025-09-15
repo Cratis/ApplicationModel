@@ -2,6 +2,7 @@
   "cSpell.words": [
     "applicationmodel",
     "appsettings",
+    "Autoincrement",
     "Brotli",
     "Bson",
     "camelcase",
@@ -19,7 +20,7 @@
     "Unmap",
     "unmapping",
     "Unmaps"
-  ],
+],
   "dotnet.defaultSolution": "ApplicationModel.sln",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "search.exclude": {
