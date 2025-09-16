@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Reflection;
 using Cratis.Applications.Validation;
 using FluentValidation;
 
@@ -15,23 +16,39 @@ public class FluentValidationFilter(IDiscoverableValidators discoverableValidato
     /// <inheritdoc/>
     public async Task<CommandResult> OnExecution(CommandContext context)
     {
-        if (discoverableValidators.TryGet(context.Type, out var validator))
+        var commandResult = CommandResult.Success(context.CorrelationId);
+        commandResult.MergeWith(await Validate(context, context.Command));
+        return commandResult;
+    }
+
+    async Task<CommandResult> Validate(CommandContext context, object instance)
+    {
+        var commandResult = CommandResult.Success(context.CorrelationId);
+
+        var instanceType = instance.GetType();
+        if (discoverableValidators.TryGet(instanceType, out var validator))
         {
-            var validationContextType = typeof(ValidationContext<>).MakeGenericType(context.Type);
-            var validationContext = Activator.CreateInstance(validationContextType, context.Command) as IValidationContext;
+            var validationContextType = typeof(ValidationContext<>).MakeGenericType(instance.GetType());
+            var validationContext = Activator.CreateInstance(validationContextType, instance) as IValidationContext;
             var validationResult = await validator.ValidateAsync(validationContext);
             if (!validationResult.IsValid)
             {
-                return new CommandResult
+                commandResult.MergeWith(new CommandResult
                 {
-                    CorrelationId = context.CorrelationId,
-                    IsAuthorized = true,
                     ValidationResults = validationResult.Errors.Select(_ =>
                         new ValidationResult(ValidationResultSeverity.Error, _.ErrorMessage, [_.PropertyName], null!)).ToArray()
-                };
+                });
+            }
+
+            if (!instanceType.IsPrimitive)
+            {
+                foreach (var property in instanceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    commandResult.MergeWith(await Validate(context, property.GetValue(instance)!));
+                }
             }
         }
 
-        return CommandResult.Success(context.CorrelationId);
+        return commandResult;
     }
 }
