@@ -40,9 +40,12 @@ public class FluentValidationFilter(IDiscoverableValidators discoverableValidato
                 });
             }
 
-            foreach (var property in instanceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            if (!instanceType.IsPrimitive)
             {
-                commandResult.MergeWith(await Validate(context, property.GetValue(instance)!));
+                foreach (var property in instanceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    commandResult.MergeWith(await Validate(context, property.GetValue(instance)!));
+                }
             }
         }
 
