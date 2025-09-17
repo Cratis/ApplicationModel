@@ -11,4 +11,5 @@ namespace Cratis.Applications.ProxyGenerator;
 /// <param name="Constructor">The JavaScript constructor type.</param>
 /// <param name="Module">Module the type should be imported from. default or empty means no need to import.</param>
 /// <param name="Final">Whether or not it absolutely is this type and do not try to resolve a more specific one.</param>
-public record TargetType(Type OriginalType, string Type, string Constructor, string Module = "", bool Final = false);
+/// <param name="FromPackage">Whether or not the module is from a package (true) or a relative path (false).</param>
+public record TargetType(Type OriginalType, string Type, string Constructor, string Module = "", bool Final = false, bool FromPackage = false);
