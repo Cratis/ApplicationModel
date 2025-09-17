@@ -64,7 +64,7 @@ public static class TypeExtensions
         { typeof(decimal).FullName!, _numberTargetType },
         { typeof(DateTime).FullName!, _dateTargetType },
         { typeof(DateTimeOffset).FullName!, _dateTargetType },
-        { typeof(Guid).FullName!, new(typeof(Guid), "Guid", "Guid", "@cratis/fundamentals") },
+        { typeof(Guid).FullName!, new(typeof(Guid), "Guid", "Guid", "@cratis/fundamentals", FromPackage: true) },
         { typeof(DateOnly).FullName!, _dateTargetType },
         { typeof(TimeOnly).FullName!, _dateTargetType },
         { typeof(System.Text.Json.Nodes.JsonNode).FullName!, AnyTypeFinal },
@@ -407,11 +407,19 @@ public static class TypeExtensions
     {
         var targetType = type.GetTargetType();
         var importPath = targetType.Module;
-        if (string.IsNullOrEmpty(importPath))
+        if (!targetType.FromPackage)
         {
-            var fullPath = Path.Join(targetPath, relativePath);
-            var fullPathForType = Path.Join(targetPath, type.ResolveTargetPath(segmentsToSkip));
-            importPath = $"{Path.GetRelativePath(fullPath, fullPathForType)}/{type.Name}";
+            if (string.IsNullOrEmpty(importPath))
+            {
+                var fullPath = Path.Join(targetPath, relativePath);
+                var fullPathForType = Path.Join(targetPath, type.ResolveTargetPath(segmentsToSkip));
+                importPath = $"{Path.GetRelativePath(fullPath, fullPathForType)}/{type.Name}";
+            }
+
+            if (!importPath.StartsWith('.') && !importPath.StartsWith('/'))
+            {
+                importPath = $"./{importPath}";
+            }
         }
         return new ImportStatement(targetType.OriginalType, targetType.Type, importPath);
     }
