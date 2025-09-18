@@ -15,7 +15,7 @@ namespace Microsoft.AspNetCore.Builder;
 /// <summary>
 /// Provides extension methods for adding command endpoints.
 /// </summary>
-public static class CommandEndpointsExtensions
+public static class CommandEndpointsExtensions@
 {
     /// <summary>
     /// Use Cratis default setup.
@@ -33,13 +33,17 @@ public static class CommandEndpointsExtensions
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
             var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
             var jsonSerializerOptions = Globals.JsonSerializerOptions;
+
+            var prefix = options.RoutePrefix.Trim('/');
+            var group = endpoints.MapGroup($"/{prefix}").WithOpenApi();
+
             foreach (var handler in commandHandlerProviders.Handlers)
             {
                 var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
-                var baseUrl = $"/{options.RoutePrefix}/{string.Join('/', segments)}";
+                var baseUrl = $"/{string.Join('/', segments)}";
                 var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
                 url = url.ToLowerInvariant();
-                endpoints.MapPost(url, async context =>
+                group.MapPost(url, async context =>
                 {
                     CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
                     var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
