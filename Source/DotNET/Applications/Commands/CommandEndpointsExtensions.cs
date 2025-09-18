@@ -15,7 +15,7 @@ namespace Microsoft.AspNetCore.Builder;
 /// <summary>
 /// Provides extension methods for adding command endpoints.
 /// </summary>
-public static class CommandEndpointsExtensions@
+public static class CommandEndpointsExtensions
 {
     /// <summary>
     /// Use Cratis default setup.
