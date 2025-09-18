@@ -45,7 +45,7 @@ public static class CommandEndpointsExtensions
                 var baseUrl = $"/{string.Join('/', segments)}";
                 var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
                 url = url.ToLowerInvariant();
-                group.MapPost(url, async context =>
+                endpoints.MapPost(url, async context =>
                 {
                     CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
                     var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
