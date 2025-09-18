@@ -50,4 +50,8 @@
     <PackageVersion Include="System.Reflection.MetadataLoadContext" Version="9.0.9" />
     <PackageVersion Include="System.Text.Json" Version="9.0.9" />
   </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)/Directory.Packages.NET8.props" Condition=" '$(TargetFramework)' == 'net8.0' " />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
+  </ItemGroup>
 </Project>

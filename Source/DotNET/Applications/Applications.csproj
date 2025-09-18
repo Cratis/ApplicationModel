@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Cratis.Fundamentals" />
         <PackageReference Include="FluentValidation" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
