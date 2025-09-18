@@ -7,7 +7,6 @@ using Cratis.Applications.Execution;
 using Cratis.Execution;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +26,7 @@ public static class CommandEndpointsExtensions
     {
         app.UseRouting();
 
-        if (app is IEndpointRouteBuilder endpoints)
+        app.UseEndpoints(endpoints =>
         {
             var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
             var options = appModelOptions.Commands;
@@ -45,7 +44,7 @@ public static class CommandEndpointsExtensions
                 var baseUrl = $"/{string.Join('/', segments)}";
                 var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
                 url = url.ToLowerInvariant();
-                endpoints.MapPost(url, async context =>
+                group.MapPost(url, async context =>
                 {
                     CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
                     var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
@@ -62,7 +61,7 @@ public static class CommandEndpointsExtensions
                     await context.Response.WriteAsJsonAsync(commandResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                 });
             }
-        }
+        });
 
         return app;
     }
