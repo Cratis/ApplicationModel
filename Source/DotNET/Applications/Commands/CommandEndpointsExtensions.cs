@@ -35,7 +35,7 @@ public static class CommandEndpointsExtensions
             var jsonSerializerOptions = Globals.JsonSerializerOptions;
 
             var prefix = options.RoutePrefix.Trim('/');
-            var group = endpoints.MapGroup($"/{prefix}").WithOpenApi();
+            var group = endpoints.MapGroup($"/{prefix}").WithTags("Commands").WithOpenApi();
 
             foreach (var handler in commandHandlerProviders.Handlers)
             {
