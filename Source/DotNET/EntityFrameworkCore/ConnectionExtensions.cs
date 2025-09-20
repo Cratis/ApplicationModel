@@ -1,0 +1,56 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace Cratis.Applications.EntityFrameworkCore;
+
+/// <summary>
+/// Extensions for working with database connections.
+/// </summary>
+public static class ConnectionExtensions
+{
+    /// <summary>
+    /// Infers the database type from the connection string.
+    /// </summary>
+    /// <param name="connectionString">The connection string to infer the database type from.</param>
+    /// <returns>The inferred database type.</returns>
+    /// <exception cref="UnsupportedDatabaseType">Thrown if the connection string does not have a supported database type.</exception>
+    public static DatabaseType GetDatabaseType(this string connectionString) => connectionString switch
+    {
+        _ when connectionString.Contains("Data Source=") || connectionString.Contains("Filename=") => DatabaseType.Sqlite,
+        _ when connectionString.Contains("Server=") && connectionString.Contains("Database=") => DatabaseType.SqlServer,
+        _ when connectionString.Contains("Host=") && connectionString.Contains("Database=") => DatabaseType.PostgreSql,
+        _ => throw new UnsupportedDatabaseType(connectionString)
+    };
+
+    /// <summary>
+    /// Configures the DbContext to use the database specified in the connection string.
+    /// The database type is inferred from the connection string.
+    /// </summary>
+    /// <param name="builder">The DbContext options builder to configure.</param>
+    /// <param name="connectionString">The connection string to use.</param>
+    /// <returns>The configured DbContext options builder.</returns>
+    /// <exception cref="UnsupportedDatabaseType">Thrown if the connection string does not have a supported database type.</exception>
+    public static DbContextOptionsBuilder UseDatabaseFromConnectionString(this DbContextOptionsBuilder builder, string connectionString)
+    {
+        var type = connectionString.GetDatabaseType();
+        return type switch
+        {
+            DatabaseType.Sqlite => builder
+                .UseSqlite(connectionString)
+                .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForSqlite>(),
+
+            DatabaseType.SqlServer => builder
+                .UseSqlServer(connectionString)
+                .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForSqlServer>(),
+
+            DatabaseType.PostgreSql => builder
+                .UseNpgsql(connectionString)
+                .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForPostgreSQL>(),
+
+            _ => throw new UnsupportedDatabaseType(connectionString)
+        };
+    }
+}
