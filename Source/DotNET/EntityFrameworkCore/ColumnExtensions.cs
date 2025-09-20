@@ -18,7 +18,7 @@ public static class ColumnExtensions
     /// <param name="cb">Columns builder.</param>
     /// <param name="mb">Migration builder.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> AutoIncrement(this ColumnsBuilder cb, MigrationBuilder mb) =>
+    public static OperationBuilder<AddColumnOperation> AutoIncrementColumn(this ColumnsBuilder cb, MigrationBuilder mb) =>
         mb.ActiveProvider switch
         {
             "Npgsql.EntityFrameworkCore.PostgreSQL" => cb.Column<int>("INTEGER", nullable: false)
@@ -37,7 +37,7 @@ public static class ColumnExtensions
     /// <param name="nullable">Whether the column should be nullable.</param>
     /// <returns>Operation builder for the column.</returns>
 #pragma warning disable CA1720 // Identifier contains type name
-    public static OperationBuilder<AddColumnOperation> Guid(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
+    public static OperationBuilder<AddColumnOperation> GuidColumn(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
         mb.ActiveProvider switch
         {
             "Npgsql.EntityFrameworkCore.PostgreSQL" => cb.Column<Guid>("UUID", nullable: nullable),
@@ -53,7 +53,7 @@ public static class ColumnExtensions
     /// <param name="mb">Migration builder.</param>
     /// <param name="nullable">Whether the column should be nullable.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> DateTimeOffset(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
+    public static OperationBuilder<AddColumnOperation> DateTimeOffsetColumn(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
         mb.ActiveProvider switch
         {
             "Npgsql.EntityFrameworkCore.PostgreSQL" => cb.Column<DateTimeOffset>("TIMESTAMPTZ", nullable: nullable),
