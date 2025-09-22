@@ -53,7 +53,7 @@
         "module-alias": "2.2.3",
         "npm-check-updates": "18.2.1",
         "prettier": "3.6.2",
-        "rollup": "4.50.2",
+        "rollup": "4.51.0",
         "rollup-plugin-commonjs": "10.1.0",
         "rollup-plugin-peer-deps-external": "2.2.4",
         "rollup-plugin-typescript2": "0.36.0",
