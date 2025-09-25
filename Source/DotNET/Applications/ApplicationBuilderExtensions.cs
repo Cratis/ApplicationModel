@@ -18,6 +18,7 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseCratisApplicationModel(this IApplicationBuilder app)
     {
         Internals.ServiceProvider = app.ApplicationServices;
+        app.MapIdentityProvider();
         app.UseCommandEndpoints();
 
         return app;
