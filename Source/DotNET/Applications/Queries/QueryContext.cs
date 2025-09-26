@@ -17,6 +17,11 @@ namespace Cratis.Applications.Queries;
 public record QueryContext(QueryName Name, CorrelationId CorrelationId, Paging Paging, Sorting Sorting, object? Parameters = null, IEnumerable<object>? Dependencies = null)
 {
     /// <summary>
+    /// Represents a query context that is not set.
+    /// </summary>
+    public static readonly QueryContext NotSet = new("[NotSet]", CorrelationId.NotSet, Paging.NotPaged, Sorting.None);
+
+    /// <summary>
     /// Gets or sets the total number of items in the query.
     /// </summary>
     public int TotalItems { get; set; }

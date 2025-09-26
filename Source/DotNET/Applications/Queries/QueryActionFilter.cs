@@ -24,12 +24,12 @@ namespace Cratis.Applications.Queries;
 /// </remarks>
 /// <param name="options"><see cref="JsonOptions"/>.</param>
 /// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
-/// <param name="queryProviders"><see cref="IQueryProviders"/>.</param>
+/// <param name="queryProviders"><see cref="IQueryRenderers"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 public class QueryActionFilter(
     IOptions<JsonOptions> options,
     IQueryContextManager queryContextManager,
-    IQueryProviders queryProviders,
+    IQueryRenderers queryProviders,
     ILogger<QueryActionFilter> logger) : IAsyncActionFilter
 {
     /// <summary>
@@ -60,7 +60,7 @@ public class QueryActionFilter(
         if (context.HttpContext.Request.Method == HttpMethod.Get.Method &&
             context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
         {
-            EstablishQueryContext(context);
+            var queryContext = EstablishQueryContext(context);
 
             var callResult = await CallNextAndHandleValidationAndExceptions(context, next);
             if (context.IsAspNetResult()) return;
@@ -106,8 +106,7 @@ public class QueryActionFilter(
             else
             {
                 logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                var response = callResult.Response is not null ? queryProviders.Execute(callResult.Response!) : new QueryProviderResult(0, default!);
-                var queryContext = queryContextManager.Current;
+                var response = callResult.Response is not null ? queryProviders.Render(queryContext.Name, callResult.Response!) : new QueryRendererResult(0, default!);
                 var queryResult = new QueryResult<object>
                 {
                     Paging = queryContext.Paging == Paging.NotPaged ? PagingInfo.NotPaged : new PagingInfo(
@@ -157,7 +156,7 @@ public class QueryActionFilter(
         }
     }
 
-    void EstablishQueryContext(ActionExecutingContext context)
+    QueryContext EstablishQueryContext(ActionExecutingContext context)
     {
         var sorting = Sorting.None;
         var paging = Paging.NotPaged;
@@ -178,7 +177,9 @@ public class QueryActionFilter(
             paging = new(page, pageSize, true);
         }
 
-        queryContextManager.Set(new(context.HttpContext.GetCorrelationId(), paging, sorting));
+        var queryContext = new QueryContext(context.ActionDescriptor.DisplayName ?? "[NotSet]", context.HttpContext.GetCorrelationId(), paging, sorting);
+        queryContextManager.Set(queryContext);
+        return queryContext;
     }
 
     IClientEnumerableObservable CreateClientEnumerableObservableFrom(IServiceProvider serviceProvider, ObjectResult objectResult)

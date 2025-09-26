@@ -4,8 +4,8 @@
 namespace Cratis.Applications.Queries;
 
 /// <summary>
-/// Represents the result of a query provider.
+/// Represents the result of a query renderer.
 /// </summary>
 /// <param name="TotalItems">Total items.</param>
 /// <param name="Data">The rendered data.</param>
-public record QueryProviderResult(int TotalItems, object Data);
+public record QueryRendererResult(int TotalItems, object Data);
