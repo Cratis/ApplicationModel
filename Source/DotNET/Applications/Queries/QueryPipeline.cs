@@ -10,17 +10,21 @@ namespace Cratis.Applications.Queries;
 /// Represents a query pipeline.
 /// </summary>
 /// <param name="correlationIdAccessor">Accessor for the current correlation ID.</param>
+/// <param name="queryContextManager">Manages the current query context.</param>
 /// <param name="queryFilters">The query filters.</param>
 /// <param name="queryRendererProviders">The query performer providers.</param>
+/// <param name="queryRenderers">The query renderers.</param>
 /// <param name="serviceProvider">Service provider for resolving dependencies.</param>
 public class QueryPipeline(
     ICorrelationIdAccessor correlationIdAccessor,
+    IQueryContextManager queryContextManager,
     IQueryFilters queryFilters,
     IQueryPerformerProviders queryRendererProviders,
+    IQueryRenderers queryRenderers,
     IServiceProvider serviceProvider) : IQueryPipeline
 {
     /// <inheritdoc/>
-    public Task<IQueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
+    public async Task<IQueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
     {
         if (!queryRendererProviders.TryGetPerformersFor(queryName, out var queryRenderer))
         {
@@ -31,8 +35,11 @@ public class QueryPipeline(
         var dependencies = queryRenderer.Dependencies.Select(serviceProvider.GetRequiredService);
         var correlationId = GetCorrelationId();
         var context = new QueryContext(queryName, correlationId, paging, sorting, parameters, dependencies);
-        var result = queryFilters.OnPerform(context);
-        return queryFilters.OnPerform(context);
+        queryContextManager.Set(context);
+
+        var result = await queryFilters.OnPerform(context);
+        var rendererResult = queryRenderers.Render(queryName, result.Data);
+        return result;
     }
 
     CorrelationId GetCorrelationId()
