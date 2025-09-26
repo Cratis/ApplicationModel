@@ -38,11 +38,7 @@ public class CommandPipeline(
             }
 
             var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
-            var correlationId = correlationIdAccessor.Current;
-            if (correlationId == CorrelationId.NotSet)
-            {
-                correlationId = CorrelationId.New();
-            }
+            var correlationId = GetCorrelationId();
             var commandContext = new CommandContext(correlationId, command.GetType(), command, dependencies);
             result = await commandFilters.OnExecution(commandContext);
             if (!result.IsSuccess)
@@ -81,5 +77,16 @@ public class CommandPipeline(
         }
 
         return result;
+    }
+
+    CorrelationId GetCorrelationId()
+    {
+        var correlationId = correlationIdAccessor.Current;
+        if (correlationId == CorrelationId.NotSet)
+        {
+            correlationId = CorrelationId.New();
+        }
+
+        return correlationId;
     }
 }

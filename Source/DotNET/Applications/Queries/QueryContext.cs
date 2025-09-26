@@ -8,10 +8,13 @@ namespace Cratis.Applications.Queries;
 /// <summary>
 /// Defines the context for a query.
 /// </summary>
+/// <param name="Name">The name of the query.</param>
 /// <param name="CorrelationId">The <see cref="CorrelationId"/> for the query.</param>
 /// <param name="Paging">The <see cref="Paging"/> information.</param>
 /// <param name="Sorting">The <see cref="Sorting"/> information.</param>
-public record QueryContext(CorrelationId CorrelationId, Paging Paging, Sorting Sorting)
+/// <param name="Parameters">Optional parameters for the query.</param>
+/// <param name="Dependencies">Optional dependencies required to handle the query.</param>
+public record QueryContext(QueryName Name, CorrelationId CorrelationId, Paging Paging, Sorting Sorting, object? Parameters = null, IEnumerable<object>? Dependencies = null)
 {
     /// <summary>
     /// Gets or sets the total number of items in the query.
