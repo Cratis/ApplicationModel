@@ -9,6 +9,11 @@ namespace Cratis.Applications.Queries;
 public interface IQueryPerformer
 {
     /// <summary>
+    /// Gets the name of the query the performer can perform.
+    /// </summary>
+    QueryName Name { get; }
+
+    /// <summary>
     /// Gets the location the query is at.
     /// </summary>
     /// <remarks>
@@ -26,5 +31,5 @@ public interface IQueryPerformer
     /// </summary>
     /// <param name="context">The context for the query to render.</param>
     /// <returns>The result of rendering the query.</returns>
-    Task<IQueryResult> Perform(QueryContext context);
+    Task<object?> Perform(QueryContext context);
 }
