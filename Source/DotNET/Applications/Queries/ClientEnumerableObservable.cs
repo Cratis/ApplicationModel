@@ -28,7 +28,7 @@ public class ClientEnumerableObservable<T>(
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
         using var cts = new CancellationTokenSource();
         var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var queryResult = new QueryResult<object>();
+        var queryResult = new QueryResult();
 
         _ = Task.Run(async () =>
         {

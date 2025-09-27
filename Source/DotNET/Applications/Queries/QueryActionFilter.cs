@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Cratis.Applications.Queries;
 
 /// <summary>
-/// Represents a <see cref="IAsyncActionFilter"/> for providing a proper <see cref="QueryResult{T}"/> for post actions.
+/// Represents a <see cref="IAsyncActionFilter"/> for providing a proper <see cref="QueryResult"/> for post actions.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="QueryActionFilter"/> class.
@@ -107,7 +107,7 @@ public class QueryActionFilter(
             {
                 logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
                 var response = callResult.Response is not null ? queryProviders.Render(queryContext.Name, callResult.Response!) : new QueryRendererResult(0, default!);
-                var queryResult = new QueryResult<object>
+                var queryResult = new QueryResult
                 {
                     Paging = queryContext.Paging == Paging.NotPaged ? PagingInfo.NotPaged : new PagingInfo(
                         queryContext.Paging.Page,

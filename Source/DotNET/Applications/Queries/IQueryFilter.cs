@@ -12,6 +12,6 @@ public interface IQueryFilter
     /// Called when a query is performed.
     /// </summary>
     /// <param name="context">The <see cref="QueryContext"/> for the query being performed.</param>
-    /// <returns>The <see cref="IQueryResult"/>.</returns>
-    Task<IQueryResult> OnPerform(QueryContext context);
+    /// <returns>The <see cref="QueryResult"/>.</returns>
+    Task<QueryResult> OnPerform(QueryContext context);
 }

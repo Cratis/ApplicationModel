@@ -24,7 +24,7 @@ public class QueryPipeline(
     IServiceProvider serviceProvider) : IQueryPipeline
 {
     /// <inheritdoc/>
-    public async Task<IQueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
+    public async Task<QueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
     {
         if (!queryRendererProviders.TryGetPerformersFor(queryName, out var queryRenderer))
         {

@@ -15,16 +15,15 @@ public interface IWebSocketConnectionHandler
     /// <summary>
     /// Sends a message on the <see cref="WebSocket"/>.
     /// </summary>
-    /// <typeparam name="TQueryResult">The <see cref="Type"/> of the query result.</typeparam>
     /// <param name="webSocket">The <see cref="WebSocket"/> to listen to.</param>
-    /// <param name="queryResult">The <see cref="QueryResult{T}"/> message to write.</param>
+    /// <param name="queryResult">The <see cref="QueryResult"/> message to write.</param>
     /// <param name="jsonSerializerOptions">The <see cref="JsonSerializerOptions"/>.</param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
     /// <param name="logger">The optional <see cref="ILogger"/> to use.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous action.</returns>
-    Task<Exception?> SendMessage<TQueryResult>(
+    Task<Exception?> SendMessage(
         WebSocket webSocket,
-        QueryResult<TQueryResult> queryResult,
+        QueryResult queryResult,
         JsonSerializerOptions jsonSerializerOptions,
         CancellationToken token,
         ILogger? logger = null);

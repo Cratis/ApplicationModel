@@ -71,9 +71,9 @@ public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> hand
     }
 
     /// <inheritdoc/>
-    public async Task<Exception?> SendMessage<TQueryResult>(
+    public async Task<Exception?> SendMessage(
         WebSocket webSocket,
-        QueryResult<TQueryResult> queryResult,
+        QueryResult queryResult,
         JsonSerializerOptions jsonSerializerOptions,
         CancellationToken token,
         ILogger? logger = null)

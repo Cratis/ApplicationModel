@@ -41,7 +41,7 @@ public class ClientObservable<T>(
     {
         using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var queryResult = new QueryResult<object>();
+        var queryResult = new QueryResult();
         using var cts = new CancellationTokenSource();
 
         using var subscription = subject.Subscribe(Next, Error, Complete);

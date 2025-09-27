@@ -9,46 +9,60 @@ namespace Cratis.Applications.Queries;
 /// <summary>
 /// Represents the result coming from performing a query.
 /// </summary>
-/// <typeparam name="T">Type of the data returned.</typeparam>
-public class QueryResult<T> : IQueryResult
+public class QueryResult
 {
     /// <summary>
     /// Represents a successful command result.
     /// </summary>
-    public static readonly QueryResult<T> Success = new();
+    public static readonly QueryResult Success = new();
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or inits the <see cref="PagingInfo"/> for the query.
+    /// </summary>
     public PagingInfo Paging { get; set; } = PagingInfo.NotPaged;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the <see cref="CorrelationId"/> associated with the command.
+    /// </summary>
     public CorrelationId CorrelationId { get; init; } = new(Guid.Empty);
 
     /// <summary>
     /// The data returned.
     /// </summary>
-    public T Data { get; set; } = default!;
+    public object Data { get; set; } = default!;
 
-    /// <inheritdoc/>
-    object IQueryResult.Data { get => Data!; set => Data = (T)value; }
-
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets whether or not the query executed successfully.
+    /// </summary>
     public bool IsSuccess => IsAuthorized && IsValid && !HasExceptions;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets whether the query was authorized to execute.
+    /// </summary>
     public bool IsAuthorized { get; init; } = true;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets whether the query is valid.
+    /// </summary>
     public bool IsValid => !ValidationResults.Any();
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets whether there are any exceptions that occurred.
+    /// </summary>
     public bool HasExceptions => ExceptionMessages.Any();
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the validation results for the query.
+    /// </summary>
     public IEnumerable<ValidationResult> ValidationResults { get; init; } = [];
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets any exception messages that might have occurred.
+    /// </summary>
     public IEnumerable<string> ExceptionMessages { get; set; } = [];
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the stack trace if there was an exception.
+    /// </summary>
     public string ExceptionStackTrace { get; init; } = string.Empty;
 }

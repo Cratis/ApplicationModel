@@ -15,6 +15,6 @@ public interface IQueryPipeline
     /// <param name="parameters">The parameters for the query.</param>
     /// <param name="paging">The paging to apply to the query.</param>
     /// <param name="sorting">The sorting to apply to the query.</param>
-    /// <returns>A <see cref="IQueryResult"/> representing the result of executing the command.</returns>
-    Task<IQueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting);
+    /// <returns>A <see cref="QueryResult"/> representing the result of executing the command.</returns>
+    Task<QueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting);
 }
