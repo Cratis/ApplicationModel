@@ -157,6 +157,7 @@ public class with_valid_events_collection : given.an_events_command_response_val
 - Members are initialized using the `Establish` method, same as regular specs
 - Specs inherit from the context by doing `given.a_specific_context`, example: `public class when_performing_a_behavior : given.a_specific_context`
 - Remember the inheritance rule: `Specification` must be in the inheritance chain at the root
+- Shared variables should be `protected` fields, not properties and they should follow the `_camelCase` naming convention
 - **For behaviors with multiple outcomes:**
   - The reusable context should be in the unit's `given/` folder (e.g., `for_<Unit>/given/`)
   - All test files within behavior folders (e.g., `when_<behavior>/`) inherit from this shared context
