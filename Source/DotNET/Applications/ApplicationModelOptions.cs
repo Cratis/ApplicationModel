@@ -30,5 +30,9 @@ public class ApplicationModelOptions
     /// Gets or sets the options for command handling.
     /// </summary>
     public CommandOptions Commands { get; set; } = new();
-}
 
+    /// <summary>
+    /// Gets or sets the options for query handling.
+    /// </summary>
+    public QueryOptions Queries { get; set; } = new();
+}
