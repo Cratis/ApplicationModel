@@ -63,23 +63,26 @@ public class CommandResult
     /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing a missing handler.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
     /// <param name="type">The type of command that is missing a handler.</param>
     /// <returns>A <see cref="CommandResult"/>.</returns>
-    public static CommandResult MissingHandler(Type type) => new() { ExceptionMessages = [$"No handler found for command of type {type}"] };
+    public static CommandResult MissingHandler(CorrelationId correlationId, Type type) => new() { CorrelationId = correlationId, ExceptionMessages = [$"No handler found for command of type {type}"] };
 
     /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing an error.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
     /// <param name="message">The error message.</param>
     /// <returns>A <see cref="CommandResult"/>.</returns>
-    public static CommandResult Error(string message) => new() { ExceptionMessages = [message] };
+    public static CommandResult Error(CorrelationId correlationId, string message) => new() { CorrelationId = correlationId, ExceptionMessages = [message] };
 
     /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing an error.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
     /// <param name="exception">The exception.</param>
     /// <returns>A <see cref="CommandResult"/>.</returns>
-    public static CommandResult Error(Exception exception) => new() { ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
+    public static CommandResult Error(CorrelationId correlationId, Exception exception) => new() { CorrelationId = correlationId, ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
 
     /// <summary>
     /// Merges the results of one or more <see cref="CommandResult"/> instances into this.

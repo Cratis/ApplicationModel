@@ -21,25 +21,25 @@ public class with_failed_filters : given.a_query_pipeline
 
         _filterResult = new QueryResult
         {
-            CorrelationId = correlation_id,
+            CorrelationId = _correlationId,
             IsAuthorized = false
         };
 
-        query_performer.Dependencies.Returns(new List<Type>());
-        query_performer_providers.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
+        _queryPerformer.Dependencies.Returns(new List<Type>());
+        _queryPerformerProviders.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
         {
-            callInfo[1] = query_performer;
+            callInfo[1] = _queryPerformer;
             return true;
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
     }
 
-    async Task Because() => _result = await pipeline.Perform(_queryName, _parameters, _paging, _sorting);
+    async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
 
     [Fact] void should_return_filter_result() => _result.ShouldEqual(_filterResult);
     [Fact] void should_not_be_successful() => _result.IsSuccess.ShouldBeFalse();
     [Fact] void should_not_be_authorized() => _result.IsAuthorized.ShouldBeFalse();
-    [Fact] void should_not_call_query_performer() => query_performer.DidNotReceiveWithAnyArgs().Perform(Arg.Any<QueryContext>());
-    [Fact] void should_not_call_query_renderers() => query_renderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<QueryName>(), Arg.Any<object>());
+    [Fact] void should_not_call_query_performer() => _queryPerformer.DidNotReceiveWithAnyArgs().Perform(Arg.Any<QueryContext>());
+    [Fact] void should_not_call_query_renderers() => _queryRenderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<QueryName>(), Arg.Any<object>());
 }

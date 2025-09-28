@@ -19,23 +19,23 @@ public class with_null_query_data : given.a_query_pipeline
         _paging = Paging.NotPaged;
         _sorting = Sorting.None;
 
-        _filterResult = QueryResult.Success(correlation_id);
+        _filterResult = QueryResult.Success(_correlationId);
 
-        query_performer.Dependencies.Returns(new List<Type>());
-        query_performer_providers.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
+        _queryPerformer.Dependencies.Returns(new List<Type>());
+        _queryPerformerProviders.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
         {
-            callInfo[1] = query_performer;
+            callInfo[1] = _queryPerformer;
             return true;
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        query_performer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(null));
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(null));
     }
 
-    async Task Because() => _result = await pipeline.Perform(_queryName, _parameters, _paging, _sorting);
+    async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
 
     [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_correlation_id_from_filter_result() => _result.CorrelationId.ShouldEqual(correlation_id);
-    [Fact] void should_not_call_query_renderers() => query_renderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<QueryName>(), Arg.Any<object>());
+    [Fact] void should_have_correlation_id_from_filter_result() => _result.CorrelationId.ShouldEqual(_correlationId);
+    [Fact] void should_not_call_query_renderers() => _queryRenderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<QueryName>(), Arg.Any<object>());
     [Fact] void should_have_default_data() => _result.Data.ShouldBeNull();
 }

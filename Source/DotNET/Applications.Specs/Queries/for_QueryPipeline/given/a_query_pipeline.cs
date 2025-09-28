@@ -7,36 +7,36 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.given;
 
 public class a_query_pipeline : Specification
 {
-    protected QueryPipeline pipeline;
-    protected ICorrelationIdAccessor correlation_id_accessor;
-    protected IQueryContextManager query_context_manager;
+    protected QueryPipeline _pipeline;
+    protected ICorrelationIdAccessor _correlationIdAccessor;
+    protected IQueryContextManager _queryContextManager;
     protected IQueryFilters query_filters;
-    protected IQueryPerformerProviders query_performer_providers;
-    protected IQueryRenderers query_renderers;
-    protected IServiceProvider service_provider;
-    protected IQueryPerformer query_performer;
-    protected CorrelationId correlation_id;
+    protected IQueryPerformerProviders _queryPerformerProviders;
+    protected IQueryRenderers _queryRenderers;
+    protected IServiceProvider _serviceProvider;
+    protected IQueryPerformer _queryPerformer;
+    protected CorrelationId _correlationId;
 
     void Establish()
     {
-        correlation_id = CorrelationId.New();
+        _correlationId = CorrelationId.New();
 
-        correlation_id_accessor = Substitute.For<ICorrelationIdAccessor>();
-        correlation_id_accessor.Current.Returns(correlation_id);
+        _correlationIdAccessor = Substitute.For<ICorrelationIdAccessor>();
+        _correlationIdAccessor.Current.Returns(_correlationId);
 
-        query_context_manager = Substitute.For<IQueryContextManager>();
+        _queryContextManager = Substitute.For<IQueryContextManager>();
         query_filters = Substitute.For<IQueryFilters>();
-        query_performer_providers = Substitute.For<IQueryPerformerProviders>();
-        query_renderers = Substitute.For<IQueryRenderers>();
-        service_provider = Substitute.For<IServiceProvider>();
-        query_performer = Substitute.For<IQueryPerformer>();
+        _queryPerformerProviders = Substitute.For<IQueryPerformerProviders>();
+        _queryRenderers = Substitute.For<IQueryRenderers>();
+        _serviceProvider = Substitute.For<IServiceProvider>();
+        _queryPerformer = Substitute.For<IQueryPerformer>();
 
-        pipeline = new QueryPipeline(
-            correlation_id_accessor,
-            query_context_manager,
+        _pipeline = new QueryPipeline(
+            _correlationIdAccessor,
+            _queryContextManager,
             query_filters,
-            query_performer_providers,
-            query_renderers,
-            service_provider);
+            _queryPerformerProviders,
+            _queryRenderers,
+            _serviceProvider);
     }
 }

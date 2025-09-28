@@ -26,16 +26,16 @@ public class QueryPipeline(
     /// <inheritdoc/>
     public async Task<QueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
     {
-        var result = QueryResult.Success(correlationIdAccessor.Current);
+        var correlationId = GetCorrelationId();
+        var result = QueryResult.Success(correlationId);
         try
         {
             if (!queryPerformerProviders.TryGetPerformersFor(queryName, out var queryPerformer))
             {
-                return QueryResult.MissingPerformer(queryName);
+                return QueryResult.MissingPerformer(correlationId, queryName);
             }
 
             var dependencies = queryPerformer.Dependencies.Select(serviceProvider.GetRequiredService);
-            var correlationId = GetCorrelationId();
             var context = new QueryContext(queryName, correlationId, paging, sorting, parameters, dependencies);
             queryContextManager.Set(context);
 
@@ -52,7 +52,7 @@ public class QueryPipeline(
             var rendererResult = queryRenderers.Render(queryName, data);
             if (rendererResult is null)
             {
-                return QueryResult.Error("No renderer result");
+                return QueryResult.Error(correlationId, "No renderer result");
             }
             result.Data = rendererResult.Data;
             result.Paging = context.Paging == Paging.NotPaged ? PagingInfo.NotPaged : new PagingInfo(
@@ -64,7 +64,7 @@ public class QueryPipeline(
         }
         catch (Exception ex)
         {
-            result.MergeWith(QueryResult.Error(ex));
+            result.MergeWith(QueryResult.Error(correlationId, ex));
         }
 
         return result;

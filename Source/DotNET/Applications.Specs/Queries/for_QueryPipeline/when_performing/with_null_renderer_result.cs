@@ -1,8 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Execution;
-
 namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 
 public class with_null_renderer_result : given.a_query_pipeline
@@ -22,24 +20,24 @@ public class with_null_renderer_result : given.a_query_pipeline
         _paging = Paging.NotPaged;
         _sorting = Sorting.None;
 
-        _filterResult = QueryResult.Success(correlation_id);
+        _filterResult = QueryResult.Success(_correlationId);
         _queryData = new { name = "Test Data" };
 
-        query_performer.Dependencies.Returns(new List<Type>());
-        query_performer_providers.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
+        _queryPerformer.Dependencies.Returns(new List<Type>());
+        _queryPerformerProviders.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
         {
-            callInfo[1] = query_performer;
+            callInfo[1] = _queryPerformer;
             return true;
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        query_performer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
-        query_renderers.Render(_queryName, _queryData).Returns((QueryRendererResult?)null);
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
+        _queryRenderers.Render(_queryName, _queryData).Returns((QueryRendererResult?)null);
     }
 
-    async Task Because() => _result = await pipeline.Perform(_queryName, _parameters, _paging, _sorting);
+    async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
 
     [Fact] void should_return_unsuccessful_result() => _result.IsSuccess.ShouldBeFalse();
     [Fact] void should_have_error_message_about_no_renderer_result() => _result.ExceptionMessages.ShouldContain("No renderer result");
-    [Fact] void should_have_empty_correlation_id() => _result.CorrelationId.ShouldEqual(new CorrelationId(Guid.Empty));
+    [Fact] void should_have_empty_correlation_id() => _result.CorrelationId.ShouldEqual(_correlationId);
 }

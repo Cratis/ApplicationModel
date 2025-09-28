@@ -71,23 +71,26 @@ public class QueryResult
     /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing a missing performer.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>
     /// <param name="name">The name of the query that is missing a performer.</param>
     /// <returns>A <see cref="QueryResult"/>.</returns>
-    public static QueryResult MissingPerformer(QueryName name) => new() { ExceptionMessages = [$"No performer found for query {name}"] };
+    public static QueryResult MissingPerformer(CorrelationId correlationId, QueryName name) => new() { CorrelationId = correlationId, ExceptionMessages = [$"No performer found for query {name}"] };
 
     /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing an error.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>
     /// <param name="message">The error message.</param>
     /// <returns>A <see cref="QueryResult"/>.</returns>
-    public static QueryResult Error(string message) => new() { ExceptionMessages = [message] };
+    public static QueryResult Error(CorrelationId correlationId, string message) => new() { CorrelationId = correlationId, ExceptionMessages = [message] };
 
     /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing an error.
     /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>
     /// <param name="exception">The exception.</param>
     /// <returns>A <see cref="QueryResult"/>.</returns>
-    public static QueryResult Error(Exception exception) => new() { ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
+    public static QueryResult Error(CorrelationId correlationId, Exception exception) => new() { CorrelationId = correlationId, ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
 
     /// <summary>
     /// Merges the results of one or more <see cref="QueryResult"/> instances into this.

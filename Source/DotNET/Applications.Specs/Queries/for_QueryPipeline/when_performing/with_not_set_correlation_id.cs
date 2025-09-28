@@ -24,25 +24,25 @@ public class with_not_set_correlation_id : given.a_query_pipeline
         _paging = Paging.NotPaged;
         _sorting = Sorting.None;
 
-        correlation_id_accessor.Current.Returns(CorrelationId.NotSet);
+        _correlationIdAccessor.Current.Returns(CorrelationId.NotSet);
 
         _filterResult = QueryResult.Success(CorrelationId.NotSet);
         _queryData = new { name = "Test Data" };
         _rendererResult = new QueryRendererResult(100, new { renderedData = "Rendered Test Data" });
 
-        query_performer.Dependencies.Returns(new List<Type>());
-        query_performer_providers.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
+        _queryPerformer.Dependencies.Returns(new List<Type>());
+        _queryPerformerProviders.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
         {
-            callInfo[1] = query_performer;
+            callInfo[1] = _queryPerformer;
             return true;
         });
 
         query_filters.OnPerform(Arg.Do<QueryContext>(ctx => _capturedContext = ctx)).Returns(_filterResult);
-        query_performer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
-        query_renderers.Render(_queryName, _queryData).Returns(_rendererResult);
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
+        _queryRenderers.Render(_queryName, _queryData).Returns(_rendererResult);
     }
 
-    async Task Because() => _result = await pipeline.Perform(_queryName, _parameters, _paging, _sorting);
+    async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
 
     [Fact] void should_generate_new_correlation_id_for_context() => _capturedContext.CorrelationId.ShouldNotEqual(CorrelationId.NotSet);
     [Fact] void should_use_generated_correlation_id_consistently() => _capturedContext.CorrelationId.Value.ShouldNotEqual(Guid.Empty);

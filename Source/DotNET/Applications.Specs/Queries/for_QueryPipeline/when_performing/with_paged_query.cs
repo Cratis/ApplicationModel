@@ -21,23 +21,23 @@ public class with_paged_query : given.a_query_pipeline
         _paging = new Paging(2, 10, true);
         _sorting = new Sorting("Name", SortDirection.Ascending);
 
-        _filterResult = QueryResult.Success(correlation_id);
+        _filterResult = QueryResult.Success(_correlationId);
         _queryData = new[] { new { id = 1 }, new { id = 2 } };
         _rendererResult = new QueryRendererResult(150, _queryData);
 
-        query_performer.Dependencies.Returns(new List<Type>());
-        query_performer_providers.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
+        _queryPerformer.Dependencies.Returns(new List<Type>());
+        _queryPerformerProviders.TryGetPerformersFor(_queryName, out var _).Returns(callInfo =>
         {
-            callInfo[1] = query_performer;
+            callInfo[1] = _queryPerformer;
             return true;
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        query_performer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
-        query_renderers.Render(_queryName, _queryData).Returns(_rendererResult);
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
+        _queryRenderers.Render(_queryName, _queryData).Returns(_rendererResult);
     }
 
-    async Task Because() => _result = await pipeline.Perform(_queryName, _parameters, _paging, _sorting);
+    async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
 
     [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
     [Fact] void should_set_rendered_data_on_result() => _result.Data.ShouldEqual(_rendererResult.Data);

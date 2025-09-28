@@ -52,7 +52,7 @@ public static class CommandEndpointsExtensions
                     CommandResult commandResult;
                     if (command is null)
                     {
-                        commandResult = CommandResult.Error($"Could not deserialize command of type '{handler.CommandType}' from request body.");
+                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
                     }
                     else
                     {
