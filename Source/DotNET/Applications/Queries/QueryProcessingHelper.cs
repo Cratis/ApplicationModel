@@ -49,9 +49,10 @@ public static class QueryProcessingHelper
     {
         var sorting = ExtractSorting(httpContext);
         var paging = ExtractPaging(httpContext);
+        var parameters = ExtractParameters(httpContext);
         var correlationId = httpContext.GetCorrelationId();
 
-        var queryContext = new QueryContext(queryName, correlationId, paging, sorting);
+        var queryContext = new QueryContext(queryName, correlationId, paging, sorting, parameters);
         queryContextManager.Set(queryContext);
         return queryContext;
     }
@@ -96,6 +97,34 @@ public static class QueryProcessingHelper
             }
         }
         return Sorting.None;
+    }
+
+    /// <summary>
+    /// Extracts custom parameters from the HTTP request query string, excluding standard query processing parameters.
+    /// </summary>
+    /// <param name="httpContext">The HTTP context.</param>
+    /// <returns>A dictionary of custom parameters.</returns>
+    public static IDictionary<string, string> ExtractParameters(HttpContext httpContext)
+    {
+        var parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        var excludedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            SortByQueryStringKey,
+            SortDirectionQueryStringKey,
+            PageQueryStringKey,
+            PageSizeQueryStringKey
+        };
+
+        foreach (var kvp in httpContext.Request.Query)
+        {
+            if (!excludedKeys.Contains(kvp.Key) && !string.IsNullOrEmpty(kvp.Value))
+            {
+                parameters[kvp.Key] = kvp.Value.ToString();
+            }
+        }
+
+        return parameters;
     }
 
     /// <summary>

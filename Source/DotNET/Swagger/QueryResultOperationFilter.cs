@@ -27,13 +27,13 @@ public class QueryResultOperationFilter : IOperationFilter
             returnType = returnType.GetConceptValueType();
         }
 
-        var queryResultType = typeof(QueryResult<>).MakeGenericType(returnType);
+        var queryResultType = typeof(QueryResult);
 
         if (context.MethodInfo.ReturnType.IsEnumerable())
         {
             operation.Parameters.Add(new()
             {
-                Name = QueryActionFilter.SortByQueryStringKey,
+                Name = QueryProcessingHelper.SortByQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Sort by field name",
                 Required = false,
@@ -42,7 +42,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryActionFilter.SortDirectionQueryStringKey,
+                Name = QueryProcessingHelper.SortDirectionQueryStringKey,
                 In = ParameterLocation.Query,
                 Required = false,
                 Description = "Sort direction",
@@ -55,7 +55,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryActionFilter.PageSizeQueryStringKey,
+                Name = QueryProcessingHelper.PageSizeQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Number of items to limit a page to",
                 Required = false,
@@ -64,7 +64,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryActionFilter.PageQueryStringKey,
+                Name = QueryProcessingHelper.PageQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Page number to show",
                 Required = false,
