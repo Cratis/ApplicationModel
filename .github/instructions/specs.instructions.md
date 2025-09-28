@@ -16,6 +16,7 @@ Keep tests focused, isolated, and descriptive!
 
 - **File/Folder Structure:**
   - Organize tests by feature/domain, e.g. `Events/Constraints/for_UniqueConstraintProvider/when_providing.cs`.
+  - Use separate projects for specs, e.g. `Applications.Specs`.
   - Use descriptive folder and file names:
     - `for_<TypeUnderTest>/` for the unit under test
     - `when_<behavior>/` for behaviors with multiple outcomes
