@@ -75,6 +75,13 @@ public class CommandResult
     public static CommandResult Error(string message) => new() { ExceptionMessages = [message] };
 
     /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing an error.
+    /// </summary>
+    /// <param name="exception">The exception.</param>
+    /// <returns>A <see cref="CommandResult"/>.</returns>
+    public static CommandResult Error(Exception exception) => new() { ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
+
+    /// <summary>
     /// Merges the results of one or more <see cref="CommandResult"/> instances into this.
     /// </summary>
     /// <param name="commandResults">Params of <see cref="CommandResult"/> to merge with.</param>
