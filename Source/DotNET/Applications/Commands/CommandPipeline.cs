@@ -72,8 +72,7 @@ public class CommandPipeline(
         }
         catch (Exception ex)
         {
-            result.MergeWith(CommandResult.Error(ex.Message));
-            result.ExceptionStackTrace = ex.StackTrace ?? string.Empty;
+            result.MergeWith(CommandResult.Error(ex));
         }
 
         return result;
