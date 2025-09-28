@@ -12,11 +12,6 @@ namespace Cratis.Applications.Queries;
 public class QueryResult
 {
     /// <summary>
-    /// Represents a successful command result.
-    /// </summary>
-    public static readonly QueryResult Success = new();
-
-    /// <summary>
     /// Gets or inits the <see cref="PagingInfo"/> for the query.
     /// </summary>
     public PagingInfo Paging { get; set; } = PagingInfo.NotPaged;
@@ -67,6 +62,13 @@ public class QueryResult
     public string ExceptionStackTrace { get; set; } = string.Empty;
 
     /// <summary>
+    /// Represents a successful command result.
+    /// </summary>
+    /// <param name="correlationId">The correlation ID.</param>
+    /// <returns>A successful <see cref="QueryResult"/>.</returns>
+    public static QueryResult Success(CorrelationId correlationId) => new() { CorrelationId = correlationId };
+
+    /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing a missing performer.
     /// </summary>
     /// <param name="name">The name of the query that is missing a performer.</param>
@@ -79,6 +81,13 @@ public class QueryResult
     /// <param name="message">The error message.</param>
     /// <returns>A <see cref="QueryResult"/>.</returns>
     public static QueryResult Error(string message) => new() { ExceptionMessages = [message] };
+
+    /// <summary>
+    /// Creates a new <see cref="QueryResult"/> representing an error.
+    /// </summary>
+    /// <param name="exception">The exception.</param>
+    /// <returns>A <see cref="QueryResult"/>.</returns>
+    public static QueryResult Error(Exception exception) => new() { ExceptionMessages = [exception.Message], ExceptionStackTrace = exception.StackTrace ?? string.Empty };
 
     /// <summary>
     /// Merges the results of one or more <see cref="QueryResult"/> instances into this.
