@@ -43,7 +43,9 @@ public static class CommandEndpointsExtensions
             {
                 var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
                 var baseUrl = $"/{string.Join('/', segments)}";
-                var url = options.IncludeTypeNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
+                var typeName = options.IncludeTypeNameInRoute ? handler.CommandType.Name : string.Empty;
+
+                var url = options.IncludeTypeNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
                 group.MapPost(url, async context =>
                 {

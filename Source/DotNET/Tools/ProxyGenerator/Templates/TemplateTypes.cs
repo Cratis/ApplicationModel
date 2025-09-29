@@ -49,6 +49,7 @@ public static class TemplateTypes
     {
         Handlebars.RegisterHelper("camelcase", (writer, _, parameters) => writer.WriteSafeString(parameters[0].ToString()!.ToCamelCase()));
         Handlebars.RegisterHelper("lowercase", (writer, _, parameters) => writer.WriteSafeString(parameters[0].ToString()!.ToLowerInvariant()));
+        Handlebars.RegisterHelper("kebabcase", (writer, _, parameters) => writer.WriteSafeString(parameters[0].ToString()!.ToKebabCase()));
     }
 
     static string GetTemplate(string name)

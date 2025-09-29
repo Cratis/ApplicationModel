@@ -26,7 +26,7 @@ public static class CommandExtensions
         var location = commandType.Namespace?.Split('.') ?? [];
         var segments = location.Skip(segmentsToSkip);
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
-        var route = skipCommandNameInRoute ? baseUrl : $"{baseUrl}/{commandType.Name}";
+        var route = skipCommandNameInRoute ? baseUrl : $"{baseUrl}/{commandType.Name.ToKebabCase()}";
         route = route.ToLowerInvariant();
         var handleMethod = commandType.GetHandleMethod();
 

@@ -73,7 +73,7 @@ public static class QueryExtensions
         // Build the route for the query
         var location = readModelType.Namespace?.Split('.') ?? [];
         var segments = location.Skip(segmentsToSkip);
-        var route = $"/{apiPrefix}/{string.Join('/', segments)}/{method.Name}".ToLowerInvariant();
+        var route = $"/{apiPrefix}/{string.Join('/', segments)}/{method.Name.ToKebabCase()}".ToLowerInvariant();
 
         // Generate imports and handle complex types
         var relativePath = readModelType.ResolveTargetPath(segmentsToSkip);
