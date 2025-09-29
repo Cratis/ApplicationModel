@@ -24,8 +24,9 @@ public class QueryPerformerProvider : IQueryPerformerProvider
     {
         var readModelTypes = types.All.Where(t => t.IsReadModel());
         _performers = readModelTypes
-            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static))
-            .Select(m => new ModelBoundQueryPerformer(m.DeclaringType!, m, serviceProviderIsService))
+            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.IsValidQueryFor(t))
+                .Select(m => new ModelBoundQueryPerformer(t, m, serviceProviderIsService)))
             .ToDictionary(p => p.Name, p => (IQueryPerformer)p);
     }
 
