@@ -47,6 +47,16 @@
 - Use file-scoped namespace declarations.
 - Use single-line using directives.
 - For types that does not have an implementation, don't add a body (e.g., `public interface IMyInterface;`).
+- Prefer using `record` types for immutable data structures.
+- Use expression-bodied members for simple methods and properties.
+- Use `async` and `await` for asynchronous programming.
+- Use `Task` and `Task<T>` for asynchronous methods.
+- Use `IEnumerable<T>` for collections that are not modified.
+- Never return mutable collections from public APIs.
+- Don't use regions in the code.
+- Never add postfixes like Async, Impl, etc. to class or method names.
+- Favor collection initializers and object initializers.
+- Use string interpolation instead of string.Format or concatenation.
 
 ## Nullable Reference Types
 
