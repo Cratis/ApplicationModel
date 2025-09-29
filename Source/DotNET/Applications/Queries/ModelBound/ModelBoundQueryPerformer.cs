@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
+using Cratis.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cratis.Applications.Queries.ModelBound;
@@ -53,38 +54,9 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     public async Task<object?> Perform(QueryContext context)
     {
         var parameters = _performMethod.GetParameters();
-        var args = new object?[parameters.Length];
-
         var dependencies = context.Dependencies?.ToArray() ?? [];
-        var dependencyIndex = 0;
-
         var queryStringParameters = context.Arguments ?? QueryArguments.Empty;
-
-        for (var i = 0; i < parameters.Length; i++)
-        {
-            var parameter = parameters[i];
-
-            // Check if this parameter is a dependency (service)
-            if (_dependencies.Contains(parameter))
-            {
-                if (dependencyIndex < dependencies.Length)
-                {
-                    args[i] = dependencies[dependencyIndex];
-                    dependencyIndex++;
-                }
-            }
-            else
-            {
-                // This is a query parameter, try to match from query string
-                var matchingQueryParam = queryStringParameters.FirstOrDefault(kvp =>
-                    string.Equals(kvp.Key, parameter.Name, StringComparison.OrdinalIgnoreCase));
-
-                if (!string.IsNullOrEmpty(matchingQueryParam.Key))
-                {
-                    args[i] = matchingQueryParam.Value.ConvertTo(parameter.ParameterType);
-                }
-            }
-        }
+        var args = GetMethodArguments(parameters, dependencies, queryStringParameters);
 
         var result = _performMethod.Invoke(null, args);
 
@@ -110,5 +82,51 @@ public class ModelBoundQueryPerformer : IQueryPerformer
         }
 
         return result;
+    }
+
+    object?[] GetMethodArguments(ParameterInfo[] parameters, object[] dependencies, QueryArguments queryStringParameters)
+    {
+        var dependencyIndex = 0;
+        var args = new object?[parameters.Length];
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            var parameter = parameters[i];
+
+            if (_dependencies.Contains(parameter))
+            {
+                if (dependencyIndex < dependencies.Length)
+                {
+                    args[i] = dependencies[dependencyIndex];
+                    dependencyIndex++;
+                }
+            }
+            else
+            {
+                var matchingQueryParam = queryStringParameters.FirstOrDefault(kvp =>
+                    string.Equals(kvp.Key, parameter.Name, StringComparison.OrdinalIgnoreCase));
+
+                if (!string.IsNullOrEmpty(matchingQueryParam.Key))
+                {
+                    args[i] = matchingQueryParam.Value.ConvertTo(parameter.ParameterType);
+                }
+            }
+        }
+
+        ValidateArguments(parameters, args);
+        return args;
+    }
+
+    void ValidateArguments(ParameterInfo[] parameters, object?[] args)
+    {
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            var parameter = parameters[i];
+            var arg = args[i];
+
+            if (arg is null && !parameter.ParameterType.IsNullable())
+            {
+                throw new MissingArgumentForQuery(parameter.Name ?? "unknown", parameter.ParameterType, FullyQualifiedName);
+            }
+        }
     }
 }
