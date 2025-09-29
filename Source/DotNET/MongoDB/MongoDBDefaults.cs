@@ -14,7 +14,12 @@ namespace Cratis.Applications.MongoDB;
 /// </summary>
 public static class MongoDBDefaults
 {
+#if NET9_0
+    static readonly Lock _lock = new();
+#else
     static readonly object _lock = new();
+#endif
+
     static bool _initialized;
 
     /// <summary>
