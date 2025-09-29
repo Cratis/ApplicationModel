@@ -17,16 +17,22 @@ public static class QueryExtensions
     /// <param name="readModelType">Read model type to convert.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
+    /// <param name="skipTypeNameInRoute">True if the command name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>Collection of converted <see cref="QueryDescriptor"/>.</returns>
-    public static IEnumerable<QueryDescriptor> ToQueryDescriptors(this TypeInfo readModelType, string targetPath, int segmentsToSkip, string apiPrefix)
+    public static IEnumerable<QueryDescriptor> ToQueryDescriptors(
+        this TypeInfo readModelType,
+        string targetPath,
+        int segmentsToSkip,
+        bool skipTypeNameInRoute,
+        string apiPrefix)
     {
         var queryMethods = readModelType.GetQueryMethods();
         var descriptors = new List<QueryDescriptor>();
 
         foreach (var method in queryMethods)
         {
-            var descriptor = method.ToQueryDescriptor(readModelType, targetPath, segmentsToSkip, apiPrefix);
+            var descriptor = method.ToQueryDescriptor(readModelType, targetPath, segmentsToSkip, skipTypeNameInRoute, apiPrefix);
             descriptors.Add(descriptor);
         }
 
@@ -40,13 +46,19 @@ public static class QueryExtensions
     /// <param name="readModelType">The read model type that contains this method.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
+    /// <param name="skipTypeNameInRoute">True if the command name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>Converted <see cref="QueryDescriptor"/>.</returns>
-    public static QueryDescriptor ToQueryDescriptor(this MethodInfo method, TypeInfo readModelType, string targetPath, int segmentsToSkip, string apiPrefix)
+    public static QueryDescriptor ToQueryDescriptor(
+        this MethodInfo method,
+        TypeInfo readModelType,
+        string targetPath,
+        int segmentsToSkip,
+        bool skipTypeNameInRoute,
+        string apiPrefix)
     {
         var typesInvolved = new List<Type>();
 
-        // Get the response model from the method's return type
         var responseModel = ModelDescriptor.Empty;
         if (method.ReturnType.IsAssignableTo<Task>() && method.ReturnType.IsGenericType)
         {
@@ -63,19 +75,17 @@ public static class QueryExtensions
             typesInvolved.Add(responseModel.Type);
         }
 
-        // Get query arguments - only primitives and concepts are query parameters
         var arguments = method.GetQueryArgumentDescriptors();
         var properties = method.GetQueryPropertyDescriptors();
 
         var argumentsWithComplexTypes = arguments.Where(_ => !_.OriginalType.IsKnownType());
         typesInvolved.AddRange(argumentsWithComplexTypes.Select(_ => _.OriginalType));
 
-        // Build the route for the query
         var location = readModelType.Namespace?.Split('.') ?? [];
         var segments = location.Skip(segmentsToSkip);
-        var route = $"/{apiPrefix}/{string.Join('/', segments)}/{method.Name.ToKebabCase()}".ToLowerInvariant();
+        var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
+        var route = skipTypeNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
 
-        // Generate imports and handle complex types
         var relativePath = readModelType.ResolveTargetPath(segmentsToSkip);
         var imports = typesInvolved
                         .GetImports(targetPath, relativePath, segmentsToSkip)

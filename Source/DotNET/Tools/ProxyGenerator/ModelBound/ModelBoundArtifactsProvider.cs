@@ -16,22 +16,22 @@ public class ModelBoundArtifactsProvider : IArtifactsProvider
     /// <param name="message">Logger to use for outputting messages.</param>
     /// <param name="outputPath">Output path for command.</param>
     /// <param name="segmentsToSkip">Segments to skip when generating output paths.</param>
-    /// <param name="skipCommandNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="skipTypeNameInRoute">True if the command name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     public ModelBoundArtifactsProvider(
         Action<string> message,
         string outputPath,
         int segmentsToSkip,
-        bool skipCommandNameInRoute,
+        bool skipTypeNameInRoute,
         string apiPrefix)
     {
         message($"  Discover model based commands and queries from {TypeExtensions.Assemblies.Count()} assemblies");
 
         var commands = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsCommand()).ToArray();
-        Commands = commands.Select(_ => _.ToCommandDescriptor(outputPath, segmentsToSkip, skipCommandNameInRoute, apiPrefix)).ToArray();
+        Commands = commands.Select(_ => _.ToCommandDescriptor(outputPath, segmentsToSkip, skipTypeNameInRoute, apiPrefix)).ToArray();
 
         var queries = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsQuery()).ToArray();
-        Queries = queries.SelectMany(_ => _.ToQueryDescriptors(outputPath, segmentsToSkip, apiPrefix)).ToArray();
+        Queries = queries.SelectMany(_ => _.ToQueryDescriptors(outputPath, segmentsToSkip, skipTypeNameInRoute, apiPrefix)).ToArray();
     }
 
     /// <inheritdoc/>
