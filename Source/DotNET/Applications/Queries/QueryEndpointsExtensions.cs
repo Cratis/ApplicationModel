@@ -35,19 +35,23 @@ public static class QueryEndpointsExtensions
             var jsonSerializerOptions = Globals.JsonSerializerOptions;
 
             var prefix = options.RoutePrefix.Trim('/');
-            var group = endpoints.MapGroup($"/{prefix}").WithTags("Queries").WithOpenApi();
+            var group = endpoints.MapGroup($"/{prefix}");
 
             foreach (var performer in queryPerformerProviders.Performers)
             {
-                var segments = performer.Location.Skip(options.SegmentsToSkipForRoute).Select(segment => segment.ToKebabCase());
+                var location = performer.Location.Skip(options.SegmentsToSkipForRoute);
+                var segments = location.Select(segment => segment.ToKebabCase());
                 var baseUrl = $"/{string.Join('/', segments)}";
                 var typeName = options.IncludeQueryNameInRoute ? performer.Name.ToString() : string.Empty;
 
                 var url = options.IncludeQueryNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
 
-                group.MapGet(url, async context =>
+                // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
+                //       So we use HttpRequest and HttpResponse instead
+                group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
                 {
+                    var context = request.HttpContext;
                     context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
 
                     var paging = context.GetPagingInfo();
@@ -70,9 +74,13 @@ public static class QueryEndpointsExtensions
                     }
 
                     // Handle non-streaming results
-                    context.Response.SetResponseStatusCode(queryResult);
-                    await context.Response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                });
+                    response.SetResponseStatusCode(queryResult);
+                    await response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                })
+                .WithTags(string.Join('.', location))
+                .WithName($"Execute{performer.Name}")
+                .WithSummary($"Execute {performer.Name} query")
+                .WithOpenApi();
             }
         }
 
