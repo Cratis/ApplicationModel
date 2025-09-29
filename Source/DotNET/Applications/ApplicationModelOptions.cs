@@ -27,12 +27,7 @@ public class ApplicationModelOptions
     public Type? IdentityDetailsProvider { get; set; }
 
     /// <summary>
-    /// Gets or sets the options for command handling.
+    /// Gets or sets the options for generated API endpoints (commands and queries).
     /// </summary>
-    public CommandOptions Commands { get; set; } = new();
-
-    /// <summary>
-    /// Gets or sets the options for query handling.
-    /// </summary>
-    public QueryOptions Queries { get; set; } = new();
+    public ApiEndpointOptions GeneratedApis { get; set; } = new();
 }

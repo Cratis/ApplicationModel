@@ -30,7 +30,7 @@ public static class CommandEndpointsExtensions
         if (app is IEndpointRouteBuilder endpoints)
         {
             var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
-            var options = appModelOptions.Commands;
+            var options = appModelOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
             var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
@@ -43,7 +43,7 @@ public static class CommandEndpointsExtensions
             {
                 var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
                 var baseUrl = $"/{string.Join('/', segments)}";
-                var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
+                var url = options.IncludeTypeNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
                 url = url.ToLowerInvariant();
                 group.MapPost(url, async context =>
                 {

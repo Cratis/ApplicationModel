@@ -30,7 +30,7 @@ public static class QueryEndpointsExtensions
         if (app is IEndpointRouteBuilder endpoints)
         {
             var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
-            var options = appModelOptions.Queries;
+            var options = appModelOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var queryPipeline = app.ApplicationServices.GetRequiredService<IQueryPipeline>();
             var queryPerformerProviders = app.ApplicationServices.GetRequiredService<IQueryPerformerProviders>();
@@ -43,7 +43,7 @@ public static class QueryEndpointsExtensions
             {
                 var segments = performer.Location.Skip(options.SegmentsToSkipForRoute);
                 var baseUrl = $"/{string.Join('/', segments)}";
-                var url = options.IncludeQueryNameInRoute ? $"{baseUrl}/{performer.Name}" : baseUrl;
+                var url = options.IncludeTypeNameInRoute ? $"{baseUrl}/{performer.Name}" : baseUrl;
                 url = url.ToLowerInvariant();
 
                 group.MapGet(url, async context =>

@@ -4,22 +4,22 @@
 namespace Cratis.Applications;
 
 /// <summary>
-/// Represents the options for query handling.
+/// Represents the options for API endpoints.
 /// </summary>
-public class QueryOptions
+public class ApiEndpointOptions
 {
     /// <summary>
-    /// Gets or sets the route prefix to use for queries.
+    /// Gets or sets the route prefix to use for endpoints.
     /// </summary>
     public string RoutePrefix { get; set; } = "api";
 
     /// <summary>
-    /// Number of segments to skip from the start of the query type's namespace when constructing the route.
+    /// Number of segments to skip from the start of the type's namespace when constructing the route.
     /// </summary>
     public int SegmentsToSkipForRoute { get; set; }
 
     /// <summary>
-    /// Whether to include the query name as the last segment of the route.
+    /// Whether to include the type name as the last segment of the route.
     /// </summary>
-    public bool IncludeQueryNameInRoute { get; set; } = true;
+    public bool IncludeTypeNameInRoute { get; set; } = true;
 }
