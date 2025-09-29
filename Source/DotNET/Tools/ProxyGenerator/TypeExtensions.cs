@@ -615,6 +615,21 @@ public static class TypeExtensions
         return ConceptMap.GetConceptValueType(type);
     }
 
+    /// <summary>
+    /// Check if a type implements an open generic type.
+    /// </summary>
+    /// <param name="type"><see cref="Type"/> to check.</param>
+    /// <param name="openGenericType">Open generic <see cref="Type"/> to check for.</param>
+    /// <returns>True if type implements the open generic <see cref="Type"/>.</returns>
+    public static bool ImplementsOpenGeneric(this Type type, Type openGenericType)
+    {
+        var openGenericTypeInfo = openGenericType.GetTypeInfo();
+        var typeInfo = type.GetTypeInfo();
+
+        return typeInfo.GetInterfaces()
+            .Any(i => i.GetTypeInfo().IsGenericType && i.GetTypeInfo().GetGenericTypeDefinition().GetTypeInfo() == openGenericTypeInfo);
+    }
+
     static void InitializeWellKnownTypes()
     {
         var assembly = _metadataLoadContext!.CoreAssembly!;
