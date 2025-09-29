@@ -41,4 +41,19 @@ public static class IdentityProviderEndpointExtensions
 
         return endpoints;
     }
+
+    /// <summary>
+    /// Map identity provider endpoints.
+    /// </summary>
+    /// <param name="app"><see cref="IApplicationBuilder"/> to extend.</param>
+    /// <returns><see cref="IApplicationBuilder"/> for continuation.</returns>
+    public static IApplicationBuilder MapIdentityProvider(this IApplicationBuilder app)
+    {
+        if (app is IEndpointRouteBuilder endpoints)
+        {
+            MapIdentityProvider(endpoints, app);
+        }
+
+        return app;
+    }
 }
