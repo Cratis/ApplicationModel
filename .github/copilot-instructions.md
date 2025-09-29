@@ -58,6 +58,16 @@
 - Favor collection initializers and object initializers.
 - Use string interpolation instead of string.Format or concatenation.
 
+## Exceptions
+
+- Use exceptions for exceptional situations only.
+- Don't use exceptions for control flow.
+- Always provide a meaningful message when throwing an exception.
+- Always create a custom exception type that derives from Exception.
+- Never use any built-in exception types like InvalidOperationException, ArgumentException, etc.
+- Add XML documentation for exceptions being thrown.
+- XML documentation for exception should start with "The exception that is thrown when ...".
+
 ## Nullable Reference Types
 
 - Always use is null or is not null instead of == null or != null.
