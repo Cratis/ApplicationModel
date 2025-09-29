@@ -96,7 +96,23 @@ public static class QueryHttpExtensions
         {
             if (!excludedKeys.Contains(kvp.Key) && !string.IsNullOrEmpty(kvp.Value))
             {
-                arguments[kvp.Key] = kvp.Value.ToString();
+                var stringValue = kvp.Value.ToString();
+
+                var parameter = performer.Parameters.FirstOrDefault(p =>
+                    string.Equals(p.Name, kvp.Key, StringComparison.OrdinalIgnoreCase));
+
+                if (parameter is not null)
+                {
+                    var convertedValue = stringValue.ConvertTo(parameter.Type);
+                    if (convertedValue is not null)
+                    {
+                        arguments[kvp.Key] = convertedValue;
+                    }
+                }
+                else
+                {
+                    arguments[kvp.Key] = stringValue;
+                }
             }
         }
 
