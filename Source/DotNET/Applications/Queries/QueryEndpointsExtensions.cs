@@ -25,8 +25,6 @@ public static class QueryEndpointsExtensions
     /// <returns><see cref="IApplicationBuilder"/> for continuation.</returns>
     public static IApplicationBuilder UseQueryEndpoints(this IApplicationBuilder app)
     {
-        app.UseRouting();
-
         if (app is IEndpointRouteBuilder endpoints)
         {
             var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
