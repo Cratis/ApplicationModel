@@ -24,6 +24,12 @@ public class with_mixed_dependencies_and_query_parameters : given.a_model_bound_
 
     void Establish()
     {
+        // Configure mock so that 'object' type is considered a service (dependency)
+        // while 'string' and 'int' are query parameters
+        _serviceProviderIsService.IsService(typeof(object)).Returns(true);
+        _serviceProviderIsService.IsService(typeof(string)).Returns(false);
+        _serviceProviderIsService.IsService(typeof(int)).Returns(false);
+
         var parameters = new QueryArguments
         {
             ["name"] = "Mixed Example",

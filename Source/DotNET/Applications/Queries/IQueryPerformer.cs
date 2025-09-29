@@ -27,6 +27,14 @@ public interface IQueryPerformer
     IEnumerable<Type> Dependencies { get; }
 
     /// <summary>
+    /// Gets the query parameters for the performer.
+    /// </summary>
+    /// <remarks>
+    /// This includes parameters that are not dependencies, typically those that come from query string or request parameters.
+    /// </remarks>
+    QueryParameters Parameters { get; }
+
+    /// <summary>
     /// Renders the given query.
     /// </summary>
     /// <param name="context">The context for the query to render.</param>

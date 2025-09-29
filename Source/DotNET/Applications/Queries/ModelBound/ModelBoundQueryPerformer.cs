@@ -3,29 +3,53 @@
 
 using System.ComponentModel;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Cratis.Applications.Queries.ModelBound;
 
 /// <summary>
 /// Represents a model bound query performer.
 /// </summary>
-/// <param name="readModelType">The type of the read model.</param>
-/// <param name="performMethod">The method info of the perform method.</param>
-public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod) : IQueryPerformer
+public class ModelBoundQueryPerformer : IQueryPerformer
 {
-    /// <inheritdoc/>
-    public QueryName Name { get; } = $"{readModelType.FullName}.{performMethod.Name}";
+    readonly IEnumerable<ParameterInfo> _dependencies;
+    readonly IEnumerable<ParameterInfo> _queryParameters;
+    readonly MethodInfo _performMethod;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ModelBoundQueryPerformer"/> class.
+    /// </summary>
+    /// <param name="readModelType">The type of the read model.</param>
+    /// <param name="performMethod">The method info of the perform method.</param>
+    /// <param name="serviceProviderIsService">Service to determine if a type is registered as a service.</param>
+    public ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod, IServiceProviderIsService serviceProviderIsService)
+    {
+        Name = $"{readModelType.FullName}.{performMethod.Name}";
+        Location = readModelType.Namespace?.Split('.') ?? [];
+
+        _dependencies = performMethod.GetParameters().Where(p => serviceProviderIsService.IsService(p.ParameterType));
+        _queryParameters = performMethod.GetParameters().Where(p => !serviceProviderIsService.IsService(p.ParameterType));
+        Dependencies = _dependencies.Select(p => p.ParameterType);
+        Parameters = new(_queryParameters.Select(p => new QueryParameter(p.Name ?? string.Empty, p.ParameterType)));
+        _performMethod = performMethod;
+    }
 
     /// <inheritdoc/>
-    public IEnumerable<string> Location { get; } = readModelType.Namespace?.Split('.') ?? [];
+    public QueryName Name { get; }
 
     /// <inheritdoc/>
-    public IEnumerable<Type> Dependencies { get; } = performMethod.GetParameters().Select(p => p.ParameterType);
+    public IEnumerable<string> Location { get; }
+
+    /// <inheritdoc/>
+    public IEnumerable<Type> Dependencies { get; }
+
+    /// <inheritdoc/>
+    public QueryParameters Parameters { get; }
 
     /// <inheritdoc/>
     public async Task<object?> Perform(QueryContext context)
     {
-        var parameters = performMethod.GetParameters();
+        var parameters = _performMethod.GetParameters();
         var args = new object?[parameters.Length];
 
         var dependencies = context.Dependencies?.ToArray() ?? [];
@@ -37,21 +61,29 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
         {
             var parameter = parameters[i];
 
-            var matchingQueryParam = queryStringParameters.FirstOrDefault(kvp =>
-                string.Equals(kvp.Key, parameter.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (!string.IsNullOrEmpty(matchingQueryParam.Key))
+            // Check if this parameter is a dependency (service)
+            if (_dependencies.Contains(parameter))
             {
-                args[i] = ConvertParameterValue(matchingQueryParam.Value, parameter.ParameterType);
+                if (dependencyIndex < dependencies.Length)
+                {
+                    args[i] = dependencies[dependencyIndex];
+                    dependencyIndex++;
+                }
             }
-            else if (dependencyIndex < dependencies.Length)
+            else
             {
-                args[i] = dependencies[dependencyIndex];
-                dependencyIndex++;
+                // This is a query parameter, try to match from query string
+                var matchingQueryParam = queryStringParameters.FirstOrDefault(kvp =>
+                    string.Equals(kvp.Key, parameter.Name, StringComparison.OrdinalIgnoreCase));
+
+                if (!string.IsNullOrEmpty(matchingQueryParam.Key))
+                {
+                    args[i] = ConvertParameterValue(matchingQueryParam.Value, parameter.ParameterType);
+                }
             }
         }
 
-        var result = performMethod.Invoke(null, args);
+        var result = _performMethod.Invoke(null, args);
 
         if (result is null)
         {
@@ -60,7 +92,7 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
 
         if (result is Task task)
         {
-            if (performMethod.ReturnType != typeof(Task))
+            if (_performMethod.ReturnType != typeof(Task))
             {
                 var type = task.GetType();
                 if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))

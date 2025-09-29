@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Cratis.Types;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Cratis.Applications.Queries.ModelBound;
 
@@ -18,12 +19,13 @@ public class QueryPerformerProvider : IQueryPerformerProvider
     /// Initializes a new instance of the <see cref="QueryPerformerProvider"/> class.
     /// </summary>
     /// <param name="types">The types to scan for read models.</param>
-    public QueryPerformerProvider(ITypes types)
+    /// <param name="serviceProviderIsService">Service to determine if a type is registered as a service.</param>
+    public QueryPerformerProvider(ITypes types, IServiceProviderIsService serviceProviderIsService)
     {
         var readModelTypes = types.All.Where(t => t.IsReadModel());
         _performers = readModelTypes
             .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static))
-            .Select(m => new ModelBoundQueryPerformer(m.DeclaringType!, m))
+            .Select(m => new ModelBoundQueryPerformer(m.DeclaringType!, m, serviceProviderIsService))
             .ToDictionary(p => p.Name, p => (IQueryPerformer)p);
     }
 
