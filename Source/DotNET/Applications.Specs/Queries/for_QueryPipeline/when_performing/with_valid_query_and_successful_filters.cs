@@ -6,7 +6,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 public class with_valid_query_and_successful_filters : given.a_query_pipeline
 {
     QueryName _queryName;
-    object _parameters;
+    Dictionary<string, object> _parameters;
     Paging _paging;
     Sorting _sorting;
     QueryResult _filterResult;
@@ -18,7 +18,7 @@ public class with_valid_query_and_successful_filters : given.a_query_pipeline
     void Establish()
     {
         _queryName = "TestQuery";
-        _parameters = new { id = 42 };
+        _parameters = new() { { "id", 42 } };
         _paging = Paging.NotPaged;
         _sorting = Sorting.None;
 

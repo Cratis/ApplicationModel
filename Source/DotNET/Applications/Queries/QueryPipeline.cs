@@ -24,7 +24,7 @@ public class QueryPipeline(
     IServiceProvider serviceProvider) : IQueryPipeline
 {
     /// <inheritdoc/>
-    public async Task<QueryResult> Perform(QueryName queryName, object parameters, Paging paging, Sorting sorting)
+    public async Task<QueryResult> Perform(QueryName queryName, IDictionary<string, object> parameters, Paging paging, Sorting sorting)
     {
         var correlationId = GetCorrelationId();
         var result = QueryResult.Success(correlationId);

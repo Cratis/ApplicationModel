@@ -20,7 +20,7 @@ public class with_case_insensitive_parameter_matching : given.a_model_bound_quer
 
     void Establish()
     {
-        var parameters = new Dictionary<string, string>
+        var parameters = new Dictionary<string, object>
         {
             ["NAME"] = "Jane Smith",
             ["Age"] = "30"

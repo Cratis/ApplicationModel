@@ -33,7 +33,7 @@ public class QueryResultOperationFilter : IOperationFilter
         {
             operation.Parameters.Add(new()
             {
-                Name = QueryProcessingHelper.SortByQueryStringKey,
+                Name = QueryHttpExtensions.SortByQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Sort by field name",
                 Required = false,
@@ -42,7 +42,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryProcessingHelper.SortDirectionQueryStringKey,
+                Name = QueryHttpExtensions.SortDirectionQueryStringKey,
                 In = ParameterLocation.Query,
                 Required = false,
                 Description = "Sort direction",
@@ -55,7 +55,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryProcessingHelper.PageSizeQueryStringKey,
+                Name = QueryHttpExtensions.PageSizeQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Number of items to limit a page to",
                 Required = false,
@@ -64,7 +64,7 @@ public class QueryResultOperationFilter : IOperationFilter
 
             operation.Parameters.Add(new()
             {
-                Name = QueryProcessingHelper.PageQueryStringKey,
+                Name = QueryHttpExtensions.PageQueryStringKey,
                 In = ParameterLocation.Query,
                 Description = "Page number to show",
                 Required = false,

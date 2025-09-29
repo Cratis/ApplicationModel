@@ -6,7 +6,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 public class with_paged_query : given.a_query_pipeline
 {
     QueryName _queryName;
-    object _parameters;
+    Dictionary<string, object> _parameters;
     Paging _paging;
     Sorting _sorting;
     QueryResult _filterResult;
@@ -17,7 +17,7 @@ public class with_paged_query : given.a_query_pipeline
     void Establish()
     {
         _queryName = "PagedQuery";
-        _parameters = new { filter = "test" };
+        _parameters = new() { { "filter", "test" } };
         _paging = new Paging(2, 10, true);
         _sorting = new Sorting("Name", SortDirection.Ascending);
 

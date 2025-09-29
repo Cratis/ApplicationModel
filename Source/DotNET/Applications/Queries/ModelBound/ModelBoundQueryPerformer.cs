@@ -31,7 +31,7 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
         var dependencies = context.Dependencies?.ToArray() ?? [];
         var dependencyIndex = 0;
 
-        var queryStringParameters = context.Parameters as IDictionary<string, string> ?? new Dictionary<string, string>();
+        var queryStringParameters = context.Parameters ?? new Dictionary<string, object>();
 
         for (var i = 0; i < parameters.Length; i++)
         {
@@ -77,9 +77,49 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
         return result;
     }
 
-    static object? ConvertParameterValue(string value, Type targetType)
+    static object? ConvertParameterValue(object value, Type targetType)
     {
-        if (string.IsNullOrEmpty(value))
+        if (value is null)
+        {
+            return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+        }
+
+        // If the value is already the target type, return it directly
+        if (targetType.IsInstanceOfType(value))
+        {
+            return value;
+        }
+
+        // Handle concepts first
+        if (targetType.IsConcept())
+        {
+            var underlyingType = targetType.GetConceptValueType();
+            var convertedValue = ConvertToUnderlyingType(value, underlyingType);
+            if (convertedValue is not null)
+            {
+                return ConceptFactory.CreateConceptInstance(targetType, convertedValue);
+            }
+            return null;
+        }
+
+        return ConvertToUnderlyingType(value, targetType);
+    }
+
+    static object? ConvertToUnderlyingType(object value, Type targetType)
+    {
+        if (value is null)
+        {
+            return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+        }
+
+        // If the value is already the target type, return it directly
+        if (targetType.IsInstanceOfType(value))
+        {
+            return value;
+        }
+
+        var stringValue = value.ToString();
+        if (string.IsNullOrEmpty(stringValue))
         {
             return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
         }
@@ -87,40 +127,40 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
         var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
         if (underlyingType == typeof(string))
         {
-            return value;
+            return stringValue;
         }
 
         try
         {
             if (underlyingType == typeof(int))
-                return int.Parse(value);
+                return int.Parse(stringValue);
             if (underlyingType == typeof(long))
-                return long.Parse(value);
+                return long.Parse(stringValue);
             if (underlyingType == typeof(short))
-                return short.Parse(value);
+                return short.Parse(stringValue);
             if (underlyingType == typeof(byte))
-                return byte.Parse(value);
+                return byte.Parse(stringValue);
             if (underlyingType == typeof(bool))
-                return bool.Parse(value);
+                return bool.Parse(stringValue);
             if (underlyingType == typeof(float))
-                return float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                return float.Parse(stringValue, System.Globalization.CultureInfo.InvariantCulture);
             if (underlyingType == typeof(double))
-                return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                return double.Parse(stringValue, System.Globalization.CultureInfo.InvariantCulture);
             if (underlyingType == typeof(decimal))
-                return decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                return decimal.Parse(stringValue, System.Globalization.CultureInfo.InvariantCulture);
             if (underlyingType == typeof(DateTime))
-                return DateTime.Parse(value);
+                return DateTime.Parse(stringValue);
             if (underlyingType == typeof(DateTimeOffset))
-                return DateTimeOffset.Parse(value);
+                return DateTimeOffset.Parse(stringValue);
             if (underlyingType == typeof(Guid))
-                return Guid.Parse(value);
+                return Guid.Parse(stringValue);
             if (underlyingType.IsEnum)
-                return Enum.Parse(underlyingType, value, true);
+                return Enum.Parse(underlyingType, stringValue, true);
 
             var converter = TypeDescriptor.GetConverter(underlyingType);
             if (converter.CanConvertFrom(typeof(string)))
             {
-                return converter.ConvertFromString(value);
+                return converter.ConvertFromString(stringValue);
             }
         }
         catch (Exception)

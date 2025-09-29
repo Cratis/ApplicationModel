@@ -6,7 +6,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 public class with_null_renderer_result : given.a_query_pipeline
 {
     QueryName _queryName;
-    object _parameters;
+    Dictionary<string, object> _parameters;
     Paging _paging;
     Sorting _sorting;
     QueryResult _filterResult;
@@ -16,7 +16,7 @@ public class with_null_renderer_result : given.a_query_pipeline
     void Establish()
     {
         _queryName = "QueryWithNullRenderer";
-        _parameters = new { id = 42 };
+        _parameters = new() { { "id", 42 } };
         _paging = Paging.NotPaged;
         _sorting = Sorting.None;
 

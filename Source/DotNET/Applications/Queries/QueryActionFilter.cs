@@ -3,6 +3,7 @@
 
 using Cratis.Applications.Validation;
 using Cratis.Strings;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -35,18 +36,18 @@ public class QueryActionFilter(
         if (context.HttpContext.Request.Method == HttpMethod.Get.Method &&
             context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
         {
-            var queryContext = QueryProcessingHelper.EstablishQueryContext(context.HttpContext, context.ActionDescriptor.DisplayName ?? "[NotSet]", queryContextManager);
+            var queryContext = EstablishQueryContext(context.HttpContext, context.ActionDescriptor.DisplayName ?? "[NotSet]", queryContextManager);
 
             var callResult = await CallNextAndHandleValidationAndExceptions(context, next);
             if (context.IsAspNetResult()) return;
 
-            if (callResult.Result?.Result is ObjectResult objectResult && QueryProcessingHelper.IsStreamingResult(objectResult))
+            if (callResult.Result?.Result is ObjectResult objectResult && objectResult.IsStreamingResult())
             {
-                if (QueryProcessingHelper.IsSubjectResult(objectResult))
+                if (objectResult.IsSubjectResult())
                 {
                     logger.ClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientObservable = QueryProcessingHelper.CreateClientObservableFrom(context.HttpContext.RequestServices, objectResult, queryContextManager, _options);
-                    QueryProcessingHelper.HandleWebSocketHeadersForMultipleProxies(context.HttpContext, logger);
+                    var clientObservable = ObservableQueryExtensions.CreateClientObservableFrom(context.HttpContext.RequestServices, objectResult, queryContextManager, _options);
+                    context.HttpContext.HandleWebSocketHeadersForMultipleProxies(logger);
 
                     if (context.HttpContext.WebSockets.IsWebSocketRequest)
                     {
@@ -60,12 +61,12 @@ public class QueryActionFilter(
                         callResult.Result.Result = new ObjectResult(clientObservable);
                     }
                 }
-                else if (QueryProcessingHelper.IsAsyncEnumerableResult(objectResult))
+                else if (objectResult.IsAsyncEnumerableResult())
                 {
                     logger.AsyncEnumerableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientEnumerableObservable = QueryProcessingHelper.CreateClientEnumerableObservableFrom(context.HttpContext.RequestServices, objectResult, _options);
+                    var clientEnumerableObservable = ObservableQueryExtensions.CreateClientEnumerableObservableFrom(context.HttpContext.RequestServices, objectResult, _options);
 
-                    QueryProcessingHelper.HandleWebSocketHeadersForMultipleProxies(context.HttpContext, logger);
+                    context.HttpContext.HandleWebSocketHeadersForMultipleProxies(logger);
                     if (context.HttpContext.WebSockets.IsWebSocketRequest)
                     {
                         logger.RequestIsWebSocket();
@@ -82,7 +83,7 @@ public class QueryActionFilter(
             {
                 logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
                 var validationResults = context.ModelState.SelectMany(_ => _.Value!.Errors.Select(p => p.ToValidationResult(_.Key.ToCamelCase())));
-                var queryResult = QueryProcessingHelper.CreateQueryResult(
+                var queryResult = CreateQueryResult(
                     callResult.Response,
                     queryContext.Name,
                     queryContext,
@@ -91,7 +92,7 @@ public class QueryActionFilter(
                     validationResults,
                     queryProviders);
 
-                QueryProcessingHelper.SetResponseStatusCode(context.HttpContext.Response, queryResult);
+                context.HttpContext.Response.SetResponseStatusCode(queryResult);
 
                 var actualResult = new ObjectResult(queryResult);
 
@@ -109,6 +110,49 @@ public class QueryActionFilter(
         {
             await next();
         }
+    }
+
+    QueryContext EstablishQueryContext(HttpContext httpContext, QueryName queryName, IQueryContextManager queryContextManager)
+    {
+        var sorting = httpContext.GetSortingInfo();
+        var paging = httpContext.GetPagingInfo();
+        var correlationId = httpContext.GetCorrelationId();
+
+        var queryContext = new QueryContext(queryName, correlationId, paging, sorting);
+        queryContextManager.Set(queryContext);
+        return queryContext;
+    }
+
+    QueryResult CreateQueryResult(
+        object? response,
+        QueryName queryName,
+        QueryContext queryContext,
+        IEnumerable<string> exceptionMessages,
+        string exceptionStackTrace,
+        IEnumerable<ValidationResult> validationResults,
+        IQueryRenderers queryProviders)
+    {
+        var rendererResult = response is not null ? queryProviders.Render(queryName, response) : new QueryRendererResult(0, default!);
+
+        var queryResult = new QueryResult
+        {
+            Paging = queryContext.Paging == Paging.NotPaged ? PagingInfo.NotPaged : new PagingInfo(
+                queryContext.Paging.Page,
+                queryContext.Paging.Size,
+                rendererResult.TotalItems),
+            CorrelationId = queryContext.CorrelationId,
+            ValidationResults = validationResults,
+            ExceptionMessages = exceptionMessages,
+            ExceptionStackTrace = exceptionStackTrace,
+            Data = rendererResult.Data
+        };
+
+        if (rendererResult.Data is null && queryResult.IsSuccess)
+        {
+            queryResult.ExceptionMessages = ["Null data returned"];
+        }
+
+        return queryResult;
     }
 
     async Task<(ActionExecutedContext? Result, IEnumerable<string> ExceptionMessages, string? ExceptionStackTrace, object? Response)> CallNextAndHandleValidationAndExceptions(ActionExecutingContext context, ActionExecutionDelegate next)

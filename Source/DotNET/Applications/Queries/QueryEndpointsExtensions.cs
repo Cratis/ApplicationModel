@@ -50,15 +50,13 @@ public static class QueryEndpointsExtensions
                 {
                     CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
 
-                    var paging = QueryProcessingHelper.ExtractPaging(context);
-                    var sorting = QueryProcessingHelper.ExtractSorting(context);
-
-                    // For now, parameters are empty - in the future we might extract from query string or route values
-                    var parameters = new { };
+                    var paging = context.GetPagingInfo();
+                    var sorting = context.GetSortingInfo();
+                    var parameters = context.GetQueryParameters();
 
                     var queryResult = await queryPipeline.Perform(performer.Name, parameters, paging, sorting);
 
-                    QueryProcessingHelper.SetResponseStatusCode(context.Response, queryResult);
+                    context.Response.SetResponseStatusCode(queryResult);
                     await context.Response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                 });
             }

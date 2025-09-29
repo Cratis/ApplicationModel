@@ -24,7 +24,7 @@ public class with_mixed_dependencies_and_query_parameters : given.a_model_bound_
 
     void Establish()
     {
-        var parameters = new Dictionary<string, string>
+        var parameters = new Dictionary<string, object>
         {
             ["name"] = "Mixed Example",
             ["age"] = "35"
