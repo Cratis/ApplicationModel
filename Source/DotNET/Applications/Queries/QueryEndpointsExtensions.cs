@@ -54,23 +54,22 @@ public static class QueryEndpointsExtensions
                     var sorting = context.GetSortingInfo();
                     var parameters = context.GetQueryParameters();
 
-                    // Check if we should handle streaming queries for WebSocket
-                    var webSocketQueryHandler = context.RequestServices.GetRequiredService<IWebSocketQueryHandler>();
-                    if (context.WebSockets.IsWebSocketRequest && await ShouldHandleAsStreamingQuery(performer, context, parameters, paging, sorting))
-                    {
-                        var streamingResult = await PerformStreamingQuery(performer, parameters, paging, sorting, context);
-                        if (streamingResult is not null)
-                        {
-                            var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
-                                correlationIdAccessor.Current : CorrelationId.New();
-                            var queryContext = new QueryContext(performer.Name, correlationId, paging, sorting, parameters, []);
-                            await webSocketQueryHandler.HandleStreamingResult(context, performer.Name, streamingResult, queryContext);
-                            return;
-                        }
-                    }
-
+                    // Perform the query first
                     var queryResult = await queryPipeline.Perform(performer.Name, parameters, paging, sorting);
 
+                    // Check if the result is a streaming result (Subject or AsyncEnumerable)
+                    var webSocketQueryHandler = context.RequestServices.GetRequiredService<IObservableQueryHandler>();
+                    if (queryResult.IsSuccess && webSocketQueryHandler.IsStreamingResult(queryResult.Data))
+                    {
+                        // Handle streaming results - both WebSocket and HTTP JSON streaming
+                        var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
+                            correlationIdAccessor.Current : CorrelationId.New();
+                        var queryContext = new QueryContext(performer.Name, correlationId, paging, sorting, parameters, []);
+                        await webSocketQueryHandler.HandleStreamingResult(context, performer.Name, queryResult.Data!, queryContext);
+                        return;
+                    }
+
+                    // Handle non-streaming results
                     context.Response.SetResponseStatusCode(queryResult);
                     await context.Response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                 });
@@ -78,46 +77,5 @@ public static class QueryEndpointsExtensions
         }
 
         return app;
-    }
-
-    static async Task<bool> ShouldHandleAsStreamingQuery(
-        IQueryPerformer performer,
-        HttpContext context,
-        QueryArguments parameters,
-        Paging paging,
-        Sorting sorting)
-    {
-        // For now, we'll perform the query and check if the result is streaming
-        // In the future, this could be optimized by checking metadata or other indicators
-        try
-        {
-            var correlationIdAccessor = context.RequestServices.GetRequiredService<ICorrelationIdAccessor>();
-            var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
-                correlationIdAccessor.Current : CorrelationId.New();
-            var dependencies = performer.Dependencies.Select(context.RequestServices.GetRequiredService);
-            var queryContext = new QueryContext(performer.Name, correlationId, paging, sorting, parameters, dependencies);
-            var result = await performer.Perform(queryContext);
-            var webSocketQueryHandler = context.RequestServices.GetRequiredService<IWebSocketQueryHandler>();
-            return webSocketQueryHandler.IsStreamingResult(result);
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    static async Task<object?> PerformStreamingQuery(
-        IQueryPerformer performer,
-        QueryArguments parameters,
-        Paging paging,
-        Sorting sorting,
-        HttpContext context)
-    {
-        var correlationIdAccessor = context.RequestServices.GetRequiredService<ICorrelationIdAccessor>();
-        var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
-            correlationIdAccessor.Current : CorrelationId.New();
-        var dependencies = performer.Dependencies.Select(context.RequestServices.GetRequiredService);
-        var queryContext = new QueryContext(performer.Name, correlationId, paging, sorting, parameters, dependencies);
-        return await performer.Perform(queryContext);
     }
 }

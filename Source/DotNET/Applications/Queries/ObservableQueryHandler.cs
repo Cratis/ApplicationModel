@@ -14,19 +14,19 @@ using Microsoft.Extensions.Options;
 namespace Cratis.Applications.Queries;
 
 /// <summary>
-/// Represents an implementation of <see cref="IWebSocketQueryHandler"/>.
+/// Represents an implementation of <see cref="IObservableQueryHandler"/>.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="WebSocketQueryHandler"/> class.
+/// Initializes a new instance of the <see cref="ObservableQueryHandler"/> class.
 /// </remarks>
 /// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
 /// <param name="options"><see cref="JsonOptions"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 [Singleton]
-public class WebSocketQueryHandler(
+public class ObservableQueryHandler(
     IQueryContextManager queryContextManager,
     IOptions<JsonOptions> options,
-    ILogger<WebSocketQueryHandler> logger) : IWebSocketQueryHandler
+    ILogger<ObservableQueryHandler> logger) : IObservableQueryHandler
 {
     readonly JsonOptions _options = options.Value;
 

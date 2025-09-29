@@ -10,7 +10,7 @@ namespace Cratis.Applications.Queries;
 /// <summary>
 /// Defines a handler for WebSocket-based query operations.
 /// </summary>
-public interface IWebSocketQueryHandler
+public interface IObservableQueryHandler
 {
     /// <summary>
     /// Handles a streaming query result for WebSocket connections in controller actions.

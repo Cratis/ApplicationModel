@@ -19,12 +19,12 @@ namespace Cratis.Applications.Queries;
 /// </remarks>
 /// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
 /// <param name="queryProviders"><see cref="IQueryRenderers"/>.</param>
-/// <param name="webSocketQueryHandler"><see cref="IWebSocketQueryHandler"/>.</param>
+/// <param name="webSocketQueryHandler"><see cref="IObservableQueryHandler"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 public class QueryActionFilter(
     IQueryContextManager queryContextManager,
     IQueryRenderers queryProviders,
-    IWebSocketQueryHandler webSocketQueryHandler,
+    IObservableQueryHandler webSocketQueryHandler,
     ILogger<QueryActionFilter> logger) : IAsyncActionFilter
 {
     /// <inheritdoc/>
@@ -40,33 +40,33 @@ public class QueryActionFilter(
 
             if (callResult.Result?.Result is ObjectResult objectResult && objectResult.IsStreamingResult())
             {
+                // Handle streaming results - both WebSocket and HTTP JSON streaming
                 await webSocketQueryHandler.HandleStreamingResult(context, callResult.Result, objectResult);
+                return; // Early return to avoid processing as regular query result
+            }
+
+            logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
+            var validationResults = context.ModelState.SelectMany(_ => _.Value!.Errors.Select(p => p.ToValidationResult(_.Key.ToCamelCase())));
+            var queryResult = CreateQueryResult(
+                callResult.Response,
+                queryContext.Name,
+                queryContext,
+                callResult.ExceptionMessages,
+                callResult.ExceptionStackTrace ?? string.Empty,
+                validationResults,
+                queryProviders);
+
+            context.HttpContext.Response.SetResponseStatusCode(queryResult);
+
+            var actualResult = new ObjectResult(queryResult);
+
+            if (callResult.Result is not null)
+            {
+                callResult.Result.Result = actualResult;
             }
             else
             {
-                logger.NonClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                var validationResults = context.ModelState.SelectMany(_ => _.Value!.Errors.Select(p => p.ToValidationResult(_.Key.ToCamelCase())));
-                var queryResult = CreateQueryResult(
-                    callResult.Response,
-                    queryContext.Name,
-                    queryContext,
-                    callResult.ExceptionMessages,
-                    callResult.ExceptionStackTrace ?? string.Empty,
-                    validationResults,
-                    queryProviders);
-
-                context.HttpContext.Response.SetResponseStatusCode(queryResult);
-
-                var actualResult = new ObjectResult(queryResult);
-
-                if (callResult.Result is not null)
-                {
-                    callResult.Result.Result = actualResult;
-                }
-                else
-                {
-                    context.Result = actualResult;
-                }
+                context.Result = actualResult;
             }
         }
         else
