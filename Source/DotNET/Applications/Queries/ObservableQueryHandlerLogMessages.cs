@@ -8,7 +8,7 @@ namespace Cratis.Applications.Queries;
 /// <summary>
 /// Log messages for <see cref="ObservableQueryHandler"/>.
 /// </summary>
-internal static partial class WebSocketQueryHandlerLogMessages
+internal static partial class ObservableQueryHandlerLogMessages
 {
     [LoggerMessage(0, LogLevel.Trace, "Controller {Controller} with action {Action} returns a client observable")]
     internal static partial void ClientObservableReturnValue(this ILogger<ObservableQueryHandler> logger, string controller, string action);
