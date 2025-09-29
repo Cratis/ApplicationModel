@@ -29,11 +29,14 @@ public class ModelBoundArtifactsProvider : IArtifactsProvider
 
         var commands = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsCommand()).ToArray();
         Commands = commands.Select(_ => _.ToCommandDescriptor(outputPath, segmentsToSkip, skipCommandNameInRoute, apiPrefix)).ToArray();
+
+        var queries = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsQuery()).ToArray();
+        Queries = queries.SelectMany(_ => _.ToQueryDescriptors(outputPath, segmentsToSkip, apiPrefix)).ToArray();
     }
 
     /// <inheritdoc/>
-    public IEnumerable<CommandDescriptor> Commands { get; } = [];
+    public IEnumerable<CommandDescriptor> Commands { get; }
 
     /// <inheritdoc/>
-    public IEnumerable<QueryDescriptor> Queries => [];
+    public IEnumerable<QueryDescriptor> Queries { get; }
 }
