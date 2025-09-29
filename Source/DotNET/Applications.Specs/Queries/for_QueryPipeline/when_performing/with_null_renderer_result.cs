@@ -5,7 +5,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 
 public class with_null_renderer_result : given.a_query_pipeline
 {
-    QueryName _queryName;
+    FullyQualifiedQueryName _queryName;
     QueryArguments _parameters;
     Paging _paging;
     Sorting _sorting;

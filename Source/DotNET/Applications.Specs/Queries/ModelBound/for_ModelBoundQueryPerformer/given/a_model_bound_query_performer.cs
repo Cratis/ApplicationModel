@@ -27,7 +27,7 @@ public class a_model_bound_query_performer : Specification
         dependencies ??= [];
 
         _context = new QueryContext(
-            _performer.Name,
+            _performer.FullyQualifiedName,
             CorrelationId.New(),
             Paging.NotPaged,
             Sorting.None,

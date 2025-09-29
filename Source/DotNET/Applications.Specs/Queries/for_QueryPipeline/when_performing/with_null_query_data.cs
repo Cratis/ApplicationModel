@@ -5,7 +5,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 
 public class with_null_query_data : given.a_query_pipeline
 {
-    QueryName _queryName;
+    FullyQualifiedQueryName _queryName;
     QueryArguments _parameters;
     Paging _paging;
     Sorting _sorting;
@@ -36,6 +36,6 @@ public class with_null_query_data : given.a_query_pipeline
 
     [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
     [Fact] void should_have_correlation_id_from_filter_result() => _result.CorrelationId.ShouldEqual(_correlationId);
-    [Fact] void should_not_call_query_renderers() => _queryRenderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<QueryName>(), Arg.Any<object>());
+    [Fact] void should_not_call_query_renderers() => _queryRenderers.DidNotReceiveWithAnyArgs().Render(Arg.Any<FullyQualifiedQueryName>(), Arg.Any<object>());
     [Fact] void should_have_default_data() => _result.Data.ShouldBeNull();
 }
