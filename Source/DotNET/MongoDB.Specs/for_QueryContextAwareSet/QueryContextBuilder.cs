@@ -24,5 +24,5 @@ public class QueryContextBuilder(CorrelationId correlationId)
         return this;
     }
 
-    public QueryContext Build() => new(correlationId, _paging, _sorting);
+    public QueryContext Build() => new("[Test]", correlationId, _paging, _sorting);
 }

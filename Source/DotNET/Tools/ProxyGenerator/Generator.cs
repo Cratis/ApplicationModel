@@ -23,6 +23,7 @@ public static class Generator
     /// <param name="errorMessage">Logger to use for outputting error messages.</param>
     /// <param name="skipOutputDeletion">True if the output path should be deleted before generating, false if not.</param>
     /// <param name="skipCommandNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="skipQueryNameInRoute">True if the query name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>True if successful, false if not.</returns>
     public static async Task<bool> Generate(
@@ -33,6 +34,7 @@ public static class Generator
         Action<string> errorMessage,
         bool skipOutputDeletion = false,
         bool skipCommandNameInRoute = false,
+        bool skipQueryNameInRoute = false,
         string apiPrefix = "api")
     {
         assemblyFile = Path.GetFullPath(assemblyFile);
@@ -58,7 +60,7 @@ public static class Generator
         commands.AddRange(controllerBasedArtifactsProvider.Commands);
         queries.AddRange(controllerBasedArtifactsProvider.Queries);
 
-        var modelBoundArtifactsProvider = new ModelBoundArtifactsProvider(message, outputPath, segmentsToSkip, skipCommandNameInRoute, apiPrefix);
+        var modelBoundArtifactsProvider = new ModelBoundArtifactsProvider(message, outputPath, segmentsToSkip, skipCommandNameInRoute, skipQueryNameInRoute, apiPrefix);
         commands.AddRange(modelBoundArtifactsProvider.Commands);
 
         message($"  Found {commands.Count} commands and {queries.Count} queries");

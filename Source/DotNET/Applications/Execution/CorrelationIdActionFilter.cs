@@ -17,7 +17,7 @@ public class CorrelationIdActionFilter(IOptions<ApplicationModelOptions> options
     /// <inheritdoc/>
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        CorrelationIdHelpers.Handle(correlationIdAccessor, options.Value.CorrelationId, context.HttpContext);
+        context.HttpContext.HandleCorrelationId(correlationIdAccessor, options.Value.CorrelationId);
         await next();
     }
 }

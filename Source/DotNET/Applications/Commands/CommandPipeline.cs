@@ -28,21 +28,17 @@ public class CommandPipeline(
     /// <inheritdoc/>
     public async Task<CommandResult> Execute(object command)
     {
-        var result = CommandResult.Success(correlationIdAccessor.Current);
+        var correlationId = GetCorrelationId();
+        var result = CommandResult.Success(correlationId);
         try
         {
             handlerProviders.TryGetHandlerFor(command, out var commandHandler);
             if (commandHandler is null)
             {
-                return CommandResult.MissingHandler(command.GetType());
+                return CommandResult.MissingHandler(correlationId, command.GetType());
             }
 
             var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
-            var correlationId = correlationIdAccessor.Current;
-            if (correlationId == CorrelationId.NotSet)
-            {
-                correlationId = CorrelationId.New();
-            }
             var commandContext = new CommandContext(correlationId, command.GetType(), command, dependencies);
             result = await commandFilters.OnExecution(commandContext);
             if (!result.IsSuccess)
@@ -76,10 +72,20 @@ public class CommandPipeline(
         }
         catch (Exception ex)
         {
-            result.MergeWith(CommandResult.Error(ex.Message));
-            result.ExceptionStackTrace = ex.StackTrace ?? string.Empty;
+            result.MergeWith(CommandResult.Error(correlationId, ex));
         }
 
         return result;
+    }
+
+    CorrelationId GetCorrelationId()
+    {
+        var correlationId = correlationIdAccessor.Current;
+        if (correlationId == CorrelationId.NotSet)
+        {
+            correlationId = CorrelationId.New();
+        }
+
+        return correlationId;
     }
 }

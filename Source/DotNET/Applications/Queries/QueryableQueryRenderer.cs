@@ -4,15 +4,15 @@
 namespace Cratis.Applications.Queries;
 
 /// <summary>
-/// Represents a <see cref="IQueryProviderFor{TQuery}"/> for <see cref="IQueryable"/> and derivatives.
+/// Represents a <see cref="IQueryRendererFor{TQuery}"/> for <see cref="IQueryable"/> and derivatives.
 /// </summary>
 /// <remarks>
 /// This extends any <see cref="IQueryable"/> with `.Skip()` and `.Take()` methods.
 /// </remarks>
-public class QueryableQueryProvider : IQueryProviderFor<IQueryable>
+public class QueryableQueryRenderer : IQueryRendererFor<IQueryable>
 {
     /// <inheritdoc/>
-    public QueryProviderResult Execute(IQueryable query, QueryContext queryContext)
+    public QueryRendererResult Execute(IQueryable query, QueryContext queryContext)
     {
         var totalItems = query.Count();
 

@@ -8,7 +8,11 @@ namespace Cratis.Applications.Orleans.StateMachines.given;
 
 public abstract class a_state_machine : Specification
 {
-    object _lockObject = new();
+#if NET9_0
+    static readonly Lock _lockObject = new();
+#else
+    static readonly object _lockObject = new();
+#endif
     StateMachineForTesting? _stateMachinePrivate;
 
     protected StateMachineForTesting StateMachine

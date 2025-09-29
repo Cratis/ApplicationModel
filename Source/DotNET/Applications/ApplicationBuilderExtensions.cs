@@ -20,6 +20,7 @@ public static class ApplicationBuilderExtensions
         Internals.ServiceProvider = app.ApplicationServices;
         app.MapIdentityProvider();
         app.UseCommandEndpoints();
+        app.UseQueryEndpoints();
 
         return app;
     }

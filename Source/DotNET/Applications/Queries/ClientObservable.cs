@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reactive.Subjects;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Hosting;
@@ -37,11 +38,24 @@ public class ClientObservable<T>(
     public void OnNext(T next) => subject.OnNext(next);
 
     /// <inheritdoc/>
-    public async Task HandleConnection(ActionExecutingContext context)
+    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new ObservableAsyncEnumerator<T>(subject, cancellationToken);
+
+    /// <inheritdoc/>
+    public object GetAsynchronousEnumerator(CancellationToken cancellationToken = default) => GetAsyncEnumerator(cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task HandleConnection(ActionExecutingContext context) =>
+        await HandleConnectionCore(context.HttpContext);
+
+    /// <inheritdoc/>
+    public async Task HandleConnection(HttpContext httpContext) =>
+        await HandleConnectionCore(httpContext);
+
+    async Task HandleConnectionCore(HttpContext httpContext)
     {
-        using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
+        using var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var queryResult = new QueryResult<object>();
+        var queryResult = new QueryResult();
         using var cts = new CancellationTokenSource();
 
         using var subscription = subject.Subscribe(Next, Error, Complete);
@@ -99,10 +113,4 @@ public class ClientObservable<T>(
             tcs.SetResult();
         }
     }
-
-    /// <inheritdoc/>
-    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new ObservableAsyncEnumerator<T>(subject, cancellationToken);
-
-    /// <inheritdoc/>
-    public object GetAsynchronousEnumerator(CancellationToken cancellationToken = default) => GetAsyncEnumerator(cancellationToken);
 }

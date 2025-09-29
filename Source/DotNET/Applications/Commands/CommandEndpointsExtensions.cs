@@ -25,42 +25,51 @@ public static class CommandEndpointsExtensions
     /// <returns><see cref="IApplicationBuilder"/> for continuation.</returns>
     public static IApplicationBuilder UseCommandEndpoints(this IApplicationBuilder app)
     {
-        app.UseRouting();
-
         if (app is IEndpointRouteBuilder endpoints)
         {
             var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
-            var options = appModelOptions.Commands;
+            var options = appModelOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
             var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
             var jsonSerializerOptions = Globals.JsonSerializerOptions;
 
             var prefix = options.RoutePrefix.Trim('/');
-            var group = endpoints.MapGroup($"/{prefix}").WithTags("Commands").WithOpenApi();
+            var group = endpoints.MapGroup($"/{prefix}");
 
             foreach (var handler in commandHandlerProviders.Handlers)
             {
-                var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
+                var location = handler.Location.Skip(options.SegmentsToSkipForRoute);
+                var segments = location.Select(segment => segment.ToKebabCase());
                 var baseUrl = $"/{string.Join('/', segments)}";
-                var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{handler.CommandType.Name}" : baseUrl;
+                var typeName = options.IncludeCommandNameInRoute ? handler.CommandType.Name : string.Empty;
+
+                var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
-                group.MapPost(url, async context =>
+
+                // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
+                //       So we use HttpRequest and HttpResponse instead
+                group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
                 {
-                    CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
-                    var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                    var context = request.HttpContext;
+                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+                    var command = await request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                     CommandResult commandResult;
                     if (command is null)
                     {
-                        commandResult = CommandResult.Error($"Could not deserialize command of type '{handler.CommandType}' from request body.");
+                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
                     }
                     else
                     {
                         commandResult = await commandPipeline.Execute(command);
                     }
-                    context.Response.SetResponseStatusCode(commandResult);
-                    await context.Response.WriteAsJsonAsync(commandResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                });
+                    response.SetResponseStatusCode(commandResult);
+                    await response.WriteAsJsonAsync(commandResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                })
+                .WithTags(string.Join('.', location))
+                .WithName($"Execute{handler.CommandType.Name}")
+                .WithSummary($"Execute {handler.CommandType.Name} command")
+                .WithOpenApi();
             }
         }
 

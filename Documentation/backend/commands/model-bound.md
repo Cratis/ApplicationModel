@@ -15,7 +15,7 @@ public record AddItemToCart(string Sku, int Quantity)
 }
 ```
 
-> Note: If you're using the Cratis ApplicationModel proxy generator, the name of the type
+> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the name of the type
 > will become the name of the command for the generated TypeScript file and class.
 
 If your handler has side-effects expressed in the return value, the
@@ -97,3 +97,12 @@ public record AddItemToCart(string Sku, int Quantity)
     }
 }
 ```
+
+## Frontend Integration
+
+Model-bound commands work seamlessly with the [proxy generator](../proxy-generation.md), which automatically creates TypeScript proxies for your commands. The generated proxies provide:
+
+- Strong typing for command properties
+- Automatic validation integration
+- React hooks for easy frontend integration
+- Consistent error handling and response processing

@@ -12,4 +12,9 @@ public static class WellKnownTypes
     /// The CommandAttribute type name.
     /// </summary>
     public const string CommandAttribute = "CommandAttribute";
+
+    /// <summary>
+    /// The ReadModelAttribute type name.
+    /// </summary>
+    public const string ReadModelAttribute = "ReadModelAttribute";
 }

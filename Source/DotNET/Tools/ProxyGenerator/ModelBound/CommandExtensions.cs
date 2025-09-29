@@ -20,13 +20,18 @@ public static class CommandExtensions
     /// <param name="skipCommandNameInRoute">True if the command name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>Converted <see cref="CommandDescriptor"/>.</returns>
-    public static CommandDescriptor ToCommandDescriptor(this TypeInfo commandType, string targetPath, int segmentsToSkip, bool skipCommandNameInRoute, string apiPrefix)
+    public static CommandDescriptor ToCommandDescriptor(
+        this TypeInfo commandType,
+        string targetPath,
+        int segmentsToSkip,
+        bool skipCommandNameInRoute,
+        string apiPrefix)
     {
         var properties = commandType.GetPropertyDescriptors();
         var location = commandType.Namespace?.Split('.') ?? [];
-        var segments = location.Skip(segmentsToSkip);
+        var segments = location.Skip(segmentsToSkip).Select(segment => segment.ToKebabCase());
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
-        var route = skipCommandNameInRoute ? baseUrl : $"{baseUrl}/{commandType.Name}";
+        var route = skipCommandNameInRoute ? baseUrl : $"{baseUrl}/{commandType.Name.ToKebabCase()}";
         route = route.ToLowerInvariant();
         var handleMethod = commandType.GetHandleMethod();
 

@@ -1,9 +1,13 @@
 - name: Identity
   href: identity.md
+- name: Configuration
+  href: configuration.md
 - name: Commands
   href: commands/toc.yml
 - name: Queries
-  href: queries.md
+  href: queries/toc.yml
+- name: Proxy Generation
+  href: proxy-generation.md
 - name: Validation
   href: validation.md
 - name: Without wrappers

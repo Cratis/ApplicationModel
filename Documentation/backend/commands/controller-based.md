@@ -16,5 +16,5 @@ public class Carts : ControllerBase
 }
 ```
 
-> Note: If you're using the Cratis ApplicationModel proxy generator, the method name
+> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the method name
 > will become the command name for the generated TypeScript file and class.

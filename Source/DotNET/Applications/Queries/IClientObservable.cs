@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Cratis.Applications.Queries;
@@ -16,6 +17,13 @@ public interface IClientObservable
     /// <param name="context"><see cref="ActionExecutingContext"/> to handle for.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task HandleConnection(ActionExecutingContext context);
+
+    /// <summary>
+    /// Handle the HTTP context for minimal API endpoints.
+    /// </summary>
+    /// <param name="httpContext"><see cref="HttpContext"/> to handle for.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task HandleConnection(HttpContext httpContext);
 
     /// <summary>
     /// Get an async enumerator for the observable.

@@ -17,23 +17,28 @@ public class ModelBoundArtifactsProvider : IArtifactsProvider
     /// <param name="outputPath">Output path for command.</param>
     /// <param name="segmentsToSkip">Segments to skip when generating output paths.</param>
     /// <param name="skipCommandNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="skipQueryNameInRoute">True if the query name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     public ModelBoundArtifactsProvider(
         Action<string> message,
         string outputPath,
         int segmentsToSkip,
         bool skipCommandNameInRoute,
+        bool skipQueryNameInRoute,
         string apiPrefix)
     {
         message($"  Discover model based commands and queries from {TypeExtensions.Assemblies.Count()} assemblies");
 
         var commands = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsCommand()).ToArray();
         Commands = commands.Select(_ => _.ToCommandDescriptor(outputPath, segmentsToSkip, skipCommandNameInRoute, apiPrefix)).ToArray();
+
+        var queries = TypeExtensions.Assemblies.SelectMany(_ => _.DefinedTypes).Where(__ => __.IsQuery()).ToArray();
+        Queries = queries.SelectMany(_ => _.ToQueryDescriptors(outputPath, segmentsToSkip, skipQueryNameInRoute, apiPrefix)).ToArray();
     }
 
     /// <inheritdoc/>
-    public IEnumerable<CommandDescriptor> Commands { get; } = [];
+    public IEnumerable<CommandDescriptor> Commands { get; }
 
     /// <inheritdoc/>
-    public IEnumerable<QueryDescriptor> Queries => [];
+    public IEnumerable<QueryDescriptor> Queries { get; }
 }

@@ -32,10 +32,10 @@ public static class IdentityProviderEndpointExtensions
             var serviceProviderIsService = appBuilder.ApplicationServices.GetService<IServiceProviderIsService>();
             if (serviceProviderIsService!.IsService(typeof(IProvideIdentityDetails)))
             {
-                endpoints.MapGet(
-                    ".cratis/me",
-                    (HttpRequest request, HttpResponse response) =>
-                        appBuilder.ApplicationServices.GetService<IdentityProviderEndpoint>()!.Handler(request, response));
+                endpoints
+                    .MapGet(".cratis/me", (HttpRequest request, HttpResponse response) =>
+                        appBuilder.ApplicationServices.GetService<IdentityProviderEndpoint>()!.Handler(request, response))
+                    .WithTags("Cratis Identity");
             }
         }
 

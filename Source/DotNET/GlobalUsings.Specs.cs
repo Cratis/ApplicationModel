@@ -6,5 +6,4 @@
 global using Cratis.Specifications;
 global using Cratis.Types;
 global using NSubstitute;
-global using NSubstitute.Core;
 global using Xunit;

@@ -6,12 +6,13 @@ namespace Cratis.Applications.Queries;
 /// <summary>
 /// Defines a system that can execute queries.
 /// </summary>
-public interface IQueryProviders
+public interface IQueryRenderers
 {
     /// <summary>
-    /// Execute a query.
+    /// Render a query.
     /// </summary>
-    /// <param name="query">Query to execute.</param>
+    /// <param name="queryName">Name of the query.</param>
+    /// <param name="query">Query to render.</param>
     /// <returns>Result.</returns>
-    QueryProviderResult Execute(object query);
+    QueryRendererResult Render(FullyQualifiedQueryName queryName, object query);
 }

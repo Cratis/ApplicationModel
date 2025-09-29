@@ -53,6 +53,42 @@ public static class StringExtensions
 #pragma warning restore CS8603 // Possible null reference return.
     }
 
+    /// <summary>
+    /// Convert a string into a kebab-case (dash-separated) string.
+    /// </summary>
+    /// <param name="stringToConvert">string to convert.</param>
+    /// <returns>Converted string.</returns>
+    public static string ToKebabCase(this string stringToConvert)
+    {
+        if (string.IsNullOrEmpty(stringToConvert))
+        {
+            return stringToConvert;
+        }
+
+        return string.Create(
+            stringToConvert.Length * 2, // Allocate extra space for potential dashes
+            stringToConvert,
+            (span, input) =>
+            {
+                var written = 0;
+                for (var i = 0; i < input.Length; i++)
+                {
+                    var c = input[i];
+
+                    // If uppercase and not the first character, add a dash before it
+                    if (char.IsUpper(c) && i > 0)
+                    {
+                        span[written++] = '-';
+                    }
+
+                    span[written++] = char.ToLowerInvariant(c);
+                }
+
+                // Trim to actual length
+                span[written..].Clear();
+            }).TrimEnd('\0');
+    }
+
     static string ConvertToCamelCase(string stringToConvert)
     {
         return string.Create(stringToConvert.Length, stringToConvert, (chars, name) =>

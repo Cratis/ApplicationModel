@@ -4,17 +4,17 @@
 namespace Cratis.Applications;
 
 /// <summary>
-/// Represents the options for command handling.
+/// Represents the options for API endpoints.
 /// </summary>
-public class CommandOptions
+public class ApiEndpointOptions
 {
     /// <summary>
-    /// Gets or sets the route prefix to use for commands.
+    /// Gets or sets the route prefix to use for endpoints.
     /// </summary>
     public string RoutePrefix { get; set; } = "api";
 
     /// <summary>
-    /// Number of segments to skip from the start of the command type's namespace when constructing the route.
+    /// Number of segments to skip from the start of the type's namespace when constructing the route.
     /// </summary>
     public int SegmentsToSkipForRoute { get; set; }
 
@@ -22,5 +22,9 @@ public class CommandOptions
     /// Whether to include the command name as the last segment of the route.
     /// </summary>
     public bool IncludeCommandNameInRoute { get; set; } = true;
-}
 
+    /// <summary>
+    /// Whether to include the query name as the last segment of the route.
+    /// </summary>
+    public bool IncludeQueryNameInRoute { get; set; } = true;
+}
