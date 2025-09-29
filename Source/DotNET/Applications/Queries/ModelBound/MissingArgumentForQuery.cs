@@ -13,4 +13,4 @@ namespace Cratis.Applications.Queries.ModelBound;
 /// <param name="parameterType">The type of the parameter that received a null value.</param>
 /// <param name="queryName">The name of the query being performed.</param>
 public class MissingArgumentForQuery(string parameterName, Type parameterType, FullyQualifiedQueryName queryName)
-    : Exception($"Argument '{parameterName}' of type '{parameterType.Name}' cannot be null when performing query '{queryName}'");
+    : Exception($"Missing argument '{parameterName}' of type '{parameterType.Name}' when performing query '{queryName}'");
