@@ -47,7 +47,7 @@ public static class CommandEndpointsExtensions
                 url = url.ToLowerInvariant();
                 group.MapPost(url, async context =>
                 {
-                    CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
+                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
                     var command = await context.Request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                     CommandResult commandResult;
                     if (command is null)

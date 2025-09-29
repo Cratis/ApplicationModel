@@ -48,7 +48,7 @@ public static class QueryEndpointsExtensions
 
                 group.MapGet(url, async context =>
                 {
-                    CorrelationIdHelpers.Handle(correlationIdAccessor, appModelOptions.CorrelationId, context);
+                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
 
                     var paging = context.GetPagingInfo();
                     var sorting = context.GetSortingInfo();

@@ -14,10 +14,10 @@ public static class CorrelationIdHelpers
     /// <summary>
     /// Handles setting the correlation ID for the given HTTP context.
     /// </summary>
+    /// <param name="httpContext">The HTTP context.</param>
     /// <param name="correlationIdAccessor">The accessor for the correlation ID.</param>
     /// <param name="options">The options for the correlation ID.</param>
-    /// <param name="httpContext">The HTTP context.</param>
-    public static void Handle(ICorrelationIdAccessor correlationIdAccessor, CorrelationIdOptions options, HttpContext httpContext)
+    public static void HandleCorrelationId(this HttpContext httpContext, ICorrelationIdAccessor correlationIdAccessor, CorrelationIdOptions options)
     {
         var correlationIdAsString = httpContext.Request.Headers[options.HttpHeader].ToString() ?? Guid.Empty.ToString();
         CorrelationId correlationId;
