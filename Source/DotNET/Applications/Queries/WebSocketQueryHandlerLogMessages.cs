@@ -21,4 +21,10 @@ internal static partial class WebSocketQueryHandlerLogMessages
 
     [LoggerMessage(3, LogLevel.Trace, "Controller {Controller} with action {Action} returns a client enumerable")]
     internal static partial void AsyncEnumerableReturnValue(this ILogger<WebSocketQueryHandler> logger, string controller, string action);
+
+    [LoggerMessage(4, LogLevel.Trace, "Endpoint query {QueryName} returns a client observable")]
+    internal static partial void EndpointObservableReturnValue(this ILogger<WebSocketQueryHandler> logger, QueryName queryName);
+
+    [LoggerMessage(5, LogLevel.Trace, "Endpoint query {QueryName} returns a client enumerable")]
+    internal static partial void EndpointEnumerableReturnValue(this ILogger<WebSocketQueryHandler> logger, QueryName queryName);
 }

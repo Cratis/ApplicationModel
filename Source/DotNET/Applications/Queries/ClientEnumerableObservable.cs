@@ -1,8 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
@@ -23,9 +23,9 @@ public class ClientEnumerableObservable<T>(
     : IClientEnumerableObservable
 {
     /// <inheritdoc/>
-    public async Task HandleConnection(ActionExecutingContext context)
+    public async Task HandleConnection(HttpContext httpContext)
     {
-        using var webSocket = await context.HttpContext.WebSockets.AcceptWebSocketAsync();
+        using var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
         using var cts = new CancellationTokenSource();
         var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var queryResult = new QueryResult();
