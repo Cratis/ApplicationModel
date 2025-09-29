@@ -41,7 +41,7 @@ public static class CommandEndpointsExtensions
 
             foreach (var handler in commandHandlerProviders.Handlers)
             {
-                var segments = handler.Location.Skip(options.SegmentsToSkipForRoute);
+                var segments = handler.Location.Skip(options.SegmentsToSkipForRoute).Select(segment => segment.ToKebabCase());
                 var baseUrl = $"/{string.Join('/', segments)}";
                 var typeName = options.IncludeCommandNameInRoute ? handler.CommandType.Name : string.Empty;
 

@@ -29,7 +29,7 @@ public static class CommandExtensions
     {
         var properties = commandType.GetPropertyDescriptors();
         var location = commandType.Namespace?.Split('.') ?? [];
-        var segments = location.Skip(segmentsToSkip);
+        var segments = location.Skip(segmentsToSkip).Select(segment => segment.ToKebabCase());
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
         var route = skipCommandNameInRoute ? baseUrl : $"{baseUrl}/{commandType.Name.ToKebabCase()}";
         route = route.ToLowerInvariant();

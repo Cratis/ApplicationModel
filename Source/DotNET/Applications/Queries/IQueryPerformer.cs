@@ -14,6 +14,11 @@ public interface IQueryPerformer
     QueryName Name { get; }
 
     /// <summary>
+    /// Gets the fully qualified name of the query the performer can perform.
+    /// </summary>
+    FullyQualifiedQueryName FullyQualifiedName { get; }
+
+    /// <summary>
     /// Gets the location the query is at.
     /// </summary>
     /// <remarks>

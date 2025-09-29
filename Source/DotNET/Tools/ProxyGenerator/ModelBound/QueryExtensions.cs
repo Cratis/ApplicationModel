@@ -82,7 +82,7 @@ public static class QueryExtensions
         typesInvolved.AddRange(argumentsWithComplexTypes.Select(_ => _.OriginalType));
 
         var location = readModelType.Namespace?.Split('.') ?? [];
-        var segments = location.Skip(segmentsToSkip);
+        var segments = location.Skip(segmentsToSkip).Select(segment => segment.ToKebabCase());
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
         var route = skipQueryNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
 

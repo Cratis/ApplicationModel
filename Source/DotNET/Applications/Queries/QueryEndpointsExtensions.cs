@@ -41,7 +41,7 @@ public static class QueryEndpointsExtensions
 
             foreach (var performer in queryPerformerProviders.Performers)
             {
-                var segments = performer.Location.Skip(options.SegmentsToSkipForRoute);
+                var segments = performer.Location.Skip(options.SegmentsToSkipForRoute).Select(segment => segment.ToKebabCase());
                 var baseUrl = $"/{string.Join('/', segments)}";
                 var typeName = options.IncludeQueryNameInRoute ? performer.Name.ToString() : string.Empty;
 
