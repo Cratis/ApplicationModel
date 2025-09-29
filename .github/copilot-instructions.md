@@ -57,6 +57,7 @@
 - Never add postfixes like Async, Impl, etc. to class or method names.
 - Favor collection initializers and object initializers.
 - Use string interpolation instead of string.Format or concatenation.
+- Favor primary constructors for all types.
 
 ## Exceptions
 
