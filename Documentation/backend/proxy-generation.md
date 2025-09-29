@@ -39,7 +39,8 @@ Configure the proxy generator by adding MSBuild properties to your `.csproj` fil
 <PropertyGroup>
     <CratisProxiesSegmentsToSkip>1</CratisProxiesSegmentsToSkip>
     <CratisProxiesSkipOutputDeletion>false</CratisProxiesSkipOutputDeletion>
-    <CratisProxiesSkipTypeNameInRoute>false</CratisProxiesSkipTypeNameInRoute>
+    <CratisProxiesSkipCommandNameInRoute>false</CratisProxiesSkipCommandNameInRoute>
+    <CratisProxiesSkipQueryNameInRoute>false</CratisProxiesSkipQueryNameInRoute>
     <CratisProxiesApiPrefix>api</CratisProxiesApiPrefix>
 </PropertyGroup>
 ```
@@ -51,7 +52,8 @@ Configure the proxy generator by adding MSBuild properties to your `.csproj` fil
 | `CratisProxiesOutputPath` | *(Required)* | The output directory for generated TypeScript files |
 | `CratisProxiesSegmentsToSkip` | `0` | Number of namespace segments to skip when creating the folder structure |
 | `CratisProxiesSkipOutputDeletion` | `false` | When `true`, preserves existing files in the output directory |
-| `CratisProxiesSkipTypeNameInRoute` | `false` | When `true`, excludes the command/query name from the generated route |
+| `CratisProxiesSkipCommandNameInRoute` | `false` | When `true`, excludes the command name from the generated route for command endpoints |
+| `CratisProxiesSkipQueryNameInRoute` | `false` | When `true`, excludes the query name from the generated route for query endpoints |
 | `CratisProxiesApiPrefix` | `api` | The API prefix used in generated routes |
 
 ### Namespace Segment Skipping
@@ -130,6 +132,32 @@ The generator also creates TypeScript representations for:
 - Complex types used in command/query parameters or return values
 - Enumerations used in your domain models
 - Proper import statements and module resolution
+
+### Route Name Configuration
+
+The `CratisProxiesSkipCommandNameInRoute` and `CratisProxiesSkipQueryNameInRoute` properties allow you to control whether the command or query type names are included in the generated routes.
+
+By default, both properties are `false`, meaning type names are included in routes:
+
+- Command `CreateOrderCommand` → `/api/orders/create-order-command`
+- Query `GetOrdersQuery` → `/api/orders/get-orders-query`
+
+When set to `true`, the type names are excluded:
+
+- Command `CreateOrderCommand` → `/api/orders`
+- Query `GetOrdersQuery` → `/api/orders`
+
+**Example Configuration:**
+
+```xml
+<PropertyGroup>
+    <!-- Include command names but exclude query names from routes -->
+    <CratisProxiesSkipCommandNameInRoute>false</CratisProxiesSkipCommandNameInRoute>
+    <CratisProxiesSkipQueryNameInRoute>true</CratisProxiesSkipQueryNameInRoute>
+</PropertyGroup>
+```
+
+This allows for more granular control over API route generation, which can be particularly useful when you want cleaner URLs for queries while keeping explicit command names.
 
 ## Frontend Prerequisites
 

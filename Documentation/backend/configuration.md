@@ -25,7 +25,8 @@ Here's a complete example showing all available configuration options in `appset
       "GeneratedApis": {
         "RoutePrefix": "api",
         "SegmentsToSkipForRoute": 0,
-        "IncludeTypeNameInRoute": true
+        "IncludeCommandNameInRoute": true,
+        "IncludeQueryNameInRoute": true
       }
     }
   }
@@ -52,7 +53,8 @@ Controls how automatically generated API endpoints are configured for commands a
 
 - **RoutePrefix** (string, default: `"api"`): The base route prefix for all generated API endpoints.
 - **SegmentsToSkipForRoute** (int, default: `0`): Number of namespace segments to skip when constructing routes from type namespaces.
-- **IncludeTypeNameInRoute** (bool, default: `true`): Whether to include the command/query type name as the last segment of the route.
+- **IncludeCommandNameInRoute** (bool, default: `true`): Whether to include the command type name as the last segment of the route for command endpoints.
+- **IncludeQueryNameInRoute** (bool, default: `true`): Whether to include the query type name as the last segment of the route for query endpoints.
 
 #### IdentityDetailsProvider
 
@@ -106,7 +108,8 @@ builder.UseCratisApplicationModel(options =>
     // Configure generated APIs
     options.GeneratedApis.RoutePrefix = "myapi";
     options.GeneratedApis.SegmentsToSkipForRoute = 2;
-    options.GeneratedApis.IncludeTypeNameInRoute = false;
+    options.GeneratedApis.IncludeCommandNameInRoute = false;
+    options.GeneratedApis.IncludeQueryNameInRoute = false;
     
     // Set custom identity details provider
     options.IdentityDetailsProvider = typeof(MyCustomIdentityDetailsProvider);
@@ -197,7 +200,8 @@ Given a command class `MyApp.Sales.Commands.CreateOrderCommand`:
   "GeneratedApis": {
     "RoutePrefix": "api",
     "SegmentsToSkipForRoute": 0,
-    "IncludeTypeNameInRoute": true
+    "IncludeCommandNameInRoute": true,
+    "IncludeQueryNameInRoute": true
   }
 }
 ```
@@ -211,26 +215,28 @@ Given a command class `MyApp.Sales.Commands.CreateOrderCommand`:
   "GeneratedApis": {
     "RoutePrefix": "api",
     "SegmentsToSkipForRoute": 2,
-    "IncludeTypeNameInRoute": true
+    "IncludeCommandNameInRoute": true,
+    "IncludeQueryNameInRoute": true
   }
 }
 ```
 
 **Generated route**: `/api/Sales/Commands/CreateOrderCommand`
 
-### Exclude Type Name
+### Exclude Type Names
 
 ```json
 {
   "GeneratedApis": {
     "RoutePrefix": "api",
     "SegmentsToSkipForRoute": 3,
-    "IncludeTypeNameInRoute": false
+    "IncludeCommandNameInRoute": false,
+    "IncludeQueryNameInRoute": false
   }
 }
 ```
 
-**Generated route**: `/api/Commands`
+**Generated route**: `/api/Commands` (for commands) or `/api/Queries` (for queries)
 
 ## Best Practices
 

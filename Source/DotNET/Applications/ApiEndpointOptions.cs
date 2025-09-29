@@ -19,7 +19,12 @@ public class ApiEndpointOptions
     public int SegmentsToSkipForRoute { get; set; }
 
     /// <summary>
-    /// Whether to include the type name as the last segment of the route.
+    /// Whether to include the command name as the last segment of the route.
     /// </summary>
-    public bool IncludeTypeNameInRoute { get; set; } = true;
+    public bool IncludeCommandNameInRoute { get; set; } = true;
+
+    /// <summary>
+    /// Whether to include the query name as the last segment of the route.
+    /// </summary>
+    public bool IncludeQueryNameInRoute { get; set; } = true;
 }

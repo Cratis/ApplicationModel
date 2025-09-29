@@ -17,14 +17,14 @@ public static class QueryExtensions
     /// <param name="readModelType">Read model type to convert.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
-    /// <param name="skipTypeNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="skipQueryNameInRoute">True if the query name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>Collection of converted <see cref="QueryDescriptor"/>.</returns>
     public static IEnumerable<QueryDescriptor> ToQueryDescriptors(
         this TypeInfo readModelType,
         string targetPath,
         int segmentsToSkip,
-        bool skipTypeNameInRoute,
+        bool skipQueryNameInRoute,
         string apiPrefix)
     {
         var queryMethods = readModelType.GetQueryMethods();
@@ -32,7 +32,7 @@ public static class QueryExtensions
 
         foreach (var method in queryMethods)
         {
-            var descriptor = method.ToQueryDescriptor(readModelType, targetPath, segmentsToSkip, skipTypeNameInRoute, apiPrefix);
+            var descriptor = method.ToQueryDescriptor(readModelType, targetPath, segmentsToSkip, skipQueryNameInRoute, apiPrefix);
             descriptors.Add(descriptor);
         }
 
@@ -46,7 +46,7 @@ public static class QueryExtensions
     /// <param name="readModelType">The read model type that contains this method.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
-    /// <param name="skipTypeNameInRoute">True if the command name should be skipped in the route, false if not.</param>
+    /// <param name="skipQueryNameInRoute">True if the query name should be skipped in the route, false if not.</param>
     /// <param name="apiPrefix">The API prefix to use in the route.</param>
     /// <returns>Converted <see cref="QueryDescriptor"/>.</returns>
     public static QueryDescriptor ToQueryDescriptor(
@@ -54,7 +54,7 @@ public static class QueryExtensions
         TypeInfo readModelType,
         string targetPath,
         int segmentsToSkip,
-        bool skipTypeNameInRoute,
+        bool skipQueryNameInRoute,
         string apiPrefix)
     {
         var typesInvolved = new List<Type>();
@@ -84,7 +84,7 @@ public static class QueryExtensions
         var location = readModelType.Namespace?.Split('.') ?? [];
         var segments = location.Skip(segmentsToSkip);
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
-        var route = skipTypeNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
+        var route = skipQueryNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
 
         var relativePath = readModelType.ResolveTargetPath(segmentsToSkip);
         var imports = typesInvolved

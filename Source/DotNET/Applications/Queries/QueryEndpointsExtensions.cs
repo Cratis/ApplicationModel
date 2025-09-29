@@ -43,9 +43,9 @@ public static class QueryEndpointsExtensions
             {
                 var segments = performer.Location.Skip(options.SegmentsToSkipForRoute);
                 var baseUrl = $"/{string.Join('/', segments)}";
-                var typeName = options.IncludeTypeNameInRoute ? performer.Name.ToString() : string.Empty;
+                var typeName = options.IncludeQueryNameInRoute ? performer.Name.ToString() : string.Empty;
 
-                var url = options.IncludeTypeNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
+                var url = options.IncludeQueryNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
 
                 group.MapGet(url, async context =>
