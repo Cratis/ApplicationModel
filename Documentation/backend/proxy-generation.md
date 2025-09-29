@@ -150,7 +150,7 @@ The proxy generation runs automatically during the build process through the `Cr
 5. Creates index files for easy importing
 6. Maintains the folder structure based on namespaces
 
-## Excluding Commands and Queries
+## Excluding controller based Commands and Queries
 
 To exclude specific commands or queries from proxy generation, mark them with the `[AspNetResult]` attribute:
 
