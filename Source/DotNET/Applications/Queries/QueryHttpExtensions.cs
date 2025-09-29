@@ -79,9 +79,9 @@ public static class QueryHttpExtensions
     /// </summary>
     /// <param name="httpContext">The HTTP context.</param>
     /// <returns>A dictionary of custom parameters.</returns>
-    public static IDictionary<string, object> GetQueryParameters(this HttpContext httpContext)
+    public static QueryArguments GetQueryParameters(this HttpContext httpContext)
     {
-        var parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        var parameters = new QueryArguments();
 
         var excludedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {

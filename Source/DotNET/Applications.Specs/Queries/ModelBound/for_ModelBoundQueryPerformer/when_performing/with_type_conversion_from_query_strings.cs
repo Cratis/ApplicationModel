@@ -29,7 +29,7 @@ public class with_type_conversion_from_query_strings : given.a_model_bound_query
 
     void Establish()
     {
-        var parameters = new Dictionary<string, object>
+        var parameters = new QueryArguments
         {
             ["intValue"] = "42",
             ["boolValue"] = "true",

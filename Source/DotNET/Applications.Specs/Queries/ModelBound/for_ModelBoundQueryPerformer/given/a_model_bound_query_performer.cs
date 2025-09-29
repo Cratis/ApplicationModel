@@ -11,12 +11,12 @@ public class a_model_bound_query_performer : Specification
     protected QueryContext _context;
     protected object? _result;
 
-    protected void EstablishPerformer<T>(string methodName, object[]? dependencies = null, IDictionary<string, object>? parameters = null)
+    protected void EstablishPerformer<T>(string methodName, object[]? dependencies = null, QueryArguments? parameters = null)
     {
         var method = typeof(T).GetMethod(methodName);
         _performer = new ModelBoundQueryPerformer(typeof(T), method!);
 
-        parameters ??= new Dictionary<string, object>();
+        parameters ??= new QueryArguments();
         dependencies ??= [];
 
         _context = new QueryContext(

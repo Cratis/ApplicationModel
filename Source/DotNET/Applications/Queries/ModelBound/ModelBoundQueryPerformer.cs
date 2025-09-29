@@ -31,7 +31,7 @@ public class ModelBoundQueryPerformer(Type readModelType, MethodInfo performMeth
         var dependencies = context.Dependencies?.ToArray() ?? [];
         var dependencyIndex = 0;
 
-        var queryStringParameters = context.Parameters ?? new Dictionary<string, object>();
+        var queryStringParameters = context.Parameters ?? QueryArguments.Empty;
 
         for (var i = 0; i < parameters.Length; i++)
         {

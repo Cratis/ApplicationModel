@@ -6,7 +6,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 public class with_exception_during_performance : given.a_query_pipeline
 {
     QueryName _queryName;
-    Dictionary<string, object> _parameters;
+    QueryArguments _parameters;
     Paging _paging;
     Sorting _sorting;
     QueryResult _filterResult;

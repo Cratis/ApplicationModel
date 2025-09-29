@@ -6,7 +6,7 @@ namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
 public class with_missing_performer : given.a_query_pipeline
 {
     QueryName _queryName;
-    Dictionary<string, object> _parameters;
+    QueryArguments _parameters;
     Paging _paging;
     Sorting _sorting;
     QueryResult _result;

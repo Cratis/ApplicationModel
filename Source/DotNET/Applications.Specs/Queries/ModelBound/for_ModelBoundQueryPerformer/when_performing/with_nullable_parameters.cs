@@ -22,7 +22,7 @@ public class with_nullable_parameters : given.a_model_bound_query_performer
 
     void Establish()
     {
-        var parameters = new Dictionary<string, object>
+        var parameters = new QueryArguments
         {
             ["nullableInt"] = "100",
             ["nullableString"] = "nullable string",

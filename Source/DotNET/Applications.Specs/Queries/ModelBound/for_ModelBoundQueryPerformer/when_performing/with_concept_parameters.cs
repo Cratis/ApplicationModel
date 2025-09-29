@@ -34,7 +34,7 @@ public class with_concept_parameters : given.a_model_bound_query_performer
 
     void Establish()
     {
-        var parameters = new Dictionary<string, object>
+        var parameters = new QueryArguments
         {
             ["userId"] = "user123",
             ["productId"] = "456",

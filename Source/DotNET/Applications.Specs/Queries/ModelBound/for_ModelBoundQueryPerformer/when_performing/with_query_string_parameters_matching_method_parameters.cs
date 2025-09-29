@@ -22,7 +22,7 @@ public class with_query_string_parameters_matching_method_parameters : given.a_m
 
     void Establish()
     {
-        var parameters = new Dictionary<string, object>
+        var parameters = new QueryArguments
         {
             ["name"] = "John Doe",
             ["age"] = "25",
