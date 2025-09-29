@@ -76,6 +76,8 @@
 - Use appropriate log levels (Information, Warning, Error, Debug).
 - Always use a generic ILogger<T> where T is the class name.
 - Keep logging in separate partial methods for better readability. Call the file <SystemName>Logging.cs. Make this class partial and static and internal and all methods should be internal.
+- Use the `[LoggerMessage]` attribute to define log messages.
+- Don't include `eventId` in the `[LoggerMessage]` attribute.
 
 ## Dependency Injection
 
