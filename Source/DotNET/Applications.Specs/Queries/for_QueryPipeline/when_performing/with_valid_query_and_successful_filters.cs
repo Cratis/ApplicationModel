@@ -46,7 +46,7 @@ public class with_valid_query_and_successful_filters : given.a_query_pipeline
     [Fact] void should_set_query_context_with_correct_correlation_id() => _capturedContext.CorrelationId.ShouldEqual(_correlationId);
     [Fact] void should_set_query_context_with_correct_paging() => _capturedContext.Paging.ShouldEqual(_paging);
     [Fact] void should_set_query_context_with_correct_sorting() => _capturedContext.Sorting.ShouldEqual(_sorting);
-    [Fact] void should_set_query_context_with_correct_parameters() => _capturedContext.Parameters.ShouldEqual(_parameters);
+    [Fact] void should_set_query_context_with_correct_parameters() => _capturedContext.Arguments.ShouldEqual(_parameters);
     [Fact] void should_set_rendered_data_on_result() => _result.Data.ShouldEqual(_rendererResult.Data);
     [Fact] void should_set_paging_info_as_not_paged() => _result.Paging.ShouldEqual(PagingInfo.NotPaged);
     [Fact] void should_call_query_context_manager_set() => _queryContextManager.Received(1).Set(Arg.Any<QueryContext>());

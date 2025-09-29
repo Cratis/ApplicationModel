@@ -22,7 +22,7 @@ public class QueryRenderers(
     readonly IEnumerable<Type> _queryProviders = types.FindMultiple(typeof(IQueryRendererFor<>));
 
     /// <inheritdoc/>
-    public QueryRendererResult Render(QueryName queryName, object query)
+    public QueryRendererResult Render(FullyQualifiedQueryName queryName, object query)
     {
         var queryType = query.GetType();
         var queryProviderType = _queryProviders.FirstOrDefault(_ => queryType.IsAssignableTo(_.GetInterface(typeof(IQueryRendererFor<>).Name)!.GetGenericArguments()[0]));

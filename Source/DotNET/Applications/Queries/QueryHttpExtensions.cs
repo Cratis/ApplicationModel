@@ -78,10 +78,11 @@ public static class QueryHttpExtensions
     /// Extracts custom parameters from the HTTP request query string, excluding standard query processing parameters.
     /// </summary>
     /// <param name="httpContext">The HTTP context.</param>
+    /// <param name="performer">The query performer to get for.</param>
     /// <returns>A dictionary of custom parameters.</returns>
-    public static QueryArguments GetQueryParameters(this HttpContext httpContext)
+    public static QueryArguments GetQueryArguments(this HttpContext httpContext, IQueryPerformer performer)
     {
-        var parameters = new QueryArguments();
+        var arguments = new QueryArguments();
 
         var excludedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -95,11 +96,11 @@ public static class QueryHttpExtensions
         {
             if (!excludedKeys.Contains(kvp.Key) && !string.IsNullOrEmpty(kvp.Value))
             {
-                parameters[kvp.Key] = kvp.Value.ToString();
+                arguments[kvp.Key] = kvp.Value.ToString();
             }
         }
 
-        return parameters;
+        return arguments;
     }
 
     /// <summary>

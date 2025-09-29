@@ -12,9 +12,9 @@ namespace Cratis.Applications.Queries;
 /// <param name="CorrelationId">The <see cref="CorrelationId"/> for the query.</param>
 /// <param name="Paging">The <see cref="Paging"/> information.</param>
 /// <param name="Sorting">The <see cref="Sorting"/> information.</param>
-/// <param name="Parameters">Optional parameters for the query.</param>
+/// <param name="Arguments">Optional arguments for the query.</param>
 /// <param name="Dependencies">Optional dependencies required to handle the query.</param>
-public record QueryContext(QueryName Name, CorrelationId CorrelationId, Paging Paging, Sorting Sorting, QueryArguments? Parameters = null, IEnumerable<object>? Dependencies = null)
+public record QueryContext(FullyQualifiedQueryName Name, CorrelationId CorrelationId, Paging Paging, Sorting Sorting, QueryArguments? Arguments = null, IEnumerable<object>? Dependencies = null)
 {
     /// <summary>
     /// Represents a query context that is not set.

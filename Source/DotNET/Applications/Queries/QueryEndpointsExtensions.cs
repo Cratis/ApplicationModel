@@ -54,10 +54,10 @@ public static class QueryEndpointsExtensions
 
                     var paging = context.GetPagingInfo();
                     var sorting = context.GetSortingInfo();
-                    var parameters = context.GetQueryParameters();
+                    var arguments = context.GetQueryArguments(performer);
 
                     // Perform the query first
-                    var queryResult = await queryPipeline.Perform(performer.Name, parameters, paging, sorting);
+                    var queryResult = await queryPipeline.Perform(performer.FullyQualifiedName, arguments, paging, sorting);
 
                     // Check if the result is a streaming result (Subject or AsyncEnumerable)
                     var webSocketQueryHandler = context.RequestServices.GetRequiredService<IObservableQueryHandler>();
@@ -66,7 +66,7 @@ public static class QueryEndpointsExtensions
                         // Handle streaming results - both WebSocket and HTTP JSON streaming
                         var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
                             correlationIdAccessor.Current : CorrelationId.New();
-                        var queryContext = new QueryContext(performer.Name, correlationId, paging, sorting, parameters, []);
+                        var queryContext = new QueryContext(performer.FullyQualifiedName, correlationId, paging, sorting, arguments, []);
                         await webSocketQueryHandler.HandleStreamingResult(context, performer.Name, queryResult.Data!, queryContext);
                         return;
                     }

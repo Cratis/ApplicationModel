@@ -24,7 +24,7 @@ public class FluentValidationFilter(IQueryPerformerProviders queryPerformerProvi
             return queryResult;
         }
 
-        var queryArguments = context.Parameters ?? QueryArguments.Empty;
+        var queryArguments = context.Arguments ?? QueryArguments.Empty;
 
         foreach (var parameter in performer.Parameters)
         {

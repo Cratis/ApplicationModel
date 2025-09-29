@@ -75,7 +75,7 @@ public class QueryActionFilter(
         }
     }
 
-    QueryContext EstablishQueryContext(HttpContext httpContext, QueryName queryName, IQueryContextManager queryContextManager)
+    QueryContext EstablishQueryContext(HttpContext httpContext, FullyQualifiedQueryName queryName, IQueryContextManager queryContextManager)
     {
         var sorting = httpContext.GetSortingInfo();
         var paging = httpContext.GetPagingInfo();
@@ -88,7 +88,7 @@ public class QueryActionFilter(
 
     QueryResult CreateQueryResult(
         object? response,
-        QueryName queryName,
+        FullyQualifiedQueryName queryName,
         QueryContext queryContext,
         IEnumerable<string> exceptionMessages,
         string exceptionStackTrace,

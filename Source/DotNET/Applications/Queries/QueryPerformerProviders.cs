@@ -11,7 +11,7 @@ namespace Cratis.Applications.Queries;
 /// </summary>
 public class QueryPerformerProviders : IQueryPerformerProviders
 {
-    readonly IDictionary<QueryName, IQueryPerformer> _performers;
+    readonly IDictionary<FullyQualifiedQueryName, IQueryPerformer> _performers;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryPerformerProviders"/> class.
@@ -21,13 +21,13 @@ public class QueryPerformerProviders : IQueryPerformerProviders
     {
         var performers = providers.SelectMany(p => p.Performers);
         MultipleQueryPerformersForSameQueryType.ThrowIfDuplicates(performers);
-        _performers = performers.ToDictionary(p => p.Name, p => p);
+        _performers = performers.ToDictionary(p => p.FullyQualifiedName, p => p);
     }
 
     /// <inheritdoc/>
     public IEnumerable<IQueryPerformer> Performers => _performers.Values;
 
     /// <inheritdoc/>
-    public bool TryGetPerformersFor(QueryName query, [NotNullWhen(true)] out IQueryPerformer? performer) =>
+    public bool TryGetPerformersFor(FullyQualifiedQueryName query, [NotNullWhen(true)] out IQueryPerformer? performer) =>
         _performers.TryGetValue(query, out performer);
 }

@@ -28,7 +28,7 @@ public class DataAnnotationValidationFilter(IQueryPerformerProviders queryPerfor
         }
 
         var validationResults = new List<SystemValidationResult>();
-        var queryArguments = context.Parameters ?? QueryArguments.Empty;
+        var queryArguments = context.Arguments ?? QueryArguments.Empty;
 
         // Validate each parameter
         foreach (var parameter in performer.Parameters)

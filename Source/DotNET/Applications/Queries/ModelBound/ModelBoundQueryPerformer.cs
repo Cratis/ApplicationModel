@@ -59,7 +59,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
         var dependencies = context.Dependencies?.ToArray() ?? [];
         var dependencyIndex = 0;
 
-        var queryStringParameters = context.Parameters ?? QueryArguments.Empty;
+        var queryStringParameters = context.Arguments ?? QueryArguments.Empty;
 
         for (var i = 0; i < parameters.Length; i++)
         {

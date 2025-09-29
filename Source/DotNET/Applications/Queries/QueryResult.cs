@@ -74,7 +74,7 @@ public class QueryResult
     /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>
     /// <param name="name">The name of the query that is missing a performer.</param>
     /// <returns>A <see cref="QueryResult"/>.</returns>
-    public static QueryResult MissingPerformer(CorrelationId correlationId, QueryName name) => new() { CorrelationId = correlationId, ExceptionMessages = [$"No performer found for query {name}"] };
+    public static QueryResult MissingPerformer(CorrelationId correlationId, FullyQualifiedQueryName name) => new() { CorrelationId = correlationId, ExceptionMessages = [$"No performer found for query {name}"] };
 
     /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing an error.

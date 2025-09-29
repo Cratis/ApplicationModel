@@ -14,5 +14,5 @@ public interface IQueryRenderers
     /// <param name="queryName">Name of the query.</param>
     /// <param name="query">Query to render.</param>
     /// <returns>Result.</returns>
-    QueryRendererResult Render(QueryName queryName, object query);
+    QueryRendererResult Render(FullyQualifiedQueryName queryName, object query);
 }
