@@ -23,5 +23,6 @@ public static class Extensions
         options.OperationFilter<FromRequestOperationFilter>();
         options.OperationFilter<CommandResultOperationFilter>();
         options.OperationFilter<QueryResultOperationFilter>();
+        options.AddModelBoundOperationFilters();
     }
 }
