@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Cratis.Applications.Queries;
 
@@ -18,18 +17,16 @@ namespace Cratis.Applications.Queries;
 /// <remarks>
 /// Initializes a new instance of the <see cref="QueryActionFilter"/> class.
 /// </remarks>
-/// <param name="options"><see cref="JsonOptions"/>.</param>
 /// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
 /// <param name="queryProviders"><see cref="IQueryRenderers"/>.</param>
+/// <param name="webSocketQueryHandler"><see cref="IWebSocketQueryHandler"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 public class QueryActionFilter(
-    IOptions<JsonOptions> options,
     IQueryContextManager queryContextManager,
     IQueryRenderers queryProviders,
+    IWebSocketQueryHandler webSocketQueryHandler,
     ILogger<QueryActionFilter> logger) : IAsyncActionFilter
 {
-    readonly JsonOptions _options = options.Value;
-
     /// <inheritdoc/>
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -43,41 +40,7 @@ public class QueryActionFilter(
 
             if (callResult.Result?.Result is ObjectResult objectResult && objectResult.IsStreamingResult())
             {
-                if (objectResult.IsSubjectResult())
-                {
-                    logger.ClientObservableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientObservable = ObservableQueryExtensions.CreateClientObservableFrom(context.HttpContext.RequestServices, objectResult, queryContextManager, _options);
-                    context.HttpContext.HandleWebSocketHeadersForMultipleProxies(logger);
-
-                    if (context.HttpContext.WebSockets.IsWebSocketRequest)
-                    {
-                        logger.RequestIsWebSocket();
-                        await clientObservable.HandleConnection(context);
-                        callResult.Result.Result = null;
-                    }
-                    else
-                    {
-                        logger.RequestIsHttp();
-                        callResult.Result.Result = new ObjectResult(clientObservable);
-                    }
-                }
-                else if (objectResult.IsAsyncEnumerableResult())
-                {
-                    logger.AsyncEnumerableReturnValue(controllerActionDescriptor.ControllerName, controllerActionDescriptor.ActionName);
-                    var clientEnumerableObservable = ObservableQueryExtensions.CreateClientEnumerableObservableFrom(context.HttpContext.RequestServices, objectResult, _options);
-
-                    context.HttpContext.HandleWebSocketHeadersForMultipleProxies(logger);
-                    if (context.HttpContext.WebSockets.IsWebSocketRequest)
-                    {
-                        logger.RequestIsWebSocket();
-                        await clientEnumerableObservable.HandleConnection(context);
-                    }
-                    else
-                    {
-                        logger.RequestIsHttp();
-                        callResult.Result.Result = new ObjectResult(objectResult.Value);
-                    }
-                }
+                await webSocketQueryHandler.HandleStreamingResult(context, callResult.Result, objectResult);
             }
             else
             {

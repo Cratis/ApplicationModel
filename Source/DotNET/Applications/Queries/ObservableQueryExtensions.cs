@@ -83,6 +83,25 @@ public static class ObservableQueryExtensions
     }
 
     /// <summary>
+    /// Creates a client observable from a subject directly.
+    /// </summary>
+    /// <typeparam name="T">The type of data being observed.</typeparam>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="subject">The subject to wrap.</param>
+    /// <param name="queryContext">The query context.</param>
+    /// <param name="options">The JSON options.</param>
+    /// <returns>The client observable.</returns>
+    public static IClientObservable CreateClientObservableFrom<T>(
+        IServiceProvider serviceProvider,
+        ISubject<T> subject,
+        QueryContext queryContext,
+        JsonOptions options)
+    {
+        var clientObservableType = typeof(ClientObservable<>).MakeGenericType(typeof(T));
+        return (ActivatorUtilities.CreateInstance(serviceProvider, clientObservableType, queryContext, subject, options) as IClientObservable)!;
+    }
+
+    /// <summary>
     /// Creates a client enumerable observable from an object result.
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
@@ -97,5 +116,22 @@ public static class ObservableQueryExtensions
         var type = objectResult.Value!.GetType();
         var clientEnumerableObservableType = typeof(ClientEnumerableObservable<>).MakeGenericType(type.GetGenericArguments()[0]);
         return (ActivatorUtilities.CreateInstance(serviceProvider, clientEnumerableObservableType, objectResult.Value, options) as IClientEnumerableObservable)!;
+    }
+
+    /// <summary>
+    /// Creates a client enumerable observable from an async enumerable directly.
+    /// </summary>
+    /// <typeparam name="T">The type of data being enumerated.</typeparam>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="enumerable">The async enumerable to wrap.</param>
+    /// <param name="options">The JSON options.</param>
+    /// <returns>The client enumerable observable.</returns>
+    public static IClientEnumerableObservable CreateClientEnumerableObservableFrom<T>(
+        IServiceProvider serviceProvider,
+        IAsyncEnumerable<T> enumerable,
+        JsonOptions options)
+    {
+        var clientEnumerableObservableType = typeof(ClientEnumerableObservable<>).MakeGenericType(typeof(T));
+        return (ActivatorUtilities.CreateInstance(serviceProvider, clientEnumerableObservableType, enumerable, options) as IClientEnumerableObservable)!;
     }
 }

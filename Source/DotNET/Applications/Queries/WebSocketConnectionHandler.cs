@@ -3,6 +3,7 @@
 
 using System.Net.WebSockets;
 using System.Text.Json;
+using Cratis.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
@@ -11,6 +12,7 @@ namespace Cratis.Applications.Queries;
 /// Represents an implementation of <see cref="IWebSocketConnectionHandler"/>.
 /// </summary>
 /// <param name="handlerLogger">The <see cref="ILogger"/>.</param>
+[Singleton]
 public class WebSocketConnectionHandler(ILogger<WebSocketConnectionHandler> handlerLogger) : IWebSocketConnectionHandler
 {
     const int BufferSize = 1024 * 4;
