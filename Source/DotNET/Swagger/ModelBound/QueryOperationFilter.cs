@@ -3,7 +3,6 @@
 
 using System.Net;
 using Cratis.Applications.Queries;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -64,45 +63,7 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
 
         if (returnType is not null && IsEnumerableResult(returnType))
         {
-            operation.Parameters.Add(new OpenApiParameter
-            {
-                Name = QueryHttpExtensions.SortByQueryStringKey,
-                In = ParameterLocation.Query,
-                Description = "Sort by field name",
-                Required = false,
-                Schema = new OpenApiSchema { Type = "string" }
-            });
-
-            operation.Parameters.Add(new OpenApiParameter
-            {
-                Name = QueryHttpExtensions.SortDirectionQueryStringKey,
-                In = ParameterLocation.Query,
-                Required = false,
-                Description = "Sort direction",
-                Schema = new OpenApiSchema
-                {
-                    Type = "string",
-                    Enum = [new OpenApiString("asc"), new OpenApiString("desc")]
-                }
-            });
-
-            operation.Parameters.Add(new OpenApiParameter
-            {
-                Name = QueryHttpExtensions.PageSizeQueryStringKey,
-                In = ParameterLocation.Query,
-                Description = "Number of items to limit a page to",
-                Required = false,
-                Schema = new OpenApiSchema { Type = "integer", Format = "int32" }
-            });
-
-            operation.Parameters.Add(new OpenApiParameter
-            {
-                Name = QueryHttpExtensions.PageQueryStringKey,
-                In = ParameterLocation.Query,
-                Description = "Page number to show",
-                Required = false,
-                Schema = new OpenApiSchema { Type = "integer", Format = "int32" }
-            });
+            QueryParameterUtilities.AddPagingAndSortingParameters(operation);
         }
     }
 
