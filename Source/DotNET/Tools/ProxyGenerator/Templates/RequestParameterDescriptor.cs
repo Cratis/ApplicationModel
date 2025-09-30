@@ -11,7 +11,7 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="Type">Type of argument.</param>
 /// <param name="IsOptional">Whether or not the argument is nullable / optional.</param>
 /// <param name="IsQueryStringParameter">Whether or not the argument is a query string parameter.</param>
-public record RequestArgumentDescriptor(
+public record RequestParameterDescriptor(
     Type OriginalType,
     string Name,
     string Type,

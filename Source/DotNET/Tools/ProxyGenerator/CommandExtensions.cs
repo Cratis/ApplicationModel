@@ -17,12 +17,12 @@ public static class CommandExtensions
     /// <param name="method">Method to convert.</param>
     /// <param name="commandName">Name of the command.</param>
     /// <param name="properties">Properties of the command.</param>
-    /// <param name="arguments">Arguments of the command.</param>
+    /// <param name="parameters">Parameters for the command.</param>
     /// <param name="route">Route of the command.</param>
     /// <param name="targetPath">The target path the proxies are generated to.</param>
     /// <param name="segmentsToSkip">Number of segments to skip from the namespace when generating the output path.</param>
     /// <returns>Converted <see cref="CommandDescriptor"/>.</returns>
-    public static CommandDescriptor ToCommandDescriptor(this MethodInfo method, string commandName, IEnumerable<PropertyDescriptor> properties, IEnumerable<RequestArgumentDescriptor> arguments, string route, string targetPath, int segmentsToSkip)
+    public static CommandDescriptor ToCommandDescriptor(this MethodInfo method, string commandName, IEnumerable<PropertyDescriptor> properties, IEnumerable<RequestParameterDescriptor> parameters, string route, string targetPath, int segmentsToSkip)
     {
         var (hasResponse, responseModel) = method.GetResponseModel();
         var typesInvolved = new List<Type>();
@@ -59,7 +59,7 @@ public static class CommandExtensions
             commandName,
             properties,
             imports.OrderBy(_ => _.Module),
-            arguments,
+            parameters,
             hasResponse,
             responseModel,
             [.. typesInvolved, .. additionalTypesInvolved]);

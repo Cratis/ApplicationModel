@@ -4,12 +4,12 @@
 namespace Cratis.Applications.Queries;
 
 /// <summary>
-/// Represents parameters for a query, providing a strongly-typed wrapper around dictionary functionality.
+/// Represents arguments for a query, providing a strongly-typed wrapper around dictionary functionality.
 /// </summary>
 public class QueryArguments : Dictionary<string, object>
 {
     /// <summary>
-    /// Represents empty query parameters.
+    /// Represents empty query arguments.
     /// </summary>
     public static readonly QueryArguments Empty = new();
 

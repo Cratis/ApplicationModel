@@ -15,7 +15,7 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="Name">Name of the command.</param>
 /// <param name="Properties">Properties on the command.</param>
 /// <param name="Imports">Additional import statements.</param>
-/// <param name="Arguments">Arguments for the request - typically in the route or query string.</param>
+/// <param name="Parameters">Parameters for the request - typically in the route or query string.</param>
 /// <param name="HasResponse">Whether or not there is a response from the command.</param>
 /// <param name="ResponseType">The details about the response type.</param>
 /// <param name="TypesInvolved">Collection of types involved in the command.</param>
@@ -27,7 +27,7 @@ public record CommandDescriptor(
     string Name,
     IEnumerable<PropertyDescriptor> Properties,
     IOrderedEnumerable<ImportStatement> Imports,
-    IEnumerable<RequestArgumentDescriptor> Arguments,
+    IEnumerable<RequestParameterDescriptor> Parameters,
     bool HasResponse,
     ModelDescriptor ResponseType,
     IEnumerable<Type> TypesInvolved) : IDescriptor;

@@ -22,7 +22,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
-    abstract get requestArguments(): string[];
+    abstract get requestParameters(): string[];
     abstract get properties(): string[];
 
     private _initialValues: object = {};
@@ -58,7 +58,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
             payload[property] = this[property];
         });
 
-        if (this.requestArguments && this.requestArguments.length > 0) {
+        if (this.requestParameters && this.requestParameters.length > 0) {
             actualRoute = this.routeTemplate(payload);
         }
 

@@ -461,16 +461,16 @@ public static class TypeExtensions
     }
 
     /// <summary>
-    /// Collect types involved for an argument, recursively.
+    /// Collect types involved for an parameter, recursively.
     /// </summary>
-    /// <param name="argument">Argument to collect for.</param>
+    /// <param name="parameter">Parameter to collect for.</param>
     /// <param name="typesInvolved">Collected types involved.</param>
     /// <remarks>It skips any types already added to the collection passed to it.</remarks>
-    public static void CollectTypesInvolved(this RequestArgumentDescriptor argument, IList<Type> typesInvolved)
+    public static void CollectTypesInvolved(this RequestParameterDescriptor parameter, IList<Type> typesInvolved)
     {
-        if (typesInvolved.Contains(argument.OriginalType)) return;
-        typesInvolved.Add(argument.OriginalType);
-        foreach (var subProperty in argument.OriginalType.GetPropertyDescriptors().Where(_ => !_.OriginalType.IsKnownType()))
+        if (typesInvolved.Contains(parameter.OriginalType)) return;
+        typesInvolved.Add(parameter.OriginalType);
+        foreach (var subProperty in parameter.OriginalType.GetPropertyDescriptors().Where(_ => !_.OriginalType.IsKnownType()))
         {
             CollectTypesInvolved(subProperty, typesInvolved);
         }

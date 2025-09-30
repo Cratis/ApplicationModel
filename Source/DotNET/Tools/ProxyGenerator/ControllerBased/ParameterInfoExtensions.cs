@@ -12,29 +12,29 @@ namespace Cratis.Applications.ProxyGenerator.ControllerBased;
 public static class ParameterInfoExtensions
 {
     /// <summary>
-    /// Convert a <see cref="ParameterInfo"/> to a <see cref="RequestArgumentDescriptor"/>.
+    /// Convert a <see cref="ParameterInfo"/> to a <see cref="RequestParameterDescriptor"/>.
     /// </summary>
     /// <param name="parameterInfo">Parameter to convert.</param>
-    /// <returns>Converted <see cref="RequestArgumentDescriptor"/>.</returns>
-    public static RequestArgumentDescriptor ToRequestArgumentDescriptor(this ParameterInfo parameterInfo)
+    /// <returns>Converted <see cref="RequestParameterDescriptor"/>.</returns>
+    public static RequestParameterDescriptor ToRequestParameterDescriptor(this ParameterInfo parameterInfo)
     {
         var type = parameterInfo.ParameterType.GetTargetType();
         var optional = parameterInfo.IsOptional() || parameterInfo.HasDefaultValue;
-        return new RequestArgumentDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, parameterInfo.IsFromQueryArgument());
+        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, parameterInfo.IsFromQueryArgument());
     }
 
     /// <summary>
     /// Get request argument descriptors for a parameter, typically one adorned with [FromRequest].
     /// </summary>
     /// <param name="parameterInfo">The parameter to get for.</param>
-    /// <returns>Collection of <see cref="RequestArgumentDescriptor"/>.</returns>
-    public static IEnumerable<RequestArgumentDescriptor> GetRequestArgumentDescriptors(this ParameterInfo parameterInfo)
+    /// <returns>Collection of <see cref="RequestParameterDescriptor"/>.</returns>
+    public static IEnumerable<RequestParameterDescriptor> GetRequestParameterDescriptors(this ParameterInfo parameterInfo)
     {
         var parameters = parameterInfo.ParameterType.GetConstructors().SelectMany(_ => _.GetParameters()).ToArray();
         var properties = parameterInfo.ParameterType.GetProperties();
-        bool HasConstructorParameterWithRequestArgument(PropertyInfo propertyInfo) => parameters.Any(_ => _.Name == propertyInfo.Name && _.IsRequestArgument());
-        var requestProperties = properties.Where(_ => _.IsRequestArgument() || HasConstructorParameterWithRequestArgument(_)).ToArray();
-        return requestProperties.Select(_ => _.ToRequestArgumentDescriptor());
+        bool HasConstructorParameterWithRequestParameter(PropertyInfo propertyInfo) => parameters.Any(_ => _.Name == propertyInfo.Name && _.IsRequestParameter());
+        var requestProperties = properties.Where(_ => _.IsRequestParameter() || HasConstructorParameterWithRequestParameter(_)).ToArray();
+        return requestProperties.Select(_ => _.ToRequestParameterDescriptor());
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public static class ParameterInfoExtensions
     /// </summary>
     /// <param name="parameter">Method to check.</param>
     /// <returns>True if it is a request argument, false otherwise.</returns>
-    public static bool IsRequestArgument(this ParameterInfo parameter)
+    public static bool IsRequestParameter(this ParameterInfo parameter)
     {
         var attributes = parameter.GetCustomAttributesData().Select(_ => _.AttributeType.Name);
         return attributes.Any(_ => _ == WellKnownTypes.FromRouteAttribute) ||
@@ -65,7 +65,7 @@ public static class ParameterInfoExtensions
     /// </summary>
     /// <param name="parameter">Method to check.</param>
     /// <returns>True if it is a from request argument, false otherwise.</returns>
-    public static bool IsFromRequestArgument(this ParameterInfo parameter)
+    public static bool IsFromRequestParameter(this ParameterInfo parameter)
     {
         var attributes = parameter.GetCustomAttributesData().Select(_ => _.AttributeType.Name);
         return attributes.Any(_ => _ == WellKnownTypes.FromRequestAttribute);

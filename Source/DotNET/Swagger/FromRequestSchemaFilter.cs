@@ -19,14 +19,14 @@ public class FromRequestSchemaFilter : ISchemaFilter
     {
         var parameters = context.Type.GetConstructors().SelectMany(_ => _.GetParameters()).ToArray();
 
-        bool HasConstructorParameterWithRequestArgument(PropertyInfo propertyInfo) =>
+        bool HasConstructorParameterWithRequestParameter(PropertyInfo propertyInfo) =>
             parameters.Any(_ => _.Name == propertyInfo.Name && (_.HasAttribute<FromRouteAttribute>() || _.HasAttribute<FromQueryAttribute>()));
 
         var properties = context.Type.GetProperties()
             .Where(_ =>
                 PropertyExtensions.HasAttribute<FromRouteAttribute>(_) ||
                 PropertyExtensions.HasAttribute<FromQueryAttribute>(_) ||
-                HasConstructorParameterWithRequestArgument(_))
+                HasConstructorParameterWithRequestParameter(_))
             .ToList();
 
         if (properties.Count > 0)

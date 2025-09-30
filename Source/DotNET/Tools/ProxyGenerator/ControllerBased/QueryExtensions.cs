@@ -21,7 +21,7 @@ public static class QueryExtensions
     public static QueryDescriptor ToQueryDescriptor(this MethodInfo method, string targetPath, int segmentsToSkip)
     {
         var typesInvolved = new List<Type>();
-        var arguments = method.GetArgumentDescriptors();
+        var arguments = method.GetParameterDescriptors();
         var responseModel = ModelDescriptor.Empty;
 
         if (method.ReturnType.IsAssignableTo<Task>() && method.ReturnType.IsGenericType)
