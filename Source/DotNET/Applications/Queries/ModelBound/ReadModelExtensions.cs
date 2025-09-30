@@ -67,15 +67,8 @@ public static class ReadModelExtensions
             return true;
         }
 
-        if (type.IsGenericType)
-        {
-            var genericArguments = type.GetGenericArguments();
-            return
-                type.ImplementsOpenGeneric(typeof(IEnumerable<>)) &&
-                genericArguments.Length == 1 &&
-                genericArguments[0] == elementType;
-        }
-
-        return false;
+        return type
+            .IsAssignableTo(typeof(IEnumerable<>)
+            .MakeGenericType(elementType));
     }
 }
