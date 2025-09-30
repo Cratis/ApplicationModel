@@ -630,6 +630,14 @@ public static class TypeExtensions
             .Any(i => i.GetTypeInfo().IsGenericType && i.GetTypeInfo().GetGenericTypeDefinition().GetTypeInfo() == openGenericTypeInfo);
     }
 
+    /// <summary>
+    /// Check if a type implements IEnumerable.
+    /// </summary>
+    /// <param name="type"><see cref="Type"/> to check.</param>
+    /// <returns>True if type implements IEnumerable, false if not.</returns>
+    public static bool ImplementsEnumerable(this Type type) =>
+        type.ImplementsOpenGeneric(_genericEnumerableType) || (type.IsGenericType && type.GetGenericTypeDefinition() == _genericEnumerableType);
+
     static void InitializeWellKnownTypes()
     {
         var assembly = _metadataLoadContext!.CoreAssembly!;
