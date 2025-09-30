@@ -62,6 +62,7 @@ public static class Generator
 
         var modelBoundArtifactsProvider = new ModelBoundArtifactsProvider(message, outputPath, segmentsToSkip, skipCommandNameInRoute, skipQueryNameInRoute, apiPrefix);
         commands.AddRange(modelBoundArtifactsProvider.Commands);
+        queries.AddRange(modelBoundArtifactsProvider.Queries);
 
         message($"  Found {commands.Count} commands and {queries.Count} queries");
 
