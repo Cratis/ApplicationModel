@@ -64,7 +64,7 @@ public static class TypeExtensionsModelBound
         var returnType = method.ReturnType;
 
         if (returnType.IsGenericType &&
-            returnType.GetGenericTypeDefinition().FullName == typeof(Task<>).FullName)
+            returnType.IsTask())
         {
             returnType = returnType.GetGenericArguments()[0];
         }

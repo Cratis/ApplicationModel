@@ -186,6 +186,15 @@ public static class TypeExtensions
     public static bool IsSubject(this Type type) => type.FullName!.StartsWith("System.Reactive.Subjects.ISubject`1");
 
     /// <summary>
+    /// Check if a type is a task or a task of T.
+    /// </summary>
+    /// <param name="type">Type to check.</param>
+    /// <returns>True if it is a task, false if not.</returns>
+    public static bool IsTask(this Type type) =>
+        type.FullName!.StartsWith(_taskType.FullName!) ||
+        (type.IsGenericType && type.GetGenericTypeDefinition().FullName!.StartsWith(typeof(Task<>).FullName!));
+
+    /// <summary>
     /// Check if a type is a String or not.
     /// </summary>
     /// <param name="type"><see cref="Type"/> to check.</param>
