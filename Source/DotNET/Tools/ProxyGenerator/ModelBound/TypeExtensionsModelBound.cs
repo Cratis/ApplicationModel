@@ -63,7 +63,8 @@ public static class TypeExtensionsModelBound
     {
         var returnType = method.ReturnType;
 
-        if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>))
+        if (returnType.IsGenericType &&
+            returnType.GetGenericTypeDefinition().FullName == typeof(Task<>).FullName)
         {
             returnType = returnType.GetGenericArguments()[0];
         }
@@ -79,14 +80,14 @@ public static class TypeExtensionsModelBound
         }
 
         if (returnType.IsGenericType &&
-            returnType.GetGenericTypeDefinition().FullName == "System.Reactive.Subjects.ISubject`1" &&
+            returnType.IsSubject() &&
             returnType.GetGenericArguments()[0] == readModelType)
         {
             return true;
         }
 
         if (returnType.IsGenericType &&
-            returnType.GetGenericTypeDefinition().FullName == "System.Reactive.Subjects.ISubject`1" &&
+            returnType.IsSubject() &&
             IsCollectionOfType(returnType.GetGenericArguments()[0], readModelType))
         {
             return true;
@@ -119,15 +120,6 @@ public static class TypeExtensionsModelBound
             return true;
         }
 
-        if (type.IsGenericType)
-        {
-            var genericArguments = type.GetGenericArguments();
-            return
-                type.ImplementsOpenGeneric(typeof(IEnumerable<>)) &&
-                genericArguments.Length == 1 &&
-                genericArguments[0] == elementType;
-        }
-
-        return false;
+        return type.ImplementsEnumerable();
     }
 }
