@@ -18,8 +18,8 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="IsEnumerable">Whether or not the result is an enumerable or not.</param>
 /// <param name="IsObservable">Whether or not it is an observable query or not.</param>
 /// <param name="Imports">Additional import statements.</param>
-/// <param name="Arguments">Arguments for the query.</param>
-/// <param name="RequiredArguments">Arguments that are required for the query.</param>
+/// <param name="Parameters">Parameters for the query.</param>
+/// <param name="RequiredParameters">Parameters that are required for the query.</param>
 /// <param name="Properties">Properties for the query.</param>
 /// <param name="TypesInvolved">Collection of types involved in the query.</param>
 public record QueryDescriptor(
@@ -33,7 +33,7 @@ public record QueryDescriptor(
     bool IsEnumerable,
     bool IsObservable,
     IOrderedEnumerable<ImportStatement> Imports,
-    IEnumerable<RequestArgumentDescriptor> Arguments,
-    IEnumerable<RequestArgumentDescriptor> RequiredArguments,
+    IEnumerable<RequestParameterDescriptor> Parameters,
+    IEnumerable<RequestParameterDescriptor> RequiredParameters,
     IEnumerable<PropertyDescriptor> Properties,
     IEnumerable<Type> TypesInvolved) : IDescriptor;

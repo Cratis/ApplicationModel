@@ -23,7 +23,7 @@ import { joinPaths } from '../joinPaths';
  * Represents an implementation of {@link IQueryFor}.
  * @template TDataType Type of data returned by the query.
  */
-export abstract class ObservableQueryFor<TDataType, TArguments = object> implements IObservableQueryFor<TDataType, TArguments> {
+export abstract class ObservableQueryFor<TDataType, TParameters = object> implements IObservableQueryFor<TDataType, TParameters> {
     private _microservice: string;
     private _apiBasePath: string;
     private _connection?: IObservableQueryConnection<TDataType>;
@@ -31,7 +31,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate<any>;
     abstract readonly defaultValue: TDataType;
-    abstract get requiredRequestArguments(): string[];
+    abstract get requiredRequestParameters(): string[];
     sorting: Sorting;
     paging: Paging;
 
@@ -65,7 +65,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
     }
 
     /** @inheritdoc */
-    subscribe(callback: OnNextResult<QueryResult<TDataType>>, args?: TArguments): ObservableQuerySubscription<TDataType> {
+    subscribe(callback: OnNextResult<QueryResult<TDataType>>, args?: TParameters): ObservableQuerySubscription<TDataType> {
         let actualRoute = this.route;
         const connectionQueryArguments: any = {};
 
@@ -83,7 +83,7 @@ export abstract class ObservableQueryFor<TDataType, TArguments = object> impleme
             connectionQueryArguments.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args as object)) {
+        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
             this._connection = new NullObservableQueryConnection(this.defaultValue);
         } else {
             actualRoute = this.routeTemplate(args);

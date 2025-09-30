@@ -75,16 +75,21 @@ public static class QueryExtensions
             typesInvolved.Add(responseModel.Type);
         }
 
-        var arguments = method.GetQueryArgumentDescriptors();
+        var parameters = method.GetQueryParameterDescriptors();
         var properties = method.GetQueryPropertyDescriptors();
 
-        var argumentsWithComplexTypes = arguments.Where(_ => !_.OriginalType.IsKnownType());
-        typesInvolved.AddRange(argumentsWithComplexTypes.Select(_ => _.OriginalType));
+        var parameterWithComplexTypes = parameters.Where(_ => !_.OriginalType.IsKnownType());
+        typesInvolved.AddRange(parameterWithComplexTypes.Select(_ => _.OriginalType));
 
         var location = readModelType.Namespace?.Split('.') ?? [];
         var segments = location.Skip(segmentsToSkip).Select(segment => segment.ToKebabCase());
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
         var route = skipQueryNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
+        if (parameters.Any())
+        {
+            var queryString = string.Join('&', parameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
+            route = $"{route}?{queryString}";
+        }
 
         var relativePath = readModelType.ResolveTargetPath(segmentsToSkip);
         var imports = typesInvolved
@@ -93,13 +98,13 @@ public static class QueryExtensions
                         .ToList();
 
         var additionalTypesInvolved = new List<Type>();
-        foreach (var argument in argumentsWithComplexTypes)
+        foreach (var parameter in parameterWithComplexTypes)
         {
-            argument.CollectTypesInvolved(additionalTypesInvolved);
+            parameter.CollectTypesInvolved(additionalTypesInvolved);
         }
 
-        var argumentsNeedingImportStatements = arguments.Where(_ => _.OriginalType.HasModule()).ToList();
-        imports.AddRange(argumentsNeedingImportStatements.Select(_ => _.OriginalType.GetImportStatement(targetPath, relativePath, segmentsToSkip)));
+        var parametersNeedingImportStatements = parameters.Where(_ => _.OriginalType.HasModule()).ToList();
+        imports.AddRange(parametersNeedingImportStatements.Select(_ => _.OriginalType.GetImportStatement(targetPath, relativePath, segmentsToSkip)));
 
         foreach (var property in responseModel.Type.GetPropertyDescriptors())
         {
@@ -119,18 +124,18 @@ public static class QueryExtensions
             responseModel.IsEnumerable,
             responseModel.IsObservable,
             imports.ToOrderedImports(),
-            arguments,
-            [.. arguments.Where(_ => !_.IsOptional)],
+            parameters,
+            [.. parameters.Where(_ => !_.IsOptional)],
             properties,
             [.. typesInvolved, .. additionalTypesInvolved]);
     }
 
     /// <summary>
-    /// Get query argument descriptors from a method - only primitives and concepts are included.
+    /// Get query parameter descriptors from a method - only primitives and concepts are included.
     /// </summary>
-    /// <param name="method">Method to get arguments for.</param>
-    /// <returns>Collection of <see cref="RequestArgumentDescriptor"/>.</returns>
-    static IEnumerable<RequestArgumentDescriptor> GetQueryArgumentDescriptors(this MethodInfo method)
+    /// <param name="method">Method to get parameters for.</param>
+    /// <returns>Collection of <see cref="RequestParameterDescriptor"/>.</returns>
+    static IEnumerable<RequestParameterDescriptor> GetQueryParameterDescriptors(this MethodInfo method)
     {
         var parameters = method.GetParameters();
 
@@ -138,7 +143,7 @@ public static class QueryExtensions
         // Everything else is assumed to be a dependency
         var queryParameters = parameters.Where(p => p.ParameterType.IsAPrimitiveType() || p.ParameterType.IsConcept());
 
-        return queryParameters.Select(p => p.ToQueryRequestArgumentDescriptor());
+        return queryParameters.Select(p => p.ToQueryRequestParameterDescriptor());
     }
 
     /// <summary>
@@ -157,17 +162,17 @@ public static class QueryExtensions
     }
 
     /// <summary>
-    /// Convert a <see cref="ParameterInfo"/> to a <see cref="RequestArgumentDescriptor"/> for queries.
+    /// Convert a <see cref="ParameterInfo"/> to a <see cref="RequestParameterDescriptor"/> for queries.
     /// </summary>
     /// <param name="parameterInfo">Parameter to convert.</param>
-    /// <returns>Converted <see cref="RequestArgumentDescriptor"/>.</returns>
-    static RequestArgumentDescriptor ToQueryRequestArgumentDescriptor(this ParameterInfo parameterInfo)
+    /// <returns>Converted <see cref="RequestParameterDescriptor"/>.</returns>
+    static RequestParameterDescriptor ToQueryRequestParameterDescriptor(this ParameterInfo parameterInfo)
     {
         var type = parameterInfo.ParameterType.GetTargetType();
         var optional = parameterInfo.IsOptional() || parameterInfo.HasDefaultValue;
 
         // All query parameters are considered query string parameters
-        return new RequestArgumentDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, true);
+        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, true);
     }
 
     /// <summary>

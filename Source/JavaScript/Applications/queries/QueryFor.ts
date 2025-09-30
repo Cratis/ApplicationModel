@@ -16,17 +16,17 @@ import { joinPaths } from '../joinPaths';
  * Represents an implementation of {@link IQueryFor}.
  * @template TDataType Type of data returned by the query.
  */
-export abstract class QueryFor<TDataType, TArguments = object> implements IQueryFor<TDataType, TArguments> {
+export abstract class QueryFor<TDataType, TParameters = object> implements IQueryFor<TDataType, TParameters> {
     private _microservice: string;
     private _apiBasePath: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
-    abstract get requiredRequestArguments(): string[];
+    abstract get requiredRequestParameters(): string[];
     abstract defaultValue: TDataType;
     abortController?: AbortController;
     sorting: Sorting;
     paging: Paging;
-    arguments: TArguments | undefined;
+    parameters: TParameters | undefined;
 
     /**
      * Initializes a new instance of the {@link ObservableQueryFor<,>}} class.
@@ -51,13 +51,13 @@ export abstract class QueryFor<TDataType, TArguments = object> implements IQuery
     }
 
     /** @inheritdoc */
-    async perform(args?: TArguments): Promise<QueryResult<TDataType>> {
+    async perform(args?: TParameters): Promise<QueryResult<TDataType>> {
         const noSuccess = { ...QueryResult.noSuccess, ...{ data: this.defaultValue } } as QueryResult<TDataType>;
 
-        args = args || this.arguments;
+        args = args || this.parameters;
 
         let actualRoute = this.route;
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestArguments, args as object)) {
+        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
             return new Promise<QueryResult<TDataType>>((resolve) => {
                 resolve(noSuccess);
             });

@@ -18,7 +18,7 @@ export class SomeCommand extends Command<ISomeCommand> implements ISomeCommand {
         super(Object, false);
     }
 
-    get requestArguments(): string[] {
+    get requestParameters(): string[] {
         return [];
     }
     get properties(): string[] {

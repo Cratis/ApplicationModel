@@ -10,7 +10,7 @@ In addition to this, the controller can have authorization policies associated w
 With the [proxy generator](./proxy-generation.md) you'll get the commands generated directly to use in the frontend.
 This means you don't have to look at the Swagger API even to know what you have available, the code sits there directly
 in the form of a generated proxy object. The generator will look at all HTTP Post actions during compile time and
-look for actions marked with `[HttpPost]` and has an argument marked with `[FromBody]` and assume that this is your command
+look for actions marked with `[HttpPost]` and has an parameter marked with `[FromBody]` and assume that this is your command
 representation / payload.
 
 Take the following controller action in C#:
@@ -58,7 +58,7 @@ export class OpenDebitAccount extends Command implements IOpenDebitAccount {
     private _name!: string;
     private _owner!: string;
 
-    get requestArguments(): string[] {
+    get requestParameters(): string[] {
         return [
         ];
     }

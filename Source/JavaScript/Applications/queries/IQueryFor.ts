@@ -13,18 +13,18 @@ import { IQuery } from './IQuery';
 export interface IQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
     readonly routeTemplate: Handlebars.TemplateDelegate;
-    readonly requiredRequestArguments: string[];
+    readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;
 
     /**
      * Gets the current arguments for the query.
      */
-    get arguments(): TArguments | undefined;
+    get parameters(): TArguments | undefined;
 
     /**
      * Sets the current arguments for the query.
      */
-    set arguments(value: TArguments);
+    set parameters(value: TArguments);
 
     /**
      * Perform the query, optionally giving arguments to use. If not given, it will use the arguments that has been set.

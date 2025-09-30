@@ -230,8 +230,8 @@ export class CreateAccount extends Command<ICreateAccount> {
 // queries/GetAccounts.ts  
 export class GetAccounts extends QueryFor<Account[]> {
     // Auto-generated query implementation
-    static use(args?: IGetAccountsArguments): QueryResultWithState<Account[]> {
-        return useQuery<Account[], IGetAccountsArguments>(GetAccounts, args);
+    static use(args?: IGetAccountsParameters): QueryResultWithState<Account[]> {
+        return useQuery<Account[], IGetAccountsParameters>(GetAccounts, args);
     }
 }
 ```

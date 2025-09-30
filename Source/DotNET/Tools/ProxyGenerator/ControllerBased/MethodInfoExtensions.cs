@@ -15,15 +15,15 @@ public static class MethodInfoExtensions
     /// Get the route for a method.
     /// </summary>
     /// <param name="method">Method to get for.</param>
-    /// <param name="arguments">Arguments for the method.</param>
+    /// <param name="parameters">Parameters for the method.</param>
     /// <returns>The full route.</returns>
-    public static string GetRoute(this MethodInfo method, IEnumerable<RequestArgumentDescriptor> arguments)
+    public static string GetRoute(this MethodInfo method, IEnumerable<RequestParameterDescriptor> parameters)
     {
         var routeTemplates = new string[]
         {
-            method.DeclaringType?.GetAttributeConstructorArgument(WellKnownTypes.RouteAttribute, 0)?.ToString() ?? string.Empty,
-            method.GetAttributeConstructorArgument(WellKnownTypes.HttpGetAttribute, 0)?.ToString() ?? string.Empty,
-            method.GetAttributeConstructorArgument(WellKnownTypes.HttpPostAttribute, 0)?.ToString() ?? string.Empty
+            method.DeclaringType?.GetAttributeConstructorParameter(WellKnownTypes.RouteAttribute, 0)?.ToString() ?? string.Empty,
+            method.GetAttributeConstructorParameter(WellKnownTypes.HttpGetAttribute, 0)?.ToString() ?? string.Empty,
+            method.GetAttributeConstructorParameter(WellKnownTypes.HttpPostAttribute, 0)?.ToString() ?? string.Empty
         };
 
         var route = string.Empty;
@@ -35,7 +35,7 @@ public static class MethodInfoExtensions
 
         if (!route.StartsWith('/')) route = $"/{route}";
 
-        var queryStringParameters = arguments.Where(argument => argument.IsQueryStringParameter).ToArray();
+        var queryStringParameters = parameters.Where(parameter => parameter.IsQueryStringParameter).ToArray();
         if (queryStringParameters.Length > 0)
         {
             var queryString = string.Join('&', queryStringParameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
@@ -48,15 +48,15 @@ public static class MethodInfoExtensions
     /// Get argument descriptors for a method.
     /// </summary>
     /// <param name="methodInfo">Method to get for.</param>
-    /// <returns>Collection of <see cref="RequestArgumentDescriptor"/>. </returns>
-    public static IEnumerable<RequestArgumentDescriptor> GetArgumentDescriptors(this MethodInfo methodInfo)
+    /// <returns>Collection of <see cref="RequestParameterDescriptor"/>. </returns>
+    public static IEnumerable<RequestParameterDescriptor> GetParameterDescriptors(this MethodInfo methodInfo)
     {
         var parameters = methodInfo.GetParameters();
 
         return
         [
-            .. parameters.Where(_ => _.IsRequestArgument()).Select(_ => _.ToRequestArgumentDescriptor()),
-            .. parameters.Where(_ => _.IsFromRequestArgument()).SelectMany(_ => _.GetRequestArgumentDescriptors())
+            .. parameters.Where(_ => _.IsRequestParameter()).Select(_ => _.ToRequestParameterDescriptor()),
+            .. parameters.Where(_ => _.IsFromRequestParameter()).SelectMany(_ => _.GetRequestParameterDescriptors())
         ];
     }
 
@@ -113,7 +113,7 @@ public static class MethodInfoExtensions
     /// <param name="attributeName">Name of the attribute.</param>
     /// <param name="index">Optional argument index.</param>
     /// <returns>Argument if it was found, false if not.</returns>
-    public static object? GetAttributeConstructorArgument(this MemberInfo member, string attributeName, int index = 0)
+    public static object? GetAttributeConstructorParameter(this MemberInfo member, string attributeName, int index = 0)
     {
         var attribute = member.GetCustomAttributesData().FirstOrDefault(_ => _.AttributeType.Name == attributeName);
         if (attribute is null) return null;

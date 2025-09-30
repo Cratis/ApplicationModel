@@ -19,7 +19,7 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
 export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
     readonly routeTemplate: Handlebars.TemplateDelegate;
-    readonly requiredRequestArguments: string[];
+    readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;
 
     /**
