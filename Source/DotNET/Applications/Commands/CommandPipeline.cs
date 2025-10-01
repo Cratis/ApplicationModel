@@ -16,6 +16,7 @@ namespace Cratis.Applications.Commands;
 /// <param name="commandFilters">The <see cref="ICommandFilters"/> to use for filtering commands.</param>
 /// <param name="handlerProviders">The <see cref="ICommandHandlerProviders"/> to use for finding command handlers.</param>
 /// <param name="valueHandlers">The <see cref="ICommandResponseValueHandlers"/> to use for handling response values.</param>
+/// <param name="contextModifier">The <see cref="ICommandContextModifier"/> to use for setting the current command context.</param>
 /// <param name="serviceProvider">The <see cref="IServiceProvider"/> to use for resolving dependencies.</param>
 [Singleton]
 public class CommandPipeline(
@@ -23,6 +24,7 @@ public class CommandPipeline(
     ICommandFilters commandFilters,
     ICommandHandlerProviders handlerProviders,
     ICommandResponseValueHandlers valueHandlers,
+    ICommandContextModifier contextModifier,
     IServiceProvider serviceProvider) : ICommandPipeline
 {
     /// <inheritdoc/>
@@ -40,6 +42,7 @@ public class CommandPipeline(
 
             var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
             var commandContext = new CommandContext(correlationId, command.GetType(), command, dependencies);
+            contextModifier.SetCurrent(commandContext);
             result = await commandFilters.OnExecution(commandContext);
             if (!result.IsSuccess)
             {

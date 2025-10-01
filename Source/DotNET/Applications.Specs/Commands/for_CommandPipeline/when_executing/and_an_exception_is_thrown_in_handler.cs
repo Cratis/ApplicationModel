@@ -21,4 +21,5 @@ public class and_an_exception_is_thrown_in_handler : given.a_command_pipeline_an
     [Fact] void should_not_call_value_handlers() => _commandResponseValueHandlers.DidNotReceive().Handle(Arg.Any<CommandContext>(), Arg.Any<object>());
     [Fact] void should_be_unsuccessful() => _result.IsSuccess.ShouldBeFalse();
     [Fact] void should_return_exception_in_command_result() => _result.ExceptionMessages.First().ShouldEqual(_exception.Message);
+    [Fact] void should_set_current_command_context() => _commandContextModifier.Received(1).SetCurrent(Arg.Any<CommandContext>());
 }

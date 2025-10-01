@@ -18,4 +18,5 @@ public class and_command_filters_are_reporting_not_successful : given.a_command_
 
     [Fact] void should_return_not_successful() => _result.IsSuccess.ShouldBeFalse();
     [Fact] void should_not_call_command_handler() => _commandHandler.DidNotReceive().Handle(Arg.Any<CommandContext>());
+    [Fact] void should_set_current_command_context() => _commandContextModifier.Received(1).SetCurrent(Arg.Any<CommandContext>());
 }
