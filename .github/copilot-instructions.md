@@ -102,7 +102,8 @@
 - Follow the following guides:
    - [How to Write Specs](./instructions/specs.instructions.md)
    - [How to Write Entity Framework Core Specs](./instructions/efcore.specs.instructions.md)
-   - [Concepts Documentation](./instructions/concepts.instructions.md)
+   - [Concepts](./instructions/concepts.instructions.md)
+   - [Documentation](./instructions/documentation.instructions.md)
 
 ## Header
 
