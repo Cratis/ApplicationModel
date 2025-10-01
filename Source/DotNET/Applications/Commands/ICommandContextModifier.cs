@@ -12,5 +12,5 @@ public interface ICommandContextModifier
     /// Sets the current <see cref="CommandContext"/>.
     /// </summary>
     /// <param name="context">The <see cref="CommandContext"/> to set as current.</param>
-    internal void SetCurrent(CommandContext context);
+    void SetCurrent(CommandContext context);
 }
