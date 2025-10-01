@@ -30,7 +30,7 @@ public class FluentValidationFilter(IDiscoverableValidators discoverableValidato
         {
             var validationContextType = typeof(ValidationContext<>).MakeGenericType(instance.GetType());
             var validationContext = Activator.CreateInstance(validationContextType, instance) as IValidationContext;
-            var validationResult = await validator.ValidateAsync(validationContext);
+            var validationResult = await validator.ValidateAsync(validationContext, CancellationToken.None);
             if (!validationResult.IsValid)
             {
                 commandResult.MergeWith(new CommandResult
@@ -39,12 +39,23 @@ public class FluentValidationFilter(IDiscoverableValidators discoverableValidato
                         new ValidationResult(ValidationResultSeverity.Error, _.ErrorMessage, [_.PropertyName], null!)).ToArray()
                 });
             }
+        }
 
-            if (!instanceType.IsPrimitive)
+        if (!instanceType.IsPrimitive &&
+            instanceType != typeof(string) &&
+            instanceType != typeof(DateTime) &&
+            instanceType != typeof(DateTimeOffset) &&
+            instanceType != typeof(Guid) &&
+            instanceType != typeof(decimal) &&
+            !instanceType.IsArray &&
+            !typeof(System.Collections.IEnumerable).IsAssignableFrom(instanceType))
+        {
+            foreach (var property in instanceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                foreach (var property in instanceType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                var propertyValue = property.GetValue(instance);
+                if (propertyValue is not null)
                 {
-                    commandResult.MergeWith(await Validate(context, property.GetValue(instance)!));
+                    commandResult.MergeWith(await Validate(context, propertyValue));
                 }
             }
         }
