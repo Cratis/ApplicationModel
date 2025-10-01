@@ -97,6 +97,7 @@ public static class HostBuilderExtensions
             .ConfigureServices(services =>
             {
                 services.AddCratisApplicationModelMeter();
+                services.AddCratisCommands();
                 services
                     .AddTypeDiscovery()
                     .AddSingleton<IDerivedTypes>(derivedTypes)
