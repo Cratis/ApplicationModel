@@ -10,5 +10,6 @@
 | [MongoDB](./mongodb.md) | How to work with MongoDB and what the Application Model is offering. |
 | [Proxy Generation](./proxy-generation.md) | How to configure and use the TypeScript proxy generator for commands and queries. |
 | [Queries](./queries/) | How to work with queries and what the Application Model is offering. |
+| [Swagger](./swagger.md) | Enhanced Swagger/OpenAPI support with automatic schema generation for Application Model features. |
 | [Validation](./validation.md) | How to work with validation. |
 | [Without Wrappers](./without-wrappers.md) | How to get "clean" unwrapped results from your controllers. |

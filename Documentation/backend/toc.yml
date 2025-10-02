@@ -12,6 +12,8 @@
   href: queries/toc.yml
 - name: Proxy Generation
   href: proxy-generation.md
+- name: Swagger
+  href: swagger.md
 - name: Validation
   href: validation.md
 - name: Without wrappers
