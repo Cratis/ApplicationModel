@@ -53,4 +53,18 @@ public static class ConnectionExtensions
             _ => throw new UnsupportedDatabaseType(connectionString)
         };
     }
+
+    /// <summary>
+    /// Gets the database type from the migration builder's active provider.
+    /// </summary>
+    /// <param name="migrationBuilder">The migration builder to get the database type from.</param>
+    /// <returns>The database type.</returns>
+    /// <exception cref="UnsupportedDatabaseType">Thrown if the active provider is not supported.</exception>
+    public static DatabaseType GetDatabaseType(this MigrationBuilder migrationBuilder) => migrationBuilder.ActiveProvider switch
+    {
+        "Microsoft.EntityFrameworkCore.Sqlite" => DatabaseType.Sqlite,
+        "Microsoft.EntityFrameworkCore.SqlServer" => DatabaseType.SqlServer,
+        "Npgsql.EntityFrameworkCore.PostgreSQL" => DatabaseType.PostgreSql,
+        _ => throw new UnsupportedDatabaseType(migrationBuilder.ActiveProvider!)
+    };
 }

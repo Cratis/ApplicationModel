@@ -11,6 +11,7 @@
     "Expando",
     "MVVM",
     "Npgsql",
+    "NVARCHAR",
     "primeicons",
     "primereact",
     "Swashbuckle",
@@ -20,7 +21,7 @@
     "Unmap",
     "unmapping",
     "Unmaps"
-],
+  ],
   "dotnet.defaultSolution": "ApplicationModel.sln",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "search.exclude": {

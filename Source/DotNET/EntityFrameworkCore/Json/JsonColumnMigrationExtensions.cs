@@ -30,10 +30,10 @@ public static class JsonColumnMigrationExtensions
     /// <typeparam name="TProperty">Type of property.</typeparam>
     /// <returns>Operation builder for the column.</returns>
     public static OperationBuilder<AddColumnOperation> JsonColumn<TProperty>(this ColumnsBuilder cb, MigrationBuilder mb) =>
-        (mb.ActiveProvider switch
+        (mb.GetDatabaseType() switch
         {
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => cb.Column<TProperty>("jsonb", nullable: false),
-            "Microsoft.EntityFrameworkCore.SqlServer" => cb.Column<TProperty>("nvarchar(max)", nullable: false),
+            DatabaseType.PostgreSql => cb.Column<TProperty>("jsonb", nullable: false),
+            DatabaseType.SqlServer => cb.Column<TProperty>("nvarchar(max)", nullable: false),
             _ => cb.Column<TProperty>("text", nullable: false)
         }).Annotation("cratis:ColumnType", JsonColumnType);
 
