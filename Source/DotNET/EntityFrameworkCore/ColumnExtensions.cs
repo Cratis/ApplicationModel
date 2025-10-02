@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Numerics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
@@ -33,34 +34,19 @@ public static class ColumnExtensions
         };
 
     /// <summary>
-    /// Adds an integer column with appropriate database-specific type.
+    /// Adds a number column with appropriate database-specific type.
     /// </summary>
+    /// <typeparam name="T">The numeric type (char, byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal).</typeparam>
     /// <param name="cb">Columns builder.</param>
     /// <param name="mb">Migration builder.</param>
     /// <param name="nullable">Whether the column should be nullable.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> IntColumn(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
-        mb.GetDatabaseType() switch
-        {
-            DatabaseType.PostgreSql => cb.Column<int>("INTEGER", nullable: nullable),
-            DatabaseType.SqlServer => cb.Column<int>("INT", nullable: nullable),
-            _ => cb.Column<int>("INTEGER", nullable: nullable)
-        };
-
-    /// <summary>
-    /// Adds a 64-bit integer column with appropriate database-specific type.
-    /// </summary>
-    /// <param name="cb">Columns builder.</param>
-    /// <param name="mb">Migration builder.</param>
-    /// <param name="nullable">Whether the column should be nullable.</param>
-    /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> Int64Column(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
-        mb.GetDatabaseType() switch
-        {
-            DatabaseType.PostgreSql => cb.Column<long>("BIGINT", nullable: nullable),
-            DatabaseType.SqlServer => cb.Column<long>("BIGINT", nullable: nullable),
-            _ => cb.Column<long>("INTEGER", nullable: nullable)
-        };
+    public static OperationBuilder<AddColumnOperation> NumberColumn<T>(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true)
+        where T : INumber<T>
+    {
+        var sqlType = GetSqlTypeForNumber<T>(mb.GetDatabaseType());
+        return cb.Column<T>(sqlType, nullable: nullable);
+    }
 
     /// <summary>
     /// Adds a boolean column with appropriate database-specific type.
@@ -125,4 +111,59 @@ public static class ColumnExtensions
             DatabaseType.SqlServer => cb.Column<DateTimeOffset>("DATETIMEOFFSET", nullable: nullable),
             _ => cb.Column<DateTimeOffset>("TEXT", nullable: nullable)
         };
+
+    /// <summary>
+    /// Gets the appropriate SQL type for a numeric type based on the database provider.
+    /// </summary>
+    /// <typeparam name="T">The numeric type.</typeparam>
+    /// <param name="databaseType">The database type.</param>
+    /// <returns>The SQL type string.</returns>
+    static string GetSqlTypeForNumber<T>(DatabaseType databaseType)
+        where T : INumber<T>
+    {
+        var type = typeof(T);
+
+        return databaseType switch
+        {
+            DatabaseType.PostgreSql => type.Name switch
+            {
+                nameof(Char) => "SMALLINT",
+                nameof(Byte) => "SMALLINT",
+                nameof(SByte) => "SMALLINT",
+                nameof(Int16) => "SMALLINT",
+                nameof(UInt16) => "INTEGER",
+                nameof(Int32) => "INTEGER",
+                nameof(UInt32) => "BIGINT",
+                nameof(Int64) => "BIGINT",
+                nameof(UInt64) => "NUMERIC(20,0)",
+                nameof(Single) => "REAL",
+                nameof(Double) => "DOUBLE PRECISION",
+                nameof(Decimal) => "DECIMAL",
+                _ => "INTEGER"
+            },
+            DatabaseType.SqlServer => type.Name switch
+            {
+                nameof(Char) => "SMALLINT",
+                nameof(Byte) => "TINYINT",
+                nameof(SByte) => "SMALLINT",
+                nameof(Int16) => "SMALLINT",
+                nameof(UInt16) => "INT",
+                nameof(Int32) => "INT",
+                nameof(UInt32) => "BIGINT",
+                nameof(Int64) => "BIGINT",
+                nameof(UInt64) => "DECIMAL(20,0)",
+                nameof(Single) => "REAL",
+                nameof(Double) => "FLOAT",
+                nameof(Decimal) => "DECIMAL(18,2)",
+                _ => "INT"
+            },
+            _ => type.Name switch // SQLite and others
+            {
+                nameof(Single) => "REAL",
+                nameof(Double) => "REAL",
+                nameof(Decimal) => "REAL",
+                _ => "INTEGER"
+            }
+        };
+    }
 }
