@@ -1,2 +1,6 @@
+- name: Commands
+  href: commands.md
+- name: Queries
+  href: queries.md
 - name: Identity
   href: identity.md
