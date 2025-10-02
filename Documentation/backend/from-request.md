@@ -1,6 +1,10 @@
 # FromRequest Attribute
 
-The `[FromRequest]` attribute is a powerful model binding feature that allows you to combine data from multiple sources of an HTTP request into a single model. Unlike the standard ASP.NET Core model binding attributes that bind from a single source, `[FromRequest]` intelligently merges data from the request body with data from other parts of the request (route parameters, query strings, etc.).
+The `[FromRequest]` attribute is a powerful model binding feature that allows you to combine data from multiple sources of an HTTP request into a single model.
+Unlike the standard ASP.NET Core model binding attributes that bind from a single source, `[FromRequest]` intelligently merges data from the request body with
+data from other parts of the request (route parameters, query strings, etc.). This creates a unified object that's perfect for comprehensive validation with
+frameworks like FluentValidation, enables cross-parameter validation rules, and simplifies controller methods by reducing multiple parameters into a single,
+well-structured request model.
 
 ## Overview
 
@@ -131,6 +135,69 @@ Result:
 2. **Backward Compatibility**: Existing APIs can be enhanced without breaking changes
 3. **RESTful Patterns**: Supports having resource identifiers in the URL while allowing detailed data in the body
 4. **Progressive Enhancement**: Start with simple query parameters and optionally move to JSON for complex scenarios
+5. **Unified Object for Validation**: Creates a single, complete object that can be validated using frameworks like FluentValidation
+
+### Validation Scenarios
+
+One of the key advantages of `[FromRequest]` is that it creates a complete object that contains all the data from your request, regardless of where it came from. This is particularly valuable when using validation frameworks like FluentValidation, which work with objects rather than individual parameters.
+
+**Traditional approach (multiple parameters):**
+
+```csharp
+[HttpPut("users/{userId}")]
+public async Task<IActionResult> UpdateUser(
+    [FromRoute] int userId,
+    [FromQuery] bool notifyUser,
+    [FromBody] UserUpdateData data)
+{
+    // Validation is fragmented across multiple objects
+    // FluentValidation can't easily validate cross-parameter rules
+    // Manual validation logic becomes complex
+}
+```
+
+**With [FromRequest]:**
+
+```csharp
+public class UserUpdateRequest
+{
+    [FromRoute] public int UserId { get; set; }
+    [FromQuery] public bool NotifyUser { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
+
+public class UserUpdateRequestValidator : AbstractValidator<UserUpdateRequest>
+{
+    public UserUpdateRequestValidator()
+    {
+        RuleFor(x => x.UserId).GreaterThan(0);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Email).EmailAddress();
+        
+        // Cross-property validation is now possible
+        RuleFor(x => x.NotifyUser)
+            .Equal(false)
+            .When(x => string.IsNullOrEmpty(x.Email))
+            .WithMessage("Cannot notify user without email address");
+    }
+}
+
+[HttpPut("users/{userId}")]
+public async Task<IActionResult> UpdateUser([FromRequest] UserUpdateRequest request)
+{
+    // Single object validation with complete context
+    // FluentValidation can validate the entire request as one unit
+    // Cross-parameter validation rules are straightforward
+}
+```
+
+This approach enables:
+
+- **Cross-parameter validation**: Rules that depend on multiple values from different request sources
+- **Unified validation logic**: All validation rules in one place for the complete request
+- **Cleaner controllers**: Single parameter instead of multiple individual parameters
+- **Better testability**: Test validators with complete request objects rather than parameter combinations
 
 ## Integration with Other Features
 
