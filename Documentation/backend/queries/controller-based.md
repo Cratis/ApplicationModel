@@ -437,5 +437,104 @@ public IEnumerable<DebitAccount> GetPagedAccounts(
 }
 ```
 
+## Observable Queries
+
+Observable queries provide real-time data streaming using WebSockets, enabling reactive user experiences where data changes are pushed to clients as they occur. You achieve this by returning `ISubject<T>` from your controller actions.
+
+### Basic Observable Query
+
+The key to an observable query is to leverage the `ClientObservable<T>` generic type:
+
+```csharp
+[HttpGet("observable")]
+public ISubject<IEnumerable<DebitAccount>> AllAccountsObservable()
+{
+    return _collection.Observe(); // Simple MongoDB extension method
+}
+```
+
+### Observable with Arguments
+
+Observable queries can accept arguments just like regular queries:
+
+```csharp
+[HttpGet("owner/{ownerId}/observable")]
+public ISubject<IEnumerable<DebitAccount>> GetAccountsByOwnerObservable(CustomerId ownerId)
+{
+    return _collection.Observe(account => account.Owner == ownerId);
+}
+
+[HttpGet("filtered-observable")]
+public ISubject<IEnumerable<DebitAccount>> GetFilteredAccountsObservable(
+    [FromQuery] decimal? minBalance = null)
+{
+    if (minBalance.HasValue)
+    {
+        return _collection.Observe(account => account.Balance >= minBalance.Value);
+    }
+    
+    return _collection.Observe();
+}
+```
+
+### Single Object Observable
+
+For observing changes to a single object:
+
+```csharp
+[HttpGet("{id}/observable")]
+public ISubject<DebitAccount> GetAccountObservable(AccountId id)
+{
+    return _collection.Observe(account => account.Id == id);
+}
+```
+
+### Custom Observable Logic
+
+For more complex scenarios, you can implement custom observable logic:
+
+```csharp
+[HttpGet("summary")]
+public ISubject<AccountSummary> GetAccountSummaryObservable()
+{
+    var observable = new ClientObservable<AccountSummary>();
+    
+    var calculateSummary = () =>
+    {
+        var accounts = _collection.Find(_ => true).ToList();
+        return new AccountSummary(accounts.Count, accounts.Sum(a => a.Balance));
+    };
+
+    // Send initial summary
+    observable.OnNext(calculateSummary());
+
+    // Watch for any account changes
+    var cursor = _collection.Watch();
+    Task.Run(() =>
+    {
+        while (cursor.MoveNext())
+        {
+            if (cursor.Current.Any())
+            {
+                observable.OnNext(calculateSummary());
+            }
+        }
+    });
+
+    observable.ClientDisconnected = () => cursor.Dispose();
+    return observable;
+}
+```
+
+### Best Practices for Observable Queries
+
+1. **Use the `.Observe()` extension method** for simple cases - it handles initial data load and change monitoring automatically
+2. **Always handle client disconnection** with the `ClientDisconnected` callback when using `ClientObservable<T>` directly
+3. **Send initial data immediately** before setting up change monitoring
+4. **Use appropriate filters** to minimize unnecessary data transmission
+5. **Consider the frequency of changes** and implement throttling if necessary
+
+> **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources like MongoDB cursors to prevent memory leaks.
+
 > **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your query arguments,
 > making them strongly typed on the frontend as well.
