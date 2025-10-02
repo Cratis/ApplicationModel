@@ -4,6 +4,8 @@
   href: authorization.md
 - name: Configuration
   href: configuration.md
+- name: FromRequest Attribute
+  href: from-request.md
 - name: Commands
   href: commands/toc.yml
 - name: Queries
