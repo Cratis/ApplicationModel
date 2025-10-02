@@ -62,6 +62,8 @@ The `NumberColumn<T>()` method supports all .NET numeric types and maps them app
 - **SQL Server**: `nvarchar(max)`
 - **SQLite**: `text`
 
+> Note: Read more about JSON in [this article](./json.md)
+
 ## Usage Examples
 
 ### Auto Incremental Primary Key
