@@ -18,3 +18,7 @@ public class Carts : ControllerBase
 
 > **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the method name
 > will become the command name for the generated TypeScript file and class.
+
+## Bypassing Command Result Wrappers
+
+By default, controller-based commands return results wrapped in a `CommandResult` structure. If you need to return the raw result from your controller action without this wrapper, you can use the `[AspNetResult]` attribute. For more details, see [Without wrappers](../without-wrappers.md).

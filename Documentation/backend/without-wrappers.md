@@ -1,10 +1,10 @@
-# Without wrappers
+# Without wrappers (Controller-based Commands and Queries)
 
-When using either Commands or [Queries](./queries.md), the result is wrapped in a more descriptive
-structure that will include the result returned by your controller action.This behavior is not an
+When using controller-based [Commands](./commands/controller-based.md) or [Queries](./queries/controller-based.md), the result is wrapped in a more descriptive
+structure that will include the result returned by your controller action. This behavior is not an
 opt-in on a per controller or action level, making it a cross cutting always on behavior.
 
-If you need controller based endpoints that do not have the encapsulation of the `CommandResult` or the
+If you need controller-based endpoints that do not have the encapsulation of the `CommandResult` or the
 `QueryResult` structures, you can use an attribute called `[AspNetResult]`.
 
 The attribute can be used on a controller or a specific action. Once used, the result is kept as is from
