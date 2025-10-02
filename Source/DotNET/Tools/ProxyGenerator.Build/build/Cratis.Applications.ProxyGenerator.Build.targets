@@ -26,7 +26,7 @@
         </PropertyGroup>
 
         <Exec ConsoleToMsBuild="true" 
-            Command="dotnet $(CratisProxyGeneratorAssembly) $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll $(CratisProxiesOutputPath) $(CratisProxiesSegmentsToSkip) $(SkipOutputDeletion) $(SkipCommandNameInRoute) $(SkipQueryNameInRoute) $(ApiPrefix)"
+            Command="dotnet $(CratisProxyGeneratorAssembly) &quot;$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll&quot; &quot;$(CratisProxiesOutputPath)&quot; $(CratisProxiesSegmentsToSkip) $(SkipOutputDeletion) $(SkipCommandNameInRoute) $(SkipQueryNameInRoute) $(ApiPrefix)"
             WorkingDirectory="$(CratisProxyGeneratorAssemblyDirectory)" />
     </Target>
 </Project>
