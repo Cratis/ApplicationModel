@@ -20,7 +20,7 @@ public static class DbContextExtensions
     /// <param name="optionsAction">An optional action to configure the DbContext options.</param>
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder>? optionsAction = default)
-        where TDbContext : BaseDbContext
+        where TDbContext : DbContext
     {
         services.AddDbContext<TDbContext>(options =>
         {
