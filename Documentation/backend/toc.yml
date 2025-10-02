@@ -1,5 +1,7 @@
 - name: Identity
   href: identity.md
+- name: Authorization
+  href: authorization.md
 - name: Configuration
   href: configuration.md
 - name: Commands
