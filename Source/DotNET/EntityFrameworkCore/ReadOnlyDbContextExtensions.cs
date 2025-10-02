@@ -12,32 +12,13 @@ namespace Cratis.Applications.EntityFrameworkCore;
 public static class ReadOnlyDbContextExtensions
 {
     /// <summary>
-    /// Adds a DbContext with the specified connection string.
-    /// </summary>
-    /// <typeparam name="TDbContext">The type of the DbContext.</typeparam>
-    /// <param name="services">The service collection to add the DbContext to.</param>
-    /// <param name="connectionString">The connection string to use for the DbContext.</param>
-    /// <param name="optionsAction">An action to configure the DbContext options.</param>
-    /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder> optionsAction)
-        where TDbContext : BaseDbContext
-    {
-        services.AddDbContext<TDbContext>(options =>
-        {
-            options.UseDatabaseFromConnectionString(connectionString);
-            optionsAction(options);
-        });
-        return services;
-    }
-
-    /// <summary>
     /// Adds a read-only DbContext to the service collection.
     /// </summary>
     /// <typeparam name="TContext">The type of the DbContext.</typeparam>
     /// <param name="services">The service collection to add the DbContext to.</param>
-    /// <param name="optionsAction">An action to configure the DbContext options.</param>
+    /// <param name="optionsAction">An optional action to configure the DbContext options.</param>
     /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddReadOnlyDbContext<TContext>(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction)
+    public static IServiceCollection AddReadOnlyDbContext<TContext>(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = default)
         where TContext : DbContext
     {
         services.AddDbContext<TContext>(options =>
@@ -45,7 +26,7 @@ public static class ReadOnlyDbContextExtensions
             options
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .AddInterceptors(new ReadOnlySaveChangesInterceptor());
-            optionsAction(options);
+            optionsAction?.Invoke(options);
         });
         return services;
     }
@@ -57,15 +38,15 @@ public static class ReadOnlyDbContextExtensions
     /// <typeparam name="TDbContext">The type of the DbContext.</typeparam>
     /// <param name="services">The service collection to add the DbContext to.</param>
     /// <param name="connectionString">The connection string to use for the DbContext.</param>
-    /// <param name="optionsAction">An action to configure the DbContext options.</param>
+    /// <param name="optionsAction">An optional action to configure the DbContext options.</param>
     /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddReadOnlyDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder> optionsAction)
+    public static IServiceCollection AddReadOnlyDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder>? optionsAction = default)
         where TDbContext : BaseDbContext
     {
         services.AddReadOnlyDbContext<TDbContext>(builder =>
         {
             builder.UseDatabaseFromConnectionString(connectionString);
-            optionsAction(builder);
+            optionsAction?.Invoke(builder);
         });
 
         return services;
