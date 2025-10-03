@@ -13,6 +13,9 @@ then adapt with the C# specific conventions below.
   - Uses [Mocha](https://mochajs.org) as test framework and execution.
   - Uses [SinonJS](https://sinonjs.org) for mocking.
   - Uses [Chai](https://www.chaijs.com) for assertions.
+  - Uses Vitest for running tests. See [Vitest Documentation](https://vitest.dev/).
+  - Uses yarn as package manager.
+  - Tests can be run using `yarn test` from every package.
   - Tests are found in alongside the code being tested in folders starting with either `for_`, `when_` or `given_` (for reusable contexts).
 
 - **File/Folder Structure:**
