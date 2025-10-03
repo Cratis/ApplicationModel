@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 import { Paging } from '../../Paging';
@@ -50,16 +50,16 @@ describe('with paging', given(a_query_for, context => {
 
     it('should call fetch with URL without paging parameters due to implementation bug', () => {
         // Note: This test documents a bug where paging parameters are added after URL creation
-        expect(fetchStub).to.have.been.calledOnce;
+        fetchStub.should.have.been.calledOnce;
         const call = fetchStub.getCall(0);
         const url = call.args[0].href;
         // The parameters should be included but aren't due to timing issue in implementation
-        expect(url).to.not.include('page=2');
-        expect(url).to.not.include('pageSize=10');
-        expect(url).to.equal('https://api.example.com/api/test/test-id');
+        url.should.not.include('page=2');
+        url.should.not.include('pageSize=10');
+        url.should.equal('https://api.example.com/api/test/test-id');
     });
 
     it('should return successful result', () => {
-        expect(result.isSuccess).to.be.true;
+        result.isSuccess.should.be.true;
     });
 }));

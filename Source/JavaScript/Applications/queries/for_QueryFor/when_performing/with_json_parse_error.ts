@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
@@ -31,15 +31,15 @@ describe('with json parse error', given(a_query_for, context => {
     });
 
     it('should return no success result', () => {
-        expect(result.isSuccess).to.be.false;
+        result.isSuccess.should.be.false;
     });
 
     it('should return default value', () => {
-        expect(result.data).to.equal('');
+        result.data.should.equal('');
     });
 
     it('should return result without data', () => {
-        expect(result.data).to.equal('');
-        expect(result.isSuccess).to.be.false;
+        result.data.should.equal('');
+        result.isSuccess.should.be.false;
     });
 }));

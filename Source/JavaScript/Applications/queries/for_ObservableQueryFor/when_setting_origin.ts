@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { TestObservableQuery } from './given/TestQueries';
-import { expect } from 'chai';
+
 
 describe('when setting origin', () => {
     let query: TestObservableQuery;
@@ -12,6 +12,6 @@ describe('when setting origin', () => {
     });
 
     it('should not throw when setting origin', () => {
-        expect(() => query.setOrigin('https://example.com')).to.not.throw();
+        (() => query.setOrigin('https://example.com')).should.not.throw();
     });
 });

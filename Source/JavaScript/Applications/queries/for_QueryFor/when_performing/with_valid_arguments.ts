@@ -3,7 +3,6 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
@@ -49,40 +48,40 @@ describe('with valid arguments', given(a_query_for, context => {
     });
 
     it('should return successful result', () => {
-        expect(result.isSuccess).to.be.true;
+        result.isSuccess.should.be.true;
     });
 
     it('should return correct data', () => {
-        expect(result.data).to.equal('test-result');
+        result.data.should.equal('test-result');
     });
 
     it('should have data', () => {
-        expect(result.hasData).to.be.true;
+        result.hasData.should.be.true;
     });
 
     it('should call fetch with correct URL', () => {
-        expect(fetchStub).to.have.been.calledOnce;
+        fetchStub.should.have.been.calledOnce;
         const call = fetchStub.getCall(0);
-        expect(call.args[0].href).to.equal('https://api.example.com/api/v1/api/test/test-id');
+        call.args[0].href.should.equal('https://api.example.com/api/v1/api/test/test-id');
     });
 
     it('should call fetch with correct headers', () => {
         const call = fetchStub.getCall(0);
         const options = call.args[1];
-        expect(options.headers['Accept']).to.equal('application/json');
-        expect(options.headers['Content-Type']).to.equal('application/json');
-        expect(options.headers['x-cratis-microservice']).to.equal('test-service');
+        options.headers['Accept'].should.equal('application/json');
+        options.headers['Content-Type'].should.equal('application/json');
+        options.headers['x-cratis-microservice'].should.equal('test-service');
     });
 
     it('should call fetch with GET method', () => {
         const call = fetchStub.getCall(0);
         const options = call.args[1];
-        expect(options.method).to.equal('GET');
+        options.method.should.equal('GET');
     });
 
     it('should set abort controller signal', () => {
         const call = fetchStub.getCall(0);
         const options = call.args[1];
-        expect(options.signal).to.not.be.undefined;
+        options.signal.should.not.be.undefined;
     });
 }));

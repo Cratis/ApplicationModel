@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
@@ -47,16 +47,16 @@ describe('with enumerable query', given(a_query_for, context => {
     });
 
     it('should return successful result', () => {
-        expect(result.isSuccess).to.be.true;
+        result.isSuccess.should.be.true;
     });
 
     it('should return array data', () => {
-        expect(result.data).to.deep.equal(['item1', 'item2']);
+        result.data.should.deep.equal(['item1', 'item2']);
     });
 
     it('should call fetch with correct URL', () => {
-        expect(fetchStub).to.have.been.calledOnce;
+        fetchStub.should.have.been.calledOnce;
         const call = fetchStub.getCall(0);
-        expect(call.args[0].href).to.equal('https://api.example.com/api/items/test-category');
+        call.args[0].href.should.equal('https://api.example.com/api/items/test-category');
     });
 }));

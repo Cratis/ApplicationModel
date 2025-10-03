@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
@@ -47,12 +47,12 @@ describe('with query without required parameters', given(a_query_for, context =>
     });
 
     it('should return successful result', () => {
-        expect(result.isSuccess).to.be.true;
+        result.isSuccess.should.be.true;
     });
 
     it('should call fetch with correct URL', () => {
-        expect(fetchStub).to.have.been.calledOnce;
+        fetchStub.should.have.been.calledOnce;
         const call = fetchStub.getCall(0);
-        expect(call.args[0].href).to.equal('https://api.example.com/api/all');
+        call.args[0].href.should.equal('https://api.example.com/api/all');
     });
 }));

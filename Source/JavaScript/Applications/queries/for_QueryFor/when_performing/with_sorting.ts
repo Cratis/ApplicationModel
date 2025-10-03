@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 import { Sorting } from '../../Sorting';
@@ -52,17 +52,17 @@ describe('with sorting', given(a_query_for, context => {
 
         it('should call fetch with URL without sorting parameters due to implementation bug', () => {
             // Note: This test documents a bug where sorting parameters are added after URL creation
-            expect(fetchStub).to.have.been.calledOnce;
+            fetchStub.should.have.been.calledOnce;
             const call = fetchStub.getCall(0);
             const url = call.args[0].href;
             // The parameters should be included but aren't due to timing issue in implementation
-            expect(url).to.not.include('sortBy=name');
-            expect(url).to.not.include('sortDirection=asc');
-            expect(url).to.equal('https://api.example.com/api/test/test-id');
+            url.should.not.include('sortBy=name');
+            url.should.not.include('sortDirection=asc');
+            url.should.equal('https://api.example.com/api/test/test-id');
         });
 
         it('should return successful result', () => {
-            expect(result.isSuccess).to.be.true;
+            result.isSuccess.should.be.true;
         });
     });
 
@@ -89,17 +89,17 @@ describe('with sorting', given(a_query_for, context => {
 
         it('should call fetch with URL without sorting parameters due to implementation bug', () => {
             // Note: This test documents a bug where sorting parameters are added after URL creation
-            expect(fetchStub).to.have.been.calledOnce;
+            fetchStub.should.have.been.calledOnce;
             const call = fetchStub.getCall(0);
             const url = call.args[0].href;
             // The parameters should be included but aren't due to timing issue in implementation
-            expect(url).to.not.include('sortBy=name');
-            expect(url).to.not.include('sortDirection=desc');
-            expect(url).to.equal('https://api.example.com/api/test/test-id');
+            url.should.not.include('sortBy=name');
+            url.should.not.include('sortDirection=desc');
+            url.should.equal('https://api.example.com/api/test/test-id');
         });
 
         it('should return successful result', () => {
-            expect(result.isSuccess).to.be.true;
+            result.isSuccess.should.be.true;
         });
     });
 }));

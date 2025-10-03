@@ -3,7 +3,7 @@
 
 import { a_query_for } from '../given/a_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
@@ -53,19 +53,19 @@ describe('with abort controller', given(a_query_for, context => {
     });
 
     it('should create new abort controller on second call', () => {
-        expect(context.query.abortController).to.not.equal(firstAbortController);
+        context.query.abortController.should.not.equal(firstAbortController);
     });
 
     it('should abort first controller when performing second query', () => {
-        expect(firstAbortController.signal.aborted).to.be.true;
+        firstAbortController.signal.aborted.should.be.true;
     });
 
     it('should return successful results for both calls', () => {
-        expect(result1.isSuccess).to.be.true;
-        expect(result2.isSuccess).to.be.true;
+        result1.isSuccess.should.be.true;
+        result2.isSuccess.should.be.true;
     });
 
     it('should call fetch twice', () => {
-        expect(fetchStub).to.have.been.calledTwice;
+        fetchStub.should.have.been.calledTwice;
     });
 }));

@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { UrlHelpers } from '../../UrlHelpers';
-import { expect } from 'chai';
+
 
 describe("with_null_or_undefined_origin", () => {
     let apiBasePath: string;
@@ -33,21 +33,21 @@ describe("with_null_or_undefined_origin", () => {
 
     it("should_use_document_location_origin_when_null", () => {
         result = UrlHelpers.createUrlFrom(null as unknown as string, apiBasePath, route);
-        expect(result.origin).to.equal('https://fallback-origin.com');
+        result.origin.should.equal('https://fallback-origin.com');
     });
 
     it("should_use_document_location_origin_when_undefined", () => {
         result = UrlHelpers.createUrlFrom(undefined as unknown as string, apiBasePath, route);
-        expect(result.origin).to.equal('https://fallback-origin.com');
+        result.origin.should.equal('https://fallback-origin.com');
     });
 
     it("should_create_correct_url_with_document_origin_when_null", () => {
         result = UrlHelpers.createUrlFrom(null as unknown as string, apiBasePath, route);
-        expect(result.href).to.equal('https://fallback-origin.com/users/123');
+        result.href.should.equal('https://fallback-origin.com/users/123');
     });
 
     it("should_create_correct_url_with_document_origin_when_undefined", () => {
         result = UrlHelpers.createUrlFrom(undefined as unknown as string, apiBasePath, route);
-        expect(result.href).to.equal('https://fallback-origin.com/users/123');
+        result.href.should.equal('https://fallback-origin.com/users/123');
     });
 });

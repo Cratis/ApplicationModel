@@ -3,7 +3,7 @@
 
 import { an_observable_query_for } from '../given/an_observable_query_for';
 import { given } from '../../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 import { ObservableQuerySubscription } from '../../ObservableQuerySubscription';
 import { Sorting } from '../../Sorting';
@@ -28,10 +28,10 @@ describe('with sorting', given(an_observable_query_for, context => {
     });
 
     it('should return a subscription', () => {
-        expect(subscription).to.not.be.undefined;
+        subscription.should.not.be.undefined;
     });
 
     it('should not call callback immediately', () => {
-        expect(callback.called).to.be.false;
+        callback.called.should.be.false;
     });
 }));

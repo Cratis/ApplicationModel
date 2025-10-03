@@ -3,7 +3,6 @@
 
 import { a_query_for } from './given/a_query_for';
 import { given } from '../../given';
-import { expect } from 'chai';
 
 describe('when setting api base path', given(a_query_for, context => {
     const apiBasePath = '/api/v1';
@@ -15,6 +14,6 @@ describe('when setting api base path', given(a_query_for, context => {
     it('should set the api base path', () => {
         // Access the private field through type assertion to test internal state
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect((context.query as any)._apiBasePath).to.equal(apiBasePath);
+        ((context.query as any)._apiBasePath).should.equal(apiBasePath);
     });
 }));

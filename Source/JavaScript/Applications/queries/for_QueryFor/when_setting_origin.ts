@@ -3,7 +3,6 @@
 
 import { a_query_for } from './given/a_query_for';
 import { given } from '../../given';
-import { expect } from 'chai';
 
 describe('when setting origin', given(a_query_for, context => {
     const origin = 'https://api.example.com';
@@ -15,6 +14,6 @@ describe('when setting origin', given(a_query_for, context => {
     it('should set the origin', () => {
         // Access the private field through type assertion to test internal state
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect((context.query as any)._origin).to.equal(origin);
+        ((context.query as any)._origin).should.equal(origin);
     });
 }));

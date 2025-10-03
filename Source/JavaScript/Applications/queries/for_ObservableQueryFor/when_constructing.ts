@@ -6,7 +6,7 @@ import { given } from '../../given';
 import { Sorting } from '../Sorting';
 import { Paging } from '../Paging';
 import { Globals } from '../../Globals';
-import { expect } from 'chai';
+
 
 describe('when constructing', given(an_observable_query_for, context => {
     let originalMicroservice: string | undefined;
@@ -22,11 +22,11 @@ describe('when constructing', given(an_observable_query_for, context => {
         }
     });
 
-    it('should set sorting to none', () => expect(context.query.sorting).to.equal(Sorting.none));
-    it('should set paging to no paging', () => expect(context.query.paging).to.equal(Paging.noPaging));
-    it('should set model type to String', () => expect(context.query.modelType).to.equal(String));
-    it('should set enumerable to false', () => expect(context.query.enumerable).to.be.false);
-    it('should have default required request parameters', () => expect(context.query.requiredRequestParameters).to.deep.equal(['id']));
-    it('should have default route', () => expect(context.query.route).to.equal('/api/test/{id}'));
-    it('should have default value as empty string', () => expect(context.query.defaultValue).to.equal(''));
+    it('should set sorting to none', () => context.query.sorting.should.equal(Sorting.none));
+    it('should set paging to no paging', () => context.query.paging.should.equal(Paging.noPaging));
+    it('should set model type to String', () => context.query.modelType.should.equal(String));
+    it('should set enumerable to false', () => context.query.enumerable.should.be.false);
+    it('should have default required request parameters', () => context.query.requiredRequestParameters.should.deep.equal(['id']));
+    it('should have default route', () => context.query.route.should.equal('/api/test/{id}'));
+    it('should have default value as empty string', () => context.query.defaultValue.should.equal(''));
 }));

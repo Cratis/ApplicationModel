@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { UrlHelpers } from '../../UrlHelpers';
-import { expect } from 'chai';
+
 
 describe("with_empty_origin", () => {
     let origin: string;
@@ -36,10 +36,10 @@ describe("with_empty_origin", () => {
     });
 
     it("should_use_document_location_origin", () => {
-        expect(result.origin).to.equal('https://mocked-origin.com');
+        result.origin.should.equal('https://mocked-origin.com');
     });
 
     it("should_create_correct_url_with_document_origin", () => {
-        expect(result.href).to.equal('https://mocked-origin.com/users/123');
+        result.href.should.equal('https://mocked-origin.com/users/123');
     });
 });

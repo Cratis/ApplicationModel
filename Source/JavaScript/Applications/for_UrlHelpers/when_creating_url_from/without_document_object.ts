@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { UrlHelpers } from '../../UrlHelpers';
-import { expect } from 'chai';
+
 
 describe("without_document_object", () => {
     let origin: string;
@@ -29,6 +29,6 @@ describe("without_document_object", () => {
     });
 
     it("should_throw_invalid_url_error", () => {
-        expect(() => UrlHelpers.createUrlFrom(origin, apiBasePath, route)).to.throw('Invalid URL');
+        (() => UrlHelpers.createUrlFrom(origin, apiBasePath, route)).should.throw('Invalid URL');
     });
 });
