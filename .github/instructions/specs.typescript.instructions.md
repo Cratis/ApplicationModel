@@ -70,9 +70,13 @@ for_EventsCommandResponseValueHandler/
     └── multiple_events_collection.ts
 ```
 
-Each test uses the `given` function that takes the type of the context to use:
+Each test uses the `given` function that takes the type of the context to use. **IMPORTANT**: Import the `given` function from the root of the package (e.g., `import { given } from '../../../given';` when in a `when_behavior/` folder):
 
 ```typescript
+import { an_events_command_response_value_handler } from '../given/an_events_command_response_value_handler';
+import { given } from '../../../given'; // Import the given function from the package root
+import { expect } from 'chai';
+
 describe("with_valid_events_collection", given(an_events_command_response_value_handler, context => {
     let events: object[];
     let result: boolean;
@@ -84,7 +88,7 @@ describe("with_valid_events_collection", given(an_events_command_response_value_
     });
 
     it("should_return_true", () => {
-        result.should.be.true;
+        expect(result).to.be.true;
     });
 }));
 ```
@@ -93,8 +97,8 @@ The context would be defined as follows:
 
 ```typescript
 export class an_events_command_response_value_handler {
-    protected handler: EventsCommandResponseValueHandler;
-    protected commandContext: CommandContext;
+    handler: EventsCommandResponseValueHandler; // Public for access in tests
+    commandContext: CommandContext; // Public for access in tests
 
     constructor() {
         this.commandContext = /* setup command context */;
@@ -107,11 +111,15 @@ export class an_events_command_response_value_handler {
 
 - Context can be encapsulated into reusable contexts that can be leveraged between specs.
 - Create a `given` folder within the unit folder (e.g., `for_<Unit>/given/`)
-- Add reusable context classes with descriptive names starting with `a_` or `an_` (e.g., `a_events_command_response_value_handler.cs`)
+- Add reusable context classes with descriptive names starting with `a_` or `an_` (e.g., `an_events_command_response_value_handler.ts`)
+- **IMPORTANT**: Import the `given` function from the package root: `import { given } from '../../given';` (adjust path as needed)
+- Make context properties public (not protected) so tests can access them via `context.propertyName`
+- Use the `given` function for tests that benefit from shared setup and state
+- Simple tests without complex setup don't need to use the reusable context
 
 ## Async
 
-- Any of the methods (`Establish`, `Because`, `Cleanup`) can be async if needed.
+- Any of the methods (`beforeEach`, `afterEach`) can be async if needed.
 
 ## Substitutes
 
@@ -120,15 +128,14 @@ export class an_events_command_response_value_handler {
 
 ## Test Utilities
 
-- Use the fluent interface from Chai for assertions, examples:
-    - <value>.should.equal(<expected>);
-    - <value>.should.be.true;
-    - <value>.should.be.false;
-    - <value>.should.be.null;
-    - <value>.should.not.be.null;
-    - <value>.should.deep.equal(<expected>);
-    - <value>.should.be.instanceOf(<Type>);
-    - <value>.should.contain(<item>);
-    - <value>.should.containOnly(<items>);
-    - <value>.should.have.lengthOf(<number>);
-    - <function>.should.throw(<ErrorType>);
+- Use the `expect` interface from Chai for better TypeScript support:
+    - `expect(value).to.equal(expected);`
+    - `expect(value).to.be.true;`
+    - `expect(value).to.be.false;`
+    - `expect(value).to.be.null;`
+    - `expect(value).to.not.be.null;`
+    - `expect(value).to.deep.equal(expected);`
+    - `expect(value).to.be.instanceOf(Type);`
+    - `expect(array).to.contain(item);`
+    - `expect(array).to.have.lengthOf(number);`
+    - `expect(function).to.throw(ErrorType);`

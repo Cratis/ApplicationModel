@@ -1,22 +1,21 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { TestEnumerableQuery } from '../given/TestQueries';
+import { an_observable_query_for } from '../given/an_observable_query_for';
+import { given } from '../../../given';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { ObservableQuerySubscription } from '../../ObservableQuerySubscription';
 
-describe('with enumerable query', () => {
-    let query: TestEnumerableQuery;
+describe('with enumerable query', given(an_observable_query_for, context => {
     let callback: sinon.SinonStub;
     let subscription: ObservableQuerySubscription<string[]>;
 
     beforeEach(() => {
-        query = new TestEnumerableQuery();
-        query.setOrigin('https://example.com'); // Set origin to avoid document access
+        context.enumerableQuery.setOrigin('https://example.com'); // Set origin to avoid document access
         callback = sinon.stub();
         
-        subscription = query.subscribe(callback, { category: 'test-category' });
+        subscription = context.enumerableQuery.subscribe(callback, { category: 'test-category' });
     });
 
     afterEach(() => {
@@ -32,4 +31,4 @@ describe('with enumerable query', () => {
     it('should not call callback immediately', () => {
         expect(callback.called).to.be.false;
     });
-});
+}));

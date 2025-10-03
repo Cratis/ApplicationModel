@@ -4,8 +4,8 @@
 import { TestObservableQuery, TestEnumerableQuery } from './TestQueries';
 
 export class an_observable_query_for {
-    protected query: TestObservableQuery;
-    protected enumerableQuery: TestEnumerableQuery;
+    query: TestObservableQuery;
+    enumerableQuery: TestEnumerableQuery;
 
     constructor() {
         this.query = new TestObservableQuery();

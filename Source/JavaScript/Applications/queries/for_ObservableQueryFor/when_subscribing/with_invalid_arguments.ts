@@ -1,23 +1,22 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { TestObservableQuery } from '../given/TestQueries';
+import { an_observable_query_for } from '../given/an_observable_query_for';
+import { given } from '../../../given';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { ObservableQuerySubscription } from '../../ObservableQuerySubscription';
 
-describe('with invalid arguments', () => {
-    let query: TestObservableQuery;
+describe('with invalid arguments', given(an_observable_query_for, context => {
     let callback: sinon.SinonStub;
     let subscription: ObservableQuerySubscription<string>;
 
     beforeEach(() => {
-        query = new TestObservableQuery();
-        query.setOrigin('https://example.com'); // Set origin to avoid document access
+        context.query.setOrigin('https://example.com'); // Set origin to avoid document access
         callback = sinon.stub();
         
         // Subscribe with missing required arguments
-        subscription = query.subscribe(callback);
+        subscription = context.query.subscribe(callback);
     });
 
     afterEach(() => {
@@ -38,4 +37,4 @@ describe('with invalid arguments', () => {
         expect(result).to.not.be.undefined;
         expect(result.isSuccess).to.be.true;
     });
-});
+}));

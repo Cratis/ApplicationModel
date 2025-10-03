@@ -1,24 +1,23 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { TestObservableQuery } from '../given/TestQueries';
+import { an_observable_query_for } from '../given/an_observable_query_for';
+import { given } from '../../../given';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { ObservableQuerySubscription } from '../../ObservableQuerySubscription';
 import { Paging } from '../../Paging';
 
-describe('with paging', () => {
-    let query: TestObservableQuery;
+describe('with paging', given(an_observable_query_for, context => {
     let callback: sinon.SinonStub;
     let subscription: ObservableQuerySubscription<string>;
 
     beforeEach(() => {
-        query = new TestObservableQuery();
-        query.setOrigin('https://example.com'); // Set origin to avoid document access
-        query.paging = new Paging(1, 10); // page 1, page size 10
+        context.query.setOrigin('https://example.com'); // Set origin to avoid document access
+        context.query.paging = new Paging(1, 10); // page 1, page size 10
         callback = sinon.stub();
         
-        subscription = query.subscribe(callback, { id: 'test-id' });
+        subscription = context.query.subscribe(callback, { id: 'test-id' });
     });
 
     afterEach(() => {
@@ -34,4 +33,4 @@ describe('with paging', () => {
     it('should not call callback immediately', () => {
         expect(callback.called).to.be.false;
     });
-});
+}));
