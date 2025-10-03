@@ -3,7 +3,7 @@
 
 import { an_observable_query_for } from './given/an_observable_query_for';
 import { given } from '../../given';
-import { expect } from 'chai';
+
 import * as sinon from 'sinon';
 
 describe('when disposing', given(an_observable_query_for, context => {
@@ -18,11 +18,11 @@ describe('when disposing', given(an_observable_query_for, context => {
     });
 
     it('should not throw when disposing', () => {
-        expect(() => context.query.dispose()).to.not.throw();
+        (() => context.query.dispose()).should.not.throw();
     });
 
     it('should be safe to dispose multiple times', () => {
         context.query.dispose();
-        expect(() => context.query.dispose()).to.not.throw();
+        (() => context.query.dispose()).should.not.throw();
     });
 }));

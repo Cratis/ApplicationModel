@@ -88,7 +88,7 @@ describe("with_valid_events_collection", given(an_events_command_response_value_
     });
 
     it("should_return_true", () => {
-        expect(result).to.be.true;
+        result.should.be.true;
     });
 }));
 ```
@@ -128,14 +128,14 @@ export class an_events_command_response_value_handler {
 
 ## Test Utilities
 
-- Use the `expect` interface from Chai for better TypeScript support:
-    - `expect(value).to.equal(expected);`
-    - `expect(value).to.be.true;`
-    - `expect(value).to.be.false;`
-    - `expect(value).to.be.null;`
-    - `expect(value).to.not.be.null;`
-    - `expect(value).to.deep.equal(expected);`
-    - `expect(value).to.be.instanceOf(Type);`
-    - `expect(array).to.contain(item);`
-    - `expect(array).to.have.lengthOf(number);`
-    - `expect(function).to.throw(ErrorType);`
+- Never use the expect() method for assertions. Always use the fluent interface from Chai.
+    - `value.should.equal(expected);`
+    - `value.should.be.true;`
+    - `value.should.be.false;`
+    - `value.should.be.null;`
+    - `value.should.not.be.null;`
+    - `value.should.deep.equal(expected);`
+    - `value.should.be.instanceOf(Type);`
+    - `array.should.contain(item);`
+    - `array.should.have.lengthOf(number);`
+    - `function.should.throw(ErrorType);`

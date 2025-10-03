@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { TestObservableQuery } from './given/TestQueries';
-import { expect } from 'chai';
+
 
 describe('when setting microservice', () => {
     let query: TestObservableQuery;
@@ -12,6 +12,6 @@ describe('when setting microservice', () => {
     });
 
     it('should not throw when setting microservice', () => {
-        expect(() => query.setMicroservice('new-microservice')).to.not.throw();
+        (() => query.setMicroservice('new-microservice')).should.not.throw();
     });
 });

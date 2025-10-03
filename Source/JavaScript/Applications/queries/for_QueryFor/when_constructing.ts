@@ -1,14 +1,13 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { an_observable_query_for } from './given/an_observable_query_for';
+import { a_query_for } from './given/a_query_for';
 import { given } from '../../given';
 import { Sorting } from '../Sorting';
 import { Paging } from '../Paging';
 import { Globals } from '../../Globals';
 
-
-describe('when constructing', given(an_observable_query_for, context => {
+describe('when constructing', given(a_query_for, context => {
     let originalMicroservice: string | undefined;
 
     beforeEach(() => {
