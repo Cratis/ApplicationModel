@@ -7,6 +7,7 @@ import React from 'react';
 export interface ApplicationModelConfiguration {
     microservice: string;
     development?: boolean
+    origin?: string;
     basePath?: string;
     apiBasePath?: string;
 }
@@ -14,6 +15,7 @@ export interface ApplicationModelConfiguration {
 export const ApplicationModelContext = React.createContext<ApplicationModelConfiguration>({
     microservice: Globals.microservice,
     development: false,
+    origin: '',
     basePath: '',
     apiBasePath: ''
 });
