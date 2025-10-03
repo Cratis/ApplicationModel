@@ -7,7 +7,7 @@ import { CommandValidator } from './CommandValidator';
 import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
-import { UrlHelpers } from 'UrlHelpers';
+import { UrlHelpers } from '../UrlHelpers';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;

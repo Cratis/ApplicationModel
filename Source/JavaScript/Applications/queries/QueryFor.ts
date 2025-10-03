@@ -11,7 +11,7 @@ import { Globals } from '../Globals';
 import { Sorting } from './Sorting';
 import { SortDirection } from './SortDirection';
 import { joinPaths } from '../joinPaths';
-import { UrlHelpers } from 'UrlHelpers';
+import { UrlHelpers } from '../UrlHelpers';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
