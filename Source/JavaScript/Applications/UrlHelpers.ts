@@ -10,8 +10,8 @@ export class UrlHelpers {
      * @returns The constructed URL.
     */
     static createUrlFrom(origin: string, apiBasePath: string, route: string): URL {
-        if (!origin || origin.length === 0) {
-            origin = document?.location?.origin ?? '';
+        if (!origin || origin.length === 0 && typeof document !== 'undefined') {
+            origin = document.location?.origin ?? '';
         }
 
         return new URL(route, `${origin}${apiBasePath}`);
