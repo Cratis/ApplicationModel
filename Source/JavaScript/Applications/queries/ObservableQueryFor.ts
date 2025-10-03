@@ -16,7 +16,6 @@ import { Paging } from './Paging';
 import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
-import { URL } from 'url';
 import { UrlHelpers } from 'UrlHelpers';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
