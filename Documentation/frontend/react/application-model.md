@@ -25,6 +25,7 @@ It has a set of configuration options you can pass it:
 | ------ | ---- | ------- |
 | microservice | String | Name of the microservice, which will add necessary HTTP headers on Commands and Queries |
 | development | Boolean | Whether or not we're running in development, defaults to false |
+| origin | String | Url for where the APIs are located, defaults to empty string and makes them relative to the documents location |
 | basePath | String | Base path for the application |
 | apiBasePath | String | Base for prepended to the Command and Query requests |
 
