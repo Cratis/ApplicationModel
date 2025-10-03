@@ -24,7 +24,7 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
         apiBasePath: props.apiBasePath ?? ''
     };
 
-    Bindings.initialize(configuration.microservice, configuration.apiBasePath);
+    Bindings.initialize(configuration.microservice, configuration.apiBasePath, configuration.origin);
 
     return (
         <ApplicationModelContext.Provider value={configuration}>
