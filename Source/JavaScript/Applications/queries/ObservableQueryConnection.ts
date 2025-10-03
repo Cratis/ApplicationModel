@@ -31,7 +31,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
     /** @inheritdoc */
     connect(dataReceived: DataReceived<TDataType>, queryArguments?: object) {
-        const secure = document.location.protocol.indexOf('https') === 0;
+        const secure = document?.location?.protocol?.indexOf('https') === 0;
         let url = `${secure ? 'wss' : 'ws'}://${document.location.host}${this._route}`;
         if (this._microservice?.length > 0) {
             url = `${url}?${Globals.microserviceWSQueryArgument}=${this._microservice}`;
