@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+import { Url } from 'url';
 import { Globals } from '../Globals';
 import { IObservableQueryConnection } from './IObservableQueryConnection';
 import { QueryResult } from './QueryResult';
@@ -14,12 +15,19 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
     private _socket!: WebSocket;
     private _disconnected = false;
+    private _url: string;
 
     /**
      * Initializes a new instance of the {@link ObservableQueryConnection<TDataType>} class.
-     * @param {string} _route The relative route to use - relative to the current origin and protocol.
+     * @param {Url} url The fully qualified Url.
      */
-    constructor(private readonly _route: string, private readonly _microservice: string) {
+    constructor(url: URL, private readonly _microservice: string) {
+        const secure = url.protocol?.indexOf('https') === 0 || false;
+
+        this._url = `${secure ? 'wss' : 'ws'}://${url.host}${url.pathname}`;
+        if (this._microservice?.length > 0) {
+            this._url = `${this._url}?${Globals.microserviceWSQueryArgument}=${this._microservice}`;
+        }
     }
 
     /**
@@ -31,12 +39,7 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
 
     /** @inheritdoc */
     connect(dataReceived: DataReceived<TDataType>, queryArguments?: object) {
-        const secure = document?.location?.protocol?.indexOf('https') === 0;
-        let url = `${secure ? 'wss' : 'ws'}://${document.location.host}${this._route}`;
-        if (this._microservice?.length > 0) {
-            url = `${url}?${Globals.microserviceWSQueryArgument}=${this._microservice}`;
-        }
-
+        let url = this._url;
         if (queryArguments) {
             if (url.indexOf('?') < 0) {
                 url = `${url}?`;
@@ -57,10 +60,10 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
             const retry = () => {
                 currentAttempt++;
                 if (currentAttempt > retries) {
-                    console.log(`Attempted ${retries} retries for route '${this._route}'. Abandoning.`);
+                    console.log(`Attempted ${retries} retries for route '${url}'. Abandoning.`);
                     return;
                 }
-                console.log(`Attempting to reconnect for '${this._route}' (#${currentAttempt})`);
+                console.log(`Attempting to reconnect for '${url}' (#${currentAttempt})`);
 
                 setTimeout(connectSocket, timeToWait);
                 timeToWait += (timeExponent * currentAttempt);
@@ -70,18 +73,18 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
             this._socket = new WebSocket(url);
             this._socket.onopen = () => {
                 if (this._disconnected) return;
-                console.log(`Connection for '${this._route}' established`);
+                console.log(`Connection for '${url}' established`);
                 timeToWait = 500;
                 currentAttempt = 0;
             };
             this._socket.onclose = () => {
                 if (this._disconnected) return;
-                console.log(`Unexpected connection closed for route '${this._route}`);
+                console.log(`Unexpected connection closed for route '${url}'`);
                 retry();
             };
             this._socket.onerror = (error) => {
                 if (this._disconnected) return;
-                console.log(`Error with connection for '${this._route} - ${error}`);
+                console.log(`Error with connection for '${url}' - ${error}`);
                 retry();
             };
             this._socket.onmessage = (ev) => {
@@ -102,10 +105,10 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
         if (this._disconnected) {
             return;
         }
-        console.log(`Disconnecting '${this._route}'`);
+        console.log(`Disconnecting '${this._url}'`);
         this._disconnected = true;
         this._socket?.close();
-        console.log(`Connection for '${this._route}' closed`);
+        console.log(`Connection for '${this._url}' closed`);
         this._socket = undefined!;
     }
 }

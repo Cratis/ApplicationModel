@@ -11,6 +11,7 @@ import { Globals } from '../Globals';
 import { Sorting } from './Sorting';
 import { SortDirection } from './SortDirection';
 import { joinPaths } from '../joinPaths';
+import { UrlHelpers } from 'UrlHelpers';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
@@ -19,6 +20,7 @@ import { joinPaths } from '../joinPaths';
 export abstract class QueryFor<TDataType, TParameters = object> implements IQueryFor<TDataType, TParameters> {
     private _microservice: string;
     private _apiBasePath: string;
+    private _origin: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract get requiredRequestParameters(): string[];
@@ -38,6 +40,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         this.paging = Paging.noPaging;
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
+        this._origin = '';
     }
 
     /** @inheritdoc */
@@ -48,6 +51,11 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
     /** @inheritdoc */
     setApiBasePath(apiBasePath: string): void {
         this._apiBasePath = apiBasePath;
+    }
+
+    /** @inheritdoc */
+    setOrigin(origin: string): void {
+        this._origin = origin;
     }
 
     /** @inheritdoc */
@@ -71,6 +79,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
 
         actualRoute = this.routeTemplate(args);
         actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         const headers = {
             'Accept': 'application/json',
@@ -90,7 +99,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
             actualRoute = this.addQueryParameter(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
         }
 
-        const response = await fetch(actualRoute, {
+        const response = await fetch(url, {
             method: 'GET',
             headers,
             signal: this.abortController.signal
