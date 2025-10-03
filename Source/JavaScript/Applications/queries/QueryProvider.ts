@@ -14,14 +14,19 @@ export class QueryProvider implements IQueryProvider {
      * Initializes a new instance of {@link QueryProvider}
      * @param _microservice Name of the microservice to provide queries for.
      * @param _apiBasePath Base path for the API to use for the query.
+     * @param _origin Origin to use for the query.
      */
-    constructor(private readonly _microservice: string, private readonly _apiBasePath: string) { }
+    constructor(
+        private readonly _microservice: string,
+        private readonly _apiBasePath: string,
+        private readonly _origin: string) { }
 
     /** @inheritdoc */
     get<T extends IQuery>(queryType: Constructor<T>): T {
         const query = new queryType();
         query.setMicroservice(this._microservice);
         query.setApiBasePath(this._apiBasePath);
+        query.setOrigin(this._origin);
         return query;
     }
 }

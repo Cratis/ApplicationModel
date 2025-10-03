@@ -16,4 +16,10 @@ export interface ICanBeConfigured {
      * @param apiBasePath Base path for the API
      */
     setApiBasePath(apiBasePath: string): void;
+
+    /**
+     * Set the origin to be used for the query. This is used to set the origin (scheme + host + port) for API calls.
+     * @param origin The origin to use.
+     */
+    setOrigin(origin: string): void;
 }

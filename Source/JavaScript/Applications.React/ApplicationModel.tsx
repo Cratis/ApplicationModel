@@ -10,6 +10,7 @@ export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
     microservice?: string;
     development?: boolean;
+    origin?: string;
     basePath?: string;
     apiBasePath?: string;
 }
@@ -18,11 +19,12 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
     const configuration: ApplicationModelConfiguration = {
         microservice: props.microservice ?? '',
         development: props.development ?? false,
+        origin: props.origin ?? '',
         basePath: props.basePath ?? '',
         apiBasePath: props.apiBasePath ?? ''
     };
 
-    Bindings.initialize(configuration.microservice, configuration.apiBasePath);
+    Bindings.initialize(configuration.microservice, configuration.apiBasePath, configuration.origin);
 
     return (
         <ApplicationModelContext.Provider value={configuration}>

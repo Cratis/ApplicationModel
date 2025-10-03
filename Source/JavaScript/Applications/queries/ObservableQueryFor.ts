@@ -16,6 +16,7 @@ import { Paging } from './Paging';
 import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
+import { UrlHelpers } from '../UrlHelpers';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -26,6 +27,7 @@ import { joinPaths } from '../joinPaths';
 export abstract class ObservableQueryFor<TDataType, TParameters = object> implements IObservableQueryFor<TDataType, TParameters> {
     private _microservice: string;
     private _apiBasePath: string;
+    private _origin: string;
     private _connection?: IObservableQueryConnection<TDataType>;
 
     abstract readonly route: string;
@@ -45,6 +47,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         this.paging = Paging.noPaging;
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
+        this._origin = '';
     }
 
     /**
@@ -62,6 +65,11 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     /** @inheritdoc */
     setApiBasePath(apiBasePath: string): void {
         this._apiBasePath = apiBasePath;
+    }
+
+    /** @inheritdoc */
+    setOrigin(origin: string): void {
+        this._origin = origin;
     }
 
     /** @inheritdoc */
@@ -83,12 +91,14 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             connectionQueryArguments.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
+        
         if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
             this._connection = new NullObservableQueryConnection(this.defaultValue);
         } else {
             actualRoute = this.routeTemplate(args);
             actualRoute = joinPaths(this._apiBasePath, actualRoute);
-            this._connection = new ObservableQueryConnection<TDataType>(actualRoute, this._microservice);
+            const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
+            this._connection = new ObservableQueryConnection<TDataType>(url, this._microservice);
         }
 
         const subscriber = new ObservableQuerySubscription(this._connection);

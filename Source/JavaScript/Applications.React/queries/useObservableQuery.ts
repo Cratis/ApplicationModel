@@ -22,6 +22,7 @@ function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFo
         instance.sorting = currentSorting;
         instance.setMicroservice(applicationModel.microservice);
         instance.setApiBasePath(applicationModel.apiBasePath ?? '');
+        instance.setOrigin(applicationModel.origin ?? '');
         return instance;
     }, [currentPaging, currentSorting]);
 
