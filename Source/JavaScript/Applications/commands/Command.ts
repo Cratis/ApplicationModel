@@ -7,6 +7,7 @@ import { CommandValidator } from './CommandValidator';
 import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
+import { UrlHelpers } from 'UrlHelpers';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
@@ -19,6 +20,7 @@ type Callback = {
 export abstract class Command<TCommandContent = object, TCommandResponse = object> implements ICommand<TCommandContent, TCommandResponse> {
     private _microservice: string;
     private _apiBasePath: string;
+    private _origin: string;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
@@ -50,6 +52,11 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     }
 
     /** @inheritdoc */
+    setOrigin(origin: string): void {
+        this._origin = origin;
+    }
+
+    /** @inheritdoc */
     async execute(): Promise<CommandResult<TCommandResponse>> {
         let actualRoute = this.route;
         const payload = {};
@@ -71,9 +78,10 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         }
 
         actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         try {
-            const response = await fetch(actualRoute, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers,
                 body: JsonSerializer.serialize(payload)

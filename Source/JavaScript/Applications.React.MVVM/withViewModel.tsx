@@ -124,6 +124,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
                     const query = instance as ICanBeConfigured;
                     query.setMicroservice(applicationContext.microservice);
                     query.setApiBasePath(applicationContext.apiBasePath ?? '');
+                    query.setOrigin(applicationContext.origin ?? '');
                 }
 
                 return instance;

@@ -22,6 +22,7 @@ export class QueryProvider implements IQueryProvider {
         const query = new queryType();
         query.setMicroservice(this._microservice);
         query.setApiBasePath(this._apiBasePath);
+        query.setOrigin(this._origin);
         return query;
     }
 }

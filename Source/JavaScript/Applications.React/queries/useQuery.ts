@@ -30,6 +30,7 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
         instance.sorting = sorting;
         instance.setMicroservice(applicationModel.microservice);
         instance.setApiBasePath(applicationModel.apiBasePath ?? '');
+        instance.setOrigin(applicationModel.origin ?? '');
         return instance;
     }, []);
 

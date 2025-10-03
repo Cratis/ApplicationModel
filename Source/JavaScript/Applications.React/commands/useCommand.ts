@@ -32,6 +32,7 @@ export function useCommand<TCommand extends Command, TCommandContent>(commandTyp
         const instance = new commandType();
         instance.setMicroservice(applicationModel.microservice);
         instance.setApiBasePath(applicationModel.apiBasePath ?? '');
+        instance.setOrigin(applicationModel.origin ?? '');
         if (initialValues) {
             instance.setInitialValues(initialValues);
         }
