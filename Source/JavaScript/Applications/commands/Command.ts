@@ -39,6 +39,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     constructor(readonly _responseType: Constructor = Object, readonly _isResponseTypeEnumerable: boolean) {
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
+        this._origin = '';
     }
 
     /** @inheritdoc */
