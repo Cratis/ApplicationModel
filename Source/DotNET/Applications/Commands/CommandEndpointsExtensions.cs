@@ -64,7 +64,7 @@ public static class CommandEndpointsExtensions
                         commandResult = await commandPipeline.Execute(command);
                     }
                     response.SetResponseStatusCode(commandResult);
-                    await response.WriteAsJsonAsync(commandResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                    await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
                 })
                 .WithTags(string.Join('.', location))
                 .WithName($"Execute{handler.CommandType.Name}")
