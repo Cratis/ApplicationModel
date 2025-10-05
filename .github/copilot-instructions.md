@@ -1,16 +1,5 @@
 # GitHub Copilot Instructions
 
-## Technology Stack
-
-- .NET 9 (specified in global.json)
-- C# 13
-- ASP.NET Core
-- MongoDB.Driver for C#
-- Entity Framework Core
-- xUnit for testing
-- NSubstitute for mocking
-- Cratis.Specifications for BDD-style tests
-
 ## General
 
 - Make only high confidence suggestions when reviewing code changes.
@@ -100,6 +89,7 @@
 ## Testing
 
 - Follow the following guides:
+   - [C# specifics](./instructions/csharp.instructions.md)
    - [How to Write Specs](./instructions/specs.instructions.md)
    - [How to Write C# Specs](./instructions/specs.csharp.instructions.md)
    - [How to Write TypeScript Specs](./instructions/specs.typescript.instructions.md)
