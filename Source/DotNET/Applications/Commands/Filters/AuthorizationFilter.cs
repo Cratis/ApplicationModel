@@ -8,8 +8,8 @@ namespace Cratis.Applications.Commands.Filters;
 /// <summary>
 /// Represents a command filter that authorizes commands before they are handled.
 /// </summary>
-/// <param name="authorizationHelper">The <see cref="IAuthorizationHelper"/> to use for authorization checks.</param>
-public class AuthorizationFilter(IAuthorizationHelper authorizationHelper) : ICommandFilter
+/// <param name="authorizationHelper">The <see cref="IAuthorizationEvaluator"/> to use for authorization checks.</param>
+public class AuthorizationFilter(IAuthorizationEvaluator authorizationHelper) : ICommandFilter
 {
     /// <inheritdoc/>
     public Task<CommandResult> OnExecution(CommandContext context)

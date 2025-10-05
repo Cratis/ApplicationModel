@@ -10,7 +10,7 @@ namespace Cratis.Applications.Authorization;
 /// Helper class for performing authorization checks.
 /// </summary>
 /// <param name="httpContextAccessor">The <see cref="IHttpContextAccessor"/> to access the current HTTP context.</param>
-public class AuthorizationHelper(IHttpContextAccessor httpContextAccessor) : IAuthorizationHelper
+public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : IAuthorizationEvaluator
 {
     /// <inheritdoc/>
     public bool IsAuthorized(Type type)

@@ -4,19 +4,19 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationHelper.given;
+namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.given;
 
 public class an_authorization_helper : Specification
 {
     protected IHttpContextAccessor _httpContextAccessor;
-    protected AuthorizationHelper _authorizationHelper;
+    protected AuthorizationEvaluator _authorizationHelper;
     protected HttpContext _httpContext;
     protected ClaimsPrincipal _user;
 
     void Establish()
     {
         _httpContextAccessor = Substitute.For<IHttpContextAccessor>();
-        _authorizationHelper = new AuthorizationHelper(_httpContextAccessor);
+        _authorizationHelper = new AuthorizationEvaluator(_httpContextAccessor);
 
         _httpContext = Substitute.For<HttpContext>();
         _user = Substitute.For<ClaimsPrincipal>();

@@ -8,9 +8,9 @@ namespace Cratis.Applications.Queries.Filters;
 /// <summary>
 /// Represents a query filter that authorizes queries before they are performed.
 /// </summary>
-/// <param name="authorizationHelper">The <see cref="IAuthorizationHelper"/> to use for authorization checks.</param>
+/// <param name="authorizationHelper">The <see cref="IAuthorizationEvaluator"/> to use for authorization checks.</param>
 /// <param name="queryPerformerProviders">The <see cref="IQueryPerformerProviders"/> to use for finding query performers.</param>
-public class AuthorizationFilter(IAuthorizationHelper authorizationHelper, IQueryPerformerProviders queryPerformerProviders) : IQueryFilter
+public class AuthorizationFilter(IAuthorizationEvaluator authorizationHelper, IQueryPerformerProviders queryPerformerProviders) : IQueryFilter
 {
     /// <inheritdoc/>
     public Task<QueryResult> OnPerform(QueryContext context)

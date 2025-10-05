@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Authorization.for_AuthorizationHelper.when_checking_authorization;
+namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.when_checking_authorization;
 
 public class with_type_with_single_role_and_user_has_required_role : given.an_authorization_helper
 {

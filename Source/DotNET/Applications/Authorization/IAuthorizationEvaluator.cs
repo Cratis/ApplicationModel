@@ -6,7 +6,7 @@ namespace Cratis.Applications.Authorization;
 /// <summary>
 /// Defines a contract for performing authorization checks.
 /// </summary>
-public interface IAuthorizationHelper
+public interface IAuthorizationEvaluator
 {
     /// <summary>
     /// Checks if the current user is authorized based on the <see cref="Microsoft.AspNetCore.Authorization.AuthorizeAttribute"/> on the specified type.

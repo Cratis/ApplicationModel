@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationHelper.given;
+namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.given;
 
-[Authorize]
-public class TypeWithAuthorization;
+[Authorize(Roles = "Admin")]
+public class TypeWithSingleRole;

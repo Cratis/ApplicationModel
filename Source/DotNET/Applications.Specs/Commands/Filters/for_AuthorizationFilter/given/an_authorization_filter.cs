@@ -8,7 +8,7 @@ namespace Cratis.Applications.Commands.Filters.for_AuthorizationFilter.given;
 
 public class an_authorization_filter : Specification
 {
-    protected IAuthorizationHelper _authorizationHelper;
+    protected IAuthorizationEvaluator _authorizationHelper;
     protected AuthorizationFilter _filter;
     protected CommandContext _context;
     protected CorrelationId _correlationId;
@@ -16,7 +16,7 @@ public class an_authorization_filter : Specification
     void Establish()
     {
         _correlationId = CorrelationId.New();
-        _authorizationHelper = Substitute.For<IAuthorizationHelper>();
+        _authorizationHelper = Substitute.For<IAuthorizationEvaluator>();
         _filter = new AuthorizationFilter(_authorizationHelper);
     }
 }
