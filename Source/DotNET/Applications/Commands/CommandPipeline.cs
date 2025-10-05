@@ -84,11 +84,24 @@ public class CommandPipeline(
                 }
                 else if (response is IOneOf oneOf)
                 {
-                    result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
+                    if (valueHandlers.CanHandle(commandContext, oneOf.Value))
+                    {
+                        result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
+                    }
+                    else
+                    {
+                        commandContext = commandContext with { Response = oneOf.Value };
+                        result = CreateCommandResultWithResponse(oneOf.Value);
+                    }
+                }
+                else if (valueHandlers.CanHandle(commandContext, response))
+                {
+                    result.MergeWith(await valueHandlers.Handle(commandContext, response));
                 }
                 else
                 {
-                    result.MergeWith(await valueHandlers.Handle(commandContext, response));
+                    commandContext = commandContext with { Response = response };
+                    result = CreateCommandResultWithResponse(response);
                 }
             }
         }
@@ -145,5 +158,11 @@ public class CommandPipeline(
         }
 
         return correlationId;
+    }
+
+    CommandResult CreateCommandResultWithResponse(object response)
+    {
+        var commandResultType = typeof(CommandResult<>).MakeGenericType(response.GetType());
+        return (Activator.CreateInstance(commandResultType, response) as CommandResult)!;
     }
 }

@@ -10,5 +10,7 @@
   href: roles.md
 - name: Response Value Handlers
   href: response-value-handlers.md
+- name: Response Examples
+  href: response-examples.md
 - name: Validation
   href: validation.md
