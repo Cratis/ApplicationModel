@@ -56,9 +56,9 @@
     "dependencies": {
         "@cratis/applications": "1.0.0",
         "@cratis/applications.react": "1.0.0",
-        "@cratis/fundamentals": "^7.0.0",
-        "mobx": "^6.13.7",
-        "mobx-react": "^9.2.0",
+        "@cratis/fundamentals": "^7.1.0",
+        "mobx": "^6.15.0",
+        "mobx-react": "^9.2.1",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.2",
         "tsyringe": "^4.10.0"
