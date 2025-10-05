@@ -63,6 +63,7 @@ public class CommandPipeline(
                 {
                     var actualResponse = tuple[0];
                     var commandResultType = typeof(CommandResult<>).MakeGenericType(actualResponse?.GetType() ?? typeof(object));
+                    commandContext = commandContext with { Response = actualResponse };
                     result = (Activator.CreateInstance(commandResultType, actualResponse) as CommandResult)!;
                     if (tuple.Length > 1 && tuple[1] is not null)
                     {

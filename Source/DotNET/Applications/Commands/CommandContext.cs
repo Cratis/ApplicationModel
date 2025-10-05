@@ -14,5 +14,6 @@ namespace Cratis.Applications.Commands;
 /// <param name="Command">The command instance.</param>
 /// <param name="Dependencies">The dependencies required to handle the command.</param>
 /// <param name="Values">A set of values associated with the command context.</param>
+/// <param name="Response">The optional response from handling the command, if any.</param>
 [Authorize(Roles = "Administrator")]
-public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies, CommandContextValues Values);
+public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies, CommandContextValues Values, object? Response = default);
