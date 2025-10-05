@@ -4,6 +4,8 @@
   href: multi-tenancy.md
 - name: Authorization
   href: authorization.md
+- name: Roles
+  href: roles.md
 - name: Configuration
   href: configuration.md
 - name: FromRequest Attribute
