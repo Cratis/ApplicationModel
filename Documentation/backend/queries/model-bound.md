@@ -313,5 +313,103 @@ public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, dec
 }
 ```
 
+## Authorization
+
+Model-bound queries support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Application Model.
+
+### Using the Authorize Attribute
+
+You can secure query methods using the standard `[Authorize]` attribute:
+
+```csharp
+[ReadModel]
+public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, decimal Balance)
+{
+    [Authorize]
+    public static IEnumerable<DebitAccount> GetAllAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(_ => true).ToList();
+
+    [Authorize(Roles = "Admin,Manager")]
+    public static IEnumerable<DebitAccount> GetSensitiveAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(a => a.Balance > 100000).ToList();
+}
+```
+
+### Using the Roles Attribute
+
+The Application Model provides a more convenient `[Roles]` attribute for cleaner syntax when specifying multiple roles:
+
+```csharp
+[ReadModel]
+public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, decimal Balance)
+{
+    [Roles("Admin", "Auditor")]
+    public static IEnumerable<DebitAccount> GetAdminAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(_ => true).ToList();
+
+    [Roles("Manager")]
+    public static IEnumerable<DebitAccount> GetManagerAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(a => a.Owner != CustomerId.Empty).ToList();
+}
+```
+
+The user needs to have **at least one** of the specified roles to execute the query.
+
+### Read Model-Level Authorization
+
+You can also apply authorization at the read model level to protect all query methods:
+
+```csharp
+[ReadModel]
+[Roles("User")] // All methods require at least "User" role
+public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, decimal Balance)
+{
+    public static IEnumerable<DebitAccount> GetAllAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(_ => true).ToList();
+
+    [Roles("Admin")] // Override read model-level authorization
+    public static IEnumerable<DebitAccount> GetAdminOnlyAccounts(IMongoCollection<DebitAccount> collection) =>
+        collection.Find(a => a.Balance < 0).ToList();
+}
+```
+
+### Authorization Results
+
+When authorization fails, the query pipeline automatically returns an unauthorized result. The query method will not be executed:
+
+```csharp
+var result = await queryManager.Execute(new GetSensitiveAccountsQuery());
+
+if (!result.IsAuthorized)
+{
+    // Handle unauthorized access - query was not executed
+    return Forbid();
+}
+
+if (result.IsSuccess)
+{
+    // Query executed successfully
+    return Ok(result.Data);
+}
+```
+
+### Policy-Based Authorization
+
+For more complex authorization scenarios, you can use policy-based authorization:
+
+```csharp
+[ReadModel]
+public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, decimal Balance)
+{
+    [Authorize(Policy = "RequireAccountAccess")]
+    public static DebitAccount GetAccountById(
+        AccountId id, 
+        IMongoCollection<DebitAccount> collection) =>
+        collection.Find(a => a.Id == id).FirstOrDefault();
+}
+```
+
+> **Note**: Authorization is evaluated before the query method is called. If authorization fails, the query will not be executed and the result will indicate the authorization failure.
+
 > **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your query arguments,
 > making them strongly typed on the frontend as well.
