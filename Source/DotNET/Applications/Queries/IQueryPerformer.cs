@@ -45,6 +45,13 @@ public interface IQueryPerformer
     QueryParameters Parameters { get; }
 
     /// <summary>
+    /// Checks if the current user is authorized to perform this query.
+    /// </summary>
+    /// <param name="context">The context for the query.</param>
+    /// <returns>True if authorized, false if unauthorized.</returns>
+    bool IsAuthorized(QueryContext context);
+
+    /// <summary>
     /// Renders the given query.
     /// </summary>
     /// <param name="context">The context for the query to render.</param>

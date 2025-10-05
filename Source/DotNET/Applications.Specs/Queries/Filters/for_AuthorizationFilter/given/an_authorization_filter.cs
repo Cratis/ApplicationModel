@@ -8,7 +8,7 @@ namespace Cratis.Applications.Queries.Filters.for_AuthorizationFilter.given;
 
 public class an_authorization_filter : Specification
 {
-    protected IAuthorizationEvaluator _authorizationHelper;
+    protected IAuthorizationEvaluator _authorizationEvaluator;
     protected IQueryPerformerProviders _queryPerformerProviders;
     protected AuthorizationFilter _filter;
     protected QueryContext _context;
@@ -18,9 +18,9 @@ public class an_authorization_filter : Specification
     void Establish()
     {
         _correlationId = CorrelationId.New();
-        _authorizationHelper = Substitute.For<IAuthorizationEvaluator>();
+        _authorizationEvaluator = Substitute.For<IAuthorizationEvaluator>();
         _queryPerformerProviders = Substitute.For<IQueryPerformerProviders>();
         _queryPerformer = Substitute.For<IQueryPerformer>();
-        _filter = new AuthorizationFilter(_authorizationHelper, _queryPerformerProviders);
+        _filter = new AuthorizationFilter(_authorizationEvaluator, _queryPerformerProviders);
     }
 }

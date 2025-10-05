@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
+using Cratis.Applications.Authorization;
 using Cratis.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     readonly IEnumerable<ParameterInfo> _dependencies;
     readonly IEnumerable<ParameterInfo> _queryParameters;
     readonly MethodInfo _performMethod;
+    readonly IAuthorizationEvaluator _authorizationEvaluator;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ModelBoundQueryPerformer"/> class.
@@ -22,7 +24,8 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     /// <param name="readModelType">The type of the read model.</param>
     /// <param name="performMethod">The method info of the perform method.</param>
     /// <param name="serviceProviderIsService">Service to determine if a type is registered as a service.</param>
-    public ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod, IServiceProviderIsService serviceProviderIsService)
+    /// <param name="authorizationEvaluator">The authorization evaluator.</param>
+    public ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod, IServiceProviderIsService serviceProviderIsService, IAuthorizationEvaluator authorizationEvaluator)
     {
         Type = readModelType;
         Name = performMethod.Name;
@@ -34,6 +37,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
         Dependencies = _dependencies.Select(p => p.ParameterType);
         Parameters = new(_queryParameters.Select(p => new QueryParameter(p.Name ?? string.Empty, p.ParameterType)));
         _performMethod = performMethod;
+        _authorizationEvaluator = authorizationEvaluator;
     }
 
     /// <inheritdoc/>
@@ -53,6 +57,9 @@ public class ModelBoundQueryPerformer : IQueryPerformer
 
     /// <inheritdoc/>
     public QueryParameters Parameters { get; }
+
+    /// <inheritdoc/>
+    public bool IsAuthorized(QueryContext context) => _authorizationEvaluator.IsAuthorized(_performMethod);
 
     /// <inheritdoc/>
     public async Task<object?> Perform(QueryContext context)

@@ -8,21 +8,22 @@ namespace Cratis.Applications.Queries.Filters;
 /// <summary>
 /// Represents a query filter that authorizes queries before they are performed.
 /// </summary>
-/// <param name="authorizationHelper">The <see cref="IAuthorizationEvaluator"/> to use for authorization checks.</param>
+/// <param name="authorizationEvaluator">The <see cref="IAuthorizationEvaluator"/> to use for authorization checks.</param>
 /// <param name="queryPerformerProviders">The <see cref="IQueryPerformerProviders"/> to use for finding query performers.</param>
-public class AuthorizationFilter(IAuthorizationEvaluator authorizationHelper, IQueryPerformerProviders queryPerformerProviders) : IQueryFilter
+public class AuthorizationFilter(IAuthorizationEvaluator authorizationEvaluator, IQueryPerformerProviders queryPerformerProviders) : IQueryFilter
 {
     /// <inheritdoc/>
     public Task<QueryResult> OnPerform(QueryContext context)
     {
-        // Get the query performer to understand the query type
         if (!queryPerformerProviders.TryGetPerformersFor(context.Name, out var performer))
         {
-            // No performer found, authorization cannot be determined
             return Task.FromResult(QueryResult.Success(context.CorrelationId));
         }
 
-        if (authorizationHelper.IsAuthorized(performer.Type))
+        var typeAuthorized = authorizationEvaluator.IsAuthorized(performer.Type);
+        var performerAuthorized = performer.IsAuthorized(context);
+
+        if (typeAuthorized && performerAuthorized)
         {
             return Task.FromResult(QueryResult.Success(context.CorrelationId));
         }

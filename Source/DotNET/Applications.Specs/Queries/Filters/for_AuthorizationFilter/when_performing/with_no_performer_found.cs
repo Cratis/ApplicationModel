@@ -18,7 +18,7 @@ public class with_no_performer_found : given.an_authorization_filter
 
     async Task Because() => _result = await _filter.OnPerform(_context);
 
-    [Fact] void should_not_call_authorization_helper() => _authorizationHelper.DidNotReceive().IsAuthorized(Arg.Any<Type>());
+    [Fact] void should_not_call_authorization_evaluator() => _authorizationEvaluator.DidNotReceive().IsAuthorized(Arg.Any<Type>());
     [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
     [Fact] void should_have_correlation_id() => _result.CorrelationId.ShouldEqual(_correlationId);
     [Fact] void should_be_authorized() => _result.IsAuthorized.ShouldBeTrue();
