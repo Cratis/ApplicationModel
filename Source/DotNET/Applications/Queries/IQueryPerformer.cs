@@ -19,6 +19,11 @@ public interface IQueryPerformer
     FullyQualifiedQueryName FullyQualifiedName { get; }
 
     /// <summary>
+    /// Gets the type of the query performer.
+    /// </summary>
+    Type Type { get; }
+
+    /// <summary>
     /// Gets the location the query is at.
     /// </summary>
     /// <remarks>

@@ -24,6 +24,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     /// <param name="serviceProviderIsService">Service to determine if a type is registered as a service.</param>
     public ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod, IServiceProviderIsService serviceProviderIsService)
     {
+        Type = readModelType;
         Name = performMethod.Name;
         FullyQualifiedName = $"{readModelType.FullName}.{performMethod.Name}";
         Location = readModelType.Namespace?.Split('.') ?? [];
@@ -40,6 +41,9 @@ public class ModelBoundQueryPerformer : IQueryPerformer
 
     /// <inheritdoc/>
     public FullyQualifiedQueryName FullyQualifiedName { get; }
+
+    /// <inheritdoc/>
+    public Type Type { get; }
 
     /// <inheritdoc/>
     public IEnumerable<string> Location { get; }
