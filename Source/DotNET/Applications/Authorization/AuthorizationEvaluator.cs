@@ -20,38 +20,7 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
             .OfType<AuthorizeAttribute>()
             .FirstOrDefault();
 
-        if (authorizeAttribute is null)
-        {
-            return true;
-        }
-
-        var httpContext = httpContextAccessor.HttpContext;
-        if (httpContext?.User is null)
-        {
-            return false;
-        }
-
-        var user = httpContext.User;
-
-        // Check if user is authenticated
-        if (!user.Identity?.IsAuthenticated ?? true)
-        {
-            return false;
-        }
-
-        // Check roles if specified
-        if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
-        {
-            var requiredRoles = authorizeAttribute.Roles.Split(',').Select(r => r.Trim());
-            var userHasRequiredRole = requiredRoles.Any(user.IsInRole);
-
-            if (!userHasRequiredRole)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return IsAuthorizedWithAttribute(authorizeAttribute);
     }
 
     /// <inheritdoc/>
@@ -61,6 +30,11 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
             .OfType<AuthorizeAttribute>()
             .FirstOrDefault();
 
+        return IsAuthorizedWithAttribute(authorizeAttribute);
+    }
+
+    bool IsAuthorizedWithAttribute(AuthorizeAttribute? authorizeAttribute)
+    {
         if (authorizeAttribute is null)
         {
             return true;
@@ -74,13 +48,11 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
 
         var user = httpContext.User;
 
-        // Check if user is authenticated
         if (!user.Identity?.IsAuthenticated ?? true)
         {
             return false;
         }
 
-        // Check roles if specified
         if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
         {
             var requiredRoles = authorizeAttribute.Roles.Split(',').Select(r => r.Trim());
