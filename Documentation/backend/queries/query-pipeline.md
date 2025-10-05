@@ -285,9 +285,15 @@ public class AccountSecurityFilter : IQueryFilter
 }
 ```
 
-### Built-in Validation Filters
+### Built-in Query Filters
 
-The application model includes built-in validation filters:
+The application model includes several built-in query filters that provide essential functionality:
+
+| Filter | Description |
+|--------|-------------|
+| `DataAnnotationValidationFilter` | Validates query parameters using data annotations (e.g., `[Required]`, `[Range]`, etc.) applied to query properties |
+| `FluentValidationFilter` | Validates queries using FluentValidation validators, supporting complex validation scenarios |
+| `AuthorizationFilter` | Provides authorization for queries using `[Authorize]` and `[Roles]` attributes |
 
 #### DataAnnotation Validation Filter
 
@@ -332,6 +338,45 @@ public class GetAccountByIdQueryValidator : AbstractValidator<GetAccountByIdQuer
     }
 }
 ```
+
+#### Authorization Filter
+
+This filter provides query-level authorization using ASP.NET Core authorization attributes.
+
+You can use the standard `[Authorize]` attribute:
+
+```csharp
+[HttpGet("secure-accounts")]
+[Authorize(Roles = "Admin,Manager")]
+public Task<IEnumerable<DebitAccount>> GetSecureAccounts()
+{
+    return _collection.Find(_ => true).ToListAsync();
+}
+```
+
+Or the convenience `[Roles]` attribute provided by Cratis ApplicationModel:
+
+```csharp
+[HttpGet("admin-accounts")]
+[Roles("Admin")]
+public Task<IEnumerable<DebitAccount>> GetAdminAccounts()
+{
+    return _collection.Find(_ => true).ToListAsync();
+}
+
+[HttpGet("manager-accounts")]
+[Roles("Manager", "TeamLead")] // User needs any one of these roles
+public Task<IEnumerable<DebitAccount>> GetManagerAccounts()
+{
+    return _collection.Find(_ => true).ToListAsync();
+}
+```
+
+The authorization filter automatically checks:
+
+- User authentication
+- Required roles (if specified)
+- Returns `QueryResult.Unauthorized` if authorization fails
 
 ### Custom Query Filters
 
