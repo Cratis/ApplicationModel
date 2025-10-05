@@ -22,7 +22,11 @@ public class when_checking_is_authorized : given.a_model_bound_query_performer
     [Fact] void should_delegate_to_authorization_evaluator() => _authorizationEvaluator.Received(1).IsAuthorized(_method);
     [Fact] void should_return_result_from_authorization_evaluator() => _result.ShouldBeTrue();
 
+#pragma warning disable CA1052 // Static holder types should be Static or NotInheritable
+#pragma warning disable RCS1102 // Make class static
     public class TestQuery
+#pragma warning restore RCS1102 // Make class static
+#pragma warning restore CA1052 // Static holder types should be Static or NotInheritable
     {
         public static string SimpleQuery() => "result";
     }
