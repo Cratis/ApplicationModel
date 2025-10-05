@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IDiscoverableValidators>(discoverableValidators);
         services.AddTransient<IStartupFilter, ApplicationModelStartupFilter>();
         services.AddTenancy();
+        services.AddCorrelationId();
 
         var controllerBuilder = services
             .AddControllers(options =>
@@ -45,7 +46,6 @@ public static class ServiceCollectionExtensions
                 options.ModelBinderProviders.Insert(0, new FromRequestModelBinderProvider(bodyModelBinderProvider!, complexObjectModelBinderProvider!));
                 options
                     .AddValidation(discoverableValidators)
-                    .AddCorrelationId()
                     .AddCQRS();
             })
             .AddJsonOptions(options =>

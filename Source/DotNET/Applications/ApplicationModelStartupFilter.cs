@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Cratis.Applications.Execution;
 using Cratis.Applications.Tenancy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,8 +18,9 @@ public class ApplicationModelStartupFilter : IStartupFilter
     {
         return app =>
         {
-            // Add Application Model middleware at the beginning of the pipeline
+            // Add Application Model middlewares at the beginning of the pipeline
             app.UseMiddleware<TenantIdMiddleware>();
+            app.UseMiddleware<CorrelationIdMiddleware>();
 
             // Continue with the rest of the pipeline
             next(app);
