@@ -20,7 +20,7 @@ public class with_multiple_validation_errors_at_different_levels : given.a_fluen
     {
         var nestedObject = new NestedObject("InvalidNestedValue");
         _command = new ComplexCommand("", nestedObject);
-        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, [], new());
 
         _commandValidator = Substitute.For<IValidator>();
         _commandValidationResult = new ValidationResult([

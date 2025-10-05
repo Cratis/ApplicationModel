@@ -12,4 +12,5 @@ namespace Cratis.Applications.Commands;
 /// <param name="Type">The type of the command.</param>
 /// <param name="Command">The command instance.</param>
 /// <param name="Dependencies">The dependencies required to handle the command.</param>
-public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies);
+/// <param name="Values">A set of values associated with the command context.</param>
+public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies, CommandContextValues Values);

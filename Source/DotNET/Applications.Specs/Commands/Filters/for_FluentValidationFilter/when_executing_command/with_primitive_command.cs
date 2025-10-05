@@ -15,7 +15,7 @@ public class with_primitive_command : given.a_fluent_validation_filter
     void Establish()
     {
         const int command = 42;
-        _context = new CommandContext(_correlationId, typeof(int), command, []);
+        _context = new CommandContext(_correlationId, typeof(int), command, [], new());
 
         _validator = Substitute.For<IValidator>();
         _validationResult = new FluentValidationResult();

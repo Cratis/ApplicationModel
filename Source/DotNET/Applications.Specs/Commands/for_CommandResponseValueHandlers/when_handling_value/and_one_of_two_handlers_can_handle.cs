@@ -24,7 +24,7 @@ public class and_one_of_two_handlers_can_handle : Specification
 
         _handlers = new(new KnownInstancesOf<ICommandResponseValueHandler>([_firstHandler, _secondHandler]));
 
-        _context = new(CorrelationId.New(), typeof(string), "Something", []);
+        _context = new(CorrelationId.New(), typeof(string), "Something", [], new());
         _value = "Forty two";
     }
 

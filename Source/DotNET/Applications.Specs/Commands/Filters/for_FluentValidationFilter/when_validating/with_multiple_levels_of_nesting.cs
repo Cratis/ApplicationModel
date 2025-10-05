@@ -15,7 +15,7 @@ public class with_multiple_levels_of_nesting : given.a_fluent_validation_filter
         var deeplyNested = new DeeplyNestedObject("DeepValue");
         var nested = new NestedObject("NestedValue", deeplyNested);
         _command = new ComplexCommand("CommandName", nested);
-        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, [], new());
 
         // No validators found for any type
         _discoverableValidators.TryGet(Arg.Any<Type>(), out Arg.Any<IValidator>()).Returns(false);

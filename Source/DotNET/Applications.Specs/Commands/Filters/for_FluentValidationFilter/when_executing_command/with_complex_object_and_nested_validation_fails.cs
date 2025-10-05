@@ -20,7 +20,7 @@ public class with_complex_object_and_nested_validation_fails : given.a_fluent_va
     {
         var nestedObject = new NestedObject("InvalidNestedValue");
         _command = new ComplexCommand("ValidName", nestedObject);
-        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(ComplexCommand), _command, [], new());
 
         _commandValidator = Substitute.For<IValidator>();
         _commandValidationResult = new FluentValidation.Results.ValidationResult();

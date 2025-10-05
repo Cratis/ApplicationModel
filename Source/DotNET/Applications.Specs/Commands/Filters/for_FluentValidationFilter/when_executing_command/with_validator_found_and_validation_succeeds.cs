@@ -16,7 +16,7 @@ public class with_validator_found_and_validation_succeeds : given.a_fluent_valid
     void Establish()
     {
         _command = new SimpleCommand();
-        _context = new CommandContext(_correlationId, typeof(SimpleCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(SimpleCommand), _command, [], new());
 
         _validator = Substitute.For<IValidator>();
         _validationResult = new FluentValidationResult();

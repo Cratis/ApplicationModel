@@ -19,7 +19,7 @@ public class a_fluent_validation_filter : Specification
         _correlationId = CorrelationId.New();
         _discoverableValidators = Substitute.For<IDiscoverableValidators>();
         _filter = new FluentValidationFilter(_discoverableValidators);
-        _context = new CommandContext(_correlationId, typeof(object), new object(), []);
+        _context = new CommandContext(_correlationId, typeof(object), new object(), [], new());
     }
 
     protected static FluentValidation.Results.ValidationResult CreateValidationResult(bool isValid, params ValidationFailure[] errors)

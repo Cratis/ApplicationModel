@@ -17,7 +17,7 @@ public class with_validation_context_setup : given.a_fluent_validation_filter
     void Establish()
     {
         _command = new TestCommand("TestName");
-        _context = new CommandContext(_correlationId, typeof(TestCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(TestCommand), _command, [], new());
 
         _validator = Substitute.For<IValidator>();
         _validationResult = new ValidationResult();

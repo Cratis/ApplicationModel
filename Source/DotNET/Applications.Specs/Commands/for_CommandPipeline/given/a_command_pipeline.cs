@@ -12,6 +12,7 @@ public class a_command_pipeline : Specification
     protected ICommandHandlerProviders _commandHandlerProviders;
     protected ICommandResponseValueHandlers _commandResponseValueHandlers;
     protected ICommandContextModifier _commandContextModifier;
+    protected ICommandContextValuesBuilder _commandContextValuesBuilder;
     protected IServiceProvider _serviceProvider;
     protected CommandPipeline _commandPipeline;
 
@@ -25,6 +26,8 @@ public class a_command_pipeline : Specification
         _commandHandlerProviders = Substitute.For<ICommandHandlerProviders>();
         _commandResponseValueHandlers = Substitute.For<ICommandResponseValueHandlers>();
         _commandContextModifier = Substitute.For<ICommandContextModifier>();
+        _commandContextValuesBuilder = Substitute.For<ICommandContextValuesBuilder>();
+        _commandContextValuesBuilder.Build().Returns(new CommandContextValues());
         _serviceProvider = Substitute.For<IServiceProvider>();
 
         _commandPipeline = new(
@@ -33,6 +36,7 @@ public class a_command_pipeline : Specification
             _commandHandlerProviders,
             _commandResponseValueHandlers,
             _commandContextModifier,
+            _commandContextValuesBuilder,
             _serviceProvider);
     }
 }

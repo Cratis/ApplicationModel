@@ -20,7 +20,7 @@ public class and_both_filter_errors : Specification
     {
         _filter1 = Substitute.For<ICommandFilter>();
         _filter2 = Substitute.For<ICommandFilter>();
-        _context = new CommandContext(CorrelationId.New(), typeof(object), new object(), []);
+        _context = new CommandContext(CorrelationId.New(), typeof(object), new object(), [], new());
 
         _firstFilterResult = new()
         {
