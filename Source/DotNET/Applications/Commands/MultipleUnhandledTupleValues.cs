@@ -13,8 +13,8 @@ namespace Cratis.Applications.Commands;
 /// should be the response.
 /// </remarks>
 /// <param name="unhandledValues">The values that don't have corresponding response value handlers.</param>
-public class MultipleUnhandledTupleValues(IEnumerable<object> unhandledValues) : 
-    Exception($"Multiple values in the tuple don't have corresponding response value handlers. Cannot determine which value should be the response. Unhandled values: {string.Join(", ", unhandledValues.Select(v => v?.GetType().Name ?? "null"))}")
+public class MultipleUnhandledTupleValues(IEnumerable<object> unhandledValues)
+    : Exception($"Multiple values in the tuple don't have corresponding response value handlers. Cannot determine which value should be the response. Unhandled values: {string.Join(", ", unhandledValues.Select(v => v?.GetType().Name ?? "null"))}")
 {
     /// <summary>
     /// Gets the values that don't have corresponding response value handlers.
