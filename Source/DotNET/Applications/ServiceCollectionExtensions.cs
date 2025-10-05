@@ -2,12 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json.Serialization;
+using Cratis.Applications;
 using Cratis.Applications.ModelBinding;
 using Cratis.Applications.Validation;
 using Cratis.Json;
 using Cratis.Reflection;
 using Cratis.Serialization;
 using Cratis.Types;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
@@ -32,6 +34,8 @@ public static class ServiceCollectionExtensions
 
         var discoverableValidators = new DiscoverableValidators(types);
         services.AddSingleton<IDiscoverableValidators>(discoverableValidators);
+        services.AddTransient<IStartupFilter, ApplicationModelStartupFilter>();
+        services.AddTenancy();
 
         var controllerBuilder = services
             .AddControllers(options =>
@@ -42,7 +46,6 @@ public static class ServiceCollectionExtensions
                 options
                     .AddValidation(discoverableValidators)
                     .AddCorrelationId()
-                    .AddTenancy()
                     .AddCQRS();
             })
             .AddJsonOptions(options =>
