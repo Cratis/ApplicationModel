@@ -3,7 +3,7 @@
 
 namespace Cratis.Applications.Queries.Filters.for_AuthorizationFilter.when_performing;
 
-public class and_authorization_fails_with_performer_type : given.an_authorization_filter
+public class and_authorization_fails_with_read_model_type : given.an_authorization_filter
 {
     QueryResult _result;
     FullyQualifiedQueryName _queryName;
