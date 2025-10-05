@@ -6,6 +6,8 @@
   href: command-context.md
 - name: Command Filters
   href: command-filters.md
+- name: Roles
+  href: roles.md
 - name: Response Value Handlers
   href: response-value-handlers.md
 - name: Validation
