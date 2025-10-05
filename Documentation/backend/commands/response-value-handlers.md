@@ -29,7 +29,18 @@ When implementing a command response value handler, it's important to understand
 - The command handler returned `null`
 - The command handler returned a single value (not a tuple), in which case that value is passed directly to the value handlers and no response is set
 
-When a command handler returns a tuple, the first item becomes the response (available in `CommandContext.Response`) and the second item is passed as the `value` parameter to your handler methods.
+### Tuple Processing
+
+When a command handler returns a tuple, the command pipeline intelligently processes each value:
+
+1. **Each value is checked** against all available response value handlers using their `CanHandle` method
+2. **Values that can be handled** are processed by their respective response value handlers
+3. **Values that cannot be handled** are considered potential response values:
+   - If exactly **one value** has no handler, it becomes the response (available in `CommandContext.Response`)
+   - If **multiple values** have no handlers, a `MultipleUnhandledTupleValuesException` is thrown
+   - If **all values** have handlers, no response is set (`CommandContext.Response` remains `null`)
+
+This means the response value in `CommandContext.Response` is determined dynamically based on which values have corresponding handlers, rather than always being the first item in the tuple.
 
 ### Example
 

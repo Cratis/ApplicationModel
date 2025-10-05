@@ -9,6 +9,14 @@ namespace Cratis.Applications.Commands;
 public interface ICommandResponseValueHandlers
 {
     /// <summary>
+    /// Determines whether any handler can handle the given value.
+    /// </summary>
+    /// <param name="context">The <see cref="CommandContext"/> for the command that produced the value.</param>
+    /// <param name="value">Value to evaluate.</param>
+    /// <returns>True if any handler can handle the value, false otherwise.</returns>
+    bool CanHandle(CommandContext context, object value);
+
+    /// <summary>
     /// Handles the given value.
     /// </summary>
     /// <param name="context">The <see cref="CommandContext"/> for the command that produced the value.</param>

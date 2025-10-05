@@ -36,12 +36,14 @@ public class with_multiple_providers : given.a_command_context_values_builder
     void Because() => _result = _builder.Build();
 
     [Fact] void should_contain_all_keys_from_both_providers() => _result.Keys.ShouldContain("key1", "key2", "key3", "key4");
-    [Fact] void should_contain_values_from_first_provider()
+    [Fact]
+    void should_contain_values_from_first_provider()
     {
         _result["key1"].ShouldEqual("value1");
         _result["key2"].ShouldEqual(42);
     }
-    [Fact] void should_contain_values_from_second_provider()
+    [Fact]
+    void should_contain_values_from_second_provider()
     {
         _result["key3"].ShouldEqual("value3");
         _result["key4"].ShouldEqual(true);

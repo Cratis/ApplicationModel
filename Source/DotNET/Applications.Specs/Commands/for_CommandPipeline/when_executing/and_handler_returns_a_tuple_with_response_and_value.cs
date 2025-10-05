@@ -16,6 +16,10 @@ public class and_handler_returns_a_tuple_with_response_and_value : given.a_comma
         _tuple = ("Forty two", 42);
         _errorMessage = Guid.NewGuid().ToString();
         _commandHandler.Handle(Arg.Any<CommandContext>()).Returns(_tuple);
+
+        // The string should not have a handler (becomes response), the int should have a handler
+        _commandResponseValueHandlers.CanHandle(Arg.Any<CommandContext>(), _tuple.Item1).Returns(false);
+        _commandResponseValueHandlers.CanHandle(Arg.Any<CommandContext>(), _tuple.Item2).Returns(true);
         _commandResponseValueHandlers.Handle(Arg.Any<CommandContext>(), _tuple.Item2).Returns(CommandResult.Error(CorrelationId.New(), _errorMessage));
     }
 

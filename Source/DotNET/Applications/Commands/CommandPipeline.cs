@@ -61,17 +61,28 @@ public class CommandPipeline(
             {
                 if (response is ITuple tuple)
                 {
-                    var actualResponse = tuple[0];
-                    var commandResultType = typeof(CommandResult<>).MakeGenericType(actualResponse?.GetType() ?? typeof(object));
-                    commandContext = commandContext with { Response = actualResponse };
-                    result = (Activator.CreateInstance(commandResultType, actualResponse) as CommandResult)!;
-                    if (tuple.Length > 1 && tuple[1] is not null)
+                    var tupleResult = ProcessTuple(tuple, commandContext);
+
+                    if (tupleResult.ResponseValue is not null)
                     {
-                        response = tuple[1]!;
+                        var commandResultType = typeof(CommandResult<>).MakeGenericType(tupleResult.ResponseValue.GetType());
+                        commandContext = commandContext with { Response = tupleResult.ResponseValue };
+                        result = (Activator.CreateInstance(commandResultType, tupleResult.ResponseValue) as CommandResult)!;
+                    }
+
+                    foreach (var valueToHandle in tupleResult.ValuesToHandle)
+                    {
+                        if (valueToHandle is IOneOf oneOf)
+                        {
+                            result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
+                        }
+                        else
+                        {
+                            result.MergeWith(await valueHandlers.Handle(commandContext, valueToHandle));
+                        }
                     }
                 }
-
-                if (response is IOneOf oneOf)
+                else if (response is IOneOf oneOf)
                 {
                     result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
                 }
@@ -87,6 +98,42 @@ public class CommandPipeline(
         }
 
         return result;
+    }
+
+    (object? ResponseValue, IEnumerable<object> ValuesToHandle) ProcessTuple(ITuple tuple, CommandContext commandContext)
+    {
+        var allValues = new List<object>();
+        for (var i = 0; i < tuple.Length; i++)
+        {
+            if (tuple[i] is not null)
+            {
+                allValues.Add(tuple[i]!);
+            }
+        }
+
+        var handledValues = new List<object>();
+        var unhandledValues = new List<object>();
+
+        foreach (var value in allValues)
+        {
+            if (valueHandlers.CanHandle(commandContext, value))
+            {
+                handledValues.Add(value);
+            }
+            else
+            {
+                unhandledValues.Add(value);
+            }
+        }
+
+        if (unhandledValues.Count > 1)
+        {
+            throw new MultipleUnhandledTupleValues(unhandledValues);
+        }
+
+        var responseValue = unhandledValues.Count == 1 ? unhandledValues[0] : null;
+
+        return (responseValue, handledValues);
     }
 
     CorrelationId GetCorrelationId()
