@@ -18,7 +18,7 @@ public class with_validator_found_and_validation_fails : given.a_fluent_validati
     void Establish()
     {
         _command = new TestCommand("InvalidName");
-        _context = new CommandContext(_correlationId, typeof(TestCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(TestCommand), _command, [], new());
 
         _validator = Substitute.For<IValidator>();
         _validationResult = new FluentValidationResult([

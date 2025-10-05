@@ -13,7 +13,7 @@ public class with_empty_object : given.a_fluent_validation_filter
     void Establish()
     {
         _command = new EmptyCommand();
-        _context = new CommandContext(_correlationId, typeof(EmptyCommand), _command, []);
+        _context = new CommandContext(_correlationId, typeof(EmptyCommand), _command, [], new());
 
         // No validators found for any type
         _discoverableValidators.TryGet(Arg.Any<Type>(), out Arg.Any<IValidator>()).Returns(false);

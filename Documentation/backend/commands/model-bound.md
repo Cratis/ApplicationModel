@@ -98,6 +98,96 @@ public record AddItemToCart(string Sku, int Quantity)
 }
 ```
 
+## Authorization
+
+Model-bound commands support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Application Model.
+
+### Using the Authorize Attribute
+
+You can secure commands using the standard `[Authorize]` attribute:
+
+```csharp
+[Command]
+[Authorize]
+public record DeleteUser(string UserId)
+{
+    public void Handle(IUserService userService)
+    {
+        userService.DeleteUser(UserId);
+    }
+}
+```
+
+For role-based authorization with the standard attribute:
+
+```csharp
+[Command]
+[Authorize(Roles = "Admin,Manager")]
+public record ApproveRequest(int RequestId)
+{
+    public void Handle(IRequestService requestService)
+    {
+        requestService.ApproveRequest(RequestId);
+    }
+}
+```
+
+### Using the Roles Attribute
+
+The Application Model provides a more convenient `[Roles]` attribute that allows for cleaner syntax when specifying multiple roles:
+
+```csharp
+[Command]
+[Roles("Admin", "Manager")]
+public record ApproveRequest(int RequestId)
+{
+    public void Handle(IRequestService requestService)
+    {
+        requestService.ApproveRequest(RequestId);
+    }
+}
+```
+
+The user needs to have **at least one** of the specified roles to execute the command.
+
+### Authorization Results
+
+When authorization fails, the command pipeline automatically returns an unauthorized result. The command's `Handle()` method will not be executed:
+
+```csharp
+var result = await commandManager.Execute(new DeleteUserCommand("user123"));
+
+if (!result.IsAuthorized)
+{
+    // Handle unauthorized access - command was not executed
+    return Forbid();
+}
+
+if (result.IsSuccess)
+{
+    // Command executed successfully
+    return Ok(result);
+}
+```
+
+### Policy-Based Authorization
+
+For more complex authorization scenarios, you can use policy-based authorization:
+
+```csharp
+[Command]
+[Authorize(Policy = "RequireAdminOrOwner")]
+public record UpdateUserProfile(string UserId, UserProfileData Data)
+{
+    public void Handle(IUserService userService)
+    {
+        userService.UpdateProfile(UserId, Data);
+    }
+}
+```
+
+> **Note**: Authorization is evaluated before the command's `Handle()` method is called. If authorization fails, the command will not be executed and the result will indicate the authorization failure.
+
 ## Frontend Integration
 
 Model-bound commands work seamlessly with the [proxy generator](../proxy-generation.md), which automatically creates TypeScript proxies for your commands. The generated proxies provide:
@@ -106,3 +196,4 @@ Model-bound commands work seamlessly with the [proxy generator](../proxy-generat
 - Automatic validation integration
 - React hooks for easy frontend integration
 - Consistent error handling and response processing
+- Authorization status handling in command results

@@ -1,5 +1,7 @@
 - name: Identity
   href: identity.md
+- name: Multi-Tenancy
+  href: multi-tenancy.md
 - name: Authorization
   href: authorization.md
 - name: Configuration

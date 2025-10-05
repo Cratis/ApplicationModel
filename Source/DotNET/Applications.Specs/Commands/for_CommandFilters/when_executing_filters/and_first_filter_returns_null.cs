@@ -18,7 +18,7 @@ public class and_first_filter_returns_null : Specification
     {
         _filter1 = Substitute.For<ICommandFilter>();
         _filter2 = Substitute.For<ICommandFilter>();
-        _context = new CommandContext(CorrelationId.New(), typeof(object), new object(), []);
+        _context = new CommandContext(CorrelationId.New(), typeof(object), new object(), [], new());
         _filterResult = CommandResult.Error(_context.CorrelationId, "error");
         _filter1.OnExecution(_context).Returns(Task.FromResult<CommandResult>(null!));
         _filter2.OnExecution(_context).Returns(Task.FromResult(_filterResult));

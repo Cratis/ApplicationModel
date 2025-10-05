@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Execution;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cratis.Applications.Commands;
 
@@ -12,4 +13,6 @@ namespace Cratis.Applications.Commands;
 /// <param name="Type">The type of the command.</param>
 /// <param name="Command">The command instance.</param>
 /// <param name="Dependencies">The dependencies required to handle the command.</param>
-public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies);
+/// <param name="Values">A set of values associated with the command context.</param>
+[Authorize(Roles = "Administrator")]
+public record CommandContext(CorrelationId CorrelationId, Type Type, object Command, IEnumerable<object> Dependencies, CommandContextValues Values);

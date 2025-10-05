@@ -69,6 +69,13 @@ public class QueryResult
     public static QueryResult Success(CorrelationId correlationId) => new() { CorrelationId = correlationId };
 
     /// <summary>
+    /// Creates a new <see cref="QueryResult"/> representing an unauthorized query execution.
+    /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>
+    /// <returns>A <see cref="QueryResult"/>.</returns>
+    public static QueryResult Unauthorized(CorrelationId correlationId) => new() { CorrelationId = correlationId, IsAuthorized = false };
+
+    /// <summary>
     /// Creates a new <see cref="QueryResult"/> representing a missing performer.
     /// </summary>
     /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the query.</param>

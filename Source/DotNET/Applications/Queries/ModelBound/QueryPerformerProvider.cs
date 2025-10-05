@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Cratis.Applications.Authorization;
 using Cratis.Types;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,13 +21,14 @@ public class QueryPerformerProvider : IQueryPerformerProvider
     /// </summary>
     /// <param name="types">The types to scan for read models.</param>
     /// <param name="serviceProviderIsService">Service to determine if a type is registered as a service.</param>
-    public QueryPerformerProvider(ITypes types, IServiceProviderIsService serviceProviderIsService)
+    /// <param name="authorizationEvaluator">The authorization evaluator.</param>
+    public QueryPerformerProvider(ITypes types, IServiceProviderIsService serviceProviderIsService, IAuthorizationEvaluator authorizationEvaluator)
     {
         var readModelTypes = types.All.Where(t => t.IsReadModel());
         _performers = readModelTypes
             .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(m => m.IsValidQueryFor(t))
-                .Select(m => new ModelBoundQueryPerformer(t, m, serviceProviderIsService)))
+                .Select(m => new ModelBoundQueryPerformer(t, m, serviceProviderIsService, authorizationEvaluator)))
             .ToDictionary(p => p.Name, p => (IQueryPerformer)p);
     }
 

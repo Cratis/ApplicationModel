@@ -17,7 +17,7 @@ public class with_object_containing_null_property : given.a_fluent_validation_fi
     void Establish()
     {
         _command = new CommandWithNullProperty("ValidName", null);
-        _context = new CommandContext(_correlationId, typeof(CommandWithNullProperty), _command, []);
+        _context = new CommandContext(_correlationId, typeof(CommandWithNullProperty), _command, [], new());
 
         _validator = Substitute.For<IValidator>();
         _validationResult = new FluentValidation.Results.ValidationResult([

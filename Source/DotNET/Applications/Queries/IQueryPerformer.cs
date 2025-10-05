@@ -19,6 +19,11 @@ public interface IQueryPerformer
     FullyQualifiedQueryName FullyQualifiedName { get; }
 
     /// <summary>
+    /// Gets the type of the query performer.
+    /// </summary>
+    Type Type { get; }
+
+    /// <summary>
     /// Gets the location the query is at.
     /// </summary>
     /// <remarks>
@@ -38,6 +43,13 @@ public interface IQueryPerformer
     /// This includes parameters that are not dependencies, typically those that come from query string or request parameters.
     /// </remarks>
     QueryParameters Parameters { get; }
+
+    /// <summary>
+    /// Checks if the current user is authorized to perform this query.
+    /// </summary>
+    /// <param name="context">The context for the query.</param>
+    /// <returns>True if authorized, false if unauthorized.</returns>
+    bool IsAuthorized(QueryContext context);
 
     /// <summary>
     /// Renders the given query.

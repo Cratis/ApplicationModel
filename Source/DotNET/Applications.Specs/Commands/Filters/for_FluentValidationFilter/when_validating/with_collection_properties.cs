@@ -14,7 +14,7 @@ public class with_collection_properties : given.a_fluent_validation_filter
     {
         var items = new[] { new Item("Item1"), new Item("Item2") };
         _command = new CommandWithCollection("CommandName", items);
-        _context = new CommandContext(_correlationId, typeof(CommandWithCollection), _command, []);
+        _context = new CommandContext(_correlationId, typeof(CommandWithCollection), _command, [], new());
 
         // No validators found for any type
         _discoverableValidators.TryGet(Arg.Any<Type>(), out Arg.Any<IValidator>()).Returns(false);

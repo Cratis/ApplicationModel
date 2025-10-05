@@ -61,6 +61,13 @@ public class CommandResult
     public static CommandResult Success(CorrelationId correlationId) => new() { CorrelationId = correlationId };
 
     /// <summary>
+    /// Creates a new <see cref="CommandResult"/> representing an unauthorized command execution.
+    /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
+    /// <returns>A <see cref="CommandResult"/>.</returns>
+    public static CommandResult Unauthorized(CorrelationId correlationId) => new() { CorrelationId = correlationId, IsAuthorized = false };
+
+    /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing a missing handler.
     /// </summary>
     /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>

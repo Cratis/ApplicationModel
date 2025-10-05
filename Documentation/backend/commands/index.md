@@ -8,6 +8,9 @@ The Application Model provides comprehensive support for implementing commands i
 | ------- | ----------- |
 | [Controller based](./controller-based.md) | How to implement commands using controller-based approach. |
 | [Model Bound](./model-bound.md) | How to work with model-bound commands for simplified parameter handling. |
+| [Command Context](./command-context.md) | Understanding CommandContext and how to extend it with custom values for the non-controller-based pipeline. |
+| [Command Filters](./command-filters.md) | How to implement command filters for cross-cutting concerns in the non-controller-based pipeline. |
+| [Roles](./roles.md) | How to use the Roles attribute for simplified role-based authorization. |
 | [Response Value Handlers](./response-value-handlers.md) | How to customize command response handling with value handlers. |
 | [Validation](./validation.md) | How to implement validation for commands. |
 

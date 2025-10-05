@@ -26,7 +26,7 @@ public class and_handler_returns_a_task : Specification
 
     void Establish()
     {
-        _context = new(CorrelationId.New(), typeof(Command), new Command(), _dependencies);
+        _context = new(CorrelationId.New(), typeof(Command), new Command(), _dependencies, new());
         _handler = new ModelBoundCommandHandler(
             typeof(Command),
             typeof(Command).GetMethod(nameof(Command.Handle))!);

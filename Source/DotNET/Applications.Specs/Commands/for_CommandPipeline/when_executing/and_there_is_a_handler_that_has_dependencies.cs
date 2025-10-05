@@ -8,6 +8,8 @@ public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipe
     CommandResult _result;
     object[] _expectedDependencies;
     List<object> _dependencies = [];
+    CommandContextValues _expectedValues;
+    CommandContext _commandContext;
 
     void Establish()
     {
@@ -16,10 +18,18 @@ public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipe
         _serviceProvider.GetService(typeof(string)).Returns(_expectedDependencies[0]);
         _serviceProvider.GetService(typeof(int)).Returns(_expectedDependencies[1]);
 
+        _expectedValues = new CommandContextValues
+        {
+            ["TestKey1"] = "TestValue1",
+            ["TestKey2"] = 42,
+            ["TestKey3"] = true
+        };
+        _commandContextValuesBuilder.Build().Returns(_expectedValues);
+
         _commandHandler.When(x => x.Handle(Arg.Any<CommandContext>())).Do(x =>
         {
-            var context = x.Arg<CommandContext>();
-            _dependencies.AddRange(context.Dependencies);
+            _commandContext = x.Arg<CommandContext>();
+            _dependencies.AddRange(_commandContext.Dependencies);
         });
     }
 
@@ -28,4 +38,5 @@ public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipe
     [Fact] void should_call_command_handler() => _commandHandler.Received(1).Handle(Arg.Any<CommandContext>());
     [Fact] void should_pass_dependencies_to_handler() => _dependencies.ShouldContainOnly(_expectedDependencies);
     [Fact] void should_set_current_command_context() => _commandContextModifier.Received(1).SetCurrent(Arg.Any<CommandContext>());
+    [Fact] void should_pass_context_with_values_from_builder() => _commandContext.Values.ShouldEqual(_expectedValues);
 }
