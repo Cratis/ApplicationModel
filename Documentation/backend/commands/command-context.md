@@ -12,7 +12,8 @@ public record CommandContext(
     Type Type, 
     object Command, 
     IEnumerable<object> Dependencies, 
-    CommandContextValues Values);
+    CommandContextValues Values,
+    object? Response);
 ```
 
 ### Properties
@@ -22,6 +23,7 @@ public record CommandContext(
 - **Command**: The actual command instance
 - **Dependencies**: The resolved dependencies required to handle the command
 - **Values**: A collection of key-value pairs providing additional context
+- **Response**: The response, **if any**, that is returned as part of the command result.
 
 ## Command Context Values
 

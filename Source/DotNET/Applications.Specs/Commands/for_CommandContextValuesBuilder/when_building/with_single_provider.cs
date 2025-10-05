@@ -25,7 +25,8 @@ public class with_single_provider : given.a_command_context_values_builder
 
     [Fact] void should_return_command_context_values_with_provided_values() => _result.ShouldEqual(_providedValues);
     [Fact] void should_contain_all_keys_from_provider() => _result.Keys.ShouldContain("key1", "key2");
-    [Fact] void should_contain_correct_values()
+    [Fact]
+    void should_contain_correct_values()
     {
         _result["key1"].ShouldEqual("value1");
         _result["key2"].ShouldEqual(42);

@@ -19,6 +19,7 @@ public class and_handler_returns_a_one_of_value : given.a_command_pipeline_and_a
         _errorMessage = Guid.NewGuid().ToString();
         _oneOf = OneOf<string, int>.FromT0(_value);
         _commandHandler.Handle(Arg.Any<CommandContext>()).Returns(_oneOf);
+        _commandResponseValueHandlers.CanHandle(Arg.Any<CommandContext>(), _value).Returns(true);
         _commandResponseValueHandlers.Handle(Arg.Any<CommandContext>(), _value).Returns(CommandResult.Error(CorrelationId.New(), _errorMessage));
     }
 

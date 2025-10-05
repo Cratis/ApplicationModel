@@ -9,8 +9,8 @@ Queries are used for retrieving data and are a key component of CQRS (Command Qu
 | ------- | ----------- |
 | [Controller based](./controller-based.md) | How to implement queries using controller-based approach. |
 | [Model Bound](./model-bound.md) | How to work with model-bound queries for simplified parameter handling. |
-| [Observable Queries](./observable-queries.md) | How to implement reactive, observable queries that update in real-time. |
 | [Query Pipeline](./query-pipeline.md) | Understanding the query pipeline and how queries are processed. |
+| [Roles](../roles.md) | How to use the Roles attribute for simplified role-based authorization. |
 | [Validation](./validation.md) | How to implement validation for query parameters. |
 
 > **💡 Query Filters**: The query pipeline supports filters for cross-cutting concerns like validation and authorization. See the [Query Pipeline](./query-pipeline.md#query-filters) section for details on built-in filters and creating custom ones.

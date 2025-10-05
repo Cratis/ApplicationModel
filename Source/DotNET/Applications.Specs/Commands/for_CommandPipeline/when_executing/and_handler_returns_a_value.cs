@@ -16,6 +16,7 @@ public class and_handler_returns_a_value : given.a_command_pipeline_and_a_handle
         _value = "Forty two";
         _errorMessage = Guid.NewGuid().ToString();
         _commandHandler.Handle(Arg.Any<CommandContext>()).Returns(_value);
+        _commandResponseValueHandlers.CanHandle(Arg.Any<CommandContext>(), _value).Returns(true);
         _commandResponseValueHandlers.Handle(Arg.Any<CommandContext>(), _value).Returns(CommandResult.Error(CorrelationId.New(), _errorMessage));
     }
 

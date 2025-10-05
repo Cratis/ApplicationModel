@@ -57,6 +57,7 @@
 - Never use any built-in exception types like InvalidOperationException, ArgumentException, etc.
 - Add XML documentation for exceptions being thrown.
 - XML documentation for exception should start with "The exception that is thrown when ...".
+- Never suffix exception class names with "Exception".
 
 ## Nullable Reference Types
 

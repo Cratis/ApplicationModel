@@ -57,10 +57,22 @@ public record AddItemToCart(string Sku, int Quantity)
 ## Tuple
 
 Sometimes you want to return a value that is part of the `CommandResult` and returned to the
-caller that invoked the command. By returning a tuple, the command pipeline will use the
-first value of the tuple as the value for the `CommandResult`, the second value is then considered
-will then be the value, which can then be a discriminated union as shown earlier, or a direct
-value that will then invoke any relevant [response handler](./response-value-handlers.md).
+caller that invoked the command. By returning a tuple, the command pipeline will intelligently
+process each value to determine which should be the response and which should be processed by
+[response value handlers](./response-value-handlers.md).
+
+### How Tuple Processing Works
+
+The command pipeline processes tuples as follows:
+
+1. **Checks each value** against available response value handlers using their `CanHandle` method
+2. **Values with handlers** are processed by their respective response value handlers
+3. **Values without handlers** are considered potential response values
+4. **If exactly one value has no handler**, it becomes the response in the `CommandResult`
+5. **If multiple values have no handlers**, a `MultipleUnhandledTupleValuesException` is thrown
+6. **If all values have handlers**, no response value is set
+
+### Simple Tuple (2 values)
 
 ```csharp
 using Cratis.Applications.Validation;
@@ -75,9 +87,50 @@ public record AddItemToCart(string Sku, int Quantity)
         // Logic for handling the actual adding...
 
         // Return the identifier and the consequence, in this case an event handled by Chronicle.
-        return (cartLineIdentifier, new ItemAddedToCart(...);
+        return (cartLineIdentifier, new ItemAddedToCart(...));
     }
 }
+```
+
+In this example, if `ItemAddedToCart` has a response value handler but `Guid` doesn't, then the `Guid` becomes the response.
+
+### Multi-dimensional Tuples (3+ values)
+
+The system supports tuples with any number of values:
+
+```csharp
+[Command]
+public record ProcessOrder(string OrderId)
+{
+    public (Guid, OrderProcessed, ValidationResult, NotificationSent) Handle()
+    {
+        var confirmationId = Guid.NewGuid();
+        
+        // Processing logic...
+        
+        return (
+            confirmationId,           // Response (if no handler exists for Guid)
+            new OrderProcessed(...),  // Event (handled by event handler)
+            validationResult,         // Validation (handled by validation handler)
+            new NotificationSent(...) // Notification (handled by notification handler)
+        );
+    }
+}
+```
+
+In this example:
+
+- `OrderProcessed`, `ValidationResult`, and `NotificationSent` would be processed by their respective handlers
+- `Guid` (confirmationId) would become the response value
+- If multiple values lack handlers, an exception would be thrown
+
+### Error Scenarios
+
+If your tuple contains multiple values that don't have corresponding response value handlers, the system will throw a `MultipleUnhandledTupleValuesException` with details about which values couldn't be handled:
+
+```csharp
+// This would throw an exception if neither string nor int have handlers
+public (string, int, SomeEvent) Handle() => ("response1", 42, new SomeEvent());
 ```
 
 ## Dependencies

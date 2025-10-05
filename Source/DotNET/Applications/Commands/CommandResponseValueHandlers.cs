@@ -14,6 +14,10 @@ namespace Cratis.Applications.Commands;
 public class CommandResponseValueHandlers(IInstancesOf<ICommandResponseValueHandler> handlers) : ICommandResponseValueHandlers
 {
     /// <inheritdoc/>
+    public bool CanHandle(CommandContext context, object value) =>
+        handlers.Any(handler => handler.CanHandle(context, value));
+
+    /// <inheritdoc/>
     public async Task<CommandResult> Handle(CommandContext context, object value)
     {
         var handlersThatCanHandle = handlers.Where(handler => handler.CanHandle(context, value)).ToArray();

@@ -10,8 +10,9 @@ The Application Model provides comprehensive support for implementing commands i
 | [Model Bound](./model-bound.md) | How to work with model-bound commands for simplified parameter handling. |
 | [Command Context](./command-context.md) | Understanding CommandContext and how to extend it with custom values for the non-controller-based pipeline. |
 | [Command Filters](./command-filters.md) | How to implement command filters for cross-cutting concerns in the non-controller-based pipeline. |
-| [Roles](./roles.md) | How to use the Roles attribute for simplified role-based authorization. |
+| [Roles](../roles.md) | How to use the Roles attribute for simplified role-based authorization. |
 | [Response Value Handlers](./response-value-handlers.md) | How to customize command response handling with value handlers. |
+| [Response Examples](./response-examples.md) | Comprehensive examples of different command response patterns. |
 | [Validation](./validation.md) | How to implement validation for commands. |
 
 > **💡 Frontend Integration**: Automatically generate TypeScript proxies for your commands with the [Proxy Generation](../proxy-generation.md) feature.
@@ -19,3 +20,12 @@ The Application Model provides comprehensive support for implementing commands i
 ## Overview
 
 Commands in the Application Model are designed to be simple to implement while providing powerful features like automatic validation, response handling, and integration with the overall application architecture. Whether you prefer controller-based approaches or model-bound commands, the framework provides the flexibility to work with your preferred style while maintaining consistency and best practices.
+
+### Key Features
+
+- **Automatic Response Handling**: Command handlers can return any value, which will either be processed by custom response value handlers or automatically become a typed `CommandResult<T>` response
+- **Flexible Return Types**: Support for single values, tuples, and OneOf types with intelligent processing
+- **Built-in Validation**: Automatic command validation before execution
+- **Response Value Handlers**: Extensible system for processing specific types of return values
+- **Controller and Model-Bound Support**: Multiple patterns for implementing commands
+- **TypeScript Integration**: Automatic proxy generation for frontend integration

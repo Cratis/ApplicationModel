@@ -1,12 +1,14 @@
 # Roles
 
-The `RolesAttribute` is a convenient wrapper around ASP.NET Core's `AuthorizeAttribute` that simplifies working with role-based authorization. It provides an intuitive way to specify multiple roles for commands and controllers.
+The `RolesAttribute` is a convenient wrapper around ASP.NET Core's `AuthorizeAttribute` that simplifies working with role-based authorization. It provides an intuitive way to specify multiple roles for commands, queries, and controllers.
 
 ## Overview
 
 The `RolesAttribute` eliminates the need to manually format role strings when using multiple roles with the standard `AuthorizeAttribute`. Instead of writing `[Authorize(Roles = "Admin,Manager")]`, you can use the more readable `[Roles("Admin", "Manager")]`.
 
 ## Basic Usage
+
+### Commands
 
 ```csharp
 using Cratis.Applications.Authorization;
@@ -15,23 +17,44 @@ using Cratis.Applications.Authorization;
 public record DeleteUser(string UserId);
 ```
 
-This is equivalent to:
+### Queries
+
+```csharp
+using Cratis.Applications.Authorization;
+
+[Roles("Admin", "Manager")]
+public record GetUserDetails(string UserId);
+```
+
+Both examples are equivalent to using the standard ASP.NET Core authorization:
 
 ```csharp
 [Authorize(Roles = "Admin")]
 public record DeleteUser(string UserId);
+
+[Authorize(Roles = "Admin,Manager")]
+public record GetUserDetails(string UserId);
 ```
 
 ## Multiple Roles
 
 The `RolesAttribute` makes it easy to specify multiple roles. A user needs to have **at least one** of the specified roles to be authorized:
 
+### For Commands
+
 ```csharp
 [Roles("Admin", "Manager", "TeamLead")]
 public record ApproveRequest(int RequestId);
 ```
 
-This allows users with any of the three roles (Admin, Manager, or TeamLead) to execute the command.
+### For Queries
+
+```csharp
+[Roles("Admin", "Manager", "TeamLead", "Viewer")]
+public record GetSensitiveReport(int ReportId);
+```
+
+This allows users with any of the specified roles to execute the command or query.
 
 ## Controller-Level Authorization
 
@@ -70,11 +93,18 @@ public class ProductController : ControllerBase
         // No authorization required - public endpoint
     }
     
+    [HttpGet("details/{id}")]
+    [Roles("Viewer", "Editor", "Admin")]
+    public async Task<IActionResult> GetProductDetails(string id)
+    {
+        // Requires "Viewer", "Editor" or "Admin" role for queries
+    }
+    
     [HttpPost]
     [Roles("Editor", "Admin")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
     {
-        // Requires "Editor" or "Admin" role
+        // Requires "Editor" or "Admin" role for commands
     }
     
     [HttpDelete("{id}")]
@@ -101,6 +131,13 @@ public class ManagementController : ControllerBase
         // Requires "Manager" role (from controller)
     }
     
+    [HttpGet("sensitive-data")]
+    [Roles("Admin")] // Overrides controller-level authorization
+    public async Task<IActionResult> GetSensitiveData()
+    {
+        // Requires "Admin" role only, not "Manager"
+    }
+    
     [HttpDelete("critical-data")]
     [Roles("Admin")] // Overrides controller-level authorization
     public async Task<IActionResult> DeleteCriticalData()
@@ -110,9 +147,11 @@ public class ManagementController : ControllerBase
 }
 ```
 
-## Model-Bound Commands
+## Model-Bound Commands and Queries
 
-The `RolesAttribute` works seamlessly with model-bound commands:
+The `RolesAttribute` works seamlessly with both model-bound commands and queries:
+
+### Model-Bound Commands
 
 ```csharp
 [Command]
@@ -123,9 +162,22 @@ public record CreateUser(
     int Age);
 ```
 
-## Integration with Command Results
+### Model-Bound Queries
 
-When using the `RolesAttribute`, authorization status is automatically included in command results. You can check the authorization status:
+```csharp
+[Query]
+[Roles("Manager", "Admin", "Auditor")]
+public record GetUserAuditLog(
+    string UserId,
+    DateTime FromDate,
+    DateTime ToDate);
+```
+
+## Integration with Command and Query Results
+
+When using the `RolesAttribute`, authorization status is automatically included in both command and query results. You can check the authorization status:
+
+### Command Results
 
 ```csharp
 var result = await mediator.Send(new CreateUserCommand("John", "john@example.com", 30));
@@ -139,6 +191,24 @@ if (!result.IsAuthorized)
 if (result.IsSuccess)
 {
     // Command executed successfully
+}
+```
+
+### Query Results
+
+```csharp
+var result = await mediator.Send(new GetUserAuditLogQuery("user123", DateTime.Now.AddDays(-30), DateTime.Now));
+
+if (!result.IsAuthorized)
+{
+    // Handle unauthorized access
+    return Unauthorized();
+}
+
+if (result.IsSuccess)
+{
+    // Query executed successfully, use result.Data
+    var auditLog = result.Data;
 }
 ```
 
@@ -175,6 +245,8 @@ For more complex authorization scenarios, you can combine `RolesAttribute` with 
 
 ## See Also
 
-- [Authorization](../authorization.md) - Complete authorization documentation
-- [Command Filters](command-filters.md) - Including the AuthorizationFilter
-- [Identity](../identity.md) - Identity and authentication setup
+- [Authorization](authorization.md) - Complete authorization documentation
+- [Command Filters](commands/command-filters.md) - Including the AuthorizationFilter
+- [Commands](commands/index.md) - Command documentation
+- [Queries](queries/index.md) - Query documentation
+- [Identity](identity.md) - Identity and authentication setup
