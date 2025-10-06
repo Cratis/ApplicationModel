@@ -48,7 +48,7 @@ public class CommandPipeline(
                 command.GetType(),
                 command,
                 dependencies,
-                contextValuesBuilder.Build());
+                contextValuesBuilder.Build(command));
             contextModifier.SetCurrent(commandContext);
             result = await commandFilters.OnExecution(commandContext);
             if (!result.IsSuccess)

@@ -12,12 +12,12 @@ namespace Cratis.Applications.Commands;
 public class CommandContextValuesBuilder(IInstancesOf<ICommandContextValuesProvider> providers) : ICommandContextValuesBuilder
 {
     /// <inheritdoc/>
-    public CommandContextValues Build()
+    public CommandContextValues Build(object command)
     {
         var values = new CommandContextValues();
         foreach (var provider in providers)
         {
-            values.Merge(provider.Provide());
+            values.Merge(provider.Provide(command));
         }
 
         return values;

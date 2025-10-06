@@ -17,11 +17,11 @@ public class with_single_provider : given.a_command_context_values_builder
             ["key1"] = "value1",
             ["key2"] = 42
         };
-        _provider.Provide().Returns(_providedValues);
+        _provider.Provide(Arg.Any<object>()).Returns(_providedValues);
         _providers.GetEnumerator().Returns(new List<ICommandContextValuesProvider> { _provider }.GetEnumerator());
     }
 
-    void Because() => _result = _builder.Build();
+    void Because() => _result = _builder.Build(_command);
 
     [Fact] void should_return_command_context_values_with_provided_values() => _result.ShouldEqual(_providedValues);
     [Fact] void should_contain_all_keys_from_provider() => _result.Keys.ShouldContain("key1", "key2");

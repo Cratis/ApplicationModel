@@ -11,6 +11,7 @@ public interface ICommandContextValuesProvider
     /// <summary>
     /// Gets the command context values.
     /// </summary>
+    /// <param name="command">The command instance being executed.</param>
     /// <returns>The command context values.</returns>
-    CommandContextValues Provide();
+    CommandContextValues Provide(object command);
 }
