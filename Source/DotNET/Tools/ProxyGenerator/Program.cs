@@ -21,6 +21,16 @@ var skipQueryNameInRoute = args.Any(_ => _ == "--skip-query-name-in-route");
 var apiPrefixArg = args.FirstOrDefault(_ => _.StartsWith("--api-prefix="));
 var apiPrefix = apiPrefixArg is null ? "api" : apiPrefixArg.Split('=')[^1];
 
+Console.WriteLine("\nParameters:");
+Console.WriteLine($"Assembly: '{assemblyFile}'");
+Console.WriteLine($"Output path: '{outputPath}'");
+Console.WriteLine($"Segments to skip: {segmentsToSkip}");
+Console.WriteLine($"Skip output deletion: {skipOutputDeletion}");
+Console.WriteLine($"Skip command name in route: {skipCommandNameInRoute}");
+Console.WriteLine($"Skip query name in route: {skipQueryNameInRoute}");
+Console.WriteLine($"API prefix: {apiPrefix}");
+Console.WriteLine();
+
 var result = await Generator.Generate(
     assemblyFile,
     outputPath,
