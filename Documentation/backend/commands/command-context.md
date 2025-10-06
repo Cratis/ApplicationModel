@@ -31,20 +31,7 @@ The `Values` property is a `CommandContextValues` instance that acts as a case-i
 
 ### How Values Are Populated
 
-The command pipeline uses the `CommandContextValuesBuilder` to collect values from all registered `ICommandContextValuesProvider` implementations:
-
-```csharp
-public CommandContextValues Build(object command)
-{
-    var values = new CommandContextValues();
-    foreach (var provider in providers)
-    {
-        values.Merge(provider.Provide(command));
-    }
-    return values;
-}
-```
-
+The command pipeline uses the `CommandContextValuesBuilder` to collect values from all registered `ICommandContextValuesProvider` implementations.
 Each provider receives the command instance being executed and contributes its values. If there are overlapping keys, the last provider's value takes precedence.
 
 ## Extending with Custom Values
