@@ -28,12 +28,12 @@ public class with_multiple_providers : given.a_command_context_values_builder
             ["key4"] = true
         };
 
-        _firstProvider.Provide().Returns(_firstProviderValues);
-        _secondProvider.Provide().Returns(_secondProviderValues);
+        _firstProvider.Provide(Arg.Any<object>()).Returns(_firstProviderValues);
+        _secondProvider.Provide(Arg.Any<object>()).Returns(_secondProviderValues);
         _providers.GetEnumerator().Returns(new List<ICommandContextValuesProvider> { _firstProvider, _secondProvider }.GetEnumerator());
     }
 
-    void Because() => _result = _builder.Build();
+    void Because() => _result = _builder.Build(_command);
 
     [Fact] void should_contain_all_keys_from_both_providers() => _result.Keys.ShouldContain("key1", "key2", "key3", "key4");
     [Fact]

@@ -27,7 +27,7 @@ public class a_command_pipeline : Specification
         _commandResponseValueHandlers = Substitute.For<ICommandResponseValueHandlers>();
         _commandContextModifier = Substitute.For<ICommandContextModifier>();
         _commandContextValuesBuilder = Substitute.For<ICommandContextValuesBuilder>();
-        _commandContextValuesBuilder.Build().Returns(new CommandContextValues());
+        _commandContextValuesBuilder.Build(Arg.Any<object>()).Returns(new CommandContextValues());
         _serviceProvider = Substitute.For<IServiceProvider>();
 
         _commandPipeline = new(

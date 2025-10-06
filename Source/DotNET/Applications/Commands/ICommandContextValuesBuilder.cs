@@ -11,6 +11,7 @@ public interface ICommandContextValuesBuilder
     /// <summary>
     /// Creates a new instance of <see cref="CommandContextValues"/>.
     /// </summary>
+    /// <param name="command">The command instance being executed.</param>
     /// <returns>A new instance of <see cref="CommandContextValues"/>.</returns>
-    CommandContextValues Build();
+    CommandContextValues Build(object command);
 }

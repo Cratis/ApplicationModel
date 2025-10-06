@@ -34,18 +34,18 @@ The `Values` property is a `CommandContextValues` instance that acts as a case-i
 The command pipeline uses the `CommandContextValuesBuilder` to collect values from all registered `ICommandContextValuesProvider` implementations:
 
 ```csharp
-public CommandContextValues Build()
+public CommandContextValues Build(object command)
 {
     var values = new CommandContextValues();
     foreach (var provider in providers)
     {
-        values.Merge(provider.Provide());
+        values.Merge(provider.Provide(command));
     }
     return values;
 }
 ```
 
-Each provider contributes its values, and if there are overlapping keys, the last provider's value takes precedence.
+Each provider receives the command instance being executed and contributes its values. If there are overlapping keys, the last provider's value takes precedence.
 
 ## Extending with Custom Values
 
@@ -54,9 +54,11 @@ To add your own values to the command context, implement the `ICommandContextVal
 ```csharp
 public interface ICommandContextValuesProvider
 {
-    CommandContextValues Provide();
+    CommandContextValues Provide(object command);
 }
 ```
+
+The `command` parameter provides access to the command instance being executed, allowing providers to customize their values based on the specific command type or content.
 
 ### Example Implementation
 
@@ -74,13 +76,16 @@ public class AuditContextValuesProvider : ICommandContextValuesProvider
         _userAccessor = userAccessor;
     }
 
-    public CommandContextValues Provide()
+    public CommandContextValues Provide(object command)
     {
         var values = new CommandContextValues();
         
         values["ExecutedAt"] = _dateTimeProvider.UtcNow;
         values["ExecutedBy"] = _userAccessor.Current?.Id ?? "System";
         values["TraceId"] = Activity.Current?.TraceId.ToString() ?? Guid.NewGuid().ToString();
+        
+        // Example of using command information
+        values["CommandType"] = command.GetType().Name;
         
         return values;
     }

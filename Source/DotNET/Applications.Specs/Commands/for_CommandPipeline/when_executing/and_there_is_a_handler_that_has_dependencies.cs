@@ -24,7 +24,7 @@ public class and_there_is_a_handler_that_has_dependencies : given.a_command_pipe
             ["TestKey2"] = 42,
             ["TestKey3"] = true
         };
-        _commandContextValuesBuilder.Build().Returns(_expectedValues);
+        _commandContextValuesBuilder.Build(Arg.Any<object>()).Returns(_expectedValues);
 
         _commandHandler.When(x => x.Handle(Arg.Any<CommandContext>())).Do(x =>
         {

@@ -28,12 +28,12 @@ public class with_providers_having_overlapping_keys : given.a_command_context_va
             ["key3"] = true
         };
 
-        _firstProvider.Provide().Returns(_firstProviderValues);
-        _secondProvider.Provide().Returns(_secondProviderValues);
+        _firstProvider.Provide(Arg.Any<object>()).Returns(_firstProviderValues);
+        _secondProvider.Provide(Arg.Any<object>()).Returns(_secondProviderValues);
         _providers.GetEnumerator().Returns(new List<ICommandContextValuesProvider> { _firstProvider, _secondProvider }.GetEnumerator());
     }
 
-    void Because() => _result = _builder.Build();
+    void Because() => _result = _builder.Build(_command);
 
     [Fact] void should_contain_all_unique_keys() => _result.Keys.ShouldContain("key1", "key2", "key3");
     [Fact] void should_have_value_from_last_provider_for_overlapping_key() => _result["key1"].ShouldEqual("second_value");
