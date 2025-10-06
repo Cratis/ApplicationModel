@@ -12,8 +12,15 @@
     </PropertyGroup>
     
     <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild"> 
+        <PropertyGroup>
+            <CratisProxiesOutputPath>
+                $([System.String]::Copy('$(CratisProxiesOutputPath)').TrimEnd('\'))
+            </CratisProxiesOutputPath>
+        </PropertyGroup>
+
         <Message Text="MSBuildProjectDirectory : $(MSBuildProjectDirectory)" Importance="high" />
         <Message Text="OutputPath : $(OutputPath)" Importance="high" />
+        <Message Text="ProxiesOutputPath : $(CratisProxiesOutputPath)" Importance="high" />
         <Message Text="AssemblyName : $(AssemblyName)" Importance="high" />
         <Message Text="ProxyGenerator base directory : $(CratisProxyGeneratorAssemblyDirectory)" Importance="high" />
         <Message Text="Full path to assembly : $(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll" Importance="high" />
