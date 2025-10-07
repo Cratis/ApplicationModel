@@ -37,18 +37,11 @@ public class ModelBoundCommandHandler(Type commandType, MethodInfo handleMethod)
 
         if (result is Task task)
         {
-            if (handleMethod.ReturnType != typeof(Task))
-            {
-                var type = task.GetType();
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var property = type.GetProperty(nameof(Task<object>.Result));
-                    await task;
-                    return property?.GetValue(task);
-                }
-            }
             await task;
-            return null;
+
+            return task.GetType().GetProperty(nameof(Task<object>.Result)) is { } resultProperty
+                ? resultProperty.GetValue(task)
+                : null;
         }
 
         return result;
