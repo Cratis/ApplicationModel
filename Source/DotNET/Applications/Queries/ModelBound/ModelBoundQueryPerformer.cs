@@ -78,17 +78,13 @@ public class ModelBoundQueryPerformer : IQueryPerformer
 
         if (result is Task task)
         {
-            if (_performMethod.ReturnType != typeof(Task))
-            {
-                var type = task.GetType();
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var property = type.GetProperty(nameof(Task<object>.Result));
-                    await task;
-                    return property?.GetValue(task);
-                }
-            }
             await task;
+            var type = task.GetType();
+            if (type.GetProperty(nameof(Task<object>.Result)) is { } resultProperty)
+            {
+                return resultProperty.GetValue(task);
+            }
+
             return null;
         }
 
