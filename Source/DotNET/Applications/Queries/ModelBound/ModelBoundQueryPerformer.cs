@@ -79,13 +79,10 @@ public class ModelBoundQueryPerformer : IQueryPerformer
         if (result is Task task)
         {
             await task;
-            var type = task.GetType();
-            if (type.GetProperty(nameof(Task<object>.Result)) is { } resultProperty)
-            {
-                return resultProperty.GetValue(task);
-            }
 
-            return null;
+            return task.GetType().GetProperty(nameof(Task<object>.Result)) is { } resultProperty
+                ? resultProperty.GetValue(task)
+                : null;
         }
 
         return result;
