@@ -29,7 +29,7 @@ public class with_null_query_data : given.a_query_pipeline
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(null));
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(ValueTask.FromResult<object?>(null));
     }
 
     async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);

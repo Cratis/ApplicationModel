@@ -3,15 +3,13 @@
 
 namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.when_performing;
 
-public class with_async_task_return_type : given.a_model_bound_query_performer
+public class with_value_task_return_type : given.a_model_bound_query_performer
 {
     public record TestReadModel
     {
-        public static async Task<TestReadModel> Query(int requiredInt, string requiredString)
+        public static ValueTask<TestReadModel> Query(int requiredInt, string requiredString)
         {
-            await Task.Delay(1);
-            await Task.CompletedTask;
-            return new TestReadModel();
+            return ValueTask.FromResult(new TestReadModel());
         }
     }
 

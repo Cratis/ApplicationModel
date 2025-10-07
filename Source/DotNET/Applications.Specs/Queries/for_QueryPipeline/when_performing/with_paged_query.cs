@@ -33,7 +33,7 @@ public class with_paged_query : given.a_query_pipeline
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(ValueTask.FromResult<object?>(_queryData));
         _queryRenderers.Render(_queryName, _queryData).Returns(_rendererResult);
     }
 

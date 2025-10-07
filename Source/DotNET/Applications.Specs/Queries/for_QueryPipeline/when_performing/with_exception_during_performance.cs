@@ -31,7 +31,7 @@ public class with_exception_during_performance : given.a_query_pipeline
         });
 
         query_filters.OnPerform(Arg.Any<QueryContext>()).Returns(_filterResult);
-        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromException<object?>(_exception));
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(ValueTask.FromException<object?>(_exception));
     }
 
     async Task Because() => _result = await _pipeline.Perform(_queryName, _parameters, _paging, _sorting);
