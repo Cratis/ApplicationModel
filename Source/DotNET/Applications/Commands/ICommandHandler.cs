@@ -31,5 +31,5 @@ public interface ICommandHandler
     /// </summary>
     /// <param name="commandContext">The context for the command being handled.</param>
     /// <returns>Response from handling the command.</returns>
-    Task<object?> Handle(CommandContext commandContext);
+    ValueTask<object?> Handle(CommandContext commandContext);
 }

@@ -56,5 +56,5 @@ public interface IQueryPerformer
     /// </summary>
     /// <param name="context">The context for the query to render.</param>
     /// <returns>The result of rendering the query.</returns>
-    Task<object?> Perform(QueryContext context);
+    ValueTask<object?> Perform(QueryContext context);
 }
