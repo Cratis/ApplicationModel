@@ -23,9 +23,14 @@ export class ObservableQueryConnection<TDataType> implements IObservableQueryCon
     constructor(url: URL, private readonly _microservice: string) {
         const secure = url.protocol?.indexOf('https') === 0 || false;
 
-        this._url = `${secure ? 'wss' : 'ws'}://${url.host}${url.pathname}`;
+        this._url = `${secure ? 'wss' : 'ws'}://${url.host}${url.pathname}${url.search}`;
         if (this._microservice?.length > 0) {
-            this._url = `${this._url}?${Globals.microserviceWSQueryArgument}=${this._microservice}`;
+            const microserviceParam = `${Globals.microserviceWSQueryArgument}=${this._microservice}`;
+            if (this._url.indexOf('?') > 0) {
+                this._url = `${this._url}&${microserviceParam}`;
+            } else {
+                this._url = `${this._url}?${microserviceParam}`;
+            }
         }
     }
 
