@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -18,7 +19,7 @@ public static class GuidConversion
     /// <param name="database">The database provider, if specific configuration is needed.</param>
     public static void ApplyGuidConversion(this ModelBuilder modelBuilder, DatabaseFacade database)
     {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(t => !t.ClrType.IsConcept()))
         {
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.PropertyType == typeof(Guid))
