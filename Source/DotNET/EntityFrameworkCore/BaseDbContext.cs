@@ -16,9 +16,9 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyJsonConversion(Database.ProviderName);
+        modelBuilder.ApplyJsonConversion(Database);
         modelBuilder.ApplyConceptAsConversion();
-        modelBuilder.ApplyGuidConversion();
+        modelBuilder.ApplyGuidConversion(Database);
         base.OnModelCreating(modelBuilder);
     }
 }

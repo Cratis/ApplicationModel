@@ -60,7 +60,7 @@ public class StoreDbContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConceptAsConversion();
+        modelBuilder.ApplyConceptAsConversion(Database);
         base.OnModelCreating(modelBuilder);
     }
 }

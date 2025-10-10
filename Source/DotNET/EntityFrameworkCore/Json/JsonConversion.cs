@@ -5,6 +5,7 @@ using System.Text.Json;
 using Cratis.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Cratis.Applications.EntityFrameworkCore.Json;
@@ -27,9 +28,10 @@ public static class JsonConversion
     /// Applies JSON conversion to all properties marked with the <see cref="JsonAttribute"/> in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the JSON conversion to.</param>
-    /// <param name="providerName">The name of the database provider (e.g., "Npgsql", "SqlServer", "Sqlite").</param>
-    public static void ApplyJsonConversion(this ModelBuilder modelBuilder, string? providerName = "")
+    /// <param name="database">The database provider, if specific configuration is needed.</param>
+    public static void ApplyJsonConversion(this ModelBuilder modelBuilder, DatabaseFacade database)
     {
+        var databaseType = database.GetDatabaseType();
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             var properties = entityType.ClrType.GetProperties()
@@ -47,15 +49,17 @@ public static class JsonConversion
                 propertyBuilder.HasConversion(converter);
                 propertyBuilder.Metadata.SetValueConverter(converter);
                 propertyBuilder.Metadata.SetValueComparer(comparer);
-
-                if (!string.IsNullOrEmpty(providerName))
+                switch (databaseType)
                 {
-                    if (providerName.Contains("Npgsql", StringComparison.OrdinalIgnoreCase))
-                        propertyBuilder.HasColumnType("jsonb");
-                    else if (providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
-                        propertyBuilder.HasColumnType("json");
-                    else if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+                    case DatabaseType.Sqlite:
                         propertyBuilder.HasColumnType("TEXT");
+                        break;
+                    case DatabaseType.SqlServer:
+                        propertyBuilder.HasColumnType("json");
+                        break;
+                    case DatabaseType.PostgreSql:
+                        propertyBuilder.HasColumnType("jsonb");
+                        break;
                 }
             }
         }
