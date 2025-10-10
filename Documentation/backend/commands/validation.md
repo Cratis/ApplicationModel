@@ -42,7 +42,7 @@ Given the same sample as for Data Annotation, this would be like the following:
 ```csharp
 [Command]
 public record AddItemToCart(
-    [Required] string Sku,
+    string Sku,
     int Quantity)
 {
     public void Handle()
