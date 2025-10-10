@@ -31,6 +31,12 @@ public static class ConceptAsConversion
                 var propertyBuilder = modelBuilder.Entity(entityType.Name).Property(property.Name);
                 var converterType = typeof(ConceptAsValueConverter<,>).MakeGenericType(property.PropertyType, conceptValueType);
                 var comparerType = typeof(ConceptAsValueComparer<,>).MakeGenericType(property.PropertyType, conceptValueType);
+
+                if (conceptValueType == typeof(Guid))
+                {
+                    converterType = typeof(GuidConceptAsValueConverter<,>).MakeGenericType(property.PropertyType, conceptValueType);
+                }
+
                 var converter = Activator.CreateInstance(converterType) as ValueConverter;
                 var comparer = Activator.CreateInstance(comparerType) as ValueComparer;
 
@@ -40,6 +46,12 @@ public static class ConceptAsConversion
             }
         }
     }
+
+    sealed class GuidConceptAsValueConverter<TConcept, TPrimitive>() : ValueConverter<TConcept, string>(
+        v => v.Value.ToString("D"),
+        v => (TConcept)ConceptFactory.CreateConceptInstance(typeof(TConcept), Guid.Parse(v)))
+        where TConcept : notnull, ConceptAs<Guid>
+        where TPrimitive : notnull, IComparable;
 
     sealed class ConceptAsValueConverter<TConcept, TPrimitive>() : ValueConverter<TConcept, TPrimitive>(
         v => v.Value,
