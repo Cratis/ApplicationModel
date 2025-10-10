@@ -1,6 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Cratis.Concepts;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -24,6 +26,11 @@ public static class PropertyExtensions
     /// <returns>The configured property builder.</returns>
     public static PropertyBuilder AsGuid(this PropertyBuilder propertyBuilder, DatabaseFacade database)
     {
+        if (propertyBuilder.Metadata.ClrType.IsConcept())
+        {
+            return propertyBuilder.AsConcept(database);
+        }
+
         if (database.GetDatabaseType() == DatabaseType.Sqlite)
         {
             propertyBuilder.HasConversion(_guidValueConverter);
@@ -31,4 +38,56 @@ public static class PropertyExtensions
 
         return propertyBuilder;
     }
+
+    /// <summary>
+    /// Configures the property to use a value conversion for concept types.
+    /// </summary>
+    /// <param name="propertyBuilder">The property builder to configure.</param>
+    /// <param name="database">The database provider, if specific configuration is needed.</param>
+    /// <returns>The configured property builder.</returns>
+    public static PropertyBuilder AsConcept(this PropertyBuilder propertyBuilder, DatabaseFacade database)
+    {
+        var propertyType = propertyBuilder.Metadata.ClrType;
+        if (!propertyType.IsConcept())
+        {
+            return propertyBuilder;
+        }
+
+        var conceptValueType = propertyType.GetConceptValueType();
+
+        var converterType = typeof(ConceptAsValueConverter<,>).MakeGenericType(propertyType, conceptValueType);
+        var comparerType = typeof(ConceptAsValueComparer<,>).MakeGenericType(propertyType, conceptValueType);
+
+        if (conceptValueType == typeof(Guid) && database.GetDatabaseType() == DatabaseType.Sqlite)
+        {
+            converterType = typeof(GuidConceptAsValueConverter<,>).MakeGenericType(propertyType, conceptValueType);
+        }
+
+        var converter = Activator.CreateInstance(converterType) as ValueConverter;
+        var comparer = Activator.CreateInstance(comparerType) as ValueComparer;
+
+        propertyBuilder.HasConversion(converter);
+        propertyBuilder.Metadata.SetValueConverter(converter);
+        propertyBuilder.Metadata.SetValueComparer(comparer);
+
+        return propertyBuilder;
+    }
+
+    sealed class GuidConceptAsValueConverter<TConcept, TPrimitive>() : ValueConverter<TConcept, string>(
+        v => v.Value.ToString("D"),
+        v => (TConcept)ConceptFactory.CreateConceptInstance(typeof(TConcept), Guid.Parse(v)))
+        where TConcept : notnull, ConceptAs<Guid>
+        where TPrimitive : notnull, IComparable;
+
+    sealed class ConceptAsValueConverter<TConcept, TPrimitive>() : ValueConverter<TConcept, TPrimitive>(
+        v => v.Value,
+        v => (TConcept)ConceptFactory.CreateConceptInstance(typeof(TConcept), v))
+        where TConcept : notnull, ConceptAs<TPrimitive>
+        where TPrimitive : notnull, IComparable;
+
+    sealed class ConceptAsValueComparer<TConcept, TPrimitive>() : ValueComparer<TConcept>(
+        (l, r) => l!.Equals(r),
+        v => v.GetHashCode())
+        where TConcept : notnull, ConceptAs<TPrimitive>
+        where TPrimitive : notnull, IComparable;
 }
