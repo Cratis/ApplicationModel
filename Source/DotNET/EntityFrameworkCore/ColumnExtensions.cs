@@ -20,17 +20,18 @@ public static class ColumnExtensions
     /// <param name="mb">Migration builder.</param>
     /// <param name="maxLength">Maximum length of the string column. If null, uses unlimited length.</param>
     /// <param name="nullable">Whether the column should be nullable.</param>
+    /// <param name="defaultValue">Optional default value for the column.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> StringColumn(this ColumnsBuilder cb, MigrationBuilder mb, int? maxLength = null, bool nullable = true) =>
+    public static OperationBuilder<AddColumnOperation> StringColumn(this ColumnsBuilder cb, MigrationBuilder mb, int? maxLength = null, bool nullable = true, string? defaultValue = null) =>
         mb.GetDatabaseType() switch
         {
             DatabaseType.PostgreSql => maxLength.HasValue ?
-                cb.Column<string>($"VARCHAR({maxLength})", nullable: nullable) :
-                cb.Column<string>("TEXT", nullable: nullable),
+                cb.Column<string>($"VARCHAR({maxLength})", nullable: nullable, defaultValue: defaultValue) :
+                cb.Column<string>("TEXT", nullable: nullable, defaultValue: defaultValue),
             DatabaseType.SqlServer => maxLength.HasValue ?
-                cb.Column<string>($"NVARCHAR({maxLength})", nullable: nullable) :
-                cb.Column<string>("NVARCHAR(MAX)", nullable: nullable),
-            _ => cb.Column<string>("TEXT", nullable: nullable)
+                cb.Column<string>($"NVARCHAR({maxLength})", nullable: nullable, defaultValue: defaultValue) :
+                cb.Column<string>("NVARCHAR(MAX)", nullable: nullable, defaultValue: defaultValue),
+            _ => cb.Column<string>("TEXT", nullable: nullable, defaultValue: defaultValue)
         };
 
     /// <summary>
@@ -40,12 +41,13 @@ public static class ColumnExtensions
     /// <param name="cb">Columns builder.</param>
     /// <param name="mb">Migration builder.</param>
     /// <param name="nullable">Whether the column should be nullable.</param>
+    /// <param name="defaultValue">Optional default value for the column.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> NumberColumn<T>(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true)
+    public static OperationBuilder<AddColumnOperation> NumberColumn<T>(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true, object? defaultValue = null)
         where T : INumber<T>
     {
         var sqlType = GetSqlTypeForNumber<T>(mb.GetDatabaseType());
-        return cb.Column<T>(sqlType, nullable: nullable);
+        return cb.Column<T>(sqlType, nullable: nullable, defaultValue: defaultValue);
     }
 
     /// <summary>
@@ -54,13 +56,14 @@ public static class ColumnExtensions
     /// <param name="cb">Columns builder.</param>
     /// <param name="mb">Migration builder.</param>
     /// <param name="nullable">Whether the column should be nullable.</param>
+    /// <param name="defaultValue">Optional default value for the column.</param>
     /// <returns>Operation builder for the column.</returns>
-    public static OperationBuilder<AddColumnOperation> BoolColumn(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true) =>
+    public static OperationBuilder<AddColumnOperation> BoolColumn(this ColumnsBuilder cb, MigrationBuilder mb, bool nullable = true, bool defaultValue = false) =>
         mb.GetDatabaseType() switch
         {
-            DatabaseType.PostgreSql => cb.Column<bool>("BOOLEAN", nullable: nullable),
-            DatabaseType.SqlServer => cb.Column<bool>("BIT", nullable: nullable),
-            _ => cb.Column<bool>("INTEGER", nullable: nullable)
+            DatabaseType.PostgreSql => cb.Column<bool>("BOOLEAN", nullable: nullable, defaultValue: defaultValue),
+            DatabaseType.SqlServer => cb.Column<bool>("BIT", nullable: nullable, defaultValue: defaultValue),
+            _ => cb.Column<bool>("INTEGER", nullable: nullable, defaultValue: defaultValue)
         };
 
     /// <summary>
