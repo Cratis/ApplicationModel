@@ -8,5 +8,9 @@
   href: common-column-types.md
 - name: Property Extensions
   href: property-extensions.md
-- name: Json
+- name: JSON Conversion
   href: json.md
+- name: ConceptAs Conversion
+  href: concept-as-conversion.md
+- name: GUID Conversion
+  href: guid-conversion.md
