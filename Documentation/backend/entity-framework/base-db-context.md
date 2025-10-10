@@ -1,18 +1,35 @@
 # Base Db Context
 
-With the `BaseDbContext` you get something that pre-configures common conventions and converters, like the [JSON](./json.md)
-support. It will then apply the common conventions and converters to the entities of the `DbContext`.
+The `BaseDbContext` provides a pre-configured Entity Framework Core context that automatically applies common conventions and converters. This eliminates the need for manual configuration while ensuring consistent behavior across your application.
 
-All you need to do is inherit from it and register it as you'd do with any other `DbContext`.
+## Features
 
-Take the following `DbContext`
+The `BaseDbContext` automatically configures the following features:
+
+### JSON Conversion
+
+Automatically applies [JSON conversion](./json.md) for properties marked with the `[Json]` attribute, allowing complex objects to be stored as JSON in the database with cross-provider compatibility.
+
+### ConceptAs Conversion
+
+Automatically applies [ConceptAs conversion](./concept-as-conversion.md) for all properties that implement `ConceptAs<T>`, ensuring domain concepts are properly stored and retrieved while maintaining type safety.
+
+### GUID Conversion
+
+Automatically applies [GUID conversion](./guid-conversion.md) for all `Guid` properties, optimizing storage format and performance for each database provider.
+
+## Usage
+
+All you need to do is inherit from `BaseDbContext` and register it as you'd do with any other `DbContext`.
+
+Take the following `DbContext`:
 
 ```csharp
 using Cratis.Applications.EntityFrameworkCore;
 
 public class StoreDbContext : BaseDbContext
 {
-    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Customer> Customers { get; set; }
 }
 ```
 

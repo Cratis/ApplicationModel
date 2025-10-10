@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cratis.Applications.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace Cratis.Applications.EntityFrameworkCore;
 /// <summary>
 /// Extensions for working with database connections.
 /// </summary>
-public static class ConnectionExtensions
+public static class DatabaseTypeExtensions
 {
     /// <summary>
     /// Infers the database type from the connection string.
@@ -60,11 +61,27 @@ public static class ConnectionExtensions
     /// <param name="migrationBuilder">The migration builder to get the database type from.</param>
     /// <returns>The database type.</returns>
     /// <exception cref="UnsupportedDatabaseType">Thrown if the active provider is not supported.</exception>
-    public static DatabaseType GetDatabaseType(this MigrationBuilder migrationBuilder) => migrationBuilder.ActiveProvider switch
+    public static DatabaseType GetDatabaseType(this MigrationBuilder migrationBuilder) => migrationBuilder.ActiveProvider.GetDatabaseTypeFromProvider();
+
+    /// <summary>
+    /// Gets the database type from the database connection.
+    /// </summary>
+    /// <param name="database">The database connection to get the type from.</param>
+    /// <returns>The database type.</returns>
+    /// <exception cref="UnsupportedDatabaseType">Thrown if the connection string does not have a supported database type.</exception>
+    public static DatabaseType GetDatabaseType(this DatabaseFacade database) => database.ProviderName.GetDatabaseTypeFromProvider();
+
+    /// <summary>
+    /// Gets the database type from the provider name.
+    /// </summary>
+    /// <param name="providerName">The provider name to get the database type from.</param>
+    /// <returns>The database type.</returns>
+    /// <exception cref="UnsupportedDatabaseType">Thrown if the provider name is not supported.</exception>
+    public static DatabaseType GetDatabaseTypeFromProvider(this string? providerName) => providerName switch
     {
         "Microsoft.EntityFrameworkCore.Sqlite" => DatabaseType.Sqlite,
         "Microsoft.EntityFrameworkCore.SqlServer" => DatabaseType.SqlServer,
         "Npgsql.EntityFrameworkCore.PostgreSQL" => DatabaseType.PostgreSql,
-        _ => throw new UnsupportedDatabaseType(migrationBuilder.ActiveProvider!)
+        _ => throw new UnsupportedDatabaseType(providerName!)
     };
 }

@@ -96,7 +96,7 @@ public static class ColumnExtensions
         {
             DatabaseType.PostgreSql => cb.Column<Guid>("UUID", nullable: nullable),
             DatabaseType.SqlServer => cb.Column<Guid>("UNIQUEIDENTIFIER", nullable: nullable),
-            _ => cb.Column<Guid>("TEXT", nullable: nullable)
+            _ => cb.Column<Guid>("BLOB", nullable: nullable)
         };
 #pragma warning restore CA1720 // Identifier contains type name
 
