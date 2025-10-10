@@ -71,3 +71,93 @@ The `database` parameter is required because:
 - **Explicit provider detection**: Eliminates guesswork and ensures the correct configuration is applied
 - **Better debugging**: Makes it clear which database provider configuration is being used
 - **Prevents misconfiguration**: Avoids scenarios where incorrect assumptions about the database provider could lead to suboptimal storage
+
+## AsConcept()
+
+The `AsConcept()` extension method configures a property to use value conversion for concept types based on `ConceptAs<T>`. This method provides automatic conversion between domain concepts and their underlying primitive values for database storage.
+
+> **Note**: This method is typically used for manual property configuration. In most cases, you should use the automatic conversion provided by the [`BaseDbContext`](./base-db-context.md) or the [`ApplyConceptAsConversion`](./concept-as-conversion.md) extension method.
+
+### Why AsConcept()?
+
+When working with domain concepts (types that inherit from `ConceptAs<T>`), you need proper value conversion to:
+
+- **Store primitive values**: Only the underlying primitive value is stored in the database, keeping the schema clean and performant
+- **Maintain type safety**: Ensures concepts are properly converted back to their domain types when loading from the database
+- **Handle different databases**: Provides special handling for GUID concepts on SQLite (using string conversion) while using native types on other databases
+- **Enable change tracking**: Configures proper value comparison for Entity Framework's change tracking system
+
+### AsConcept() Usage
+
+#### Manual Property Configuration
+
+```csharp
+public class StoreDbContext : DbContext
+{
+    public DbSet<Customer> Customers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.Property(e => e.Id)
+                .AsConcept(Database); // Configure concept property manually
+            
+            entity.Property(e => e.Name)
+                .AsConcept(Database); // Works with any ConceptAs<T> type
+            
+            entity.Property(e => e.Email)
+                .AsConcept(Database);
+        });
+    }
+}
+
+public class Customer
+{
+    public CustomerId Id { get; set; }
+    public CustomerName Name { get; set; }
+    public EmailAddress Email { get; set; }
+}
+
+public record CustomerId(Guid Value) : ConceptAs<Guid>(Value);
+public record CustomerName(string Value) : ConceptAs<string>(Value);
+public record EmailAddress(string Value) : ConceptAs<string>(Value);
+```
+
+> **Important**: The `database` parameter is required to ensure optimal configuration based on the actual database provider being used.
+
+### How AsConcept() works
+
+The `AsConcept()` method:
+
+1. **Detects concept types**: Automatically identifies if the property is a `ConceptAs<T>` type
+2. **Creates value converters**: Generates appropriate `ValueConverter` instances that convert between concepts and their primitive values
+3. **Handles GUID concepts specially**: For GUID-based concepts on SQLite, uses string conversion; for other databases, uses native GUID storage
+4. **Configures value comparison**: Sets up proper `ValueComparer` for change tracking and equality operations
+5. **Returns early for non-concepts**: If the property is not a concept type, returns without modification
+
+### When to use AsConcept()
+
+Use `AsConcept()` when:
+
+- You need manual control over individual concept property configuration
+- You're not using the [`BaseDbContext`](./base-db-context.md) which provides automatic concept conversion
+- You want to selectively configure only specific concept properties
+- You're working with a custom `DbContext` that doesn't apply global concept conversion
+
+### When NOT to use
+
+Avoid `AsConcept()` when:
+
+- You're using [`BaseDbContext`](./base-db-context.md) - concepts are automatically configured
+- You're using [`ApplyConceptAsConversion()`](./concept-as-conversion.md) - all concepts are configured automatically
+- The property is not a concept type - the method will return without changes but it's unnecessary overhead
+
+### Special handling for GUID concepts
+
+For concept types based on `Guid` (e.g., `ConceptAs<Guid>`):
+
+- **SQLite**: Converts to string using "D" format for storage compatibility
+- **PostgreSQL and SQL Server**: Uses native GUID storage for optimal performance
+
+This ensures consistent behavior across database providers while maintaining optimal performance where native GUID support is available.

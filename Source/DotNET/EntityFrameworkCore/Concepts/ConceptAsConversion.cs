@@ -3,8 +3,7 @@
 
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Cratis.Applications.EntityFrameworkCore.Concepts;
 
@@ -17,7 +16,8 @@ public static class ConceptAsConversion
     /// Applies value conversion for all properties that are of <see cref="ConceptAs{T}"/> type  in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the concept-based conversion to.</param>
-    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder)
+    /// <param name="database">The database provider, if specific configuration is needed.</param>
+    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder, DatabaseFacade database)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -27,29 +27,10 @@ public static class ConceptAsConversion
 
             foreach (var property in properties)
             {
-                var conceptValueType = property.PropertyType.GetConceptValueType();
                 var propertyBuilder = modelBuilder.Entity(entityType.Name).Property(property.Name);
-                var converterType = typeof(ConceptAsValueConverter<,>).MakeGenericType(property.PropertyType, conceptValueType);
-                var comparerType = typeof(ConceptAsValueComparer<,>).MakeGenericType(property.PropertyType, conceptValueType);
-                var converter = Activator.CreateInstance(converterType) as ValueConverter;
-                var comparer = Activator.CreateInstance(comparerType) as ValueComparer;
-
-                propertyBuilder.HasConversion(converter);
-                propertyBuilder.Metadata.SetValueConverter(converter);
-                propertyBuilder.Metadata.SetValueComparer(comparer);
+                propertyBuilder.AsConcept(database);
             }
         }
     }
-
-    sealed class ConceptAsValueConverter<TConcept, TPrimitive>() : ValueConverter<TConcept, TPrimitive>(
-        v => v.Value,
-        v => (TConcept)ConceptFactory.CreateConceptInstance(typeof(TConcept), v))
-        where TConcept : notnull, ConceptAs<TPrimitive>
-        where TPrimitive : notnull, IComparable;
-
-    sealed class ConceptAsValueComparer<TConcept, TPrimitive>() : ValueComparer<TConcept>(
-        (l, r) => l!.Equals(r),
-        v => v.GetHashCode())
-        where TConcept : notnull, ConceptAs<TPrimitive>
-        where TPrimitive : notnull, IComparable;
 }
+
