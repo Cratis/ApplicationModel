@@ -10,6 +10,7 @@ The Application Model provides enhanced support for Entity Framework Core, offer
 | [Read Only DbContexts](./read-only.md) | How to implement read-only database contexts for query scenarios. |
 | [Automatic Database hookup](./automatic-database-hookup.md) | How the Application Model automatically configures and sets up your databases. |
 | [Common Column Types](./common-column-types.md) | Common column type configurations and conventions. |
+| [Property Extensions](./property-extensions.md) | Property configuration extensions for cross-database compatibility. |
 | [Json](./json.md) | Working with JSON columns and serialization in Entity Framework Core. |
 
 ## Overview

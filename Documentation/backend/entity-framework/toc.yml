@@ -6,5 +6,7 @@
   href: automatic-database-hookup.md
 - name: Common Column Types
   href: common-column-types.md
+- name: Property Extensions
+  href: property-extensions.md
 - name: Json
   href: json.md
