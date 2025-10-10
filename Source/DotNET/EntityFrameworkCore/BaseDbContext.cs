@@ -18,6 +18,7 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     {
         modelBuilder.ApplyJsonConversion(Database.ProviderName);
         modelBuilder.ApplyConceptAsConversion();
+        modelBuilder.ApplyGuidConversion();
         base.OnModelCreating(modelBuilder);
     }
 }
