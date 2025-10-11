@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
+using Cratis.Tasks;
 
 namespace Cratis.Applications.Commands.ModelBound;
 
@@ -22,35 +23,15 @@ public class ModelBoundCommandHandler(Type commandType, MethodInfo handleMethod)
     public IEnumerable<Type> Dependencies { get; } = handleMethod.GetParameters().Select(p => p.ParameterType);
 
     /// <inheritdoc/>
-    public async Task<object?> Handle(CommandContext commandContext)
+    public async ValueTask<object?> Handle(CommandContext commandContext)
     {
         var parameters = handleMethod.GetParameters();
         var args = parameters.Length == 0
             ? null
             : commandContext.Dependencies.Take(parameters.Length).ToArray();
-        var result = handleMethod.Invoke(commandContext.Command, args);
+        var invocationResult = handleMethod.Invoke(commandContext.Command, args);
 
-        if (result is null)
-        {
-            return null;
-        }
-
-        if (result is Task task)
-        {
-            if (handleMethod.ReturnType != typeof(Task))
-            {
-                var type = task.GetType();
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var property = type.GetProperty(nameof(Task<object>.Result));
-                    await task;
-                    return property?.GetValue(task);
-                }
-            }
-            await task;
-            return null;
-        }
-
+        var (_, result) = await AwaitableHelpers.AwaitIfNeeded(invocationResult);
         return result;
     }
 }

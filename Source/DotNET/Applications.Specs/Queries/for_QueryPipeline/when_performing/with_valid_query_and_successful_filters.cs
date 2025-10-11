@@ -34,7 +34,7 @@ public class with_valid_query_and_successful_filters : given.a_query_pipeline
         });
 
         query_filters.OnPerform(Arg.Do<QueryContext>(ctx => _capturedContext = ctx)).Returns(_filterResult);
-        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(Task.FromResult<object?>(_queryData));
+        _queryPerformer.Perform(Arg.Any<QueryContext>()).Returns(ValueTask.FromResult<object?>(_queryData));
         _queryRenderers.Render(_queryName, _queryData).Returns(_rendererResult);
     }
 

@@ -4,6 +4,7 @@
 using System.Reflection;
 using Cratis.Applications.Authorization;
 using Cratis.Reflection;
+using Cratis.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cratis.Applications.Queries.ModelBound;
@@ -62,36 +63,15 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     public bool IsAuthorized(QueryContext context) => _authorizationEvaluator.IsAuthorized(_performMethod);
 
     /// <inheritdoc/>
-    public async Task<object?> Perform(QueryContext context)
+    public async ValueTask<object?> Perform(QueryContext context)
     {
         var parameters = _performMethod.GetParameters();
         var dependencies = context.Dependencies?.ToArray() ?? [];
         var queryStringParameters = context.Arguments ?? QueryArguments.Empty;
         var args = GetMethodArguments(parameters, dependencies, queryStringParameters);
 
-        var result = _performMethod.Invoke(null, args);
-
-        if (result is null)
-        {
-            return null;
-        }
-
-        if (result is Task task)
-        {
-            if (_performMethod.ReturnType != typeof(Task))
-            {
-                var type = task.GetType();
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var property = type.GetProperty(nameof(Task<object>.Result));
-                    await task;
-                    return property?.GetValue(task);
-                }
-            }
-            await task;
-            return null;
-        }
-
+        var invocationResult = _performMethod.Invoke(null, args);
+        var (_, result) = await AwaitableHelpers.AwaitIfNeeded(invocationResult);
         return result;
     }
 

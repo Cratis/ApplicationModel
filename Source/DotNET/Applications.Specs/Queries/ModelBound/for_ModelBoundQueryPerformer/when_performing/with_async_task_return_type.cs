@@ -3,12 +3,14 @@
 
 namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.when_performing;
 
-public class with_null_argument_for_non_nullable_parameter : given.a_model_bound_query_performer
+public class with_async_task_return_type : given.a_model_bound_query_performer
 {
     public record TestReadModel
     {
-        public static TestReadModel Query(int requiredInt, string requiredString)
+        public static async Task<TestReadModel> Query(int requiredInt, string requiredString)
         {
+            await Task.Delay(1);
+            await Task.CompletedTask;
             return new TestReadModel();
         }
     }
