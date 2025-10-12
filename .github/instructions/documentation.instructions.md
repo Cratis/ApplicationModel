@@ -14,6 +14,21 @@ applyTo: "Documentation/**/*.md"
 - Generate and maintain correct [DocFX TOC files](https://dotnet.github.io/docfx/docs/dotnet-yaml-format.html) for navigation.
 - Be consistent with formatting and style.
 - Use clear and concise language.
+- Be specific and avoid ambiguity.
+- Use examples and code snippets to illustrate concepts.
+- Do not add extraneous information.
+- Do not document the obvious.
+- Do not add documentation for internal or private APIs.
+- Do not document internal implementation details.
+- Focus on the public APIs and features of the project.
+- Do not document third party libraries or tools.
+- Use active voice and present tense.
+- Use proper grammar and spelling.
+- Use a friendly and approachable tone.
+- Create focused and well-scoped documents.
+- Use consistent terminology throughout the documentation.
+- Follow a logical structure and flow.
+- Don't be too verbose.
 - Use headings, lists, and code blocks to organize content.
 - Include links to relevant resources and references.
 - Always add an index.md file in each folder to serve as the landing page.
