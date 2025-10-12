@@ -23,5 +23,7 @@ applyTo: "Documentation/**/*.md"
 - Use images and diagrams to enhance understanding.
 - Emphasize why something is done, not just how.
 - Always end the generated markdown with a single empty line inside the file content itself. Never try to add it by running commands like echo or printf — it must be part of the markdown text you output.
+- Never use shell commands or external tools to modify files after writing them. Everything, including the trailing newline, must be produced as part of the file’s content.
 - Every folder should have its own `toc.yml` file to define the structure of the documentation within that folder.
 - When linking to a folder in a `toc.yml` file, link to the `toc.yml` file in that folder, not to an `index.md` file.
+- Ensure that documentation is accurate according to the public APIs and features of the project.
