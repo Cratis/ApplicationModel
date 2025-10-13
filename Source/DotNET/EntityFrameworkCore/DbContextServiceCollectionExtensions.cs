@@ -13,7 +13,7 @@ namespace Cratis.Applications.EntityFrameworkCore;
 public static class DbContextServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds all DbContext types found in the specified assemblies to the service collection, configured as
+    /// Adds all types found that implement ReadOnlyDbContext in the specified assemblies to the service collection, configured as
     /// read-only DbContexts.
     /// </summary>
     /// <param name="services">The service collection to add the DbContext types to.</param>
@@ -31,7 +31,7 @@ public static class DbContextServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds all DbContext types found in the specified assemblies to the service collection, configured with
+    /// Adds all types found that implement ReadOnlyDbContext in the specified assemblies to the service collection, configured with
     /// the provided connection string. The database type is inferred from the connection string.
     /// </summary>
     /// <param name="services">The service collection to add the DbContext types to.</param>
