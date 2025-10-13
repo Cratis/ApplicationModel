@@ -13,7 +13,7 @@ namespace Cratis.Applications.EntityFrameworkCore;
 public static class DbContextServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds all DbContext types found in the specified assemblies to the service collection, configured as
+    /// Adds all types found that implement ReadOnlyDbContext in the specified assemblies to the service collection, configured as
     /// read-only DbContexts.
     /// </summary>
     /// <param name="services">The service collection to add the DbContext types to.</param>
@@ -23,7 +23,7 @@ public static class DbContextServiceCollectionExtensions
     public static IServiceCollection AddReadModelDbContextsFromAssemblies(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction, params Assembly[] assemblies)
     {
         var addDbContextMethod = typeof(ReadOnlyDbContextExtensions).GetMethod(nameof(ReadOnlyDbContextExtensions.AddReadOnlyDbContext), BindingFlags.Static | BindingFlags.Public)!;
-        foreach (var dbContext in Types.Types.Instance.FindMultiple<DbContext>().Where(t => assemblies.Contains(t.Assembly)))
+        foreach (var dbContext in Types.Types.Instance.FindMultiple<ReadOnlyDbContext>().Where(t => assemblies.Contains(t.Assembly)))
         {
             addDbContextMethod.MakeGenericMethod(dbContext).Invoke(null, [services, optionsAction]);
         }
@@ -31,7 +31,7 @@ public static class DbContextServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds all DbContext types found in the specified assemblies to the service collection, configured with
+    /// Adds all types found that implement ReadOnlyDbContext in the specified assemblies to the service collection, configured with
     /// the provided connection string. The database type is inferred from the connection string.
     /// </summary>
     /// <param name="services">The service collection to add the DbContext types to.</param>
@@ -43,7 +43,7 @@ public static class DbContextServiceCollectionExtensions
     public static IServiceCollection AddReadModelDbContextsWithConnectionStringFromAssemblies(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder> optionsAction, params Assembly[] assemblies)
     {
         var addDbContextMethod = typeof(ReadOnlyDbContextExtensions).GetMethod(nameof(ReadOnlyDbContextExtensions.AddReadOnlyDbContextWithConnectionString), BindingFlags.Static | BindingFlags.Public)!;
-        foreach (var dbContext in Types.Types.Instance.FindMultiple<DbContext>().Where(t => assemblies.Contains(t.Assembly)))
+        foreach (var dbContext in Types.Types.Instance.FindMultiple<ReadOnlyDbContext>().Where(t => assemblies.Contains(t.Assembly)))
         {
             addDbContextMethod.MakeGenericMethod(dbContext).Invoke(null, [services, connectionString, optionsAction]);
         }
