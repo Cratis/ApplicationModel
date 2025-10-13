@@ -3,7 +3,7 @@
 
 namespace Cratis.Applications.Queries.for_QueryPerformerProviders.given;
 
-public class a_query_performer_providers : Specification
+public class two_query_performers : Specification
 {
     protected IQueryPerformerProvider _firstProvider;
     protected IQueryPerformerProvider _secondProvider;

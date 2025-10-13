@@ -3,7 +3,7 @@
 
 namespace Cratis.Applications.Queries.for_QueryPerformerProviders.when_constructing;
 
-public class with_valid_providers : given.a_query_performer_providers
+public class with_valid_providers : given.two_query_performers
 {
     void Because() => _queryPerformerProviders = new(new KnownInstancesOf<IQueryPerformerProvider>([_firstProvider, _secondProvider]));
 

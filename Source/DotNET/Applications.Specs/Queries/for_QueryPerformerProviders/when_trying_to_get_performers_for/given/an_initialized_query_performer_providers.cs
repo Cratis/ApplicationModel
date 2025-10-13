@@ -3,7 +3,7 @@
 
 namespace Cratis.Applications.Queries.for_QueryPerformerProviders.when_trying_to_get_performers_for.given;
 
-public class an_initialized_query_performer_providers : for_QueryPerformerProviders.given.a_query_performer_providers
+public class an_initialized_query_performer_providers : for_QueryPerformerProviders.given.two_query_performers
 {
     void Establish() => _queryPerformerProviders = new(new KnownInstancesOf<IQueryPerformerProvider>([_firstProvider, _secondProvider]));
 }

@@ -3,7 +3,7 @@
 
 namespace Cratis.Applications.Queries.for_QueryPerformerProviders.when_constructing;
 
-public class with_duplicate_performers : given.a_query_performer_providers
+public class with_duplicate_performers : given.two_query_performers
 {
     IQueryPerformer _duplicatePerformer;
     Exception _exception;
