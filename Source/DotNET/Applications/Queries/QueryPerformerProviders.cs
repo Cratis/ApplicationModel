@@ -20,7 +20,7 @@ public class QueryPerformerProviders : IQueryPerformerProviders
     public QueryPerformerProviders(IInstancesOf<IQueryPerformerProvider> providers)
     {
         var performers = providers.SelectMany(p => p.Performers);
-        MultipleQueryPerformersForSameQueryType.ThrowIfDuplicates(performers);
+        MultipleQueryPerformersForSameReadModel.ThrowIfDuplicates(performers);
         _performers = performers.ToDictionary(p => p.FullyQualifiedName, p => p);
     }
 

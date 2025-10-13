@@ -24,6 +24,11 @@ public interface IQueryPerformer
     Type Type { get; }
 
     /// <summary>
+    /// Gets the type of read model the query performer is for.
+    /// </summary>
+    Type ReadModelType { get; }
+
+    /// <summary>
     /// Gets the location the query is at.
     /// </summary>
     /// <remarks>

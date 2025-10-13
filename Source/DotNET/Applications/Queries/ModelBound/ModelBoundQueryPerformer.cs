@@ -29,6 +29,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
     public ModelBoundQueryPerformer(Type readModelType, MethodInfo performMethod, IServiceProviderIsService serviceProviderIsService, IAuthorizationEvaluator authorizationEvaluator)
     {
         Type = readModelType;
+        ReadModelType = readModelType;
         Name = performMethod.Name;
         FullyQualifiedName = $"{readModelType.FullName}.{performMethod.Name}";
         Location = readModelType.Namespace?.Split('.') ?? [];
@@ -49,6 +50,9 @@ public class ModelBoundQueryPerformer : IQueryPerformer
 
     /// <inheritdoc/>
     public Type Type { get; }
+
+    /// <inheritdoc/>
+    public Type ReadModelType { get; }
 
     /// <inheritdoc/>
     public IEnumerable<string> Location { get; }
