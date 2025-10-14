@@ -65,6 +65,6 @@
     },
     "devDependencies": {
         "reflect-metadata": "0.2.2",
-        "vite": "7.1.9"
+        "vite": "7.1.10"
     }
 }
