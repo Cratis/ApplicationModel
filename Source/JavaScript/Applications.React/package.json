@@ -60,7 +60,7 @@
     },
     "dependencies": {
         "@cratis/applications": "1.0.0",
-        "@cratis/fundamentals": "^7.1.0",
+        "@cratis/fundamentals": "^7.2.1",
         "handlebars": "^4.7.8",
         "tsyringe": "^4.10.0"
     },
