@@ -17,6 +17,7 @@ import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
+import { GetHttpHeaders } from 'GetHttpHeaders';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -70,6 +71,12 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     /** @inheritdoc */
     setOrigin(origin: string): void {
         this._origin = origin;
+    }
+
+    /** @inheritdoc */
+    setHttpHeadersCallback(callback: GetHttpHeaders): void {
+        // No-op: observable queries based on WebSockets do not use HTTP headers in the same way as HTTP requests.
+        callback?.();
     }
 
     /** @inheritdoc */

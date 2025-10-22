@@ -4,12 +4,23 @@
 import { IIdentityProvider } from './IIdentityProvider';
 import { IIdentity } from './IIdentity';
 import { IdentityProviderResult } from './IdentityProviderResult';
+import { GetHttpHeaders } from 'GetHttpHeaders';
 
 /**
  * Represents an implementation of {@link IIdentityProvider}.
 */
 export class IdentityProvider extends IIdentityProvider {
+
     static readonly CookieName = '.cratis-identity';
+    static httpHeadersCallback: GetHttpHeaders | undefined;
+
+    /**
+     * Sets the HTTP headers callback.
+     * @param callback Callback to set.
+     */
+    static setHttpHeadersCallback(callback: GetHttpHeaders): void {
+        IdentityProvider.httpHeadersCallback = callback;
+    }
 
     /**
      * Gets the current identity by optionally specifying the details type.
@@ -41,7 +52,11 @@ export class IdentityProvider extends IIdentityProvider {
 
     static async refresh<TDetails = object>(): Promise<IIdentity<TDetails>> {
         IdentityProvider.clearCookie();
-        const response = await fetch('/.cratis/me');
+        const response = await fetch(
+            '/.cratis/me', {
+            method: 'GET',
+            headers: IdentityProvider.httpHeadersCallback?.() ?? {}
+        });
 
         const result = await response.json() as IdentityProviderResult;
 

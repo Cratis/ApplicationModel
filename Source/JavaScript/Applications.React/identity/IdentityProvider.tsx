@@ -5,6 +5,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { IIdentity } from '@cratis/applications/identity';
 import { IdentityProvider as RootIdentityProvider } from '@cratis/applications/identity';
+import { GetHttpHeaders } from '@cratis/applications';
 
 const defaultIdentityContext: IIdentity = {
     id: '',
@@ -22,13 +23,15 @@ const defaultIdentityContext: IIdentity = {
 export const IdentityProviderContext = React.createContext<IIdentity>(defaultIdentityContext);
 
 export interface IdentityProviderProps {
-    children?: JSX.Element | JSX.Element[]
+    children?: JSX.Element | JSX.Element[],
+    httpHeadersCallback?: GetHttpHeaders
 }
 
 export const IdentityProvider = (props: IdentityProviderProps) => {
     const [context, setContext] = useState<IIdentity>(defaultIdentityContext);
 
     useEffect(() => {
+        RootIdentityProvider.setHttpHeadersCallback(props.httpHeadersCallback!);
         RootIdentityProvider.getCurrent().then(identity => {
             const refresh = identity.refresh;
             identity.refresh = () => {

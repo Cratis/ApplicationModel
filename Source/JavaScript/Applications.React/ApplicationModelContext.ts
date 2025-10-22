@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Globals } from '@cratis/applications';
+import { GetHttpHeaders, Globals } from '@cratis/applications';
 import React from 'react';
 
 export interface ApplicationModelConfiguration {
@@ -10,6 +10,7 @@ export interface ApplicationModelConfiguration {
     origin?: string;
     basePath?: string;
     apiBasePath?: string;
+    httpHeadersCallback?: GetHttpHeaders;
 }
 
 export const ApplicationModelContext = React.createContext<ApplicationModelConfiguration>({
@@ -17,5 +18,6 @@ export const ApplicationModelContext = React.createContext<ApplicationModelConfi
     development: false,
     origin: '',
     basePath: '',
-    apiBasePath: ''
+    apiBasePath: '',
+    httpHeadersCallback: () => ({})
 });
