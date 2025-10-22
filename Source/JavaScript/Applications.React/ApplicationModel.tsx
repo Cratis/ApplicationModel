@@ -27,7 +27,11 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
         httpHeadersCallback: props.httpHeadersCallback
     };
 
-    Bindings.initialize(configuration.microservice, configuration.apiBasePath, configuration.origin);
+    Bindings.initialize(
+        configuration.microservice,
+        configuration.apiBasePath,
+        configuration.origin,
+        configuration.httpHeadersCallback);
 
     return (
         <ApplicationModelContext.Provider value={configuration}>

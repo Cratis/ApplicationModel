@@ -16,6 +16,7 @@ export class QueryProvider implements IQueryProvider {
      * @param _microservice Name of the microservice to provide queries for.
      * @param _apiBasePath Base path for the API to use for the query.
      * @param _origin Origin to use for the query.
+     * @param _httpHeadersCallback Callback to get HTTP headers for the query.
      */
     constructor(
         private readonly _microservice: string,
