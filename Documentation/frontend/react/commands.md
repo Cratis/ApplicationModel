@@ -5,6 +5,10 @@ These are encapsulated as objects that typically is part of the payload for a HT
 The command can have validation associated with it and also have business rules associated with it.
 In addition to this, the controller can have authorization policies associated with it that applies to the command.
 
+## HTTP Headers
+
+Commands automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This allows you to dynamically include authentication cookies, authorization tokens, or other custom headers with every command request without having to manually configure each command.
+
 ## Proxy Generation
 
 With the [proxy generator](./proxy-generation.md) you'll get the commands generated directly to use in the frontend.

@@ -3,6 +3,10 @@
 The React implementation of identity is built on top of what you find the [core](../core/identity.md).
 It provides an encapsulation that feels more natural to a React application.
 
+## HTTP Headers
+
+Identity requests automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This is particularly useful for including authentication cookies or other headers needed for identity verification and retrieval.
+
 ## Identity provider context
 
 To use the identity system you need to provide the identity context for your application.

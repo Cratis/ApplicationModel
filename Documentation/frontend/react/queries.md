@@ -6,6 +6,10 @@ Queries in the frontend is divided into the following:
 - The React hooks; `useQuery()` and `useObservableQuery()``
 - Proxy generator that generates TypeScript from the C# code to leverage the constructs.
 
+## HTTP Headers
+
+Queries automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This enables you to dynamically include authentication cookies, authorization tokens, or other custom headers with every query request without manual configuration for each query.
+
 ## Proxy Generation
 
 Starting with the latter; the [proxy generator](./proxy-generation.md) you'll get the queries generated directly to use

@@ -23,11 +23,12 @@ It has a set of configuration options you can pass it:
 
 | Option | Type | Purpose |
 | ------ | ---- | ------- |
-| microservice | String | Name of the microservice, which will add necessary HTTP headers on Commands and Queries |
+| microservice | String | Name of the microservice, which will add necessary HTTP headers on Commands and Queries |
 | development | Boolean | Whether or not we're running in development, defaults to false |
 | origin | String | Url for where the APIs are located, defaults to empty string and makes them relative to the documents location |
 | basePath | String | Base path for the application |
-| apiBasePath | String | Base for prepended to the Command and Query requests |
+| apiBasePath | String | Base for prepended to the Command and Query requests |
+| httpHeadersCallback | Function | Optional callback function that returns additional HTTP headers to include with all commands, queries, and identity requests (e.g., for including cookies or authentication tokens) |
 
 Example:
 
@@ -40,3 +41,29 @@ export const App = () => {
     );
 };
 ```
+
+## HTTP Headers Callback
+
+The `httpHeadersCallback` property allows you to provide additional HTTP headers that will be automatically included with all HTTP requests made by commands, queries, and identity operations. This is particularly useful for including authentication cookies, authorization tokens, or other dynamic headers.
+
+```tsx
+export const App = () => {
+    const getHeaders = () => {
+        return {
+            'X-Custom-Header': 'custom-value',
+            'Authorization': `Bearer ${getAuthToken()}`,
+            // Include cookies or other dynamic headers
+        };
+    };
+
+    return (
+        <ApplicationModel 
+            apiBasePath="/api" 
+            httpHeadersCallback={getHeaders}>
+            {/* Your application */}
+        </ApplicationModel>
+    );
+};
+```
+
+The callback function should return a `HeadersInit` object (compatible with the Fetch API headers) that contains the additional headers to include with each request.
