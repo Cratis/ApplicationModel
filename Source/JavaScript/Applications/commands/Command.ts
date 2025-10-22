@@ -8,6 +8,7 @@ import { Constructor, JsonSerializer } from '@cratis/fundamentals';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
+import { GetHttpHeaders } from '../GetHttpHeaders';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
@@ -21,6 +22,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     private _microservice: string;
     private _apiBasePath: string;
     private _origin: string;
+    private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
@@ -40,6 +42,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
         this._origin = '';
+        this._httpHeadersCallback = () => ({});
     }
 
     /** @inheritdoc */
@@ -58,6 +61,11 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     }
 
     /** @inheritdoc */
+    setHttpHeadersCallback(callback: GetHttpHeaders): void {
+        this._httpHeadersCallback = callback;
+    }
+
+    /** @inheritdoc */
     async execute(): Promise<CommandResult<TCommandResponse>> {
         let actualRoute = this.route;
         const payload = {};
@@ -71,9 +79,13 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         }
 
         const headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            ... this._httpHeadersCallback?.(), ...
+            {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         };
+
         if (this._microservice?.length > 0) {
             headers[Globals.microserviceHttpHeader] = this._microservice;
         }
@@ -89,7 +101,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
             });
             this.setInitialValuesFromCurrentValues();
 
-            if( response.status === 404) {
+            if (response.status === 404) {
                 return CommandResult.failed([`Command not found at route '${actualRoute}'`]) as CommandResult<TCommandResponse>;
             }
 

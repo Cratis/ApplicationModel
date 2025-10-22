@@ -9,6 +9,7 @@ export * from './joinPaths';
 export * from './deepEqual';
 export * from './Globals';
 export * from './ICanBeConfigured';
+export * from './GetHttpHeaders';
 
 export {
     commands,

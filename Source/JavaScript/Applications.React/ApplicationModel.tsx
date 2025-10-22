@@ -5,6 +5,7 @@ import { CommandScope } from './commands';
 import { IdentityProvider } from './identity';
 import { Bindings } from './Bindings';
 import { ApplicationModelConfiguration, ApplicationModelContext } from './ApplicationModelContext';
+import { GetHttpHeaders } from '@cratis/applications';
 
 export interface ApplicationModelProps {
     children?: JSX.Element | JSX.Element[];
@@ -13,6 +14,7 @@ export interface ApplicationModelProps {
     origin?: string;
     basePath?: string;
     apiBasePath?: string;
+    httpHeadersCallback?: GetHttpHeaders;
 }
 
 export const ApplicationModel = (props: ApplicationModelProps) => {
@@ -21,14 +23,15 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
         development: props.development ?? false,
         origin: props.origin ?? '',
         basePath: props.basePath ?? '',
-        apiBasePath: props.apiBasePath ?? ''
+        apiBasePath: props.apiBasePath ?? '',
+        httpHeadersCallback: props.httpHeadersCallback
     };
 
     Bindings.initialize(configuration.microservice, configuration.apiBasePath, configuration.origin);
 
     return (
         <ApplicationModelContext.Provider value={configuration}>
-            <IdentityProvider>
+            <IdentityProvider httpHeadersCallback={props.httpHeadersCallback}>
                 <CommandScope>
                     {props.children}
                 </CommandScope>

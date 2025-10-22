@@ -1,6 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+import { GetHttpHeaders } from 'GetHttpHeaders';
+
 /**
  * Represents the concept of something that can be configured.
  */
@@ -22,4 +24,10 @@ export interface ICanBeConfigured {
      * @param origin The origin to use.
      */
     setOrigin(origin: string): void;
+
+    /**
+     * Set the callback to call for getting additional Http headers for Web requests.
+     * @param callback Callback that gets called.
+     */
+    setHttpHeadersCallback(callback: GetHttpHeaders): void;
 }

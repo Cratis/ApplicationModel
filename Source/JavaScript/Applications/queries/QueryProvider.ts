@@ -4,6 +4,7 @@
 import { Constructor } from '@cratis/fundamentals';
 import { IQueryProvider } from './IQueryProvider';
 import { IQuery } from './IQuery';
+import { GetHttpHeaders } from '../GetHttpHeaders';
 
 /**
  * Represents an implementation of {@link IQueryProvider}
@@ -19,7 +20,8 @@ export class QueryProvider implements IQueryProvider {
     constructor(
         private readonly _microservice: string,
         private readonly _apiBasePath: string,
-        private readonly _origin: string) { }
+        private readonly _origin: string,
+        private readonly _httpHeadersCallback: GetHttpHeaders) { }
 
     /** @inheritdoc */
     get<T extends IQuery>(queryType: Constructor<T>): T {
@@ -27,6 +29,7 @@ export class QueryProvider implements IQueryProvider {
         query.setMicroservice(this._microservice);
         query.setApiBasePath(this._apiBasePath);
         query.setOrigin(this._origin);
+        query.setHttpHeadersCallback(this._httpHeadersCallback);
         return query;
     }
 }

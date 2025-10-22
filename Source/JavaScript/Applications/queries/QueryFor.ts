@@ -12,6 +12,7 @@ import { Sorting } from './Sorting';
 import { SortDirection } from './SortDirection';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
+import { GetHttpHeaders } from '../GetHttpHeaders';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
@@ -21,6 +22,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
     private _microservice: string;
     private _apiBasePath: string;
     private _origin: string;
+    private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract get requiredRequestParameters(): string[];
@@ -41,6 +43,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
         this._origin = '';
+        this._httpHeadersCallback = () => ({});
     }
 
     /** @inheritdoc */
@@ -56,6 +59,11 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
     /** @inheritdoc */
     setOrigin(origin: string): void {
         this._origin = origin;
+    }
+
+    /** @inheritdoc */
+    setHttpHeadersCallback(callback: GetHttpHeaders): void {
+        this._httpHeadersCallback = callback;
     }
 
     /** @inheritdoc */
@@ -82,9 +90,13 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         const headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            ... this._httpHeadersCallback?.(), ...
+            {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         };
+
         if (this._microservice?.length > 0) {
             headers[Globals.microserviceHttpHeader] = this._microservice;
         }
