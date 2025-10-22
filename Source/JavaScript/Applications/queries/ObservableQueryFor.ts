@@ -74,8 +74,9 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     /** @inheritdoc */
-    setHttpHeadersCallback(_: GetHttpHeaders): void {
+    setHttpHeadersCallback(callback: GetHttpHeaders): void {
         // No-op: observable queries based on WebSockets do not use HTTP headers in the same way as HTTP requests.
+        callback?.();
     }
 
     /** @inheritdoc */
