@@ -3,6 +3,7 @@
 
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cratis.Applications.EntityFrameworkCore;
@@ -21,12 +22,21 @@ public static class GuidConversion
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(t => !t.ClrType.IsConcept()))
         {
-            if (entityType.IsOwned()) continue;
+            if (entityType.IsOwned() || !entityType.HasGuidProperties()) continue;
 
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyGuidConversion(databaseType);
         }
     }
+
+    /// <summary>
+    /// Checks if the entity has any properties of type <see cref="Guid"/>.
+    /// </summary>
+    /// <param name="entity">The entity type to check for GUID properties.</param>
+    /// <returns>True if the entity has GUID properties; otherwise, false.</returns>
+    public static bool HasGuidProperties(this IMutableEntityType entity) =>
+        entity.ClrType.GetProperties()
+            .Any(p => p.PropertyType == typeof(Guid));
 
     /// <summary>
     /// Applies GUID conversion for all properties of type <see cref="Guid"/> in the specified <see cref="EntityTypeBuilder"/>.
