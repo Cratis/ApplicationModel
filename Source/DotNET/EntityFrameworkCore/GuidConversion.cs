@@ -21,6 +21,8 @@ public static class GuidConversion
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(t => !t.ClrType.IsConcept()))
         {
+            if (entityType.IsOwned()) continue;
+
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyGuidConversion(databaseType);
         }

@@ -33,6 +33,8 @@ public static class JsonConversion
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
+            if (entityType.IsOwned()) continue;
+
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyJsonConversion(databaseType);
         }
