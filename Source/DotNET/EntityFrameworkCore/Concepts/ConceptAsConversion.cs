@@ -3,7 +3,7 @@
 
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cratis.Applications.EntityFrameworkCore.Concepts;
 
@@ -16,21 +16,31 @@ public static class ConceptAsConversion
     /// Applies value conversion for all properties that are of <see cref="ConceptAs{T}"/> type  in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the concept-based conversion to.</param>
-    /// <param name="database">The database provider, if specific configuration is needed.</param>
-    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder, DatabaseFacade database)
+    /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
+    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder, DatabaseType databaseType)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            var properties = entityType.ClrType.GetProperties()
-                .Where(p => p.PropertyType.IsConcept())
-                .ToList();
+            var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
+            entityTypeBuilder.ApplyConceptAsConversion(databaseType);
+        }
+    }
 
-            foreach (var property in properties)
-            {
-                var propertyBuilder = modelBuilder.Entity(entityType.Name).Property(property.Name);
-                propertyBuilder.AsConcept(database);
-            }
+    /// <summary>
+    /// Applies value conversion for all properties that are of <see cref="ConceptAs{T}"/> type in the specified <see cref="EntityTypeBuilder"/>.
+    /// </summary>
+    /// <param name="entityTypeBuilder">The entity type builder to apply the concept-based conversion to.</param>
+    /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
+    public static void ApplyConceptAsConversion(this EntityTypeBuilder entityTypeBuilder, DatabaseType databaseType)
+    {
+        var properties = entityTypeBuilder.Metadata.ClrType.GetProperties()
+            .Where(p => p.PropertyType.IsConcept())
+            .ToList();
+
+        foreach (var property in properties)
+        {
+            var propertyBuilder = entityTypeBuilder.Property(property.Name);
+            propertyBuilder.AsConcept(databaseType);
         }
     }
 }
-
