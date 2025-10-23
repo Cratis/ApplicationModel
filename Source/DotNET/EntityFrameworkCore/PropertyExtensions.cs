@@ -3,7 +3,6 @@
 
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -22,16 +21,16 @@ public static class PropertyExtensions
     /// Configures the property to use a GUID representation that is compatible across different database providers.
     /// </summary>
     /// <param name="propertyBuilder">The property builder to configure.</param>
-    /// <param name="database">The database provider, if specific configuration is needed.</param>
+    /// <param name="databaseType">The database provider type.</param>
     /// <returns>The configured property builder.</returns>
-    public static PropertyBuilder AsGuid(this PropertyBuilder propertyBuilder, DatabaseFacade database)
+    public static PropertyBuilder AsGuid(this PropertyBuilder propertyBuilder, DatabaseType databaseType)
     {
         if (propertyBuilder.Metadata.ClrType.IsConcept())
         {
-            return propertyBuilder.AsConcept(database);
+            return propertyBuilder.AsConcept(databaseType);
         }
 
-        if (database.GetDatabaseType() == DatabaseType.Sqlite)
+        if (databaseType == DatabaseType.Sqlite)
         {
             propertyBuilder.HasConversion(_guidValueConverter);
         }
@@ -43,9 +42,9 @@ public static class PropertyExtensions
     /// Configures the property to use a value conversion for concept types.
     /// </summary>
     /// <param name="propertyBuilder">The property builder to configure.</param>
-    /// <param name="database">The database provider, if specific configuration is needed.</param>
+    /// <param name="databaseType">The database provider type.</param>
     /// <returns>The configured property builder.</returns>
-    public static PropertyBuilder AsConcept(this PropertyBuilder propertyBuilder, DatabaseFacade database)
+    public static PropertyBuilder AsConcept(this PropertyBuilder propertyBuilder, DatabaseType databaseType)
     {
         var propertyType = propertyBuilder.Metadata.ClrType;
         if (!propertyType.IsConcept())
@@ -58,7 +57,7 @@ public static class PropertyExtensions
         var converterType = typeof(ConceptAsValueConverter<,>).MakeGenericType(propertyType, conceptValueType);
         var comparerType = typeof(ConceptAsValueComparer<,>).MakeGenericType(propertyType, conceptValueType);
 
-        if (conceptValueType == typeof(Guid) && database.GetDatabaseType() == DatabaseType.Sqlite)
+        if (conceptValueType == typeof(Guid) && databaseType == DatabaseType.Sqlite)
         {
             converterType = typeof(GuidConceptAsValueConverter<,>).MakeGenericType(propertyType, conceptValueType);
         }

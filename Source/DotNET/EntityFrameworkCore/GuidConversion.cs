@@ -3,7 +3,7 @@
 
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cratis.Applications.EntityFrameworkCore;
 
@@ -16,20 +16,31 @@ public static class GuidConversion
     /// Applies GUID conversion for all properties of type <see cref="Guid"/> in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the GUID conversion to.</param>
-    /// <param name="database">The database provider, if specific configuration is needed.</param>
-    public static void ApplyGuidConversion(this ModelBuilder modelBuilder, DatabaseFacade database)
+    /// <param name="databaseType">The database type, if specific configuration is needed.</param>
+    public static void ApplyGuidConversion(this ModelBuilder modelBuilder, DatabaseType databaseType)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(t => !t.ClrType.IsConcept()))
         {
-            var properties = entityType.ClrType.GetProperties()
-                .Where(p => p.PropertyType == typeof(Guid))
-                .ToList();
+            var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
+            entityTypeBuilder.ApplyGuidConversion(databaseType);
+        }
+    }
 
-            foreach (var property in properties)
-            {
-                var propertyBuilder = modelBuilder.Entity(entityType.Name).Property(property.Name);
-                propertyBuilder.AsGuid(database);
-            }
+    /// <summary>
+    /// Applies GUID conversion for all properties of type <see cref="Guid"/> in the specified <see cref="EntityTypeBuilder"/>.
+    /// </summary>
+    /// <param name="entityTypeBuilder">The entity type builder to apply the GUID conversion to.</param>
+    /// <param name="databaseType">The database type, if specific configuration is needed.</param>
+    public static void ApplyGuidConversion(this EntityTypeBuilder entityTypeBuilder, DatabaseType databaseType)
+    {
+        var properties = entityTypeBuilder.Metadata.ClrType.GetProperties()
+            .Where(p => p.PropertyType == typeof(Guid))
+            .ToList();
+
+        foreach (var property in properties)
+        {
+            var propertyBuilder = entityTypeBuilder.Property(property.Name);
+            propertyBuilder.AsGuid(databaseType);
         }
     }
 }
