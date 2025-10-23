@@ -5,6 +5,7 @@ using System.Text.Json;
 using Cratis.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -33,12 +34,21 @@ public static class JsonConversion
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (entityType.IsOwned()) continue;
+            if (entityType.IsOwned() || !entityType.HasJsonProperties()) continue;
 
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyJsonConversion(databaseType);
         }
     }
+
+    /// <summary>
+    /// Checks if the entity has any JSON properties.
+    /// </summary>
+    /// <param name="entity">The entity type builder to check for JSON properties.</param>
+    /// <returns>True if the entity has JSON properties; otherwise, false.</returns>
+    public static bool HasJsonProperties(this IMutableEntityType entity) =>
+        entity.ClrType.GetProperties()
+            .Any(p => Attribute.IsDefined(p, typeof(JsonAttribute), inherit: true));
 
     /// <summary>
     /// Applies JSON conversion to properties of a specific entity through its builder.
