@@ -38,7 +38,7 @@ public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, I
         {
             var identityId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? "unknown";
             var identityName = claimsPrincipal.Identity?.Name ?? "unknown";
-            var claims = claimsPrincipal.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
+            var claims = claimsPrincipal.Claims.Select(claim => new KeyValuePair<string, string>(claim.Type, claim.Value));
 
             var context = new IdentityProviderContext(identityId, identityName, claims);
             var result = await identityProvider.Provide(context);
