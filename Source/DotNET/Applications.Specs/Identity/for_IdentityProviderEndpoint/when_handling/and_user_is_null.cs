@@ -3,11 +3,15 @@
 
 namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.when_handling;
 
-public class and_principal_header_is_missing : given.a_valid_identity_request
+public class and_user_is_null : given.an_identity_provider_endpoint
 {
-    void Establish() => _headers.Remove(MicrosoftIdentityPlatformHeaders.PrincipalHeader);
+    void Establish()
+    {
+        _httpContext.User = null!;
+    }
 
     Task Because() => _endpoint.Handler(_request, _response);
 
     [Fact] void should_not_invoke_identity_provider() => _identityProvider.DidNotReceive().Provide(Arg.Any<IdentityProviderContext>());
+    [Fact] void should_set_status_code_to_401() => _response.StatusCode.ShouldEqual(401);
 }
