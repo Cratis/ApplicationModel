@@ -12,6 +12,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 ```
 
+> Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
+> read more [here](./microsoft-identity.md)
+
 ## Role-Based Authorization
 
 The Application Model provides a convenient `RolesAttribute` that simplifies role-based authorization for controllers and actions.
