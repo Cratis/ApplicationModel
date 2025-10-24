@@ -1,8 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.Json.Nodes;
-
 namespace Cratis.Applications.Identity;
 
 /// <summary>
@@ -10,6 +8,5 @@ namespace Cratis.Applications.Identity;
 /// </summary>
 /// <param name="Id">Unique identifier for the identity.</param>
 /// <param name="Name">Name of the identity.</param>
-/// <param name="Token">The raw token as JSON.</param>
 /// <param name="Claims">Any claims.</param>
-public record IdentityProviderContext(IdentityId Id, IdentityName Name, JsonObject Token, IEnumerable<KeyValuePair<string, string>> Claims);
+public record IdentityProviderContext(IdentityId Id, IdentityName Name, IEnumerable<KeyValuePair<string, string>> Claims);
