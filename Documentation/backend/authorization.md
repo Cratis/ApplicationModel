@@ -4,13 +4,6 @@ The Application Model provides enhanced authorization capabilities that build up
 
 ## Setup
 
-Authorization is automatically configured when you add Microsoft Identity Platform authentication to your services:
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddMicrosoftIdentityPlatformIdentityAuthentication();
-```
-
 Ensure that authentication and authorization are enabled in your application pipeline:
 
 ```csharp
@@ -18,6 +11,9 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 ```
+
+> Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
+> read more [here](./microsoft-identity.md)
 
 ## Role-Based Authorization
 

@@ -7,15 +7,19 @@ namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.when_handlin
 
 public class and_identity_is_valid_with_multiple_roles : given.a_valid_identity_request
 {
-    protected override ClientPrincipal CreateClientPrincipal() => new()
+    protected override ClaimsPrincipal CreateClaimsPrincipal()
     {
-        IdentityProvider = "aad",
-        Claims =
-        [
-            new ClientPrincipalClaim { typ = ClaimTypes.Role, val = "role1" },
-            new ClientPrincipalClaim { typ = ClaimTypes.Role, val = "role2" }
-        ]
-    };
+        var claims = new List<Claim>
+        {
+            new("sub", _identityId),
+            new(ClaimTypes.Name, _identityName),
+            new(ClaimTypes.Role, "role1"),
+            new(ClaimTypes.Role, "role2")
+        };
+
+        var identity = new ClaimsIdentity(claims, "TestAuthentication");
+        return new ClaimsPrincipal(identity);
+    }
 
     Task Because() => _endpoint.Handler(_request, _response);
 

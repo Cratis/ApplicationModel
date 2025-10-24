@@ -1,8 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.Json;
-using Cratis.Json;
+using System.Security.Claims;
 
 namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.given;
 
@@ -12,16 +11,12 @@ public abstract class a_valid_identity_request : an_identity_provider_endpoint
     protected string _identityName = "Test User";
     protected IdentityProviderContext _identityProviderContext;
     protected IdentityDetails _detailsResult = new(true, "Hello world");
-    protected ClientPrincipal _clientPrincipal;
+    protected ClaimsPrincipal _claimsPrincipal;
 
     void Establish()
     {
-        _headers[MicrosoftIdentityPlatformHeaders.IdentityIdHeader] = "123";
-        _headers[MicrosoftIdentityPlatformHeaders.IdentityNameHeader] = "Test User";
-
-        _clientPrincipal = CreateClientPrincipal();
-        _headers[MicrosoftIdentityPlatformHeaders.PrincipalHeader] =
-            Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(_clientPrincipal, Globals.JsonSerializerOptions));
+        _claimsPrincipal = CreateClaimsPrincipal();
+        _httpContext.User = _claimsPrincipal;
 
         _identityProvider.Provide(Arg.Any<IdentityProviderContext>()).Returns((x) =>
         {
@@ -30,18 +25,17 @@ public abstract class a_valid_identity_request : an_identity_provider_endpoint
         });
     }
 
-    protected virtual ClientPrincipal CreateClientPrincipal()
+    protected virtual ClaimsPrincipal CreateClaimsPrincipal()
     {
-        return new()
+        var claims = new List<Claim>
         {
-            IdentityProvider = "aad",
-            UserId = "123",
-            UserDetails = "Test User",
-            Claims =
-            [
-                new ClientPrincipalClaim { typ = "roles", val = "role1" },
-                new ClientPrincipalClaim { typ = "roles", val = "role2" }
-            ]
+            new("sub", _identityId),
+            new(ClaimTypes.Name, _identityName),
+            new(ClaimTypes.Role, "role1"),
+            new(ClaimTypes.Role, "role2")
         };
+
+        var identity = new ClaimsIdentity(claims, "TestAuthentication");
+        return new ClaimsPrincipal(identity);
     }
 }

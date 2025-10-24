@@ -1,4 +1,4 @@
-# Identity
+# Microsoft Identity
 
 Cratis' Application Model provides a way to easily work with providing an object that represents properties the application finds important for describing
 the logged in user. The purpose of this is to provide details about the logged in user on the ingress level of an application and letting it
