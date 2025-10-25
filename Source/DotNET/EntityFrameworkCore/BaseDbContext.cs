@@ -16,10 +16,21 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var entityTypes = modelBuilder.Model.GetEntityTypes();
+        var dbSetTypes = GetType()
+            .GetProperties()
+            .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+            .Select(p => p.PropertyType.GetGenericArguments()[0])
+            .ToArray();
+
+        var entityTypesForConverters = entityTypes
+            .Where(et => et.IsOwned() || dbSetTypes.Contains(et.ClrType))
+            .ToArray();
+
         var databaseType = Database.GetDatabaseType();
-        modelBuilder.ApplyJsonConversion(databaseType);
-        modelBuilder.ApplyConceptAsConversion(databaseType);
-        modelBuilder.ApplyGuidConversion(databaseType);
+        modelBuilder.ApplyJsonConversion(entityTypesForConverters, databaseType);
+        modelBuilder.ApplyConceptAsConversion(entityTypesForConverters, databaseType);
+        modelBuilder.ApplyGuidConversion(entityTypesForConverters, databaseType);
         base.OnModelCreating(modelBuilder);
     }
 }

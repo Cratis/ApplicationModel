@@ -17,13 +17,13 @@ public static class ConceptAsConversion
     /// Applies value conversion for all properties that are of <see cref="ConceptAs{T}"/> type  in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the concept-based conversion to.</param>
+    /// <param name="entityTypes">The entity types to apply the concept-based conversion to.</param>
     /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
-    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder, DatabaseType databaseType)
+    public static void ApplyConceptAsConversion(this ModelBuilder modelBuilder, IEnumerable<IMutableEntityType> entityTypes, DatabaseType databaseType)
     {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        entityTypes = entityTypes.Where(t => t.HasConceptProperties());
+        foreach (var entityType in entityTypes)
         {
-            if (entityType.IsOwned() || !entityType.HasConceptProperties()) continue;
-
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyConceptAsConversion(databaseType);
         }
