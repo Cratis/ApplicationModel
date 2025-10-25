@@ -35,12 +35,15 @@
 
     <!-- Copy dependency files during pack using resolved assembly references -->
     <Target Name="IncludeDependencyFiles" BeforeTargets="GenerateNuspec" AfterTargets="ResolveReferences">
+        <Message Importance="High" Text="Including dependency files in the NuGet package..." />
         <ItemGroup>
             <!-- Find the actual resolved assemblies -->
             <HandlebarsAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'Handlebars'" />
             <DependencyModelAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'Microsoft.Extensions.DependencyModel'" />
             <MetadataLoadContextAssembly Include="@(ReferencePath)" Condition="'%(Filename)' == 'System.Reflection.MetadataLoadContext'" />
         </ItemGroup>
+
+        <Message Importance="High" Text="Resolved Handlebars assembly: @(HandlebarsAssembly)" />
         
         <ItemGroup>
             <!-- Include the resolved assemblies in both net8.0 and net9.0 task folders -->
@@ -56,7 +59,7 @@
 
     <!-- Include output from the ProxyGenerator -->
     <ItemGroup>
-        <Content Include="$(MSBuildThisFileDirectory)bin/Release/net8.0/**/*" PackagePath="tasks/net8.0" />
-        <Content Include="$(MSBuildThisFileDirectory)bin/Release/net9.0/**/*" PackagePath="tasks/net9.0" />
+        <Content Include="$(MSBuildThisFileDirectory)bin/$(Configuration)/net8.0/**/*" PackagePath="tasks/net8.0" />
+        <Content Include="$(MSBuildThisFileDirectory)bin/$(Configuration)/net9.0/**/*" PackagePath="tasks/net9.0" />
     </ItemGroup>       
 </Project>
