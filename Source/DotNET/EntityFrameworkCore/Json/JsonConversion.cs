@@ -29,13 +29,13 @@ public static class JsonConversion
     /// Applies JSON conversion to all properties marked with the <see cref="JsonAttribute"/> in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the JSON conversion to.</param>
+    /// <param name="entityTypes">The entity types to apply the JSON conversion to.</param>
     /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
-    public static void ApplyJsonConversion(this ModelBuilder modelBuilder, DatabaseType databaseType)
+    public static void ApplyJsonConversion(this ModelBuilder modelBuilder, IEnumerable<IMutableEntityType> entityTypes, DatabaseType databaseType)
     {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        entityTypes = entityTypes.Where(t => t.HasJsonProperties());
+        foreach (var entityType in entityTypes)
         {
-            if (entityType.IsOwned() || !entityType.HasJsonProperties()) continue;
-
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyJsonConversion(databaseType);
         }

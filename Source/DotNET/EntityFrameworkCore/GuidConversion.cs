@@ -17,13 +17,13 @@ public static class GuidConversion
     /// Applies GUID conversion for all properties of type <see cref="Guid"/> in the specified <see cref="ModelBuilder"/>.
     /// </summary>
     /// <param name="modelBuilder">The model builder to apply the GUID conversion to.</param>
+    /// <param name="entityTypes">The entity types to apply the GUID conversion to.</param>
     /// <param name="databaseType">The database type, if specific configuration is needed.</param>
-    public static void ApplyGuidConversion(this ModelBuilder modelBuilder, DatabaseType databaseType)
+    public static void ApplyGuidConversion(this ModelBuilder modelBuilder, IEnumerable<IMutableEntityType> entityTypes, DatabaseType databaseType)
     {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(t => !t.ClrType.IsConcept()))
+        entityTypes = entityTypes.Where(t => !t.ClrType.IsConcept() && t.HasGuidProperties());
+        foreach (var entityType in entityTypes)
         {
-            if (entityType.IsOwned() || !entityType.HasGuidProperties()) continue;
-
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyGuidConversion(databaseType);
         }
