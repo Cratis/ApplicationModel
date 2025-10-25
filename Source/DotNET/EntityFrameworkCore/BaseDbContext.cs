@@ -17,10 +17,10 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var entityTypes = modelBuilder.Model.GetEntityTypes();
-        var dbSetTypes = entityTypes
-            .Select(et => et.ClrType)
-            .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(DbSet<>))
-            .Select(t => t.GetGenericArguments()[0])
+        var dbSetTypes = GetType()
+            .GetProperties()
+            .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+            .Select(p => p.PropertyType.GetGenericArguments()[0])
             .ToArray();
 
         var entityTypesForConverters = entityTypes
