@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.EntityFrameworkCore;
+using Cratis.Applications.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Extensions for working with DbContexts.
@@ -23,7 +23,7 @@ public static class DbSetExtensions
     /// It will check the local tracked entities first before querying the database.
     /// </remarks>
     /// <exception cref="EntityDoesNotHavePrimaryKey">Thrown if the entity does not have a primary key.</exception>
-    public static async Task UpsertItem<TEntity>(this DbSet<TEntity> dbSet, TEntity item)
+    public static async Task Upsert<TEntity>(this DbSet<TEntity> dbSet, TEntity item)
         where TEntity : class
     {
         var entityType = dbSet.EntityType;
@@ -62,7 +62,7 @@ public static class DbSetExtensions
         entry.State = EntityState.Modified;
     }
 
-    static bool KeysMatch<TEntity>(TEntity entity1, TEntity entity2, IReadOnlyList<Microsoft.EntityFrameworkCore.Metadata.IProperty> keyProperties)
+    static bool KeysMatch<TEntity>(TEntity entity1, TEntity entity2, IReadOnlyList<Metadata.IProperty> keyProperties)
         where TEntity : class
     {
         foreach (var keyProperty in keyProperties)
@@ -79,7 +79,7 @@ public static class DbSetExtensions
         return true;
     }
 
-    static object?[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<Microsoft.EntityFrameworkCore.Metadata.IProperty> keyProperties)
+    static object?[] GetKeyValues<TEntity>(TEntity entity, IReadOnlyList<Metadata.IProperty> keyProperties)
         where TEntity : class
     {
         var keyValues = new object?[keyProperties.Count];
