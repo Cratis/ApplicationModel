@@ -41,6 +41,7 @@ public static class DatabaseTypeExtensions
         {
             DatabaseType.Sqlite => builder
                 .UseSqlite(connectionString)
+                .EnsurePathsExist(connectionString)
                 .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForSqlite>(),
 
             DatabaseType.SqlServer => builder
@@ -84,4 +85,48 @@ public static class DatabaseTypeExtensions
         "Npgsql.EntityFrameworkCore.PostgreSQL" => DatabaseType.PostgreSql,
         _ => throw new UnsupportedDatabaseType(providerName!)
     };
+
+    /// <summary>
+    /// Ensures that any paths specified in the connection string exist.
+    /// This is primarily used for Sqlite databases to ensure that the directory for the database file exists.
+    /// </summary>
+    /// <param name="builder">The DbContext options builder to configure.</param>
+    /// <param name="connectionString">The connection string to use.</param>
+    /// <returns>The configured DbContext options builder.</returns>
+    public static DbContextOptionsBuilder EnsurePathsExist(this DbContextOptionsBuilder builder, string connectionString)
+    {
+        var databaseType = connectionString.GetDatabaseType();
+        if (databaseType == DatabaseType.Sqlite)
+        {
+            const string dataSourceKey = "Data Source=";
+            const string filenameKey = "Filename=";
+            var startIndex = connectionString.IndexOf(dataSourceKey, StringComparison.OrdinalIgnoreCase);
+            if (startIndex == -1)
+            {
+                startIndex = connectionString.IndexOf(filenameKey, StringComparison.OrdinalIgnoreCase);
+                if (startIndex == -1)
+                {
+                    return builder;
+                }
+                startIndex += filenameKey.Length;
+            }
+            else
+            {
+                startIndex += dataSourceKey.Length;
+            }
+
+            var endIndex = connectionString.IndexOf(';', startIndex);
+            var path = endIndex == -1
+                ? connectionString[startIndex..]
+                : connectionString[startIndex..endIndex];
+
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        return builder;
+    }
 }
