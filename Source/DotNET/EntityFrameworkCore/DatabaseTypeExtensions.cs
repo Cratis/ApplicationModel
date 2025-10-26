@@ -44,11 +44,11 @@ public static class DatabaseTypeExtensions
                 .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForSqlite>(),
 
             DatabaseType.SqlServer => builder
-                .UseSqlServer(connectionString)
+                .UseSqlServer(connectionString, options => options.EnableRetryOnFailure())
                 .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForSqlServer>(),
 
             DatabaseType.PostgreSql => builder
-                .UseNpgsql(connectionString)
+                .UseNpgsql(connectionString, options => options.EnableRetryOnFailure())
                 .ReplaceService<IMigrationsSqlGenerator, MigrationsSqlGeneratorForPostgreSQL>(),
 
             _ => throw new UnsupportedDatabaseType(connectionString)
