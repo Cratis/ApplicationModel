@@ -13,6 +13,25 @@ namespace Cratis.Applications.EntityFrameworkCore;
 public static class DbContextServiceCollectionExtensions
 {
     /// <summary>
+    /// Adds a DbContext with the specified connection string.
+    /// </summary>
+    /// <typeparam name="TDbContext">The type of the DbContext.</typeparam>
+    /// <param name="services">The service collection to add the DbContext to.</param>
+    /// <param name="connectionString">The connection string to use for the DbContext.</param>
+    /// <param name="optionsAction">An optional action to configure the DbContext options.</param>
+    /// <returns>The updated service collection.</returns>
+    public static IServiceCollection AddDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder>? optionsAction = default)
+        where TDbContext : DbContext
+    {
+        services.AddDbContext<TDbContext>(options =>
+        {
+            options.UseDatabaseFromConnectionString(connectionString);
+            optionsAction?.Invoke(options);
+        });
+        return services;
+    }
+
+    /// <summary>
     /// Adds all types found that implement ReadOnlyDbContext in the specified assemblies to the service collection, configured as
     /// read-only DbContexts.
     /// </summary>

@@ -20,7 +20,8 @@
     "tsyringe",
     "Unmap",
     "unmapping",
-    "Unmaps"
+    "Unmaps",
+    "Upserts"
   ],
   "dotnet.defaultSolution": "ApplicationModel.sln",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
