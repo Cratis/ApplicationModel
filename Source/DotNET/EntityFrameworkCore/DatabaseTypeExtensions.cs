@@ -20,9 +20,14 @@ public static class DatabaseTypeExtensions
     /// <exception cref="UnsupportedDatabaseType">Thrown if the connection string does not have a supported database type.</exception>
     public static DatabaseType GetDatabaseType(this string connectionString) => connectionString switch
     {
-        _ when connectionString.Contains("Data Source=") || connectionString.Contains("Filename=") => DatabaseType.Sqlite,
-        _ when connectionString.Contains("Server=") && connectionString.Contains("Database=") => DatabaseType.SqlServer,
-        _ when connectionString.Contains("Host=") && connectionString.Contains("Database=") => DatabaseType.PostgreSql,
+        _ when connectionString.Contains("data source=", StringComparison.InvariantCultureIgnoreCase) ||
+               connectionString.Contains("filename=", StringComparison.InvariantCultureIgnoreCase) => DatabaseType.Sqlite,
+
+        _ when connectionString.Contains("server=", StringComparison.InvariantCultureIgnoreCase) &&
+               connectionString.Contains("database=", StringComparison.InvariantCultureIgnoreCase) => DatabaseType.SqlServer,
+
+        _ when connectionString.Contains("host=", StringComparison.InvariantCultureIgnoreCase) &&
+               connectionString.Contains("database=", StringComparison.InvariantCultureIgnoreCase) => DatabaseType.PostgreSql,
         _ => throw new UnsupportedDatabaseType(connectionString)
     };
 
