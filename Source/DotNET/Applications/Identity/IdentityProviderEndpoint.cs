@@ -14,7 +14,7 @@ namespace Cratis.Applications.Identity;
 /// <param name="identityProvider"><see cref="IProvideIdentityDetails"/> for providing the identity.</param>
 public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, IProvideIdentityDetails identityProvider)
 {
-    const string IdentityCookieName = ".cratis.identity";
+    const string IdentityCookieName = ".cratis-identity";
 
     readonly JsonSerializerOptions _serializerOptions = new(serializerOptions)
     {
