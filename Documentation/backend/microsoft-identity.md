@@ -56,8 +56,8 @@ Typically, you would like your ingress to do the composition of this information
 request without having the frontend do a second request to the server to get more details. And also for the authorization part, you'd like that to happen
 before you enter your application and return not authorized if your application is not allowing entry.
 
-If the user is authorized, your ingress should then put the result as a base64 encoded JSON string on a cookie called `.cratis-identity`. This cookie is then
-automatically picked up by the frontend, read more [here](../frontend/react/identity.md).
+If the user is authorized, the ApplicationModel Identity Provider endpoint will put the result as a base64 encoded JSON string on a cookie called `.cratis-identity`. This cookie is then
+automatically picked up by the frontend, read more [here](../frontend/react/identity.md). The frontend will then use the cookie if present.
 
 To leverage this mechanism, simply map the endpoint to your application:
 
