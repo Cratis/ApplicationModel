@@ -1,4 +1,4 @@
-# Authorization
+# Identity
 
 The Application Model provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results.
 
