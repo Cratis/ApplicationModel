@@ -68,7 +68,7 @@ public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, I
                 Path = "/"
             });
 
-            await response.WriteAsJsonAsync(identityResult, _serializerOptions);
+            await response.WriteAsync(json);
         }
     }
 }
