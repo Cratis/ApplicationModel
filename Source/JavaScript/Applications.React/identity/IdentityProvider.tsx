@@ -10,7 +10,6 @@ import { GetHttpHeaders } from '@cratis/applications';
 const defaultIdentityContext: IIdentity = {
     id: '',
     name: '',
-    claims: {},
     details: {},
     isSet: false,
     refresh: () => {
