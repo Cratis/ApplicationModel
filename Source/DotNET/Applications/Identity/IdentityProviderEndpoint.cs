@@ -14,6 +14,8 @@ namespace Cratis.Applications.Identity;
 /// <param name="identityProvider"><see cref="IProvideIdentityDetails"/> for providing the identity.</param>
 public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, IProvideIdentityDetails identityProvider)
 {
+    const string IdentityCookieName = ".cratis.identity";
+
     readonly JsonSerializerOptions _serializerOptions = new(serializerOptions)
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
@@ -56,7 +58,17 @@ public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, I
             }
 
             response.ContentType = "application/json; charset=utf-8";
-            await response.WriteAsJsonAsync(identityResult, _serializerOptions);
+            var json = JsonSerializer.Serialize(identityResult, _serializerOptions);
+            var base64Json = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+            response.Cookies.Append(IdentityCookieName, base64Json, new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = request.IsHttps,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"
+            });
+
+            await response.WriteAsync(json);
         }
     }
 }
