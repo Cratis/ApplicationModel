@@ -17,11 +17,6 @@ export interface IIdentity<TDetails = object> {
     name: string;
 
     /**
-     * The claims for the identity.
-     */
-    claims: { [key: string]: string; };
-
-    /**
      * The application specific details for the identity.
      */
     details: TDetails;
