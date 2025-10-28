@@ -8,6 +8,5 @@ namespace Cratis.Applications.Identity;
 /// </summary>
 /// <param name="Id">Unique identifier for the identity.</param>
 /// <param name="Name">Name of the identity.</param>
-/// <param name="Claims">Any claims.</param>
 /// <param name="Details">The resolved details.</param>
-public record IdentityProviderResult(IdentityId Id, IdentityName Name, IEnumerable<KeyValuePair<string, string>> Claims, object Details);
+public record IdentityProviderResult(IdentityId Id, IdentityName Name, object Details);

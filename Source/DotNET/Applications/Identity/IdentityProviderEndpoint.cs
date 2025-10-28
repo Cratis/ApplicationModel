@@ -49,12 +49,12 @@ public class IdentityProviderEndpoint(JsonSerializerOptions serializerOptions, I
             if (result.IsUserAuthorized)
             {
                 response.StatusCode = 200;
-                identityResult = new IdentityProviderResult(context.Id, context.Name, context.Claims, result.Details);
+                identityResult = new IdentityProviderResult(context.Id, context.Name, result.Details);
             }
             else
             {
                 response.StatusCode = 403;
-                identityResult = new IdentityProviderResult(string.Empty, string.Empty, [], new { });
+                identityResult = new IdentityProviderResult(string.Empty, string.Empty, new { });
             }
 
             response.ContentType = "application/json; charset=utf-8";
