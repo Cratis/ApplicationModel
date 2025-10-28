@@ -70,8 +70,8 @@ export class IdentityProvider extends IIdentityProvider {
 
     private static getCookie() {
         const decoded = decodeURIComponent(document.cookie);
-        const cookies = decoded.split(';');
-        const cookie = cookies.find(_ => _.trim().indexOf(`${IdentityProvider.CookieName}=`) == 0);
+        const cookies = decoded.split(';').map(_ => _.trim());
+        const cookie = cookies.find(_ => _.indexOf(`${IdentityProvider.CookieName}=`) == 0);
         if (cookie) {
             const keyValue = cookie.split('=');
             return [keyValue[0].trim(), keyValue[1].trim()];
