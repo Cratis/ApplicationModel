@@ -34,7 +34,6 @@ export class IdentityProvider extends IIdentityProvider {
             return {
                 id: result.id,
                 name: result.name,
-                claims: result.claims,
                 details: result.details,
                 isSet: true,
                 refresh: IdentityProvider.refresh
@@ -63,7 +62,6 @@ export class IdentityProvider extends IIdentityProvider {
         return {
             id: result.id,
             name: result.name,
-            claims: result.claims,
             details: result.details as TDetails,
             isSet: true,
             refresh: IdentityProvider.refresh
