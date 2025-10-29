@@ -7,11 +7,12 @@ public class and_user_is_null : given.an_identity_provider_endpoint
 {
     void Establish()
     {
-        _httpContext.User = null!;
+        _identityProviderResultHandler.GenerateFromCurrentContext().Returns(IdentityProviderResult.Anonymous);
     }
 
-    Task Because() => _endpoint.Handler(_request, _response);
+    Task Because() => _endpoint.Handler(_response);
 
-    [Fact] void should_not_invoke_identity_provider() => _identityProvider.DidNotReceive().Provide(Arg.Any<IdentityProviderContext>());
+    [Fact] void should_call_generate_from_current_context() => _identityProviderResultHandler.Received(1).GenerateFromCurrentContext();
+    [Fact] void should_not_call_write() => _identityProviderResultHandler.DidNotReceive().Write(Arg.Any<IdentityProviderResult>());
     [Fact] void should_set_status_code_to_401() => _response.StatusCode.ShouldEqual(401);
 }

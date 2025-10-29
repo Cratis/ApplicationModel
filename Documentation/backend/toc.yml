@@ -1,9 +1,11 @@
-- name: Identity
-  href: identity.md
 - name: Multi-Tenancy
   href: multi-tenancy.md
 - name: Authorization
   href: authorization.md
+- name: Identity
+  href: identity.md
+- name: Microsoft Identity
+  href: microsoft-identity.md
 - name: Roles
   href: roles.md
 - name: Configuration

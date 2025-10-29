@@ -34,7 +34,7 @@ public static class IdentityProviderEndpointExtensions
             {
                 endpoints
                     .MapGet(".cratis/me", (HttpRequest request, HttpResponse response) =>
-                        appBuilder.ApplicationServices.GetService<IdentityProviderEndpoint>()!.Handler(request, response))
+                        appBuilder.ApplicationServices.GetService<IdentityProviderEndpoint>()!.Handler(response))
                     .WithTags("Cratis Identity");
             }
         }
