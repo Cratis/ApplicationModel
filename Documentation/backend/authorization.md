@@ -1,6 +1,6 @@
-# Identity
+# Authorization
 
-The Application Model provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results.
+The Application Model provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results across controllers, model-bound commands, and queries.
 
 ## Setup
 
@@ -13,20 +13,41 @@ app.UseAuthorization();
 ```
 
 > Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
-> read more [here](./microsoft-identity.md)
+> read more about [Microsoft Identity integration](./microsoft-identity.md)
 
 ## Role-Based Authorization
 
-The Application Model provides a convenient `RolesAttribute` that simplifies role-based authorization for controllers and actions.
-Note that this works without any of the Application Model support for identity, this is just a wrapper to make it more convenient to work with roles.
+The Application Model provides two convenient ways to implement role-based authorization:
 
-### Roles Attribute
+1. **Standard ASP.NET Core `[Authorize]` attribute** - Works with all scenarios
+2. **Convenient `[Roles]` attribute** - Simplifies multi-role scenarios with cleaner syntax
 
-The `RolesAttribute` is a specialized authorization attribute that allows you to specify one or more roles required to access a controller or action:
+The `RolesAttribute` is a wrapper around ASP.NET Core's `AuthorizeAttribute` that eliminates the need to manually format role strings. Instead of writing `[Authorize(Roles = "Admin,Manager")]`, you can use the more readable `[Roles("Admin", "Manager")]`.
+
+### Using the Authorize Attribute
+
+Standard ASP.NET Core authorization works across all scenarios:
+
+```csharp
+using Microsoft.AspNetCore.Authorization;
+
+// Single role
+[Authorize(Roles = "Admin")]
+public class AdminController : ControllerBase { }
+
+// Multiple roles (user needs at least one)
+[Authorize(Roles = "Admin,Manager")]
+public record DeleteUser(string UserId);
+```
+
+### Using the Roles Attribute for Controllers
+
+The `RolesAttribute` provides cleaner syntax for multiple roles:
 
 ```csharp
 using Cratis.Applications.Authorization;
 
+// Equivalent to [Authorize(Roles = "Admin,Manager")]
 [Roles("Admin", "Manager")]
 public class UserManagementController : ControllerBase
 {
@@ -47,11 +68,13 @@ public class UserManagementController : ControllerBase
 }
 ```
 
-### Usage Patterns
+Users must have at least one of the specified roles to access the resource.
 
-#### Controller-Level Authorization
+## Authorization in Controllers
 
-Apply roles to an entire controller to protect all actions:
+### Controller-Level Authorization
+
+Apply authorization to an entire controller to protect all actions:
 
 ```csharp
 [Roles("Admin")]
@@ -61,9 +84,9 @@ public class AdminController : ControllerBase
 }
 ```
 
-#### Action-Level Authorization
+### Action-Level Authorization
 
-Apply roles to specific actions for fine-grained control:
+Apply authorization to specific actions for fine-grained control:
 
 ```csharp
 public class ProductController : ControllerBase
@@ -90,15 +113,162 @@ public class ProductController : ControllerBase
 }
 ```
 
-#### Multiple Roles
+### Overriding Controller-Level Authorization
 
-Users must have at least one of the specified roles to access the resource:
+Action-level authorization overrides controller-level settings:
 
 ```csharp
-[Roles("Manager", "TeamLead", "Admin")]
-public async Task<IActionResult> ApproveRequest(ApproveRequestCommand command)
+[Route("api/management")]
+[Roles("Manager")]
+public class ManagementController : ControllerBase
 {
-    // User needs any one of: Manager, TeamLead, or Admin roles
+    [HttpGet("reports")]
+    public async Task<IActionResult> GetReports()
+    {
+        // Requires "Manager" role (from controller)
+    }
+    
+    [HttpGet("sensitive-data")]
+    [Roles("Admin")] // Overrides controller-level authorization
+    public async Task<IActionResult> GetSensitiveData()
+    {
+        // Requires "Admin" role only, not "Manager"
+    }
+}
+```
+
+## Authorization in Model-Bound Commands
+
+Model-bound commands support authorization through both standard ASP.NET Core authorization attributes and the convenient `[Roles]` attribute.
+
+### Using Standard Authorization
+
+```csharp
+[Command]
+[Authorize]
+public record DeleteUser(string UserId)
+{
+    public void Handle(IUserService userService)
+    {
+        userService.DeleteUser(UserId);
+    }
+}
+```
+
+For role-based authorization with the standard attribute:
+
+```csharp
+[Command]
+[Authorize(Roles = "Admin,Manager")]
+public record ApproveRequest(int RequestId)
+{
+    public void Handle(IRequestService requestService)
+    {
+        requestService.ApproveRequest(RequestId);
+    }
+}
+```
+
+### Using the Roles Attribute for Commands
+
+The `[Roles]` attribute provides cleaner syntax for model-bound commands:
+
+```csharp
+[Command]
+[Roles("Admin", "Manager")]
+public record ApproveRequest(int RequestId)
+{
+    public void Handle(IRequestService requestService)
+    {
+        requestService.ApproveRequest(RequestId);
+    }
+}
+
+[Command]
+[Roles("System", "Admin")]
+public record CreateUser(
+    string Name,
+    string Email,
+    int Age)
+{
+    public void Handle(IUserService userService)
+    {
+        // Command implementation
+    }
+}
+```
+
+### Authorization Results for Commands
+
+When authorization fails, the command pipeline automatically returns an unauthorized result. The command's `Handle()` method will not be executed:
+
+```csharp
+public class Users(ICommandPipeline commandPipeline)
+{
+    public async Task DeleteUser(string user)
+    {
+        var result = await commandPipeline.Execute(new DeleteUserCommand(user));
+
+        if (!result.IsAuthorized)
+        {
+            // Handle unauthorized access - command was not executed
+        }
+
+        if (result.IsSuccess)
+        {
+            // Command executed successfully
+        }
+    }
+}
+```
+
+## Authorization in Model-Bound Queries
+
+Queries also support both authorization approaches for data protection:
+
+### Using Standard Authorization for Queries
+
+```csharp
+[Query]
+[Authorize(Roles = "Admin,Manager")]
+public record GetUserAuditLog(
+    string UserId,
+    DateTime FromDate,
+    DateTime ToDate);
+```
+
+### Using the Roles Attribute for Queries
+
+```csharp
+[Query]
+[Roles("Manager", "Admin", "Auditor")]
+public record GetUserAuditLog(
+    string UserId,
+    DateTime FromDate,
+    DateTime ToDate);
+
+[Query]
+[Roles("Viewer", "Editor", "Admin")]
+public record GetProductDetails(string ProductId);
+```
+
+### Authorization Results for Queries
+
+Query results include authorization status that can be checked:
+
+```csharp
+var result = await mediator.Send(new GetUserAuditLogQuery("user123", DateTime.Now.AddDays(-30), DateTime.Now));
+
+if (!result.IsAuthorized)
+{
+    // Handle unauthorized access
+    return Unauthorized();
+}
+
+if (result.IsSuccess)
+{
+    // Query executed successfully, use result.Data
+    var auditLog = result.Data;
 }
 ```
 
@@ -106,62 +276,21 @@ public async Task<IActionResult> ApproveRequest(ApproveRequestCommand command)
 
 The Application Model integrates authorization state into command and query results, allowing you to handle authorization failures gracefully.
 
-### Command Authorization
+## Policy-Based Authorization
 
-Commands automatically include authorization status in their results:
-
-```csharp
-public async Task<IActionResult> ProcessCommand(SomeCommand command)
-{
-    var result = await _commandManager.Execute(command);
-    
-    if (!result.IsAuthorized)
-    {
-        return Forbid(); // HTTP 403
-    }
-    
-    if (!result.IsSuccess)
-    {
-        return BadRequest(result);
-    }
-    
-    return Ok(result);
-}
-```
-
-### Query Authorization
-
-Queries also include authorization information:
+For more complex authorization scenarios, you can use standard ASP.NET Core policy-based authorization alongside the Application Model:
 
 ```csharp
-public async Task<IActionResult> GetData(SomeQuery query)
-{
-    var result = await _queryManager.Execute(query);
-    
-    if (!result.IsAuthorized)
-    {
-        return Forbid();
-    }
-    
-    return Ok(result);
-}
-```
-
-## Claims-Based Authorization
-
-For more complex authorization scenarios, you can use standard ASP.NET Core claims-based authorization alongside the Application Model:
-
-```csharp
+[Command]
 [Authorize(Policy = "RequireAdminOrOwner")]
-public async Task<IActionResult> UpdateResource(UpdateResourceCommand command)
+public record UpdateResource(string ResourceId, ResourceData Data)
 {
-    // Custom policy can check multiple claims, roles, and requirements
+    public void Handle()
+    {
+        // Custom policy can check multiple claims, roles, and requirements
+    }
 }
 ```
-
-## Custom Authorization
-
-### Custom Authorization Policies
 
 You can define custom authorization policies in your service configuration:
 
@@ -174,6 +303,8 @@ builder.Services.AddAuthorization(options =>
             context.User.HasClaim("resource", "owner")));
 });
 ```
+
+## Custom Authorization
 
 ### Authorization Filters
 
@@ -196,18 +327,47 @@ public class CustomAuthorizationFilter : ICommandFilter
 }
 ```
 
+For queries, you can implement custom authorization through query filters:
+
+```csharp
+public class QueryAuthorizationFilter : IQueryFilter
+{
+    public Task<QueryResult> OnPerform(QueryContext context)
+    {
+        // Custom authorization logic for queries
+        if (!IsAuthorized(context))
+        {
+            return Task.FromResult(QueryResult.Unauthorized(context.CorrelationId, "Access denied"));
+        }
+        
+        return Task.FromResult(QueryResult.Success(context.CorrelationId));
+    }
+}
+```
+
+## Built-in Authorization Filter
+
+The Application Model provides a built-in `AuthorizationFilter` that automatically handles both `[Authorize]` and `[Roles]` attributes for commands and queries:
+
+- **Authentication**: Verifies user is authenticated
+- **Role-based authorization**: Checks required roles if specified
+- **Policy-based authorization**: Evaluates custom policies
+- **Automatic result handling**: Returns appropriate unauthorized results
+
+This filter is automatically registered and executes before command handlers and query renderers.
+
 ## Best Practices
 
 ### Role Naming
 
 - Use descriptive role names that reflect business functions (e.g., "AccountManager", "ContentEditor")
-- Avoid generic names like "User1", "Level2"
+- Avoid generic names like "User1", "Level2"  
 - Consider using a consistent naming convention across your application
 
 ### Granular Permissions
 
-- Apply authorization at the appropriate level (controller vs. action)
-- Use action-level authorization for fine-grained control
+- Apply authorization at the appropriate level (controller vs. action vs. command/query)
+- Use action-level and command/query-level authorization for fine-grained control
 - Consider the principle of least privilege
 
 ### Error Handling
@@ -216,27 +376,11 @@ public class CustomAuthorizationFilter : ICommandFilter
 - Provide meaningful error messages while avoiding information disclosure
 - Log authorization failures for security monitoring
 
-### Testing Authorization
+### Authorization Architecture
 
-- Write tests that verify authorization behavior
-- Test both positive (authorized) and negative (unauthorized) scenarios
-- Include edge cases like missing roles or malformed tokens
-
-```csharp
-[Fact]
-public async Task should_deny_access_when_user_lacks_required_role()
-{
-    // Arrange
-    var command = new RestrictedCommand();
-    var context = CreateContextWithoutAdminRole();
-    
-    // Act
-    var result = await _handler.Handle(command, context);
-    
-    // Assert
-    result.IsAuthorized.ShouldBeFalse();
-}
-```
+- Use controller-level authorization for protecting entire API surfaces
+- Use model-bound command/query authorization for business logic protection
+- Combine both approaches when you need different authorization rules for different access patterns
 
 ## Integration with Identity
 
@@ -258,3 +402,21 @@ public class IdentityDetailsProvider : IProvideIdentityDetails
     }
 }
 ```
+
+## Frontend Integration
+
+Authorization attributes work seamlessly with the [proxy generator](./proxy-generation.md), which automatically creates TypeScript proxies for your commands and queries. The generated proxies provide:
+
+- Authorization status handling in command and query results
+- Consistent error handling for unauthorized access
+- Integration with frontend authentication systems
+- Type-safe authorization checking
+
+## See Also
+
+- [Commands](commands/index.md) - Command documentation including authorization
+- [Model-Bound Commands](commands/model-bound.md) - Model-bound command authorization
+- [Queries](queries/index.md) - Query documentation
+- [Command Filters](commands/command-filters.md) - Including the AuthorizationFilter
+- [Identity](identity.md) - Identity and authentication setup
+- [Microsoft Identity](microsoft-identity.md) - Microsoft Identity integration
