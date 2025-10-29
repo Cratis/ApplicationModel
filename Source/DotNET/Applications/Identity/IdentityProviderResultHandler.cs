@@ -52,7 +52,7 @@ public class IdentityProviderResultHandler(
 
             if (result.IsUserAuthorized)
             {
-                return new IdentityProviderResult(context.Id, context.Name, true, true, result.Details);
+                return new IdentityProviderResult(context.Id, context.Name, true, result.IsUserAuthorized, result.Details);
             }
         }
 
