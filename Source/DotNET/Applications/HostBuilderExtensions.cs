@@ -96,6 +96,7 @@ public static class HostBuilderExtensions
         builder
             .ConfigureServices(services =>
             {
+                services.AddHttpContextAccessor();
                 services.AddCratisApplicationModelMeter();
                 services.AddCratisCommands();
                 services
