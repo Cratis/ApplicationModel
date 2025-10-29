@@ -1,260 +1,108 @@
 # Identity
 
-The Application Model provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results.
+The Cratis Application Model provides a powerful identity system that allows you to provide additional details for logged-in users beyond what's available in identity provider tokens. This system is designed to work seamlessly with your application's ingress flow and can be used with any identity provider.
 
-## Setup
+## Overview
 
-Ensure that authentication and authorization are enabled in your application pipeline:
+Identity tokens from providers typically contain limited information. The Application Model's identity system allows you to:
 
-```csharp
-var app = builder.Build();
-app.UseAuthentication();
-app.UseAuthorization();
-```
+- Add domain-specific information to user identities
+- Perform application-level authorization checks
+- Compose identity details at the ingress level
+- Provide consistent identity information across microservices
 
-> Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
-> read more [here](./microsoft-identity.md)
+## How It Works
 
-## Role-Based Authorization
+The identity system works by allowing you to implement a provider that enriches the basic identity information with application-specific details. This provider is called during the authentication flow and can:
 
-The Application Model provides a convenient `RolesAttribute` that simplifies role-based authorization for controllers and actions.
-Note that this works without any of the Application Model support for identity, this is just a wrapper to make it more convenient to work with roles.
+1. Verify if the user is authorized to access your application
+2. Add custom properties and details specific to your domain
+3. Return a consolidated identity object that your application can use
 
-### Roles Attribute
+## Identity Details Provider
 
-The `RolesAttribute` is a specialized authorization attribute that allows you to specify one or more roles required to access a controller or action:
+As part of your ingress flow, you can provide additional details for logged in users. On the tokens coming from your identity provider you only have
+limited amounts of information and sometimes you want to have more domain specific information.
 
-```csharp
-using Cratis.Applications.Authorization;
+There are also cases were you need to ask the application if the user is at all authorized to enter the application.
 
-[Roles("Admin", "Manager")]
-public class UserManagementController : ControllerBase
-{
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateUser(CreateUserCommand command)
-    {
-        // Only users with "Admin" or "Manager" roles can access this endpoint
-        // ...
-    }
-    
-    [HttpDelete("{id}")]
-    [Roles("Admin")] // Override controller-level roles for specific actions
-    public async Task<IActionResult> DeleteUser(string id)
-    {
-        // Only users with "Admin" role can delete users
-        // ...
-    }
-}
-```
+Typically, you would like your ingress to do the composition of this information and create the HTTP headers and cookies needed for this in a single
+request without having the frontend do a second request to the server to get more details. And also for the authorization part, you'd like that to happen
+before you enter your application and return not authorized if your application is not allowing entry.
 
-### Usage Patterns
+If the user is authorized, the ApplicationModel Identity Provider endpoint will put the result as a base64 encoded JSON string on a cookie called `.cratis-identity`. This cookie is then
+automatically picked up by the frontend, read more about [frontend identity integration](../frontend/react/identity.md). The frontend will then use the cookie if present.
 
-#### Controller-Level Authorization
-
-Apply roles to an entire controller to protect all actions:
+To leverage this mechanism, simply map the endpoint to your application:
 
 ```csharp
-[Roles("Admin")]
-public class AdminController : ControllerBase
-{
-    // All actions in this controller require "Admin" role
-}
+app.MapIdentityProvider();
 ```
 
-#### Action-Level Authorization
+Once this is done you would simply add code to one of your microservices in your application that provides the additional identity details. You simply
+implement the `IProvideIdentityDetails` interface found in the `Cratis.ApplicationModel.Identity` namespace. It will automatically be discovered and
+called when needed.
 
-Apply roles to specific actions for fine-grained control:
+This is unwrapped by the application model and encapsulates it into what is called a `IdentityProviderContext` for you as a developer to consume in a type-safe
+manner.
 
-```csharp
-public class ProductController : ControllerBase
-{
-    [HttpGet]
-    public async Task<IActionResult> GetProducts()
-    {
-        // No authorization required - public endpoint
-    }
-    
-    [HttpPost]
-    [Roles("Editor", "Admin")]
-    public async Task<IActionResult> CreateProduct(CreateProductCommand command)
-    {
-        // Requires "Editor" or "Admin" role
-    }
-    
-    [HttpDelete("{id}")]
-    [Roles("Admin")]
-    public async Task<IActionResult> DeleteProduct(string id)
-    {
-        // Requires "Admin" role only
-    }
-}
-```
+> Note: If your application has just one microservice, you let it implement the `IProvideIdentityDetails` interface.
+> For multiple microservices you might want to consider letting your ingress / reverse proxy call all your microservices and merge the results together
+> in one single JSON structure.
 
-#### Multiple Roles
+## Implementation Example
 
-Users must have at least one of the specified roles to access the resource:
-
-```csharp
-[Roles("Manager", "TeamLead", "Admin")]
-public async Task<IActionResult> ApproveRequest(ApproveRequestCommand command)
-{
-    // User needs any one of: Manager, TeamLead, or Admin roles
-}
-```
-
-## Authorization Integration
-
-The Application Model integrates authorization state into command and query results, allowing you to handle authorization failures gracefully.
-
-### Command Authorization
-
-Commands automatically include authorization status in their results:
-
-```csharp
-public async Task<IActionResult> ProcessCommand(SomeCommand command)
-{
-    var result = await _commandManager.Execute(command);
-    
-    if (!result.IsAuthorized)
-    {
-        return Forbid(); // HTTP 403
-    }
-    
-    if (!result.IsSuccess)
-    {
-        return BadRequest(result);
-    }
-    
-    return Ok(result);
-}
-```
-
-### Query Authorization
-
-Queries also include authorization information:
-
-```csharp
-public async Task<IActionResult> GetData(SomeQuery query)
-{
-    var result = await _queryManager.Execute(query);
-    
-    if (!result.IsAuthorized)
-    {
-        return Forbid();
-    }
-    
-    return Ok(result);
-}
-```
-
-## Claims-Based Authorization
-
-For more complex authorization scenarios, you can use standard ASP.NET Core claims-based authorization alongside the Application Model:
-
-```csharp
-[Authorize(Policy = "RequireAdminOrOwner")]
-public async Task<IActionResult> UpdateResource(UpdateResourceCommand command)
-{
-    // Custom policy can check multiple claims, roles, and requirements
-}
-```
-
-## Custom Authorization
-
-### Custom Authorization Policies
-
-You can define custom authorization policies in your service configuration:
-
-```csharp
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdminOrOwner", policy =>
-        policy.RequireAssertion(context =>
-            context.User.IsInRole("Admin") ||
-            context.User.HasClaim("resource", "owner")));
-});
-```
-
-### Authorization Filters
-
-The Application Model includes authorization filters that integrate with the command and query pipeline:
-
-```csharp
-// Custom authorization logic can be implemented through command filters
-public class CustomAuthorizationFilter : ICommandFilter
-{
-    public Task<CommandResult> OnExecution(CommandContext context)
-    {
-        // Custom authorization logic
-        if (!IsAuthorized(context))
-        {
-            return Task.FromResult(CommandResult.Error(context.CorrelationId, "Unauthorized"));
-        }
-        
-        return Task.FromResult(CommandResult.Success(context.CorrelationId));
-    }
-}
-```
-
-## Best Practices
-
-### Role Naming
-
-- Use descriptive role names that reflect business functions (e.g., "AccountManager", "ContentEditor")
-- Avoid generic names like "User1", "Level2"
-- Consider using a consistent naming convention across your application
-
-### Granular Permissions
-
-- Apply authorization at the appropriate level (controller vs. action)
-- Use action-level authorization for fine-grained control
-- Consider the principle of least privilege
-
-### Error Handling
-
-- Always check authorization status in your command/query results
-- Provide meaningful error messages while avoiding information disclosure
-- Log authorization failures for security monitoring
-
-### Testing Authorization
-
-- Write tests that verify authorization behavior
-- Test both positive (authorized) and negative (unauthorized) scenarios
-- Include edge cases like missing roles or malformed tokens
-
-```csharp
-[Fact]
-public async Task should_deny_access_when_user_lacks_required_role()
-{
-    // Arrange
-    var command = new RestrictedCommand();
-    var context = CreateContextWithoutAdminRole();
-    
-    // Act
-    var result = await _handler.Handle(command, context);
-    
-    // Assert
-    result.IsAuthorized.ShouldBeFalse();
-}
-```
-
-## Integration with Identity
-
-Authorization works seamlessly with the [Identity](./identity.md) system. User roles are automatically extracted from the identity token and made available for authorization decisions. The identity provider context includes role information that can be used for authorization:
+Below is an example of an implementation:
 
 ```csharp
 public class IdentityDetailsProvider : IProvideIdentityDetails
 {
     public Task<IdentityDetails> Provide(IdentityProviderContext context)
     {
-        var userRoles = context.Claims
-            .Where(c => c.Key == ClaimTypes.Role)
-            .Select(c => c.Value)
-            .ToList();
-            
-        var isAuthorized = userRoles.Contains("Admin") || userRoles.Contains("User");
-        
-        return Task.FromResult(new IdentityDetails(isAuthorized, new { Roles = userRoles }));
+        var result = new IdentityDetails(true, new { Hello = "World" });
+        return Task.FromResult(result);
     }
 }
 ```
+
+## IdentityProviderContext
+
+The `IdentityProviderContext` holds the following properties:
+
+| Property | Description |
+| -------- | ----------- |
+| Id | The identity identifier specific from from the identity provider |
+| Name | The name of the identity |
+| Token | Parsed principal data definition represented as a `JsonObject`|
+| Claims | Collection of `KeyValuePair<string, string>` of the claims found in the token |
+
+## IdentityDetails
+
+The code then returns `IdentityDetails` which holds the following properties:
+
+| Property | Description |
+| -------- | ----------- |
+| IsUserAuthorized | Whether or not the user is authorized into your application or not |
+| Details | The actual details in the form of an object, letting you create your own structure |
+
+If the `IsUserAuthorized` property is set to false the return from this will be an HTTP 403. While if it is authorized, a regular HTTP 200.
+
+> Note: Dependency inversion works for this, so your provider can take any dependencies it wants on its constructor.
+
+## Endpoint
+
+Your provider will be exposed on a well known route: `/.cratis/me`.
+
+## Integration with Frontend
+
+The identity system seamlessly integrates with the frontend by setting a cookie that can be automatically consumed by your client-side application. This eliminates the need for separate API calls to retrieve user details after authentication.
+
+## Multi-Service Considerations
+
+In a microservices architecture, you have several options for implementing identity details:
+
+1. **Single Service**: Implement `IProvideIdentityDetails` directly in your main service
+2. **Multiple Services**: Have your ingress/reverse proxy call multiple services and merge the results
+3. **Dedicated Identity Service**: Create a specialized service that aggregates identity information from various sources
+
+Choose the approach that best fits your application's architecture and requirements.
