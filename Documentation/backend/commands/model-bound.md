@@ -151,95 +151,104 @@ public record AddItemToCart(string Sku, int Quantity)
 }
 ```
 
-## Authorization
+## Authorization in Model-Bound Commands
 
-Model-bound commands support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Application Model.
+Model-bound commands support comprehensive authorization mechanisms. For detailed information about securing your commands, see the [Authorization](../authorization.md) documentation.
 
-### Using the Authorize Attribute
+## Programmatic Command Execution with ICommandPipeline
 
-You can secure commands using the standard `[Authorize]` attribute:
+While model-bound commands are typically executed through HTTP endpoints, you can also execute them programmatically using the `ICommandPipeline` service. This is useful for scenarios such as:
+
+- Background services or scheduled tasks
+- Event handlers that need to execute commands
+- Internal service-to-service communication
+- Testing scenarios
+
+### Basic Usage
+
+Inject `ICommandPipeline` into your service and use it to execute commands:
 
 ```csharp
-[Command]
-[Authorize]
-public record DeleteUser(string UserId)
+public class OrderProcessingService
 {
-    public void Handle(IUserService userService)
+    private readonly ICommandPipeline _commandPipeline;
+
+    public OrderProcessingService(ICommandPipeline commandPipeline)
     {
-        userService.DeleteUser(UserId);
+        _commandPipeline = commandPipeline;
+    }
+
+    public async Task ProcessOrder(Order order)
+    {
+        var command = new ProcessOrderCommand(order.Id, order.Items);
+        var result = await _commandPipeline.Execute(command);
+
+        if (result.IsSuccess)
+        {
+            // Command executed successfully
+            var orderId = result.Response; // If the command returns a value
+        }
+        else
+        {
+            // Handle validation errors or other failures
+            foreach (var error in result.ValidationResults)
+            {
+                // Process validation errors
+            }
+        }
     }
 }
 ```
 
-For role-based authorization with the standard attribute:
+### Command Results
+
+The `ICommandPipeline.Execute()` method returns a `CommandResult` that provides information about the execution:
 
 ```csharp
-[Command]
-[Authorize(Roles = "Admin,Manager")]
-public record ApproveRequest(int RequestId)
-{
-    public void Handle(IRequestService requestService)
-    {
-        requestService.ApproveRequest(RequestId);
-    }
-}
-```
+var result = await _commandPipeline.Execute(command);
 
-### Using the Roles Attribute
-
-The Application Model provides a more convenient `[Roles]` attribute that allows for cleaner syntax when specifying multiple roles:
-
-```csharp
-[Command]
-[Roles("Admin", "Manager")]
-public record ApproveRequest(int RequestId)
-{
-    public void Handle(IRequestService requestService)
-    {
-        requestService.ApproveRequest(RequestId);
-    }
-}
-```
-
-The user needs to have **at least one** of the specified roles to execute the command.
-
-### Authorization Results
-
-When authorization fails, the command pipeline automatically returns an unauthorized result. The command's `Handle()` method will not be executed:
-
-```csharp
-var result = await commandManager.Execute(new DeleteUserCommand("user123"));
-
+// Check if the command was authorized
 if (!result.IsAuthorized)
 {
-    // Handle unauthorized access - command was not executed
-    return Forbid();
+    // Handle unauthorized access
 }
 
+// Check if the command executed successfully
 if (result.IsSuccess)
 {
-    // Command executed successfully
-    return Ok(result);
+    // Access the response value if the command returns one
+    var responseValue = result.Response;
 }
-```
-
-### Policy-Based Authorization
-
-For more complex authorization scenarios, you can use policy-based authorization:
-
-```csharp
-[Command]
-[Authorize(Policy = "RequireAdminOrOwner")]
-public record UpdateUserProfile(string UserId, UserProfileData Data)
+else
 {
-    public void Handle(IUserService userService)
+    // Handle validation errors
+    foreach (var validationResult in result.ValidationResults)
     {
-        userService.UpdateProfile(UserId, Data);
+        // Process each validation error
     }
 }
 ```
 
-> **Note**: Authorization is evaluated before the command's `Handle()` method is called. If authorization fails, the command will not be executed and the result will indicate the authorization failure.
+### Exception Handling
+
+When using `ICommandPipeline` programmatically, exceptions in the command handler are caught and returned as part of the `CommandResult`:
+
+```csharp
+var result = await _commandPipeline.Execute(command);
+
+if (result.HasExceptions)
+{
+    // An exception was thrown during command execution
+    foreach (var message in result.ExceptionMessages)
+    {
+        // Handle message
+    }
+}
+```
+
+### Context and Authentication
+
+When executing commands programmatically, the current execution context (including user identity and claims) is automatically used. If you need to execute commands under a different context, you'll need to manage the authentication context appropriately in your application.
 
 ## Frontend Integration
 
