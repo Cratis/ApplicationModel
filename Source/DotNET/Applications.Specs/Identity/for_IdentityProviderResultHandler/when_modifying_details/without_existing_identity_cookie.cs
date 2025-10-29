@@ -7,19 +7,21 @@ namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_mo
 
 public class without_existing_identity_cookie : given.an_identity_provider_result_handler
 {
-    async Task Because() => await _handler.ModifyDetails<object>(details => new { Modified = true });
+    string _responseContent;
+    IList<Microsoft.Net.Http.Headers.SetCookieHeaderValue> _cookies;
 
-    [Fact] void should_not_write_anything_to_response()
+    async Task Because()
     {
+        await _handler.ModifyDetails<object>(details => new { Modified = true });
+
         _httpContext.Response.Body.Position = 0;
         var reader = new StreamReader(_httpContext.Response.Body);
-        var content = reader.ReadToEnd();
-        content.ShouldBeEmpty();
+        _responseContent = await reader.ReadToEndAsync();
+
+        _cookies = _httpContext.Response.GetTypedHeaders().SetCookie;
     }
 
-    [Fact] void should_not_set_any_cookies()
-    {
-        var cookies = _httpContext.Response.GetTypedHeaders().SetCookie;
-        cookies.ShouldBeEmpty();
-    }
+    [Fact] void should_not_write_anything_to_response() => _responseContent.ShouldBeEmpty();
+
+    [Fact] void should_not_set_any_cookies() => _cookies.ShouldBeEmpty();
 }

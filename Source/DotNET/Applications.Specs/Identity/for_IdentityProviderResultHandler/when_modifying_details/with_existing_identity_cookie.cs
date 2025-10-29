@@ -13,6 +13,10 @@ public class with_existing_identity_cookie : given.an_identity_provider_result_h
     TestDetails _modifiedDetails;
     IdentityProviderResult<TestDetails> _originalResult;
     string _base64Json;
+    string _responseContent;
+    IdentityProviderResult _responseResult;
+    Microsoft.Net.Http.Headers.SetCookieHeaderValue _identityCookie;
+    IdentityProviderResult _cookieResult;
 
     void Establish()
     {
@@ -35,30 +39,35 @@ public class with_existing_identity_cookie : given.an_identity_provider_result_h
         _httpContext.Request.Scheme = "https";
     }
 
-    async Task Because() => await _handler.ModifyDetails<TestDetails>(details => _modifiedDetails);
+    async Task Because()
+    {
+        await _handler.ModifyDetails<TestDetails>(details => _modifiedDetails);
+
+        _httpContext.Response.Body.Position = 0;
+        var reader = new StreamReader(_httpContext.Response.Body);
+        _responseContent = await reader.ReadToEndAsync();
+        _responseResult = JsonSerializer.Deserialize<IdentityProviderResult>(_responseContent, _serializerOptions)!;
+
+        var cookies = _httpContext.Response.GetTypedHeaders().SetCookie;
+        _identityCookie = cookies.FirstOrDefault(c => c.Name == IdentityProviderResultHandler.IdentityCookieName)!;
+
+        var cookieValue = _identityCookie.Value.ToString();
+        var urlDecodedValue = Uri.UnescapeDataString(cookieValue);
+        var decodedJson = Encoding.UTF8.GetString(Convert.FromBase64String(urlDecodedValue));
+        _cookieResult = JsonSerializer.Deserialize<IdentityProviderResult>(decodedJson, _serializerOptions)!;
+    }
 
     [Fact] void should_write_modified_result_to_response()
     {
-        _httpContext.Response.Body.Position = 0;
-        var reader = new StreamReader(_httpContext.Response.Body);
-        var content = reader.ReadToEnd();
-        var result = JsonSerializer.Deserialize<IdentityProviderResult>(content, _serializerOptions);
-        var detailsJson = JsonSerializer.Serialize(result!.Details, _serializerOptions);
+        var detailsJson = JsonSerializer.Serialize(_responseResult.Details, _serializerOptions);
         var expectedDetailsJson = JsonSerializer.Serialize(_modifiedDetails, _serializerOptions);
         detailsJson.ShouldEqual(expectedDetailsJson);
     }
 
     [Fact] void should_set_new_identity_cookie_with_modified_details()
     {
-        var cookies = _httpContext.Response.GetTypedHeaders().SetCookie;
-        var identityCookie = cookies.FirstOrDefault(c => c.Name == IdentityProviderResultHandler.IdentityCookieName);
-        identityCookie.ShouldNotBeNull();
-
-        var cookieValue = identityCookie!.Value.ToString();
-        var urlDecodedValue = Uri.UnescapeDataString(cookieValue);
-        var decodedJson = Encoding.UTF8.GetString(Convert.FromBase64String(urlDecodedValue));
-        var result = JsonSerializer.Deserialize<IdentityProviderResult>(decodedJson, _serializerOptions);
-        var detailsJson = JsonSerializer.Serialize(result!.Details, _serializerOptions);
+        _identityCookie.ShouldNotBeNull();
+        var detailsJson = JsonSerializer.Serialize(_cookieResult.Details, _serializerOptions);
         var expectedDetailsJson = JsonSerializer.Serialize(_modifiedDetails, _serializerOptions);
         detailsJson.ShouldEqual(expectedDetailsJson);
     }

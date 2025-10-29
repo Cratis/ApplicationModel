@@ -8,6 +8,7 @@ namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_wr
 public class with_http_request : given.an_identity_provider_result_handler
 {
     IdentityProviderResult _identityResult;
+    Microsoft.Net.Http.Headers.SetCookieHeaderValue _identityCookie;
 
     void Establish()
     {
@@ -21,12 +22,13 @@ public class with_http_request : given.an_identity_provider_result_handler
         _httpContext.Request.Scheme = "http";
     }
 
-    async Task Because() => await _handler.Write(_identityResult);
-
-    [Fact] void should_set_cookie_as_not_secure_when_request_is_http()
+    async Task Because()
     {
+        await _handler.Write(_identityResult);
+
         var cookies = _httpContext.Response.GetTypedHeaders().SetCookie;
-        var identityCookie = cookies.FirstOrDefault(c => c.Name == IdentityProviderResultHandler.IdentityCookieName);
-        identityCookie!.Secure.ShouldBeFalse();
+        _identityCookie = cookies.FirstOrDefault(c => c.Name == IdentityProviderResultHandler.IdentityCookieName)!;
     }
+
+    [Fact] void should_set_cookie_as_not_secure_when_request_is_http() => _identityCookie.Secure.ShouldBeFalse();
 }
