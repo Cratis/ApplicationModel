@@ -10,6 +10,11 @@ namespace Cratis.Applications.Identity;
 public record IdentityName(string Value) : ConceptAs<string>(Value)
 {
     /// <summary>
+    /// Represents an empty <see cref="IdentityName"/>.
+    /// </summary>
+    public static readonly IdentityName Empty = new(string.Empty);
+
+    /// <summary>
     /// Implicitly convert from string to <see cref="IdentityName"/>.
     /// </summary>
     /// <param name="value">String to convert from.</param>
