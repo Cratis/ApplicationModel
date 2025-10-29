@@ -5,6 +5,7 @@ using System.Diagnostics.Metrics;
 using Cratis.Applications;
 using Cratis.Conversion;
 using Cratis.DependencyInjection;
+using Cratis.Execution;
 using Cratis.Serialization;
 using Cratis.Types;
 using Microsoft.Extensions.Configuration;
@@ -99,6 +100,7 @@ public static class HostBuilderExtensions
                 services.AddHttpContextAccessor();
                 services.AddCratisApplicationModelMeter();
                 services.AddCratisCommands();
+                services.AddSingleton<ICorrelationIdAccessor>(sp => new CorrelationIdAccessor());
                 services
                     .AddTypeDiscovery()
                     .AddSingleton<IDerivedTypes>(derivedTypes)
