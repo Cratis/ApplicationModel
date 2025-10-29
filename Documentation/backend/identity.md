@@ -97,6 +97,56 @@ Your provider will be exposed on a well known route: `/.cratis/me`.
 
 The identity system seamlessly integrates with the frontend by setting a cookie that can be automatically consumed by your client-side application. This eliminates the need for separate API calls to retrieve user details after authentication.
 
+## IdentityProviderResultHandler
+
+The `IIdentityProviderResultHandler` interface provides advanced control over how identity information is processed and modified during HTTP requests. This is particularly useful for stateless applications where you need to associate user-specific data with requests.
+
+### Purpose
+
+The `IIdentityProviderResultHandler` allows you to:
+
+- Generate identity results from the current HTTP context
+- Write identity information to the response (as cookies and JSON)
+- **Modify identity details during a request** - perfect for stateless applications that need to associate selections or preferences with the current user
+
+### Key Methods
+
+| Method | Description |
+| ------ | ----------- |
+| `GenerateFromCurrentContext()` | Creates an `IdentityProviderResult` from the current HTTP context |
+| `Write(IdentityProviderResult)` | Writes the identity result to the response as both a cookie and JSON |
+| `ModifyDetails<TDetails>(Func<TDetails, TDetails>)` | Modifies the identity details stored in the identity cookie |
+
+### Use Cases
+
+#### Modifying User Preferences in Stateless Applications
+
+In stateless applications, you often need to associate user selections or preferences with the current request. The `ModifyDetails` method allows you to update the identity cookie with new information:
+
+```csharp
+public class UserPreferencesController : ControllerBase
+{
+    private readonly IIdentityProviderResultHandler _identityHandler;
+
+    public UserPreferencesController(IIdentityProviderResultHandler identityHandler)
+    {
+        _identityHandler = identityHandler;
+    }
+
+    [HttpPost("set-department")]
+    public async Task<IActionResult> SetDepartment([FromBody] string department)
+    {
+        // Modify the identity details to include the selected department
+        await _identityHandler.ModifyDetails<UserDetails>(details =>
+            details with { SelectedDepartment = department });
+
+        return Ok();
+    }
+}
+```
+
+This approach is particularly valuable for stateless applications where you need to maintain user-specific context across requests without server-side sessions.
+
 ## Multi-Service Considerations
 
 In a microservices architecture, you have several options for implementing identity details:
