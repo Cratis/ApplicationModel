@@ -1,0 +1,12 @@
+- name: Getting Started
+  href: getting-started.md
+- name: Serializers
+  href: serializers.md
+- name: Concepts
+  href: concepts.md
+- name: Naming Policies
+  href: naming-policies.md
+- name: Class Mapping
+  href: class-mapping.md
+- name: Convention Packs
+  href: convention-packs.md

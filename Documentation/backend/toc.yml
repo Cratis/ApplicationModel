@@ -23,6 +23,6 @@
 - name: Without wrappers
   href: without-wrappers.md
 - name: MongoDB
-  href: mongodb.md
+  href: mongodb/toc.yml
 - name: Entity Framework
   href: entity-framework/toc.yml
