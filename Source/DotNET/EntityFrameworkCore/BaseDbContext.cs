@@ -4,6 +4,7 @@
 using Cratis.Applications.EntityFrameworkCore.Concepts;
 using Cratis.Applications.EntityFrameworkCore.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Cratis.Applications.EntityFrameworkCore;
 
@@ -16,6 +17,8 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        this.GetService<IEntityMapRegistrar>().RegisterEntityMaps(this, modelBuilder);
+
         var entityTypes = modelBuilder.Model.GetEntityTypes();
         var dbSetTypes = GetType()
             .GetProperties()
