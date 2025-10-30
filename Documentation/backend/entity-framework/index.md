@@ -7,6 +7,7 @@ The Application Model provides enhanced support for Entity Framework Core, offer
 | Topic | Description |
 | ------- | ----------- |
 | [Base DbContext](./base-db-context.md) | How to use the base DbContext class provided by the Application Model. |
+| [Entity Mapping](./entity-mapping.md) | How to configure entities using IEntityMapFor&lt;T&gt; for clean, organized entity configuration. |
 | [Read Only DbContexts](./read-only.md) | How to implement read-only database contexts for query scenarios. |
 | [Automatic Database hookup](./automatic-database-hookup.md) | How the Application Model automatically configures and sets up your databases. |
 | [Common Column Types](./common-column-types.md) | Common column type configurations and conventions. |

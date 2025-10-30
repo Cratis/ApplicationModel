@@ -1,5 +1,7 @@
 - name: Base DbContext
   href: base-db-context.md
+- name: Entity Mapping
+  href: entity-mapping.md
 - name: Read Only DbContexts
   href: read-only.md
 - name: Automatic Database hookup
