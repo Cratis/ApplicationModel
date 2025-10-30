@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>Cratis.Applications.EntityFrameworkCore.Specs</AssemblyName>
+        <RootNamespace>Cratis.Applications.EntityFrameworkCore</RootNamespace>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+        <ProjectReference Include="../EntityFrameworkCore/EntityFrameworkCore.csproj"/>
+    </ItemGroup>
+</Project>

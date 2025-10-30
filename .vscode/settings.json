@@ -6,6 +6,7 @@
     "Brotli",
     "Bson",
     "camelcase",
+    "Configurer",
     "Cratis",
     "datatable",
     "Expando",
