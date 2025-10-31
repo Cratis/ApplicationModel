@@ -82,29 +82,16 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
 
     /** @inheritdoc */
     subscribe(callback: OnNextResult<QueryResult<TDataType>>, args?: TParameters): ObservableQuerySubscription<TDataType> {
-        let actualRoute = this.route;
-        const connectionQueryArguments: any = {};
+        const connectionQueryArguments: any = this.buildQueryArguments();
 
         if (this._connection) {
             this._connection.disconnect();
         }
 
-        if (this.paging && this.paging.pageSize > 0) {
-            connectionQueryArguments.pageSize = this.paging.pageSize;
-            connectionQueryArguments.page = this.paging.page;
-        }
-
-        if (this.sorting.hasSorting) {
-            connectionQueryArguments.sortBy = this.sorting.field;
-            connectionQueryArguments.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
-        }
-
-        
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
+        if (!this.validateArguments(args)) {
             this._connection = new NullObservableQueryConnection(this.defaultValue);
         } else {
-            actualRoute = this.routeTemplate(args);
-            actualRoute = joinPaths(this._apiBasePath, actualRoute);
+            const actualRoute = this.buildRoute(args);
             const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
             this._connection = new ObservableQueryConnection<TDataType>(url, this._microservice);
         }
@@ -113,15 +100,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         this._connection.connect(data => {
             const result: any = data;
             try {
-                if (this.enumerable) {
-                    if (Array.isArray(result.data)) {
-                        result.data = JsonSerializer.deserializeArrayFromInstance(this.modelType, result.data);
-                    } else {
-                        result.data = [];
-                    }
-                } else {
-                    result.data = JsonSerializer.deserializeFromInstance(this.modelType, result.data);
-                }
+                this.deserializeResult(result);
                 callback(result);
             } catch (ex) {
                 console.log(ex);
@@ -134,25 +113,14 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     async perform(args?: TParameters): Promise<QueryResult<TDataType>> {
         const noSuccess = { ...QueryResult.noSuccess, ...{ data: this.defaultValue } } as QueryResult<TDataType>;
 
-        let actualRoute = this.route;
-        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
+        if (!this.validateArguments(args)) {
             return new Promise<QueryResult<TDataType>>((resolve) => {
                 resolve(noSuccess);
             });
         }
 
-        actualRoute = this.routeTemplate(args);
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
-
-        if (this.paging.hasPaging) {
-            actualRoute = this.addQueryParameter(actualRoute, 'page', this.paging.page);
-            actualRoute = this.addQueryParameter(actualRoute, 'pageSize', this.paging.pageSize);
-        }
-
-        if (this.sorting.hasSorting) {
-            actualRoute = this.addQueryParameter(actualRoute, 'sortBy', this.sorting.field);
-            actualRoute = this.addQueryParameter(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
-        }
+        let actualRoute = this.buildRoute(args);
+        actualRoute = this.addPagingAndSortingToRoute(actualRoute);
 
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
@@ -176,6 +144,58 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             return new QueryResult(result, this.modelType, this.enumerable);
         } catch {
             return noSuccess;
+        }
+    }
+
+    private validateArguments(args?: TParameters): boolean {
+        return ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object);
+    }
+
+    private buildRoute(args?: TParameters): string {
+        let actualRoute = this.routeTemplate(args);
+        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        return actualRoute;
+    }
+
+    private buildQueryArguments(): any {
+        const queryArguments: any = {};
+
+        if (this.paging && this.paging.pageSize > 0) {
+            queryArguments.pageSize = this.paging.pageSize;
+            queryArguments.page = this.paging.page;
+        }
+
+        if (this.sorting.hasSorting) {
+            queryArguments.sortBy = this.sorting.field;
+            queryArguments.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
+        }
+
+        return queryArguments;
+    }
+
+    private addPagingAndSortingToRoute(route: string): string {
+        if (this.paging.hasPaging) {
+            route = this.addQueryParameter(route, 'page', this.paging.page);
+            route = this.addQueryParameter(route, 'pageSize', this.paging.pageSize);
+        }
+
+        if (this.sorting.hasSorting) {
+            route = this.addQueryParameter(route, 'sortBy', this.sorting.field);
+            route = this.addQueryParameter(route, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+        }
+
+        return route;
+    }
+
+    private deserializeResult(result: any): void {
+        if (this.enumerable) {
+            if (Array.isArray(result.data)) {
+                result.data = JsonSerializer.deserializeArrayFromInstance(this.modelType, result.data);
+            } else {
+                result.data = [];
+            }
+        } else {
+            result.data = JsonSerializer.deserializeFromInstance(this.modelType, result.data);
         }
     }
 
