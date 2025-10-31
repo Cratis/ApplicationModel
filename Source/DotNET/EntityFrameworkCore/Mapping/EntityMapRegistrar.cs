@@ -11,7 +11,7 @@ namespace Cratis.Applications.EntityFrameworkCore;
 /// </summary>
 /// <param name="types"><see cref="ITypes"/> for type discovery.</param>
 /// <param name="serviceProvider"><see cref="IServiceProvider"/> for resolving dependencies.</param>
-public class EntityTypeRegistrar(ITypes types, IServiceProvider serviceProvider) : IEntityMapRegistrar
+public class EntityMapRegistrar(ITypes types, IServiceProvider serviceProvider) : IEntityMapRegistrar
 {
     readonly Dictionary<Type, Type> _entityMaps = types
         .FindMultiple(typeof(IEntityMapFor<>))
