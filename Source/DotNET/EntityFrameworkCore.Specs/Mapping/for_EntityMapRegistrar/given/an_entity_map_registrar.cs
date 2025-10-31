@@ -3,13 +3,13 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.given;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityMapRegistrar.given;
 
-public class an_entity_type_registrar : Specification
+public class an_entity_map_registrar : Specification
 {
     protected ITypes _types;
     protected IServiceProvider _serviceProvider;
-    protected EntityTypeRegistrar _registrar;
+    protected EntityMapRegistrar _registrar;
     protected DbContext _dbContext;
     protected ModelBuilder _modelBuilder;
 
@@ -23,6 +23,6 @@ public class an_entity_type_registrar : Specification
         // Set up default empty return to avoid issues in constructor
         _types.FindMultiple(typeof(IEntityMapFor<>)).Returns([]);
 
-        _registrar = new EntityTypeRegistrar(_types, _serviceProvider);
+        _registrar = new(_types, _serviceProvider);
     }
 }

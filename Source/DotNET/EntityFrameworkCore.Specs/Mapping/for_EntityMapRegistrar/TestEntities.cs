@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityMapRegistrar;
 
 #pragma warning disable SA1402, SA1649 // Single type per file,  File name should match first type name
 public class TestEntity

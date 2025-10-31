@@ -3,13 +3,13 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.when_registering_entity_maps;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityMapRegistrar.when_registering_entity_maps;
 
 public class with_entity_maps_available : Specification
 {
     ITypes _types;
     IServiceProvider _serviceProvider;
-    EntityTypeRegistrar _registrar;
+    EntityMapRegistrar _registrar;
     TestDbContext _testDbContext;
     ModelBuilder _modelBuilder;
     TestEntityMap _testEntityMap;
@@ -34,7 +34,7 @@ public class with_entity_maps_available : Specification
         _serviceProvider.GetService(typeof(TestEntityMap)).Returns(_testEntityMap);
         _serviceProvider.GetService(typeof(AnotherTestEntityMap)).Returns(_anotherTestEntityMap);
 
-        _registrar = new EntityTypeRegistrar(_types, _serviceProvider);
+        _registrar = new(_types, _serviceProvider);
     }
 
     void Because() => _registrar.RegisterEntityMaps(_testDbContext, _modelBuilder);
