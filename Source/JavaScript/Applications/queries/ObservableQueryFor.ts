@@ -17,7 +17,7 @@ import { SortDirection } from './SortDirection';
 import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
-import { GetHttpHeaders } from 'GetHttpHeaders';
+import { GetHttpHeaders } from '../GetHttpHeaders';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -157,11 +157,9 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         const headers = {
-            ... this._httpHeadersCallback?.(), ...
-            {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            ...(this._httpHeadersCallback?.() || {}),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         };
 
         if (this._microservice?.length > 0) {
