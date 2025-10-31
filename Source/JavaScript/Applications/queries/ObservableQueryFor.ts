@@ -30,6 +30,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     private _apiBasePath: string;
     private _origin: string;
     private _connection?: IObservableQueryConnection<TDataType>;
+    private _httpHeadersCallback: GetHttpHeaders;
 
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate<any>;
@@ -49,6 +50,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         this._microservice = Globals.microservice ?? '';
         this._apiBasePath = '';
         this._origin = '';
+        this._httpHeadersCallback = () => ({});
     }
 
     /**
@@ -75,8 +77,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
 
     /** @inheritdoc */
     setHttpHeadersCallback(callback: GetHttpHeaders): void {
-        // No-op: observable queries based on WebSockets do not use HTTP headers in the same way as HTTP requests.
-        callback?.();
+        this._httpHeadersCallback = callback;
     }
 
     /** @inheritdoc */
@@ -127,5 +128,62 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             }
         }, connectionQueryArguments);
         return subscriber;
+    }
+
+    /** @inheritdoc */
+    async perform(args?: TParameters): Promise<QueryResult<TDataType>> {
+        const noSuccess = { ...QueryResult.noSuccess, ...{ data: this.defaultValue } } as QueryResult<TDataType>;
+
+        let actualRoute = this.route;
+        if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
+            return new Promise<QueryResult<TDataType>>((resolve) => {
+                resolve(noSuccess);
+            });
+        }
+
+        actualRoute = this.routeTemplate(args);
+        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+
+        if (this.paging.hasPaging) {
+            actualRoute = this.addQueryParameter(actualRoute, 'page', this.paging.page);
+            actualRoute = this.addQueryParameter(actualRoute, 'pageSize', this.paging.pageSize);
+        }
+
+        if (this.sorting.hasSorting) {
+            actualRoute = this.addQueryParameter(actualRoute, 'sortBy', this.sorting.field);
+            actualRoute = this.addQueryParameter(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+        }
+
+        const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
+
+        const headers = {
+            ... this._httpHeadersCallback?.(), ...
+            {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        if (this._microservice?.length > 0) {
+            headers[Globals.microserviceHttpHeader] = this._microservice;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers
+        });
+
+        try {
+            const result = await response.json();
+            return new QueryResult(result, this.modelType, this.enumerable);
+        } catch {
+            return noSuccess;
+        }
+    }
+
+    private addQueryParameter(route: string, key: string, value: unknown): string {
+        route += (route.indexOf('?') > 0) ? '&' : '?';
+        route += `${key}=${value}`;
+        return route;
     }
 }
