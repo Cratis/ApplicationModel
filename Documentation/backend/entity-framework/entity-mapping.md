@@ -5,21 +5,9 @@ This approach separates entity configuration from your DbContext, making your co
 
 ## Overview
 
-Entity mapping in the Application Model allows you to define how your entities are configured for Entity Framework Core in dedicated classes. These entity configurations are automatically discovered and applied when your DbContext is created, eliminating the need to override `OnModelCreating` in every DbContext.
-
-## The IEntityTypeConfiguration&lt;T&gt; Interface
-
-The `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore defines a contract for configuring a specific entity type:
-
-```csharp
-public interface IEntityTypeConfiguration<T>
-    where T : class
-{
-    void Configure(EntityTypeBuilder<T> builder);
-}
-```
-
-This interface provides access to the `EntityTypeBuilder<T>` which gives you the full power of Entity Framework Core's Fluent API for configuring your entities.
+Entity mapping in the Application Model allows you to define how your entities are configured for Entity Framework Core in dedicated classes.
+These entity configurations are automatically discovered and applied when your DbContext is created, eliminating the need to override `OnModelCreating` in every DbContext
+that inherits from the [`BaseDbContext`](./base-db-context.md).
 
 ## Creating Entity Configurations
 
