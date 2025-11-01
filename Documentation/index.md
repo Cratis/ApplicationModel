@@ -6,6 +6,11 @@ The Cratis Application Model is a comprehensive development framework that provi
 
 Rather than assembling disparate libraries and creating your own patterns, the Application Model provides a unified foundation that covers everything from backend APIs to frontend user interfaces, with built-in support for modern architectural patterns like CQRS, event sourcing, and domain-driven design.
 
+## Packages / Deployables
+
+[![Nuget](https://img.shields.io/nuget/v/Cratis.Applications?logo=nuget)](http://nuget.org/packages/cratis.applications)
+[![NPM](https://img.shields.io/npm/v/@cratis/applications?label=@cratis/applications&logo=npm)](https://www.npmjs.com/package/@cratis/applications)
+
 ## Key Benefits
 
 ### 🚀 **Accelerated Development**
