@@ -3,14 +3,14 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityMapRegistrar.when_registering_entity_maps;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.when_registering_entity_maps;
 
-public class with_db_context_having_no_db_sets : Specification
+public class with_no_entity_maps_found : Specification
 {
     ITypes _types;
     IServiceProvider _serviceProvider;
-    EntityMapRegistrar _registrar;
-    EmptyDbContext _emptyDbContext;
+    EntityTypeRegistrar _registrar;
+    TestDbContext _testDbContext;
     ModelBuilder _modelBuilder;
 
     void Establish()
@@ -19,17 +19,17 @@ public class with_db_context_having_no_db_sets : Specification
         _serviceProvider = Substitute.For<IServiceProvider>();
         _modelBuilder = Substitute.For<ModelBuilder>();
 
-        var options = new DbContextOptionsBuilder<EmptyDbContext>()
+        var options = new DbContextOptionsBuilder<TestDbContext>()
             .UseSqlite(":memory:")
             .Options;
-        _emptyDbContext = new EmptyDbContext(options);
+        _testDbContext = new TestDbContext(options);
 
-        _types.FindMultiple(typeof(IEntityMapFor<>)).Returns([typeof(TestEntityMap)]);
+        _types.FindMultiple(typeof(IEntityTypeConfiguration<>)).Returns([]);
 
         _registrar = new(_types, _serviceProvider);
     }
 
-    void Because() => _registrar.RegisterEntityMaps(_emptyDbContext, _modelBuilder);
+    void Because() => _registrar.RegisterEntityMaps(_testDbContext, _modelBuilder);
 
     [Fact] void should_not_attempt_to_get_any_entity_maps_from_service_provider() => _serviceProvider.DidNotReceive().GetService(Arg.Any<Type>());
 }

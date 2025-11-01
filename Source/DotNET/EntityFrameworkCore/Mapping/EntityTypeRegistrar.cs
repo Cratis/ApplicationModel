@@ -7,16 +7,16 @@ using Microsoft.EntityFrameworkCore;
 namespace Cratis.Applications.EntityFrameworkCore;
 
 /// <summary>
-/// Represents an implementation of <see cref="IEntityMapRegistrar"/>.
+/// Represents an implementation of <see cref="IEntityTypeRegistrar"/>.
 /// </summary>
 /// <param name="types"><see cref="ITypes"/> for type discovery.</param>
 /// <param name="serviceProvider"><see cref="IServiceProvider"/> for resolving dependencies.</param>
-public class EntityMapRegistrar(ITypes types, IServiceProvider serviceProvider) : IEntityMapRegistrar
+public class EntityTypeRegistrar(ITypes types, IServiceProvider serviceProvider) : IEntityTypeRegistrar
 {
     readonly Dictionary<Type, Type> _entityMaps = types
-        .FindMultiple(typeof(IEntityMapFor<>))
+        .FindMultiple(typeof(IEntityTypeConfiguration<>))
         .ToDictionary(
-            t => t.GetInterface(typeof(IEntityMapFor<>).FullName!)!.GetGenericArguments()[0],
+            t => t.GetInterface(typeof(IEntityTypeConfiguration<>).FullName!)!.GetGenericArguments()[0],
             t => t);
 
     /// <inheritdoc/>
@@ -45,7 +45,7 @@ public class EntityMapRegistrar(ITypes types, IServiceProvider serviceProvider) 
     {
         public static void Configure(Type mapType, IServiceProvider serviceProvider, ModelBuilder modelBuilder)
         {
-            var entityMap = (IEntityMapFor<T>)serviceProvider.GetService(mapType)!;
+            var entityMap = (IEntityTypeConfiguration<T>)serviceProvider.GetService(mapType)!;
             var entityTypeBuilder = modelBuilder.Entity<T>();
             entityMap.Configure(entityTypeBuilder);
         }

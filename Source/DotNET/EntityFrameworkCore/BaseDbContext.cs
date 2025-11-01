@@ -17,7 +17,7 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        this.GetService<IEntityMapRegistrar>().RegisterEntityMaps(this, modelBuilder);
+        this.GetService<IEntityTypeRegistrar>().RegisterEntityMaps(this, modelBuilder);
 
         var entityTypes = modelBuilder.Model.GetEntityTypes();
         var dbSetTypes = GetType()

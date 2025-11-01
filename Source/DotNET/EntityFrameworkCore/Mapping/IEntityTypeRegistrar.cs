@@ -8,7 +8,7 @@ namespace Cratis.Applications.EntityFrameworkCore;
 /// <summary>
 /// Defines a system for registering entity maps.
 /// </summary>
-public interface IEntityMapRegistrar
+public interface IEntityTypeRegistrar
 {
     /// <summary>
     /// Register entity maps for the given model builder.
