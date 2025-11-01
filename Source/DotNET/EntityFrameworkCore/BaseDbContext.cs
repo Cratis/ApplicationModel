@@ -5,6 +5,7 @@ using Cratis.Applications.EntityFrameworkCore.Concepts;
 using Cratis.Applications.EntityFrameworkCore.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Cratis.Applications.EntityFrameworkCore;
 
@@ -27,7 +28,7 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
             .ToArray();
 
         var entityTypesForConverters = entityTypes
-            .Where(et => et.IsOwned() || dbSetTypes.Contains(et.ClrType))
+            .Where(IsRelevantForConverters(dbSetTypes))
             .ToArray();
 
         var databaseType = Database.GetDatabaseType();
@@ -36,4 +37,13 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.ApplyGuidConversion(entityTypesForConverters, databaseType);
         base.OnModelCreating(modelBuilder);
     }
+
+    Func<IMutableEntityType, bool> IsRelevantForConverters(Type[] dbSetTypes) => et =>
+        et.IsOwned() ||
+        dbSetTypes.Contains(et.ClrType) ||
+        dbSetTypes.Any(dbSetType =>
+            dbSetType.GetProperties().Any(p =>
+                p.PropertyType == et.ClrType ||
+                (p.PropertyType.IsGenericType &&
+                 p.PropertyType.GetGenericArguments().Contains(et.ClrType))));
 }
