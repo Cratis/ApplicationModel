@@ -1,6 +1,7 @@
 # Entity Mapping
 
-The Application Model provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore. This approach separates entity configuration from your DbContext, making your code more maintainable and following the Single Responsibility Principle.
+The Application Model provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore.
+This approach separates entity configuration from your DbContext, making your code more maintainable.
 
 ## Overview
 
