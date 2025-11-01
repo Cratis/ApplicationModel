@@ -2,9 +2,19 @@
 
 The `BaseDbContext` provides a pre-configured Entity Framework Core context that automatically applies common conventions and converters. This eliminates the need for manual configuration while ensuring consistent behavior across your application.
 
-## Features
+## Converters
 
-The `BaseDbContext` automatically configures the following features:
+The `BaseDbContext` automatically applies converters to all `DbSet<>` types defined on the context and any types that are referenced by those entity types.
+
+## How Converters Are Applied
+
+The `BaseDbContext` determines which entity types should have converters applied. An entity type is considered relevant if it:
+
+- Is an owned entity type
+- Is directly exposed as a `DbSet<>` on the context
+- Is referenced as a property or collection element by any type exposed as a `DbSet<>` on the context
+
+This ensures that converters are applied not only to top-level entities but also to any related entities that are part of your domain model hierarchy.
 
 ### JSON Conversion
 
@@ -38,3 +48,5 @@ Then you register it as you normally would:
 ```csharp
 services.AddDbContext<StoreDbContext>(opt => ...);
 ```
+
+Or leveraging the [automatic database hookup](./automatic-database-hookup.md) extensions provided by Cratis ApplicationModel.
