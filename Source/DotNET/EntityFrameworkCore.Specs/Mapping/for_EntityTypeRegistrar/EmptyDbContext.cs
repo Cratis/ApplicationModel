@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityMapRegistrar;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar;
 
 public class EmptyDbContext(DbContextOptions<EmptyDbContext> options) : DbContext(options)
 {

@@ -1,17 +1,18 @@
 # Entity Mapping
 
-The Application Model provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityMapFor<T>` interface. This approach separates entity configuration from your DbContext, making your code more maintainable and following the Single Responsibility Principle.
+The Application Model provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore.
+This approach separates entity configuration from your DbContext, making your code more maintainable.
 
 ## Overview
 
-Entity mapping in the Application Model allows you to define how your entities are configured for Entity Framework Core in dedicated classes. These entity maps are automatically discovered and applied when your DbContext is created, eliminating the need to override `OnModelCreating` in every DbContext.
+Entity mapping in the Application Model allows you to define how your entities are configured for Entity Framework Core in dedicated classes. These entity configurations are automatically discovered and applied when your DbContext is created, eliminating the need to override `OnModelCreating` in every DbContext.
 
-## The IEntityMapFor&lt;T&gt; Interface
+## The IEntityTypeConfiguration&lt;T&gt; Interface
 
-The `IEntityMapFor<T>` interface defines a contract for configuring a specific entity type:
+The `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore defines a contract for configuring a specific entity type:
 
 ```csharp
-public interface IEntityMapFor<T>
+public interface IEntityTypeConfiguration<T>
     where T : class
 {
     void Configure(EntityTypeBuilder<T> builder);
@@ -20,15 +21,15 @@ public interface IEntityMapFor<T>
 
 This interface provides access to the `EntityTypeBuilder<T>` which gives you the full power of Entity Framework Core's Fluent API for configuring your entities.
 
-## Creating Entity Maps
+## Creating Entity Configurations
 
-To create an entity map, implement the `IEntityMapFor<T>` interface for your entity type:
+To create an entity configuration, implement the `IEntityTypeConfiguration<T>` interface for your entity type:
 
 ```csharp
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Cratis.Applications.EntityFrameworkCore;
 
-public class UserMap : IEntityMapFor<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -58,9 +59,9 @@ public class UserMap : IEntityMapFor<User>
 
 ## Automatic Discovery and Registration
 
-Entity maps are automatically discovered and registered when your application starts. The Application Model:
+Entity configurations are automatically discovered and registered when your application starts. The Application Model:
 
-1. **Discovers all implementations** of `IEntityMapFor<T>` in your application
+1. **Discovers all implementations** of `IEntityTypeConfiguration<T>` in your application
 2. **Registers them with dependency injection** so they can have dependencies injected
 3. **Applies them automatically** during `OnModelCreating` in your DbContext
 
@@ -82,14 +83,14 @@ public class MyDbContext : BaseDbContext
 
 ## Dependency Injection Support
 
-Entity maps support dependency injection, allowing you to inject services that might be needed for configuration:
+Entity configurations support dependency injection, allowing you to inject services that might be needed for configuration:
 
 ```csharp
-public class UserMap : IEntityMapFor<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     private readonly IConfiguration _configuration;
     
-    public UserMap(IConfiguration configuration)
+    public UserConfiguration(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -112,7 +113,7 @@ public class UserMap : IEntityMapFor<User>
 ### Complex Property Configuration
 
 ```csharp
-public class OrderMap : IEntityMapFor<Order>
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
@@ -140,7 +141,7 @@ public class OrderMap : IEntityMapFor<Order>
 ### Multiple Entity Configurations
 
 ```csharp
-public class ProductMap : IEntityMapFor<Product>
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
@@ -161,7 +162,7 @@ public class ProductMap : IEntityMapFor<Product>
     }
 }
 
-public class CategoryMap : IEntityMapFor<Category>
+public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
@@ -183,9 +184,9 @@ public class CategoryMap : IEntityMapFor<Category>
 
 ### Organization
 
-- **One entity map per entity**: Keep each entity map focused on a single entity type
-- **Descriptive naming**: Use clear names like `UserMap`, `OrderMap`, etc.
-- **Logical grouping**: Place entity maps in a dedicated folder (e.g., `Mapping/` or `Configuration/`)
+- **One entity configuration per entity**: Keep each entity configuration focused on a single entity type
+- **Descriptive naming**: Use clear names like `UserConfiguration`, `OrderConfiguration`, etc.
+- **Logical grouping**: Place entity configurations in a dedicated folder (e.g., `Configuration/` or `Mapping/`)
 
 ### Configuration Guidelines
 
@@ -202,20 +203,20 @@ public class CategoryMap : IEntityMapFor<Category>
 
 ## Integration with BaseDbContext
 
-When you inherit from `BaseDbContext`, entity maps are automatically applied during model creation. The base class:
+When you inherit from `BaseDbContext`, entity configurations are automatically applied during model creation. The base class:
 
 1. Discovers all `DbSet<T>` properties on your DbContext
-2. Looks for corresponding `IEntityMapFor<T>` implementations
+2. Looks for corresponding `IEntityTypeConfiguration<T>` implementations
 3. Applies the configurations during `OnModelCreating`
 
-This means you don't need to manually register or apply entity maps - they work automatically once you implement the interface.
+This means you don't need to manually register or apply entity configurations - they work automatically once you implement the interface.
 
 ## Migration Support
 
-Entity maps work seamlessly with Entity Framework Core migrations. When you add or modify entity maps:
+Entity configurations work seamlessly with Entity Framework Core migrations. When you add or modify entity configurations:
 
 1. Run `dotnet ef migrations add <MigrationName>` to create a migration
-2. The migration will include all changes from your entity maps
+2. The migration will include all changes from your entity configurations
 3. Run `dotnet ef database update` to apply the changes
 
-The automatic discovery and application of entity maps ensures that all your configurations are included in migrations without additional setup.
+The automatic discovery and application of entity configurations ensures that all your configurations are included in migrations without additional setup.
