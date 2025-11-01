@@ -27,7 +27,10 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
             .ToArray();
 
         var entityTypesForConverters = entityTypes
-            .Where(et => et.IsOwned() || dbSetTypes.Contains(et.ClrType))
+            .Where(et =>
+                et.IsOwned() ||
+                dbSetTypes.Contains(et.ClrType) ||
+                dbSetTypes.Any(dbSetType => dbSetType.GetProperties().Any(p => p.PropertyType == et.ClrType)))
             .ToArray();
 
         var databaseType = Database.GetDatabaseType();
