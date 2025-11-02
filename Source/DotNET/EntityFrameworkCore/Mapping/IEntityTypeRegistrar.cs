@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping;
 
 /// <summary>
 /// Defines a system for registering entity maps.

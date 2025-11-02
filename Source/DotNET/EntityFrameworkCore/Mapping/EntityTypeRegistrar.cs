@@ -4,7 +4,7 @@
 using Cratis.Types;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Applications.EntityFrameworkCore.Mapping;
 
 /// <summary>
 /// Represents an implementation of <see cref="IEntityTypeRegistrar"/>.

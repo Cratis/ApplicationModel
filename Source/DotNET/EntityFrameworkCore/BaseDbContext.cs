@@ -3,6 +3,7 @@
 
 using Cratis.Applications.EntityFrameworkCore.Concepts;
 using Cratis.Applications.EntityFrameworkCore.Json;
+using Cratis.Applications.EntityFrameworkCore.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
