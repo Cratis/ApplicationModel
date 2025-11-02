@@ -29,4 +29,11 @@ export interface IObservableQueryFor<TDataType, TArguments = object> extends IQu
      * @returns {ObservableQuerySubscription<TDataType>}.
      */
     subscribe(callback: OnNextResult<QueryResult<TDataType>>, args?: TArguments): ObservableQuerySubscription<TDataType>;
+
+    /**
+     * Perform the query using HTTP to get a single result instead of subscribing via WebSocket.
+     * @param [args] Optional arguments for the query - depends on whether or not the query needs arguments.
+     * @returns {Promise<QueryResult<TDataType>>} for the model
+     */
+    perform(args?: TArguments): Promise<QueryResult<TDataType>>;
 }
