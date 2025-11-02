@@ -13,6 +13,7 @@ public class TestDbContext(DbContextOptions<TestDbContext> options) : BaseDbCont
     public DbSet<Company> Companies { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Organization> Organizations { get; set; }
+    public DbSet<Store> Stores { get; set; }
 }
 
 public class EmptyDbContext(DbContextOptions<EmptyDbContext> options) : BaseDbContext(options)
