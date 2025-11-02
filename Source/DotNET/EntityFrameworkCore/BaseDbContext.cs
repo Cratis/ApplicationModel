@@ -33,9 +33,13 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
             .ToArray();
 
         var databaseType = Database.GetDatabaseType();
-        modelBuilder.ApplyJsonConversion(entityTypesForConverters, databaseType);
-        modelBuilder.ApplyConceptAsConversion(entityTypesForConverters, databaseType);
-        modelBuilder.ApplyGuidConversion(entityTypesForConverters, databaseType);
+        var typesOnlyInJsonProperties = modelBuilder.ApplyJsonConversion(entityTypesForConverters, databaseType);
+        var entityTypesForOtherConverters = entityTypesForConverters
+            .Where(et => !typesOnlyInJsonProperties.Contains(et.ClrType))
+            .ToArray();
+
+        modelBuilder.ApplyConceptAsConversion(entityTypesForOtherConverters, databaseType);
+        modelBuilder.ApplyGuidConversion(entityTypesForOtherConverters, databaseType);
         base.OnModelCreating(modelBuilder);
     }
 

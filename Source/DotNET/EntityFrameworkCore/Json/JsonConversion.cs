@@ -31,14 +31,40 @@ public static class JsonConversion
     /// <param name="modelBuilder">The model builder to apply the JSON conversion to.</param>
     /// <param name="entityTypes">The entity types to apply the JSON conversion to.</param>
     /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
-    public static void ApplyJsonConversion(this ModelBuilder modelBuilder, IEnumerable<IMutableEntityType> entityTypes, DatabaseType databaseType)
+    /// <returns>A collection of types that only appear in JSON-converted properties.</returns>
+    public static IEnumerable<Type> ApplyJsonConversion(this ModelBuilder modelBuilder, IEnumerable<IMutableEntityType> entityTypes, DatabaseType databaseType)
     {
-        entityTypes = entityTypes.Where(t => t.HasJsonProperties());
-        foreach (var entityType in entityTypes)
+        var allEntityTypes = entityTypes.ToArray();
+        var entityTypesWithJson = allEntityTypes.Where(t => t.HasJsonProperties()).ToArray();
+
+        var typesInJsonProperties = new HashSet<Type>();
+        var typesInNonJsonProperties = new HashSet<Type>();
+
+        foreach (var entityType in allEntityTypes)
+        {
+            foreach (var property in entityType.ClrType.GetProperties())
+            {
+                var hasJsonAttribute = Attribute.IsDefined(property, typeof(JsonAttribute), inherit: true);
+                var propertyType = property.PropertyType;
+
+                if (hasJsonAttribute)
+                {
+                    typesInJsonProperties.Add(propertyType);
+                }
+                else
+                {
+                    typesInNonJsonProperties.Add(propertyType);
+                }
+            }
+        }
+
+        foreach (var entityType in entityTypesWithJson)
         {
             var entityTypeBuilder = modelBuilder.Entity(entityType.Name);
             entityTypeBuilder.ApplyJsonConversion(databaseType);
         }
+
+        return typesInJsonProperties.Except(typesInNonJsonProperties);
     }
 
     /// <summary>
