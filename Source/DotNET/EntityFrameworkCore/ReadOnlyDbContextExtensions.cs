@@ -21,11 +21,12 @@ public static class ReadOnlyDbContextExtensions
     public static IServiceCollection AddReadOnlyDbContext<TContext>(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = default)
         where TContext : DbContext
     {
-        services.AddDbContext<TContext>(options =>
+        services.AddDbContext<TContext>((serviceProvider, options) =>
         {
             options
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .AddInterceptors(new ReadOnlySaveChangesInterceptor());
+                .AddInterceptors(new ReadOnlySaveChangesInterceptor())
+                .UseInternalServiceProvider(serviceProvider);
             optionsAction?.Invoke(options);
         });
         return services;
