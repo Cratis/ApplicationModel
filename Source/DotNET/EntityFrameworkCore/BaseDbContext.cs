@@ -34,13 +34,52 @@ public class BaseDbContext(DbContextOptions options) : DbContext(options)
 
         var databaseType = Database.GetDatabaseType();
         var typesOnlyInJsonProperties = modelBuilder.ApplyJsonConversion(entityTypesForConverters, databaseType);
+
         var entityTypesForOtherConverters = entityTypesForConverters
             .Where(et => !typesOnlyInJsonProperties.Contains(et.ClrType))
             .ToArray();
 
-        modelBuilder.ApplyConceptAsConversion(entityTypesForOtherConverters, databaseType);
-        modelBuilder.ApplyGuidConversion(entityTypesForOtherConverters, databaseType);
+        var propertyTypesOnlyInJsonEntities = GetPropertyTypesOnlyInJsonEntities(
+            entityTypesForOtherConverters,
+            typesOnlyInJsonProperties);
+
+        var finalEntityTypesForConverters = entityTypesForOtherConverters
+            .Where(et => !propertyTypesOnlyInJsonEntities.Contains(et.ClrType))
+            .ToArray();
+
+        modelBuilder.ApplyConceptAsConversion(finalEntityTypesForConverters, databaseType);
+        modelBuilder.ApplyGuidConversion(finalEntityTypesForConverters, databaseType);
         base.OnModelCreating(modelBuilder);
+    }
+
+    static HashSet<Type> GetPropertyTypesOnlyInJsonEntities(
+        IMutableEntityType[] entityTypesForConverters,
+        IEnumerable<Type> typesOnlyInJsonProperties)
+    {
+        var jsonEntityTypes = typesOnlyInJsonProperties.ToHashSet();
+        var propertyTypesInJsonEntities = new HashSet<Type>();
+        var propertyTypesInNonJsonEntities = new HashSet<Type>();
+
+        foreach (var entityType in entityTypesForConverters)
+        {
+            var isJsonEntity = jsonEntityTypes.Contains(entityType.ClrType);
+
+            foreach (var property in entityType.ClrType.GetProperties())
+            {
+                var propertyType = property.PropertyType;
+
+                if (isJsonEntity)
+                {
+                    propertyTypesInJsonEntities.Add(propertyType);
+                }
+                else
+                {
+                    propertyTypesInNonJsonEntities.Add(propertyType);
+                }
+            }
+        }
+
+        return propertyTypesInJsonEntities.Except(propertyTypesInNonJsonEntities).ToHashSet();
     }
 
     Func<IMutableEntityType, bool> IsRelevantForConverters(Type[] dbSetTypes) => et =>

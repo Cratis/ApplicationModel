@@ -106,4 +106,30 @@ public record LocationId(int Value) : ConceptAs<int>(Value)
     public static implicit operator LocationId(int value) => new(value);
 }
 
+public class Store
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    [Json]
+    public StoreConfiguration Configuration { get; set; } = new();
+}
+
+public class StoreConfiguration
+{
+    public string Region { get; set; } = string.Empty;
+    public ConfigurationDetails Details { get; set; } = new();
+}
+
+public class ConfigurationDetails
+{
+    public ConfigurationCode Code { get; set; } = ConfigurationCode.NotSet;
+    public Guid UniqueId { get; set; }
+}
+
+public record ConfigurationCode(string Value) : ConceptAs<string>(Value)
+{
+    public static readonly ConfigurationCode NotSet = new(string.Empty);
+    public static implicit operator ConfigurationCode(string value) => new(value);
+}
+
 #pragma warning restore SA1402, SA1649 // Single type per file,  File name should match first type name
