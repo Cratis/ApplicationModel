@@ -25,8 +25,7 @@ public static class ReadOnlyDbContextExtensions
         {
             options
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .AddInterceptors(new ReadOnlySaveChangesInterceptor())
-                .UseInternalServiceProvider(serviceProvider);
+                .AddInterceptors(new ReadOnlySaveChangesInterceptor());
             optionsAction?.Invoke(options);
         });
         return services;

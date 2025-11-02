@@ -26,8 +26,7 @@ public static class DbContextServiceCollectionExtensions
         services.AddDbContext<TDbContext>((serviceProvider, options) =>
         {
             options
-                .UseDatabaseFromConnectionString(connectionString)
-                .UseInternalServiceProvider(serviceProvider);
+                .UseDatabaseFromConnectionString(connectionString);
             optionsAction?.Invoke(options);
         });
         return services;
