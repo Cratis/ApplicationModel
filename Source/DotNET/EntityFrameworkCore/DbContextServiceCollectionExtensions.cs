@@ -23,9 +23,11 @@ public static class DbContextServiceCollectionExtensions
     public static IServiceCollection AddDbContextWithConnectionString<TDbContext>(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder>? optionsAction = default)
         where TDbContext : DbContext
     {
-        services.AddDbContext<TDbContext>(options =>
+        services.AddDbContext<TDbContext>((serviceProvider, options) =>
         {
-            options.UseDatabaseFromConnectionString(connectionString);
+            options
+                .UseDatabaseFromConnectionString(connectionString)
+                .UseInternalServiceProvider(serviceProvider);
             optionsAction?.Invoke(options);
         });
         return services;
