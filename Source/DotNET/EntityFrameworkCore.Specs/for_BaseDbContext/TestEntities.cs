@@ -62,7 +62,6 @@ public class Product
     public string Name { get; set; } = string.Empty;
 }
 
-// Entity to test that types only in JSON properties don't get Concept/Guid conversions
 public class Department
 {
     public Guid Id { get; set; }
@@ -84,7 +83,6 @@ public record SettingsId(string Value) : ConceptAs<string>(Value)
     public static implicit operator SettingsId(string value) => new(value);
 }
 
-// Entity to test mixed scenario: same type appears in both JSON and non-JSON properties
 public class Organization
 {
     public Guid Id { get; set; }
