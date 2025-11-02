@@ -7,7 +7,7 @@ import * as sinon from 'sinon';
 import { Sorting } from '../../Sorting';
 import { SortDirection } from '../../SortDirection';
 
-describe('with sorting', given(an_observable_query_for, context => {
+describe('when performing with sorting', given(an_observable_query_for, context => {
     let fetchStub: sinon.SinonStub;
     const mockResponse = {
         data: 'test-result',

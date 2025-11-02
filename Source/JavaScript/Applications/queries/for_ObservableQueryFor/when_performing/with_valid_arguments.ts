@@ -6,7 +6,7 @@ import { given } from '../../../given';
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
 
-describe('with valid arguments', given(an_observable_query_for, context => {
+describe('when performing with valid arguments', given(an_observable_query_for, context => {
     let result: QueryResult<string>;
     let fetchStub: sinon.SinonStub;
     const mockResponse = {

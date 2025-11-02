@@ -6,7 +6,7 @@ import { given } from '../../../given';
 import * as sinon from 'sinon';
 import { Paging } from '../../Paging';
 
-describe('with paging', given(an_observable_query_for, context => {
+describe('when performing with paging', given(an_observable_query_for, context => {
     let fetchStub: sinon.SinonStub;
     const mockResponse = {
         data: 'test-result',

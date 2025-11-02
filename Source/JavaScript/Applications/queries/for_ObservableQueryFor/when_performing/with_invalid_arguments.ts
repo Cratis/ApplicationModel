@@ -5,7 +5,7 @@ import { an_observable_query_for } from '../given/an_observable_query_for';
 import { given } from '../../../given';
 import { QueryResult } from '../../QueryResult';
 
-describe('with invalid arguments', given(an_observable_query_for, context => {
+describe('when performing with invalid arguments', given(an_observable_query_for, context => {
     let result: QueryResult<string>;
 
     beforeEach(async () => {
