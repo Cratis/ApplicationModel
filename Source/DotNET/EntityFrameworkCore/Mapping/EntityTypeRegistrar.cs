@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Cratis.DependencyInjection;
 using Cratis.Types;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ namespace Cratis.Applications.EntityFrameworkCore.Mapping;
 /// </summary>
 /// <param name="types"><see cref="ITypes"/> for type discovery.</param>
 /// <param name="serviceProvider"><see cref="IServiceProvider"/> for resolving dependencies.</param>
+[Singleton]
 public class EntityTypeRegistrar(ITypes types, IServiceProvider serviceProvider) : IEntityTypeRegistrar
 {
     readonly Dictionary<Type, Type> _entityMaps = types
