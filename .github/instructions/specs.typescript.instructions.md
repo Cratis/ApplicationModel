@@ -37,7 +37,7 @@ then adapt with the C# specific conventions below.
 **Example:**
 
 ```typescript
-describe("when_adding", () => {
+describe("when adding", () => {
     let events: EventsToAppend;
     let event: string;
 
@@ -77,7 +77,7 @@ import { an_events_command_response_value_handler } from '../given/an_events_com
 import { given } from '../../../given'; // Import the given function from the package root
 import { expect } from 'chai';
 
-describe("with_valid_events_collection", given(an_events_command_response_value_handler, context => {
+describe("when checking can handle with valid events collection", given(an_events_command_response_value_handler, context => {
     let events: object[];
     let result: boolean;
 
@@ -92,6 +92,8 @@ describe("with_valid_events_collection", given(an_events_command_response_value_
     });
 }));
 ```
+
+> Note: For multiple outcomes, include the 'when <behavior>' as a prefix in the `describe` text.
 
 The context would be defined as follows:
 
