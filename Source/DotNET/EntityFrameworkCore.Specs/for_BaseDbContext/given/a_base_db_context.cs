@@ -1,0 +1,42 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Cratis.Applications.EntityFrameworkCore.Mapping;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Cratis.Applications.EntityFrameworkCore.for_BaseDbContext.given;
+
+public class a_base_db_context : Specification
+{
+    protected TDbContext CreateDbContext<TDbContext>()
+        where TDbContext : DbContext
+    {
+        var services = new ServiceCollection();
+        services.AddEntityFrameworkSqlite();
+
+        // Add a stub IEntityTypeRegistrar that does nothing
+        services.AddSingleton<IEntityTypeRegistrar>(new StubEntityTypeRegistrar());
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        var options = new DbContextOptionsBuilder<TDbContext>()
+            .UseSqlite(":memory:")
+            .UseInternalServiceProvider(serviceProvider)
+            .Options;
+
+        return (TDbContext)Activator.CreateInstance(typeof(TDbContext), options)!;
+    }
+
+    protected IModel GetModel<TDbContext>(TDbContext dbContext)
+        where TDbContext : DbContext => dbContext.Model;
+
+    class StubEntityTypeRegistrar : IEntityTypeRegistrar
+    {
+        public void RegisterEntityMaps(DbContext dbContext, ModelBuilder modelBuilder)
+        {
+            // Do nothing for specs - we're testing the conversion logic, not entity maps
+        }
+    }
+}
