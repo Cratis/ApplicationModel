@@ -80,12 +80,9 @@ public static class DbContextServiceCollectionExtensions
     /// <param name="assemblies">The assemblies to scan for DbContext types.</param>
     /// <returns>A collection of filtered DbContext types.</returns>
     static IEnumerable<Type> DiscoverAndFilterDbContextTypes<TDbContext>(Assembly[] assemblies)
-        where TDbContext : class
-    {
-        return Types.Types.Instance
+        where TDbContext : class => Types.Types.Instance
             .FindMultiple<TDbContext>()
             .Where(t => assemblies.Contains(t.Assembly) &&
                        t.IsPublic &&
                        !t.HasAttribute<IgnoreAutoRegistrationAttribute>());
-    }
 }
