@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
+using Cratis.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,7 +44,8 @@ public static class DbContextServiceCollectionExtensions
     public static IServiceCollection AddReadModelDbContextsFromAssemblies(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction, params Assembly[] assemblies)
     {
         var addDbContextMethod = typeof(ReadOnlyDbContextExtensions).GetMethod(nameof(ReadOnlyDbContextExtensions.AddReadOnlyDbContext), BindingFlags.Static | BindingFlags.Public)!;
-        foreach (var dbContext in Types.Types.Instance.FindMultiple<ReadOnlyDbContext>().Where(t => assemblies.Contains(t.Assembly)))
+
+        foreach (var dbContext in DiscoverAndFilterDbContextTypes<ReadOnlyDbContext>(assemblies))
         {
             addDbContextMethod.MakeGenericMethod(dbContext).Invoke(null, [services, optionsAction]);
         }
@@ -63,10 +65,27 @@ public static class DbContextServiceCollectionExtensions
     public static IServiceCollection AddReadModelDbContextsWithConnectionStringFromAssemblies(this IServiceCollection services, string connectionString, Action<DbContextOptionsBuilder> optionsAction, params Assembly[] assemblies)
     {
         var addDbContextMethod = typeof(ReadOnlyDbContextExtensions).GetMethod(nameof(ReadOnlyDbContextExtensions.AddReadOnlyDbContextWithConnectionString), BindingFlags.Static | BindingFlags.Public)!;
-        foreach (var dbContext in Types.Types.Instance.FindMultiple<ReadOnlyDbContext>().Where(t => assemblies.Contains(t.Assembly)))
+
+        foreach (var dbContext in DiscoverAndFilterDbContextTypes<ReadOnlyDbContext>(assemblies))
         {
             addDbContextMethod.MakeGenericMethod(dbContext).Invoke(null, [services, connectionString, optionsAction]);
         }
         return services;
+    }
+
+    /// <summary>
+    /// Discovers and filters DbContext types from the specified assemblies, excluding those marked with IgnoreAutoRegistrationAttribute.
+    /// </summary>
+    /// <typeparam name="TDbContext">The base DbContext type to filter for.</typeparam>
+    /// <param name="assemblies">The assemblies to scan for DbContext types.</param>
+    /// <returns>A collection of filtered DbContext types.</returns>
+    static IEnumerable<Type> DiscoverAndFilterDbContextTypes<TDbContext>(Assembly[] assemblies)
+        where TDbContext : class
+    {
+        return Types.Types.Instance
+            .FindMultiple<TDbContext>()
+            .Where(t => assemblies.Contains(t.Assembly) &&
+                       t.IsPublic &&
+                       !t.HasAttribute<IgnoreAutoRegistrationAttribute>());
     }
 }
