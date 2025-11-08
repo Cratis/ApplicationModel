@@ -21,6 +21,7 @@ MongoDB support in Cratis Applications provides a comprehensive set of features 
 - [**Naming Policies**](naming-policies.md) - Configuring naming conventions
 - [**Class Mapping**](class-mapping.md) - Custom BSON class mapping with automatic discovery
 - [**Convention Packs**](convention-packs.md) - Advanced convention system and filtering
+- [**Observing Collections**](observing-collections.md) - Reactive programming with MongoDB change streams
 
 ## Quick Start
 
