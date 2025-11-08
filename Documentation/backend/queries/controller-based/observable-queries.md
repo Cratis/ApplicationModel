@@ -2,15 +2,26 @@
 
 Observable queries provide real-time data streaming using WebSockets, enabling reactive user experiences where data changes are pushed to clients as they occur. You achieve this by returning `ISubject<T>` from your controller actions.
 
+The `ISubject<T>` return type automatically establishes a WebSocket connection between the server and client, enabling real-time data updates. This integrates seamlessly with the [ObservableQuery construct in the frontend](../../frontend/react/queries.md) through the proxy generator, creating strongly-typed reactive data flows.
+
 ## Basic Observable Query
 
-The key to an observable query is to leverage the `ClientObservable<T>` generic type or MongoDB extension methods:
+The key to an observable query is to leverage the `ClientObservable<T>` generic type. For database-specific implementations like MongoDB, see [Observing Collections](../mongodb/observing-collections.md).
 
 ```csharp
 [HttpGet("observable")]
 public ISubject<IEnumerable<DebitAccount>> AllAccountsObservable()
 {
-    return _collection.Observe(); // Simple MongoDB extension method
+    var observable = new ClientObservable<IEnumerable<DebitAccount>>();
+    
+    // Send initial data
+    var accounts = GetCurrentAccounts();
+    observable.OnNext(accounts);
+    
+    // Set up real-time updates (implementation varies by data source)
+    SetupDataChangeNotifications(observable);
+    
+    return observable;
 }
 ```
 
@@ -22,19 +33,34 @@ Observable queries can accept arguments just like regular queries:
 [HttpGet("owner/{ownerId}/observable")]
 public ISubject<IEnumerable<DebitAccount>> GetAccountsByOwnerObservable(CustomerId ownerId)
 {
-    return _collection.Observe(account => account.Owner == ownerId);
+    var observable = new ClientObservable<IEnumerable<DebitAccount>>();
+    
+    // Send initial filtered data
+    var accounts = GetAccountsByOwner(ownerId);
+    observable.OnNext(accounts);
+    
+    // Set up filtered change notifications
+    SetupFilteredDataChangeNotifications(observable, ownerId);
+    
+    return observable;
 }
 
 [HttpGet("filtered-observable")]
 public ISubject<IEnumerable<DebitAccount>> GetFilteredAccountsObservable(
     [FromQuery] decimal? minBalance = null)
 {
-    if (minBalance.HasValue)
-    {
-        return _collection.Observe(account => account.Balance >= minBalance.Value);
-    }
+    var observable = new ClientObservable<IEnumerable<DebitAccount>>();
     
-    return _collection.Observe();
+    // Send initial filtered data
+    var accounts = minBalance.HasValue 
+        ? GetAccountsAboveBalance(minBalance.Value)
+        : GetAllAccounts();
+    observable.OnNext(accounts);
+    
+    // Set up change notifications with filter
+    SetupFilteredDataChangeNotifications(observable, minBalance);
+    
+    return observable;
 }
 ```
 
@@ -46,7 +72,19 @@ For observing changes to a single object:
 [HttpGet("{id}/observable")]
 public ISubject<DebitAccount> GetAccountObservable(AccountId id)
 {
-    return _collection.Observe(account => account.Id == id);
+    var observable = new ClientObservable<DebitAccount>();
+    
+    // Send initial object
+    var account = GetAccountById(id);
+    if (account is not null)
+    {
+        observable.OnNext(account);
+    }
+    
+    // Set up change notifications for this specific object
+    SetupSingleObjectChangeNotifications(observable, id);
+    
+    return observable;
 }
 ```
 
@@ -62,34 +100,30 @@ public ISubject<AccountSummary> GetAccountSummaryObservable()
     
     var calculateSummary = () =>
     {
-        var accounts = _collection.Find(_ => true).ToList();
-        return new AccountSummary(accounts.Count, accounts.Sum(a => a.Balance));
+        var accounts = GetAllAccounts();
+        return new AccountSummary(accounts.Count(), accounts.Sum(a => a.Balance));
     };
 
     // Send initial summary
     observable.OnNext(calculateSummary());
 
-    // Watch for any account changes
-    var cursor = _collection.Watch();
-    Task.Run(() =>
+    // Set up change notifications for computed data
+    // Implementation depends on your data source and change notification mechanism
+    var changeToken = SetupDataChangeNotifications(() =>
     {
-        while (cursor.MoveNext())
-        {
-            if (cursor.Current.Any())
-            {
-                observable.OnNext(calculateSummary());
-            }
-        }
+        observable.OnNext(calculateSummary());
     });
 
-    observable.ClientDisconnected = () => cursor.Dispose();
+    // Clean up when client disconnects
+    observable.ClientDisconnected = () => changeToken?.Dispose();
+    
     return observable;
 }
 ```
 
-## Multiple Collection Observables
+## Multiple Data Source Observables
 
-Observe changes across multiple collections:
+Observe changes across multiple data sources:
 
 ```csharp
 public record CombinedData(IEnumerable<DebitAccount> Accounts, IEnumerable<Customer> Customers);
@@ -101,33 +135,22 @@ public ISubject<CombinedData> GetCombinedDataObservable()
     
     var sendUpdate = () =>
     {
-        var accounts = _accountCollection.Find(_ => true).ToList();
-        var customers = _customerCollection.Find(_ => true).ToList();
+        var accounts = GetAllAccounts();
+        var customers = GetAllCustomers();
         observable.OnNext(new CombinedData(accounts, customers));
     };
 
     // Send initial data
     sendUpdate();
 
-    // Watch both collections
-    var accountCursor = _accountCollection.Watch();
-    var customerCursor = _customerCollection.Watch();
-    
-    Task.Run(() =>
-    {
-        while (accountCursor.MoveNext() || customerCursor.MoveNext())
-        {
-            if (accountCursor.Current.Any() || customerCursor.Current.Any())
-            {
-                sendUpdate();
-            }
-        }
-    });
+    // Set up change notifications for multiple data sources
+    var accountChangeToken = SetupAccountChangeNotifications(sendUpdate);
+    var customerChangeToken = SetupCustomerChangeNotifications(sendUpdate);
 
     observable.ClientDisconnected = () =>
     {
-        accountCursor.Dispose();
-        customerCursor.Dispose();
+        accountChangeToken?.Dispose();
+        customerChangeToken?.Dispose();
     };
     
     return observable;
@@ -146,11 +169,11 @@ public ISubject<AccountMetrics> GetAccountMetricsObservable()
     
     var computeMetrics = () =>
     {
-        var accounts = _collection.Find(_ => true).ToList();
+        var accounts = GetAllAccounts();
         return new AccountMetrics(
-            TotalAccounts: accounts.Count,
+            TotalAccounts: accounts.Count(),
             TotalBalance: accounts.Sum(a => a.Balance),
-            AverageBalance: accounts.Count > 0 ? accounts.Average(a => a.Balance) : 0,
+            AverageBalance: accounts.Any() ? accounts.Average(a => a.Balance) : 0,
             ActiveAccounts: accounts.Count(a => a.Balance > 0),
             HighValueAccounts: accounts.Count(a => a.Balance > 100000)
         );
@@ -159,20 +182,13 @@ public ISubject<AccountMetrics> GetAccountMetricsObservable()
     // Send initial metrics
     observable.OnNext(computeMetrics());
 
-    // Watch for changes and recompute
-    var cursor = _collection.Watch();
-    Task.Run(() =>
+    // Set up change notifications and recompute when data changes
+    var changeToken = SetupDataChangeNotifications(() =>
     {
-        while (cursor.MoveNext())
-        {
-            if (cursor.Current.Any())
-            {
-                observable.OnNext(computeMetrics());
-            }
-        }
+        observable.OnNext(computeMetrics());
     });
 
-    observable.ClientDisconnected = () => cursor.Dispose();
+    observable.ClientDisconnected = () => changeToken?.Dispose();
     return observable;
 }
 ```
@@ -191,28 +207,34 @@ public record ObservableFilter(
 [HttpPost("filtered-observable")]
 public ISubject<IEnumerable<DebitAccount>> GetFilteredObservable([FromBody] ObservableFilter filter)
 {
-    // Build the filter expression
-    var filterBuilder = Builders<DebitAccount>.Filter;
-    var filters = new List<FilterDefinition<DebitAccount>>();
+    var observable = new ClientObservable<IEnumerable<DebitAccount>>();
+    
+    // Build filter predicate
+    var predicate = BuildFilterPredicate(filter);
+    
+    var sendFilteredData = () =>
+    {
+        var accounts = GetAllAccounts().Where(predicate);
+        observable.OnNext(accounts);
+    };
 
-    if (filter.MinBalance.HasValue)
-        filters.Add(filterBuilder.Gte(a => a.Balance, filter.MinBalance.Value));
+    // Send initial filtered data
+    sendFilteredData();
 
-    if (filter.MaxBalance.HasValue)
-        filters.Add(filterBuilder.Lte(a => a.Balance, filter.MaxBalance.Value));
+    // Set up change notifications with the same filter
+    var changeToken = SetupFilteredDataChangeNotifications(sendFilteredData, filter);
 
-    if (!string.IsNullOrEmpty(filter.NamePattern))
-        filters.Add(filterBuilder.Regex(a => a.Name, new BsonRegularExpression(filter.NamePattern, "i")));
+    observable.ClientDisconnected = () => changeToken?.Dispose();
+    return observable;
+}
 
-    if (filter.OwnerId.HasValue)
-        filters.Add(filterBuilder.Eq(a => a.Owner, filter.OwnerId.Value));
-
-    var combinedFilter = filters.Any() 
-        ? filterBuilder.And(filters) 
-        : filterBuilder.Empty;
-
-    // Use the computed filter for observation
-    return _collection.Observe(combinedFilter);
+private Func<DebitAccount, bool> BuildFilterPredicate(ObservableFilter filter)
+{
+    return account =>
+        (!filter.MinBalance.HasValue || account.Balance >= filter.MinBalance.Value) &&
+        (!filter.MaxBalance.HasValue || account.Balance <= filter.MaxBalance.Value) &&
+        (string.IsNullOrEmpty(filter.NamePattern) || account.Name.Contains(filter.NamePattern, StringComparison.OrdinalIgnoreCase)) &&
+        (!filter.OwnerId.HasValue || account.Owner == filter.OwnerId.Value);
 }
 ```
 
@@ -226,12 +248,12 @@ public ISubject<IEnumerable<DebitAccount>> GetThrottledObservable(
     [FromQuery] int throttleMs = 1000)
 {
     var observable = new ClientObservable<IEnumerable<DebitAccount>>();
-    var throttleTimer = new Timer(throttleMs);
+    var throttleTimer = new System.Timers.Timer(throttleMs);
     var pendingUpdate = false;
 
     var sendUpdate = () =>
     {
-        var accounts = _collection.Find(_ => true).ToList();
+        var accounts = GetAllAccounts();
         observable.OnNext(accounts);
         pendingUpdate = false;
     };
@@ -239,29 +261,25 @@ public ISubject<IEnumerable<DebitAccount>> GetThrottledObservable(
     // Send initial data
     sendUpdate();
 
-    // Watch for changes with throttling
-    var cursor = _collection.Watch();
-    Task.Run(() =>
+    // Set up throttled change notifications
+    var changeToken = SetupDataChangeNotifications(() =>
     {
-        while (cursor.MoveNext())
+        if (!pendingUpdate)
         {
-            if (cursor.Current.Any() && !pendingUpdate)
+            pendingUpdate = true;
+            throttleTimer.Elapsed += (s, e) => 
             {
-                pendingUpdate = true;
-                throttleTimer.Elapsed += (s, e) => 
-                {
-                    sendUpdate();
-                    throttleTimer.Stop();
-                };
-                throttleTimer.Start();
-            }
+                sendUpdate();
+                throttleTimer.Stop();
+            };
+            throttleTimer.Start();
         }
     });
 
     observable.ClientDisconnected = () =>
     {
-        cursor.Dispose();
-        throttleTimer.Dispose();
+        changeToken?.Dispose();
+        throttleTimer?.Dispose();
     };
 
     return observable;
@@ -284,7 +302,7 @@ public ISubject<IEnumerable<DebitAccount>> GetRobustObservable()
         {
             try
             {
-                var accounts = _collection.Find(_ => true).ToList();
+                var accounts = GetAllAccounts();
                 observable.OnNext(accounts);
             }
             catch (Exception ex)
@@ -297,28 +315,21 @@ public ISubject<IEnumerable<DebitAccount>> GetRobustObservable()
         // Send initial data
         sendUpdate();
 
-        // Watch for changes with error handling
-        var cursor = _collection.Watch();
-        Task.Run(() =>
+        // Set up change notifications with error handling
+        var changeToken = SetupDataChangeNotifications(() =>
         {
             try
             {
-                while (cursor.MoveNext())
-                {
-                    if (cursor.Current.Any())
-                    {
-                        sendUpdate();
-                    }
-                }
+                sendUpdate();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in observable watch cursor");
+                _logger.LogError(ex, "Error in observable change notification");
                 observable.OnError(ex);
             }
         });
 
-        observable.ClientDisconnected = () => cursor?.Dispose();
+        observable.ClientDisconnected = () => changeToken?.Dispose();
     }
     catch (Exception ex)
     {
@@ -354,15 +365,15 @@ public ISubject<IEnumerable<DebitAccount>> GetAdminObservable()
 
 ## Best Practices for Observable Queries
 
-1. **Use the `.Observe()` extension method** for simple cases - it handles initial data load and change monitoring automatically
-2. **Always handle client disconnection** with the `ClientDisconnected` callback when using `ClientObservable<T>` directly
-3. **Send initial data immediately** before setting up change monitoring
-4. **Use appropriate filters** to minimize unnecessary data transmission
-5. **Consider throttling** for high-frequency changes to prevent overwhelming clients
-6. **Implement error handling** to gracefully handle database connection issues
-7. **Clean up resources** properly when clients disconnect
-8. **Use authentication** to control who can subscribe to observable endpoints
-9. **Monitor performance** and consider the impact of many concurrent subscriptions
+1. **Always handle client disconnection** with the `ClientDisconnected` callback when using `ClientObservable<T>` directly
+2. **Send initial data immediately** before setting up change monitoring
+3. **Use appropriate filters** to minimize unnecessary data transmission
+4. **Consider throttling** for high-frequency changes to prevent overwhelming clients
+5. **Implement error handling** to gracefully handle data source connection issues
+6. **Clean up resources** properly when clients disconnect
+7. **Use authentication** to control who can subscribe to observable endpoints
+8. **Monitor performance** and consider the impact of many concurrent subscriptions
+9. **Choose the right data source strategy** - see [Observing Collections](../mongodb/observing-collections.md) for MongoDB-specific approaches
 
 ## Connection Management
 
@@ -375,7 +386,7 @@ The application model automatically handles WebSocket connections for observable
 
 ## Frontend Integration
 
-Observable queries integrate seamlessly with frontend frameworks through the proxy generator:
+Observable queries integrate seamlessly with frontend frameworks through the proxy generator and the [ObservableQuery construct](../../../frontend/react/queries.md):
 
 ```typescript
 // Generated TypeScript proxy automatically handles WebSocket connections
@@ -387,7 +398,14 @@ accountsObservable.subscribe(accounts => {
 });
 ```
 
-> **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources like MongoDB cursors to prevent memory leaks.
+The `ISubject<T>` return type automatically establishes and manages WebSocket connections, providing:
+
+- **Automatic connection management** - WebSocket connections are established and maintained automatically
+- **Strongly-typed data flow** - Full TypeScript support through the proxy generator
+- **Reactive integration** - Seamless integration with React hooks like `useObservableQuery()`
+- **Reconnection handling** - Automatic reconnection and state recovery on connection loss
+
+> **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources to prevent memory leaks.
 
 > **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your observable queries,
 > making them strongly typed on the frontend as well.

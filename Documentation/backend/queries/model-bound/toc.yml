@@ -2,6 +2,8 @@
   href: index.md
 - name: Static Methods
   href: static-methods.md
+- name: Observable Queries
+  href: observable-queries.md
 - name: Dependency Injection
   href: dependency-injection.md
 - name: Query Arguments
