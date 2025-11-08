@@ -1,7 +1,7 @@
-- name: Controller based
-  href: controller-based.md
+- name: Controller Based
+  href: controller-based/toc.yml
 - name: Model Bound
-  href: model-bound.md
+  href: model-bound/toc.yml
 - name: Query Pipeline
   href: query-pipeline.md
 - name: Validation

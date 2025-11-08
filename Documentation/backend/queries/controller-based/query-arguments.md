@@ -1,155 +1,10 @@
-# Controller Based Queries
+# Query Arguments
 
-You can represent queries as regular ASP.NET Core Controller actions with HTTP GET methods.
-
-```csharp
-public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, decimal Balance);
-
-[Route("api/accounts")]
-public class Accounts : Controller
-{
-    readonly IMongoCollection<DebitAccount> _collection;
-
-    public Accounts(IMongoCollection<DebitAccount> collection) => _collection = collection;
-
-    [HttpGet]
-    public IEnumerable<DebitAccount> AllAccounts() => _collection.Find(_ => true).ToList();
-}
-```
-
-> Note: This particular model represents its values as concepts - a value type encapsulation that
-> makes us not use primitives - thus creating clearer APIs and models.
-
-> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the method name
-> will become the query name for the generated TypeScript file and class.
-
-## Bypassing Query Result Wrappers
-
-By default, controller-based queries return results wrapped in a `QueryResult` structure. If you need to return the raw result from your controller action without this wrapper, you can use the `[AspNetResult]` attribute. For more details, see [Without wrappers](../without-wrappers.md).
-
-## Async Support
-
-For asynchronous operations, you can return `Task<T>`:
-
-```csharp
-[HttpGet]
-public async Task<IEnumerable<DebitAccount>> AllAccountsAsync()
-{
-    var result = await _collection.FindAsync(_ => true);
-    return result.ToList();
-}
-```
-
-## Different Return Types
-
-Queries can return various data types:
-
-### Single Object
-
-```csharp
-[HttpGet("{id}")]
-public DebitAccount GetAccount(AccountId id)
-{
-    return _collection.Find(a => a.Id == id).FirstOrDefault();
-}
-```
-
-### Collections
-
-```csharp
-[HttpGet]
-public IEnumerable<DebitAccount> GetAccounts()
-{
-    return _collection.Find(_ => true).ToList();
-}
-
-// Or List<T>
-[HttpGet]
-public List<DebitAccount> GetAccountsList()
-{
-    return _collection.Find(_ => true).ToList();
-}
-
-// Or arrays
-[HttpGet]
-public DebitAccount[] GetAccountsArray()
-{
-    return _collection.Find(_ => true).ToArray();
-}
-```
-
-### Query Results
-
-For more control over the response metadata, you can return `QueryResult<T>`:
-
-```csharp
-[HttpGet]
-public QueryResult<IEnumerable<DebitAccount>> GetAccountsWithMetadata()
-{
-    var accounts = _collection.Find(_ => true).ToList();
-    return new QueryResult<IEnumerable<DebitAccount>>
-    {
-        Data = accounts,
-        // Additional metadata will be populated automatically
-    };
-}
-```
-
-## Dependency Injection
-
-Controllers support dependency injection in their constructors:
-
-```csharp
-public class Accounts : Controller
-{
-    readonly IAccountService _accountService;
-    readonly ILogger<Accounts> _logger;
-
-    public Accounts(IAccountService accountService, ILogger<Accounts> logger)
-    {
-        _accountService = accountService;
-        _logger = logger;
-    }
-
-    [HttpGet]
-    public IEnumerable<DebitAccount> AllAccounts()
-    {
-        _logger.LogInformation("Retrieving all accounts");
-        return _accountService.GetAllAccounts();
-    }
-}
-```
-
-## Route Templates
-
-You can use standard ASP.NET Core routing:
-
-```csharp
-[Route("api/accounts")]
-public class Accounts : Controller
-{
-    [HttpGet]
-    public IEnumerable<DebitAccount> GetAll() { ... }
-
-    [HttpGet("{id}")]
-    public DebitAccount GetById(string id) { ... }
-
-    [HttpGet("by-owner/{ownerId}")]
-    public IEnumerable<DebitAccount> GetByOwner(string ownerId) { ... }
-
-    [HttpGet("search")]
-    public IEnumerable<DebitAccount> Search([FromQuery] string term) { ... }
-}
-```
-
-## Query Arguments
-
-Queries can accept arguments to filter, customize, or parameterize the data they return.
-Arguments can come from route parameters, query strings, or request bodies.
+Controller-based queries can accept arguments to filter, customize, or parameterize the data they return. Arguments can come from route parameters, query strings, or request bodies.
 
 > **💡 Proxy Generation**: The [proxy generator](../proxy-generation.md) automatically analyzes your query arguments and creates strongly-typed TypeScript interfaces, ensuring type safety between your backend and frontend.
 
-### Route Parameters
+## Route Parameters
 
 Route parameters are embedded in the URL path and are typically used for primary identifiers:
 
@@ -182,7 +37,7 @@ public class Accounts : Controller
 }
 ```
 
-### Query String Parameters
+## Query String Parameters
 
 Query string parameters are appended to the URL after a `?` and are typically used for optional filters or configuration:
 
@@ -241,7 +96,7 @@ public async Task<IEnumerable<DebitAccount>> SearchAccounts(
 }
 ```
 
-### Complex Query Objects
+## Complex Query Objects
 
 For complex queries with multiple parameters, you can create dedicated query objects:
 
@@ -289,7 +144,7 @@ public IEnumerable<DebitAccount> SearchAccountsAdvanced([FromQuery] AccountSearc
 }
 ```
 
-### Observable Query Arguments
+## Observable Query Arguments
 
 Observable queries can also accept arguments:
 
@@ -313,11 +168,11 @@ public ISubject<IEnumerable<DebitAccount>> GetFilteredAccountsObservable(
 }
 ```
 
-### Argument Types
+## Argument Types
 
 The application model supports various argument types:
 
-#### Primitive Types
+### Primitive Types
 
 ```csharp
 [HttpGet("by-balance")]
@@ -331,7 +186,7 @@ public IEnumerable<DebitAccount> GetAccountsByBalance(
 }
 ```
 
-#### Concept Types
+### Concept Types
 
 Using concept types (value objects) for stronger typing:
 
@@ -343,7 +198,7 @@ public IEnumerable<DebitAccount> GetAccountsByOwnerConcept(CustomerId ownerId)
 }
 ```
 
-#### Collection Arguments
+### Collection Arguments
 
 ```csharp
 [HttpGet("by-ids")]
@@ -359,7 +214,7 @@ public IEnumerable<DebitAccount> GetAccountsByOwners([FromQuery] List<CustomerId
 }
 ```
 
-#### Enums
+### Enums
 
 ```csharp
 public enum AccountStatus { Active, Inactive, Suspended }
@@ -378,7 +233,7 @@ public IEnumerable<DebitAccount> GetAccountsByStatus([FromQuery] AccountStatus s
 }
 ```
 
-### Nullable Arguments
+## Nullable Arguments
 
 Optional arguments should be nullable:
 
@@ -413,7 +268,7 @@ public IEnumerable<DebitAccount> FlexibleSearch(
 }
 ```
 
-### Default Values
+## Default Values
 
 Provide sensible default values for optional parameters:
 
@@ -437,104 +292,96 @@ public IEnumerable<DebitAccount> GetPagedAccounts(
 }
 ```
 
-## Observable Queries
+## Request Body Arguments
 
-Observable queries provide real-time data streaming using WebSockets, enabling reactive user experiences where data changes are pushed to clients as they occur. You achieve this by returning `ISubject<T>` from your controller actions.
-
-### Basic Observable Query
-
-The key to an observable query is to leverage the `ClientObservable<T>` generic type:
+For complex input that doesn't fit well in URLs, use request body parameters:
 
 ```csharp
-[HttpGet("observable")]
-public ISubject<IEnumerable<DebitAccount>> AllAccountsObservable()
+public record ComplexSearchCriteria(
+    string[] SearchTerms,
+    Dictionary<string, object> CustomFilters,
+    DateRange DateRange,
+    SortOptions[] SortBy);
+
+[HttpPost("complex-search")]
+public async Task<IEnumerable<DebitAccount>> ComplexSearch([FromBody] ComplexSearchCriteria criteria)
 {
-    return _collection.Observe(); // Simple MongoDB extension method
+    var filterBuilder = Builders<DebitAccount>.Filter;
+    var filters = new List<FilterDefinition<DebitAccount>>();
+
+    // Build filters from complex criteria
+    foreach (var term in criteria.SearchTerms)
+    {
+        filters.Add(filterBuilder.Regex(a => a.Name, new BsonRegularExpression(term, "i")));
+    }
+
+    // Apply custom filters, date ranges, etc.
+    
+    var combinedFilter = filters.Any() 
+        ? filterBuilder.And(filters) 
+        : filterBuilder.Empty;
+
+    var result = await _collection.FindAsync(combinedFilter);
+    return result.ToList();
 }
 ```
 
-### Observable with Arguments
+## Model Binding Attributes
 
-Observable queries can accept arguments just like regular queries:
+Use model binding attributes to control how arguments are bound:
 
 ```csharp
-[HttpGet("owner/{ownerId}/observable")]
-public ISubject<IEnumerable<DebitAccount>> GetAccountsByOwnerObservable(CustomerId ownerId)
+[HttpGet("mixed-binding/{id}")]
+public DebitAccount GetAccountMixed(
+    [FromRoute] AccountId id,
+    [FromQuery] bool includeDetails = false,
+    [FromHeader] string acceptLanguage = "en-US")
 {
-    return _collection.Observe(account => account.Owner == ownerId);
-}
-
-[HttpGet("filtered-observable")]
-public ISubject<IEnumerable<DebitAccount>> GetFilteredAccountsObservable(
-    [FromQuery] decimal? minBalance = null)
-{
-    if (minBalance.HasValue)
+    var account = _collection.Find(a => a.Id == id).FirstOrDefault();
+    
+    if (includeDetails && account is not null)
     {
-        return _collection.Observe(account => account.Balance >= minBalance.Value);
+        // Add additional details based on language preference
+        // Implementation details...
     }
     
-    return _collection.Observe();
+    return account;
 }
 ```
 
-### Single Object Observable
+## Validation
 
-For observing changes to a single object:
-
-```csharp
-[HttpGet("{id}/observable")]
-public ISubject<DebitAccount> GetAccountObservable(AccountId id)
-{
-    return _collection.Observe(account => account.Id == id);
-}
-```
-
-### Custom Observable Logic
-
-For more complex scenarios, you can implement custom observable logic:
+Add validation attributes to ensure argument quality:
 
 ```csharp
-[HttpGet("summary")]
-public ISubject<AccountSummary> GetAccountSummaryObservable()
+[HttpGet("validated-search")]
+public IEnumerable<DebitAccount> ValidatedSearch(
+    [FromQuery] [Required] [MinLength(3)] string searchTerm,
+    [FromQuery] [Range(1, 100)] int pageSize = 20,
+    [FromQuery] [Range(0, int.MaxValue)] int page = 0)
 {
-    var observable = new ClientObservable<AccountSummary>();
+    // Validation is automatically applied
+    var filter = Builders<DebitAccount>.Filter.Regex(
+        a => a.Name, 
+        new BsonRegularExpression(searchTerm, "i"));
     
-    var calculateSummary = () =>
-    {
-        var accounts = _collection.Find(_ => true).ToList();
-        return new AccountSummary(accounts.Count, accounts.Sum(a => a.Balance));
-    };
-
-    // Send initial summary
-    observable.OnNext(calculateSummary());
-
-    // Watch for any account changes
-    var cursor = _collection.Watch();
-    Task.Run(() =>
-    {
-        while (cursor.MoveNext())
-        {
-            if (cursor.Current.Any())
-            {
-                observable.OnNext(calculateSummary());
-            }
-        }
-    });
-
-    observable.ClientDisconnected = () => cursor.Dispose();
-    return observable;
+    return _collection.Find(filter)
+        .Skip(page * pageSize)
+        .Limit(pageSize)
+        .ToList();
 }
 ```
 
-### Best Practices for Observable Queries
+## Best Practices
 
-1. **Use the `.Observe()` extension method** for simple cases - it handles initial data load and change monitoring automatically
-2. **Always handle client disconnection** with the `ClientDisconnected` callback when using `ClientObservable<T>` directly
-3. **Send initial data immediately** before setting up change monitoring
-4. **Use appropriate filters** to minimize unnecessary data transmission
-5. **Consider the frequency of changes** and implement throttling if necessary
-
-> **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources like MongoDB cursors to prevent memory leaks.
+1. **Use route parameters for identifiers** - Things that identify specific resources
+2. **Use query strings for filters** - Optional parameters that modify results
+3. **Use request body for complex data** - When you need to send structured data
+4. **Provide default values** - Make optional parameters truly optional
+5. **Use nullable types** - For optional parameters that might not be provided
+6. **Validate input** - Use validation attributes to ensure data quality
+7. **Use concepts over primitives** - Leverage value objects for stronger typing
+8. **Keep URLs readable** - Don't overload URLs with too many parameters
 
 > **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your query arguments,
 > making them strongly typed on the frontend as well.
