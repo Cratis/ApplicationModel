@@ -32,12 +32,13 @@ export function useDialog<TResponse = object, TProps = object>(
     const closeDialog = useCallback((result: DialogResult, value?: TResponse) => {
         setVisible(false);
         resolverRef.current?.([result, value]);
+        resolverRef.current = undefined;
     }, []);
 
     const dialogContextValue = useRef<DialogContextContent<TProps, TResponse>>(undefined!);
     dialogContextValue.current = useMemo(() => {
         return new DialogContextContent(dialogProps!, closeDialog);
-    }, [dialogProps]);
+    }, [dialogProps, closeDialog]);
 
     const DialogWrapper: FC<TProps> = (extraProps) => {
         return visible ? (
