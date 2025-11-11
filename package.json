@@ -70,7 +70,7 @@
         "vite": "7.2.1",
         "vite-plugin-commonjs": "0.10.4",
         "vite-tsconfig-paths": "5.1.4",
-        "vitest": "4.0.7"
+        "vitest": "4.0.8"
     },
     "license": "MIT",
     "version": "0.0.0",
