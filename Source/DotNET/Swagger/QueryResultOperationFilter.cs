@@ -5,7 +5,7 @@ using System.Net;
 using Cratis.Applications.Queries;
 using Cratis.Concepts;
 using Cratis.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger;

@@ -1,8 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger;
@@ -13,14 +13,14 @@ namespace Cratis.Applications.Swagger;
 public class EnumSchemaFilter : ISchemaFilter
 {
     /// <inheritdoc/>
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type.IsEnum)
+        if (context.Type.IsEnum && schema is OpenApiSchema concreteSchema)
         {
-            schema.Enum.Clear();
+            concreteSchema.Enum.Clear();
             Enum.GetNames(context.Type)
                 .ToList()
-                .ForEach(name => schema.Enum.Add(new OpenApiString(name)));
+                .ForEach(name => concreteSchema.Enum.Add(JsonValue.Create(name)));
         }
     }
 }

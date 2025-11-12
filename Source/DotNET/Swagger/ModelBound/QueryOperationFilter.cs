@@ -3,7 +3,7 @@
 
 using System.Net;
 using Cratis.Applications.Queries;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger.ModelBound;
@@ -74,10 +74,10 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
         var schema = context.SchemaGenerator.GenerateSchema(queryResultType, context.SchemaRepository);
 
         // Update the 200 OK response
-        if (operation.Responses.TryGetValue("200", out var okResponse))
+        if (operation.Responses.TryGetValue("200", out var okResponse) && okResponse is OpenApiResponse concreteOkResponse)
         {
-            okResponse.Description = "Query executed successfully";
-            okResponse.Content = new Dictionary<string, OpenApiMediaType>
+            concreteOkResponse.Description = "Query executed successfully";
+            concreteOkResponse.Content = new Dictionary<string, OpenApiMediaType>
             {
                 { "application/json", new OpenApiMediaType { Schema = schema } }
             };

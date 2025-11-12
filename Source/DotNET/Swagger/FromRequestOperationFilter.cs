@@ -3,7 +3,7 @@
 
 using Cratis.Applications.ModelBinding;
 using Cratis.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger;
@@ -28,14 +28,17 @@ public class FromRequestOperationFilter : IOperationFilter
         foreach (var parameter in parameters)
         {
             var openApiParameter = operation.Parameters.FirstOrDefault(_ => _.Name == parameter.Name);
-            operation.Parameters.Remove(openApiParameter);
+            if (openApiParameter is not null)
+            {
+                operation.Parameters.Remove(openApiParameter);
+            }
 
             var schema = context.SchemaGenerator.GenerateSchema(parameter.Type, context.SchemaRepository);
-            operation.RequestBody = new()
+            operation.RequestBody = new OpenApiRequestBody
             {
                 Content =
                 {
-                    ["application/json"] = new()
+                    ["application/json"] = new OpenApiMediaType
                     {
                         Schema = schema
                     }

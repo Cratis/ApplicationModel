@@ -4,7 +4,7 @@
 using System.Net;
 using Cratis.Applications.Commands;
 using Cratis.Concepts;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger.ModelBound;
@@ -98,10 +98,10 @@ public class CommandOperationFilter(ICommandHandlerProviders commandHandlerProvi
 
         var schema = context.SchemaGenerator.GenerateSchema(commandResultType, context.SchemaRepository);
 
-        if (operation.Responses.TryGetValue("200", out var okResponse))
+        if (operation.Responses.TryGetValue("200", out var okResponse) && okResponse is OpenApiResponse concreteOkResponse)
         {
-            okResponse.Description = "Command executed successfully";
-            okResponse.Content = new Dictionary<string, OpenApiMediaType>
+            concreteOkResponse.Description = "Command executed successfully";
+            concreteOkResponse.Content = new Dictionary<string, OpenApiMediaType>
             {
                 { "application/json", new OpenApiMediaType { Schema = schema } }
             };
