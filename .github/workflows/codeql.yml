@@ -13,7 +13,8 @@ name: "CodeQL Advanced"
 
 env:
   DOTNET8_VERSION: "8.0.406"
-  DOTNET_VERSION: "9.0.x"
+  DOTNET9_VERSION: "9.0.x"
+  DOTNET10_VERSION: "10.0.x"
 
 on:
   push:
@@ -68,7 +69,8 @@ jobs:
       with:
         dotnet-version: |
           ${{ env.DOTNET8_VERSION }}
-          ${{ env.DOTNET_VERSION }}
+          ${{ env.DOTNET9_VERSION }}
+          ${{ env.DOTNET10_VERSION }}
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
