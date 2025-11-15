@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text.Json.Nodes;
 using Cratis.Applications.Queries;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Cratis.Applications.Swagger;
 
@@ -18,16 +18,16 @@ public static class QueryParameterUtilities
     /// <param name="operation">The OpenAPI operation to add parameters to.</param>
     public static void AddPagingAndSortingParameters(OpenApiOperation operation)
     {
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.SortByQueryStringKey,
             In = ParameterLocation.Query,
             Description = "Sort by field name",
             Required = false,
-            Schema = new OpenApiSchema { Type = "string" }
+            Schema = new OpenApiSchema { Type = JsonSchemaType.String }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.SortDirectionQueryStringKey,
             In = ParameterLocation.Query,
@@ -35,27 +35,27 @@ public static class QueryParameterUtilities
             Description = "Sort direction",
             Schema = new OpenApiSchema
             {
-                Type = "string",
-                Enum = [new OpenApiString("asc"), new OpenApiString("desc")]
+                Type = JsonSchemaType.String,
+                Enum = [JsonValue.Create("asc"), JsonValue.Create("desc")]
             }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.PageSizeQueryStringKey,
             In = ParameterLocation.Query,
             Description = "Number of items to limit a page to",
             Required = false,
-            Schema = new OpenApiSchema { Type = "integer", Format = "int32" }
+            Schema = new OpenApiSchema { Type = JsonSchemaType.Integer, Format = "int32" }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.PageQueryStringKey,
             In = ParameterLocation.Query,
             Description = "Page number to show",
             Required = false,
-            Schema = new OpenApiSchema { Type = "integer", Format = "int32" }
+            Schema = new OpenApiSchema { Type = JsonSchemaType.Integer, Format = "int32" }
         });
     }
 }

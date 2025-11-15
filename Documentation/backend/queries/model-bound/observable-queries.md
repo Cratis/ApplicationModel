@@ -512,3 +512,4 @@ The application model automatically handles WebSocket connections for observable
 - **Reconnection handling** - Clients can reconnect and resume subscriptions
 
 The same connection management applies whether using controller-based or model-bound approaches.
+

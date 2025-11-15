@@ -4,7 +4,7 @@
 using System.Reflection;
 using Cratis.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger;
@@ -15,7 +15,7 @@ namespace Cratis.Applications.Swagger;
 public class FromRequestSchemaFilter : ISchemaFilter
 {
     /// <inheritdoc/>
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
         var parameters = context.Type.GetConstructors().SelectMany(_ => _.GetParameters()).ToArray();
 
@@ -33,14 +33,14 @@ public class FromRequestSchemaFilter : ISchemaFilter
         {
             foreach (var property in properties)
             {
-                var propertyToRemove = schema.Properties.SingleOrDefault(_ => _.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
-                if (propertyToRemove.Value is not null)
+                var propertyToRemove = schema.Properties?.SingleOrDefault(_ => _.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
+                if (propertyToRemove?.Value is not null)
                 {
-                    schema.Properties.Remove(propertyToRemove.Key);
+                    schema.Properties?.Remove(propertyToRemove.Value.Key);
                 }
             }
         }
 
-        properties.ForEach(_ => schema.Properties.Remove(_.Name));
+        properties.ForEach(_ => schema.Properties?.Remove(_.Name));
     }
 }
