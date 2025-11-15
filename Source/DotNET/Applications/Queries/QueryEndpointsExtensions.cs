@@ -79,8 +79,7 @@ public static class QueryEndpointsExtensions
                 })
                 .WithTags(string.Join('.', location))
                 .WithName($"Execute{performer.Name}")
-                .WithSummary($"Execute {performer.Name} query")
-                .WithOpenApi();
+                .WithSummary($"Execute {performer.Name} query");
             }
         }
 
