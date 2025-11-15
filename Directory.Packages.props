@@ -6,8 +6,8 @@
   <ItemGroup>
     <PackageVersion Include="Cratis.Fundamentals" Version="7.2.2" />
     <PackageVersion Include="Cratis.Metrics.Roslyn" Version="7.2.2" />
-    <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.28" />
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="18.0.2" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
