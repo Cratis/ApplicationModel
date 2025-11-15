@@ -2,8 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Concepts;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cratis.Applications.Swagger;
@@ -14,7 +13,7 @@ namespace Cratis.Applications.Swagger;
 public class ConceptSchemaFilter : ISchemaFilter
 {
     /// <inheritdoc/>
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
         var type = context.Type;
         if (!type.IsConcept())
@@ -24,7 +23,11 @@ public class ConceptSchemaFilter : ISchemaFilter
 
         var valueType = type.GetConceptValueType();
         var newSchema = valueType.MapTypeToOpenApiPrimitiveType();
-        schema.Type = newSchema.Type;
-        schema.Format = newSchema.Format;
+
+        if (schema is OpenApiSchema openApiSchema)
+        {
+            openApiSchema.Type = newSchema.Type;
+            openApiSchema.Format = newSchema.Format;
+        }
     }
 }
