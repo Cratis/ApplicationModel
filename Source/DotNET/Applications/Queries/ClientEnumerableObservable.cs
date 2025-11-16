@@ -14,13 +14,15 @@ namespace Cratis.Applications.Queries;
 /// <param name="enumerable">The <see cref="IAsyncEnumerable{T}"/> to use for streaming.</param>
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
 /// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="serverSentEventsConnectionHandler">The <see cref="IServerSentEventsConnectionHandler"/>.</param>
 /// <param name="logger">The <see cref="ILogger"/>.</param>
 public class ClientEnumerableObservable<T>(
     IAsyncEnumerable<T> enumerable,
     JsonOptions jsonOptions,
     IWebSocketConnectionHandler webSocketConnectionHandler,
+    IServerSentEventsConnectionHandler serverSentEventsConnectionHandler,
     ILogger<ClientEnumerableObservable<T>> logger)
-    : IClientEnumerableObservable
+    : IClientEnumerableObservable, ISseObservable
 {
     /// <inheritdoc/>
     public async Task HandleConnection(HttpContext httpContext)
@@ -71,5 +73,32 @@ public class ClientEnumerableObservable<T>(
         await webSocketConnectionHandler.HandleIncomingMessages(webSocket, cts.Token, logger);
         await cts.CancelAsync();
         await tsc.Task;
+    }
+
+    /// <inheritdoc/>
+    public async Task StreamAsSse(HttpContext httpContext)
+    {
+        await serverSentEventsConnectionHandler.StreamQueryResults<T>(
+            httpContext,
+            CreateQueryResultStream(),
+            jsonOptions.JsonSerializerOptions,
+            httpContext.RequestAborted,
+            logger);
+    }
+
+    async IAsyncEnumerable<QueryResult> CreateQueryResultStream()
+    {
+        await foreach (var item in enumerable)
+        {
+            if (item is null)
+            {
+                continue;
+            }
+
+            yield return new QueryResult
+            {
+                Data = item
+            };
+        }
     }
 }

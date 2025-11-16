@@ -27,4 +27,7 @@ internal static partial class ObservableQueryHandlerLogMessages
 
     [LoggerMessage(5, LogLevel.Trace, "Endpoint query {QueryName} returns a client enumerable")]
     internal static partial void EndpointEnumerableReturnValue(this ILogger<ObservableQueryHandler> logger, QueryName queryName);
+
+    [LoggerMessage(6, LogLevel.Trace, "Request is Server-Sent Events")]
+    internal static partial void RequestIsServerSentEvents(this ILogger<ObservableQueryHandler> logger);
 }

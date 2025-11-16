@@ -20,11 +20,13 @@ namespace Cratis.Applications.Queries;
 /// Initializes a new instance of the <see cref="ObservableQueryHandler"/> class.
 /// </remarks>
 /// <param name="queryContextManager"><see cref="IQueryContextManager"/>.</param>
+/// <param name="transportSelector"><see cref="ITransportSelector"/>.</param>
 /// <param name="options"><see cref="JsonOptions"/>.</param>
 /// <param name="logger"><see cref="ILogger"/> for logging.</param>
 [Singleton]
 public class ObservableQueryHandler(
     IQueryContextManager queryContextManager,
+    ITransportSelector transportSelector,
     IOptions<JsonOptions> options,
     ILogger<ObservableQueryHandler> logger) : IObservableQueryHandler
 {
@@ -98,10 +100,21 @@ public class ObservableQueryHandler(
             queryContextManager,
             _options);
 
-        if (ShouldHandleAsWebSocket(context))
+        var selectedTransport = transportSelector.SelectTransport(context.HttpContext);
+
+        if (selectedTransport == TransportType.WebSocket)
         {
             logger.RequestIsWebSocket();
             await clientObservable.HandleConnection(context);
+            if (callResult?.Result is ObjectResult objResult)
+            {
+                objResult.Value = null;
+            }
+        }
+        else if (selectedTransport == TransportType.ServerSentEvents && clientObservable is ISseObservable sseObservable)
+        {
+            logger.RequestIsServerSentEvents();
+            await sseObservable.StreamAsSse(context.HttpContext);
             if (callResult?.Result is ObjectResult objResult)
             {
                 objResult.Value = null;
@@ -133,10 +146,17 @@ public class ObservableQueryHandler(
             objectResult,
             _options);
 
-        if (ShouldHandleAsWebSocket(context))
+        var selectedTransport = transportSelector.SelectTransport(context.HttpContext);
+
+        if (selectedTransport == TransportType.WebSocket)
         {
             logger.RequestIsWebSocket();
             await clientEnumerableObservable.HandleConnection(context.HttpContext);
+        }
+        else if (selectedTransport == TransportType.ServerSentEvents && clientEnumerableObservable is ISseObservable sseObservable)
+        {
+            logger.RequestIsServerSentEvents();
+            await sseObservable.StreamAsSse(context.HttpContext);
         }
         else
         {
@@ -171,10 +191,17 @@ public class ObservableQueryHandler(
             queryContextManager,
             _options);
 
-        if (ShouldHandleAsWebSocket(httpContext))
+        var selectedTransport = transportSelector.SelectTransport(httpContext);
+
+        if (selectedTransport == TransportType.WebSocket)
         {
             logger.RequestIsWebSocket();
             await HandleWebSocketConnection(httpContext, clientObservable);
+        }
+        else if (selectedTransport == TransportType.ServerSentEvents && clientObservable is ISseObservable sseObservable)
+        {
+            logger.RequestIsServerSentEvents();
+            await sseObservable.StreamAsSse(httpContext);
         }
         else
         {
@@ -195,10 +222,17 @@ public class ObservableQueryHandler(
             objectResult,
             _options);
 
-        if (ShouldHandleAsWebSocket(httpContext))
+        var selectedTransport = transportSelector.SelectTransport(httpContext);
+
+        if (selectedTransport == TransportType.WebSocket)
         {
             logger.RequestIsWebSocket();
             await HandleWebSocketConnection(httpContext, clientEnumerableObservable);
+        }
+        else if (selectedTransport == TransportType.ServerSentEvents && clientEnumerableObservable is ISseObservable sseObservable)
+        {
+            logger.RequestIsServerSentEvents();
+            await sseObservable.StreamAsSse(httpContext);
         }
         else
         {

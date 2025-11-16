@@ -21,6 +21,7 @@ namespace Cratis.Applications.Queries;
 /// <param name="subject">The <see cref="ISubject{T}"/> the observable wraps.</param>
 /// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
 /// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="serverSentEventsConnectionHandler">The <see cref="IServerSentEventsConnectionHandler"/>.</param>
 /// <param name="hostApplicationLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
 /// <param name="logger">The <see cref="ILogger"/>.</param>
 public class ClientObservable<T>(
@@ -28,8 +29,9 @@ public class ClientObservable<T>(
     ISubject<T> subject,
     JsonOptions jsonOptions,
     IWebSocketConnectionHandler webSocketConnectionHandler,
+    IServerSentEventsConnectionHandler serverSentEventsConnectionHandler,
     IHostApplicationLifetime hostApplicationLifetime,
-    ILogger<ClientObservable<T>> logger) : IClientObservable, IAsyncEnumerable<T>
+    ILogger<ClientObservable<T>> logger) : IClientObservable, ISseObservable, IAsyncEnumerable<T>
 {
     /// <summary>
     /// Notifies all subscribed and future observers about the arrival of the specified element in the sequence.
@@ -50,6 +52,17 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(HttpContext httpContext) =>
         await HandleConnectionCore(httpContext);
+
+    /// <inheritdoc/>
+    public async Task StreamAsSse(HttpContext httpContext)
+    {
+        await serverSentEventsConnectionHandler.StreamQueryResults<T>(
+            httpContext,
+            CreateQueryResultStream(),
+            jsonOptions.JsonSerializerOptions,
+            httpContext.RequestAborted,
+            logger);
+    }
 
     async Task HandleConnectionCore(HttpContext httpContext)
     {
@@ -111,6 +124,20 @@ public class ClientObservable<T>(
             logger.ObservableCompleted();
             cts.Cancel();
             tcs.SetResult();
+        }
+    }
+
+    async IAsyncEnumerable<QueryResult> CreateQueryResultStream()
+    {
+        await using var enumerator = GetAsyncEnumerator();
+
+        while (await enumerator.MoveNextAsync())
+        {
+            yield return new QueryResult
+            {
+                Paging = new(queryContext.Paging.Page, queryContext.Paging.Size, queryContext.TotalItems),
+                Data = enumerator.Current!
+            };
         }
     }
 }
