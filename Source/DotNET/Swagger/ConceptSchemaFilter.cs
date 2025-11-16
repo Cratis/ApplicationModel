@@ -21,32 +21,18 @@ public class ConceptSchemaFilter : ISchemaFilter
             return;
         }
 
-        if (schema is not OpenApiSchema concreteSchema)
+        if (schema is not OpenApiSchema)
         {
             return;
         }
 
         var valueType = type.GetConceptValueType();
-        var (jsonType, format) = GetJsonSchemaTypeForType(valueType);
-        concreteSchema.Type = jsonType;
-        concreteSchema.Format = format;
-    }
+        var newSchema = valueType.MapTypeToOpenApiPrimitiveType();
 
-    static (JsonSchemaType, string?) GetJsonSchemaTypeForType(Type type)
-    {
-        if (type == typeof(string))
-            return (JsonSchemaType.String, null);
-        if (type == typeof(int) || type == typeof(long))
-            return (JsonSchemaType.Integer, type == typeof(long) ? "int64" : "int32");
-        if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
-            return (JsonSchemaType.Number, type == typeof(float) ? "float" : type == typeof(double) ? "double" : null);
-        if (type == typeof(bool))
-            return (JsonSchemaType.Boolean, null);
-        if (type == typeof(Guid))
-            return (JsonSchemaType.String, "uuid");
-        if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
-            return (JsonSchemaType.String, "date-time");
-
-        return (JsonSchemaType.Object, null);
+        if (schema is OpenApiSchema openApiSchema)
+        {
+            openApiSchema.Type = newSchema.Type;
+            openApiSchema.Format = newSchema.Format;
+        }
     }
 }

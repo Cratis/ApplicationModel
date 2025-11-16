@@ -18,7 +18,7 @@ public static class QueryParameterUtilities
     /// <param name="operation">The OpenAPI operation to add parameters to.</param>
     public static void AddPagingAndSortingParameters(OpenApiOperation operation)
     {
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.SortByQueryStringKey,
             In = ParameterLocation.Query,
@@ -27,7 +27,7 @@ public static class QueryParameterUtilities
             Schema = new OpenApiSchema { Type = JsonSchemaType.String }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.SortDirectionQueryStringKey,
             In = ParameterLocation.Query,
@@ -40,7 +40,7 @@ public static class QueryParameterUtilities
             }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.PageSizeQueryStringKey,
             In = ParameterLocation.Query,
@@ -49,7 +49,7 @@ public static class QueryParameterUtilities
             Schema = new OpenApiSchema { Type = JsonSchemaType.Integer, Format = "int32" }
         });
 
-        operation.Parameters.Add(new OpenApiParameter
+        operation.Parameters?.Add(new OpenApiParameter
         {
             Name = QueryHttpExtensions.PageQueryStringKey,
             In = ParameterLocation.Query,

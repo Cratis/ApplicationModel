@@ -27,16 +27,16 @@ public class FromRequestOperationFilter : IOperationFilter
 
         foreach (var parameter in parameters)
         {
-            var openApiParameter = operation.Parameters.FirstOrDefault(_ => _.Name == parameter.Name);
+            var openApiParameter = operation.Parameters?.FirstOrDefault(_ => _.Name == parameter.Name);
             if (openApiParameter is not null)
             {
-                operation.Parameters.Remove(openApiParameter);
+                operation.Parameters?.Remove(openApiParameter);
             }
 
             var schema = context.SchemaGenerator.GenerateSchema(parameter.Type, context.SchemaRepository);
             operation.RequestBody = new OpenApiRequestBody
             {
-                Content =
+                Content = new Dictionary<string, OpenApiMediaType>
                 {
                     ["application/json"] = new OpenApiMediaType
                     {

@@ -68,8 +68,7 @@ public static class CommandEndpointsExtensions
                 })
                 .WithTags(string.Join('.', location))
                 .WithName($"Execute{handler.CommandType.Name}")
-                .WithSummary($"Execute {handler.CommandType.Name} command")
-                .WithOpenApi();
+                .WithSummary($"Execute {handler.CommandType.Name} command");
             }
         }
 

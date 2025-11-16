@@ -47,7 +47,7 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
         {
             var parameterSchema = context.SchemaGenerator.GenerateSchema(parameter.Type, context.SchemaRepository);
 
-            operation.Parameters.Add(new OpenApiParameter
+            operation.Parameters?.Add(new OpenApiParameter
             {
                 Name = parameter.Name,
                 In = ParameterLocation.Query,
@@ -74,17 +74,15 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
         var schema = context.SchemaGenerator.GenerateSchema(queryResultType, context.SchemaRepository);
 
         // Update the 200 OK response
-        if (operation.Responses.TryGetValue("200", out var okResponse) && okResponse is OpenApiResponse concreteOkResponse)
+        if (operation.Responses?.TryGetValue("200", out var okResponse) == true)
         {
-            concreteOkResponse.Description = "Query executed successfully";
-            concreteOkResponse.Content = new Dictionary<string, OpenApiMediaType>
-            {
-                { "application/json", new OpenApiMediaType { Schema = schema } }
-            };
+            okResponse.Description = "Query executed successfully";
+            okResponse.Content?.Clear();
+            okResponse.Content?.Add("application/json", new OpenApiMediaType { Schema = schema });
         }
         else
         {
-            operation.Responses.Add("200", new OpenApiResponse
+            operation.Responses?.Add("200", new OpenApiResponse
             {
                 Description = "Query executed successfully",
                 Content = new Dictionary<string, OpenApiMediaType>
@@ -95,7 +93,7 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
         }
 
         // Add additional error response codes
-        operation.Responses.Add(((int)HttpStatusCode.BadRequest).ToString(), new OpenApiResponse
+        operation.Responses?.Add(((int)HttpStatusCode.BadRequest).ToString(), new OpenApiResponse
         {
             Description = "Bad Request - validation error or invalid parameters",
             Content = new Dictionary<string, OpenApiMediaType>
@@ -104,7 +102,7 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
             }
         });
 
-        operation.Responses.Add(((int)HttpStatusCode.Forbidden).ToString(), new OpenApiResponse
+        operation.Responses?.Add(((int)HttpStatusCode.Forbidden).ToString(), new OpenApiResponse
         {
             Description = "Forbidden - insufficient permissions",
             Content = new Dictionary<string, OpenApiMediaType>
@@ -113,7 +111,7 @@ public class QueryOperationFilter(IQueryPerformerProviders queryPerformerProvide
             }
         });
 
-        operation.Responses.Add(((int)HttpStatusCode.InternalServerError).ToString(), new OpenApiResponse
+        operation.Responses?.Add(((int)HttpStatusCode.InternalServerError).ToString(), new OpenApiResponse
         {
             Description = "Internal server error",
             Content = new Dictionary<string, OpenApiMediaType>

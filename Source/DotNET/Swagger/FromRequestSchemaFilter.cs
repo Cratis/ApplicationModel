@@ -33,14 +33,14 @@ public class FromRequestSchemaFilter : ISchemaFilter
         {
             foreach (var property in properties)
             {
-                var propertyToRemove = schema.Properties.SingleOrDefault(_ => _.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
-                if (propertyToRemove.Value is not null)
+                var propertyToRemove = schema.Properties?.SingleOrDefault(_ => _.Key.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
+                if (propertyToRemove?.Value is not null)
                 {
-                    schema.Properties.Remove(propertyToRemove.Key);
+                    schema.Properties?.Remove(propertyToRemove.Value.Key);
                 }
             }
         }
 
-        properties.ForEach(_ => schema.Properties.Remove(_.Name));
+        properties.ForEach(_ => schema.Properties?.Remove(_.Name));
     }
 }

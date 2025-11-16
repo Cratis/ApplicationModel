@@ -15,12 +15,12 @@ public class EnumSchemaFilter : ISchemaFilter
     /// <inheritdoc/>
     public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type.IsEnum && schema is OpenApiSchema concreteSchema)
+        if (context.Type.IsEnum && schema is OpenApiSchema)
         {
-            concreteSchema.Enum.Clear();
+            schema.Enum?.Clear();
             Enum.GetNames(context.Type)
                 .ToList()
-                .ForEach(name => concreteSchema.Enum.Add(JsonValue.Create(name)));
+                .ForEach(name => schema.Enum?.Add(JsonValue.Create(name)));
         }
     }
 }
