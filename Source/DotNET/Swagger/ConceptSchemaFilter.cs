@@ -21,11 +21,6 @@ public class ConceptSchemaFilter : ISchemaFilter
             return;
         }
 
-        if (schema is not OpenApiSchema)
-        {
-            return;
-        }
-
         var valueType = type.GetConceptValueType();
         var newSchema = valueType.MapTypeToOpenApiPrimitiveType();
 

@@ -15,7 +15,7 @@ public class EnumSchemaFilter : ISchemaFilter
     /// <inheritdoc/>
     public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type.IsEnum && schema is OpenApiSchema)
+        if (context.Type.IsEnum)
         {
             schema.Enum?.Clear();
             Enum.GetNames(context.Type)
