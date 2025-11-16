@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AssemblyName>Cratis.Applications.Orleans.Specs</AssemblyName>
         <RootNamespace>Cratis.Applications.Orleans</RootNamespace>
+        <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 

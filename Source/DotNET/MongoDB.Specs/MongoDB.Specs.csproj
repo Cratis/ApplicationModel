@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AssemblyName>Cratis.Applications.MongoDB.Specs</AssemblyName>
         <RootNamespace>Cratis.Applications.MongoDB</RootNamespace>
+        <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 

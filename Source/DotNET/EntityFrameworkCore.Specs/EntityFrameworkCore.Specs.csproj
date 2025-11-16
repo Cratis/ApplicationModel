@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AssemblyName>Cratis.Applications.EntityFrameworkCore.Specs</AssemblyName>
         <RootNamespace>Cratis.Applications.EntityFrameworkCore</RootNamespace>
+        <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
