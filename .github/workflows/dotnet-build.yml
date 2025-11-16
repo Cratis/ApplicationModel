@@ -2,7 +2,8 @@ name: .NET Build
 
 env:
   DOTNET8_VERSION: "8.0.407"
-  DOTNET_VERSION: "9.0.x"
+  DOTNET9_VERSION: "9.0.x"
+  DOTNET10_VERSION: "10.0.x"
 
 on:
   workflow_dispatch:
@@ -42,7 +43,8 @@ jobs:
         with:
           dotnet-version: |
             ${{ env.DOTNET8_VERSION }}
-            ${{ env.DOTNET_VERSION }}
+            ${{ env.DOTNET9_VERSION }}
+            ${{ env.DOTNET10_VERSION }}
 
       - name: Build
         run: dotnet build --configuration Release
