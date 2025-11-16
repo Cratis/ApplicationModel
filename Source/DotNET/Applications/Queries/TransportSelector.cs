@@ -40,12 +40,11 @@ public class TransportSelector(IOptions<ObservableQueryTransportOptions> options
         };
     }
 
-    static bool IsServerSentEventsRequest(HttpContext httpContext)
+    static bool IsServerSentEventsRequest(HttpContext _)
     {
-        // SSE is supported when Accept header includes text/event-stream
-        // or when there's no specific WebSocket upgrade request
-        var acceptHeader = httpContext.Request.Headers.Accept.ToString();
-        return acceptHeader.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) ||
-               !httpContext.WebSockets.IsWebSocketRequest;
+        // SSE is always technically supported for any HTTP request
+        // Explicit preference is handled by the preference order in options
+        // Only reject SSE if the client explicitly only wants WebSocket (no fallback)
+        return true;
     }
 }
