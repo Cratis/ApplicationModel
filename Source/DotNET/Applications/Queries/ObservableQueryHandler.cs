@@ -111,6 +111,7 @@ public class ObservableQueryHandler(
                 objResult.Value = null;
             }
         }
+#if NET10_0_OR_GREATER
         else if (selectedTransport == TransportType.ServerSentEvents && clientObservable is ISseObservable sseObservable)
         {
             logger.RequestIsServerSentEvents();
@@ -120,6 +121,7 @@ public class ObservableQueryHandler(
                 objResult.Value = null;
             }
         }
+#endif
         else
         {
             logger.RequestIsHttp();
@@ -153,11 +155,13 @@ public class ObservableQueryHandler(
             logger.RequestIsWebSocket();
             await clientEnumerableObservable.HandleConnection(context.HttpContext);
         }
+#if NET10_0_OR_GREATER
         else if (selectedTransport == TransportType.ServerSentEvents && clientEnumerableObservable is ISseObservable sseObservable)
         {
             logger.RequestIsServerSentEvents();
             await sseObservable.StreamAsSse(context.HttpContext);
         }
+#endif
         else
         {
             logger.RequestIsHttp();
@@ -198,11 +202,13 @@ public class ObservableQueryHandler(
             logger.RequestIsWebSocket();
             await HandleWebSocketConnection(httpContext, clientObservable);
         }
+#if NET10_0_OR_GREATER
         else if (selectedTransport == TransportType.ServerSentEvents && clientObservable is ISseObservable sseObservable)
         {
             logger.RequestIsServerSentEvents();
             await sseObservable.StreamAsSse(httpContext);
         }
+#endif
         else
         {
             logger.RequestIsHttp();
@@ -229,11 +235,13 @@ public class ObservableQueryHandler(
             logger.RequestIsWebSocket();
             await HandleWebSocketConnection(httpContext, clientEnumerableObservable);
         }
+#if NET10_0_OR_GREATER
         else if (selectedTransport == TransportType.ServerSentEvents && clientEnumerableObservable is ISseObservable sseObservable)
         {
             logger.RequestIsServerSentEvents();
             await sseObservable.StreamAsSse(httpContext);
         }
+#endif
         else
         {
             logger.RequestIsHttp();

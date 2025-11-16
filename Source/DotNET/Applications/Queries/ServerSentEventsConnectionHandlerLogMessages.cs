@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#if NET10_0_OR_GREATER
 using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
@@ -16,3 +17,4 @@ internal static partial class ServerSentEventsConnectionHandlerLogMessages
     [LoggerMessage(1, LogLevel.Error, "Error streaming SSE query results")]
     internal static partial void SseStreamingError(this ILogger<ServerSentEventsConnectionHandler> logger, Exception ex);
 }
+#endif

@@ -13,8 +13,10 @@ public enum TransportType
     /// </summary>
     WebSocket = 0,
 
+#if NET10_0_OR_GREATER
     /// <summary>
-    /// Server-Sent Events (SSE) transport.
+    /// Server-Sent Events (SSE) transport. Only available in .NET 10 and later.
     /// </summary>
     ServerSentEvents = 1
+#endif
 }

@@ -28,9 +28,13 @@ public class TransportSelector(IOptions<ObservableQueryTransportOptions> options
         // If fallback is enabled, try the other transport
         if (_options.EnableFallback)
         {
+#if NET10_0_OR_GREATER
             var fallbackTransport = _options.PreferredTransport == TransportType.WebSocket
                 ? TransportType.ServerSentEvents
                 : TransportType.WebSocket;
+#else
+            const TransportType fallbackTransport = TransportType.WebSocket;
+#endif
 
             if (IsTransportSupported(httpContext, fallbackTransport))
             {
@@ -46,11 +50,14 @@ public class TransportSelector(IOptions<ObservableQueryTransportOptions> options
         return transport switch
         {
             TransportType.WebSocket => httpContext.WebSockets.IsWebSocketRequest,
+#if NET10_0_OR_GREATER
             TransportType.ServerSentEvents => IsServerSentEventsRequest(httpContext),
+#endif
             _ => false
         };
     }
 
+#if NET10_0_OR_GREATER
     static bool IsServerSentEventsRequest(HttpContext _)
     {
         // SSE is always technically supported for any HTTP request
@@ -58,4 +65,5 @@ public class TransportSelector(IOptions<ObservableQueryTransportOptions> options
         // Only reject SSE if the client explicitly only wants WebSocket (no fallback)
         return true;
     }
+#endif
 }

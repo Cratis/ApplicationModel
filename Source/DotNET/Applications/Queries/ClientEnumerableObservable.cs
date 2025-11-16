@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
 
+#if NET10_0_OR_GREATER
 /// <summary>
 /// Represents an implementation of <see cref="IClientEnumerableObservable"/>.
 /// </summary>
@@ -23,6 +24,22 @@ public class ClientEnumerableObservable<T>(
     IServerSentEventsConnectionHandler serverSentEventsConnectionHandler,
     ILogger<ClientEnumerableObservable<T>> logger)
     : IClientEnumerableObservable, ISseObservable
+#else
+/// <summary>
+/// Represents an implementation of <see cref="IClientEnumerableObservable"/>.
+/// </summary>
+/// <typeparam name="T">Type of data being observed.</typeparam>
+/// <param name="enumerable">The <see cref="IAsyncEnumerable{T}"/> to use for streaming.</param>
+/// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
+/// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="logger">The <see cref="ILogger"/>.</param>
+public class ClientEnumerableObservable<T>(
+    IAsyncEnumerable<T> enumerable,
+    JsonOptions jsonOptions,
+    IWebSocketConnectionHandler webSocketConnectionHandler,
+    ILogger<ClientEnumerableObservable<T>> logger)
+    : IClientEnumerableObservable
+#endif
 {
     /// <inheritdoc/>
     public async Task HandleConnection(HttpContext httpContext)
@@ -75,6 +92,7 @@ public class ClientEnumerableObservable<T>(
         await tsc.Task;
     }
 
+#if NET10_0_OR_GREATER
     /// <inheritdoc/>
     public async Task StreamAsSse(HttpContext httpContext)
     {
@@ -101,4 +119,5 @@ public class ClientEnumerableObservable<T>(
             };
         }
     }
+#endif
 }
