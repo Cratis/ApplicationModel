@@ -19,11 +19,22 @@ public class TransportSelector(IOptions<ObservableQueryTransportOptions> options
     /// <inheritdoc/>
     public TransportType? SelectTransport(HttpContext httpContext)
     {
-        foreach (var transport in _options.PreferredTransports)
+        // Try preferred transport first
+        if (IsTransportSupported(httpContext, _options.PreferredTransport))
         {
-            if (IsTransportSupported(httpContext, transport))
+            return _options.PreferredTransport;
+        }
+
+        // If fallback is enabled, try the other transport
+        if (_options.EnableFallback)
+        {
+            var fallbackTransport = _options.PreferredTransport == TransportType.WebSocket
+                ? TransportType.ServerSentEvents
+                : TransportType.WebSocket;
+
+            if (IsTransportSupported(httpContext, fallbackTransport))
             {
-                return transport;
+                return fallbackTransport;
             }
         }
 

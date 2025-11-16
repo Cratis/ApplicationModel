@@ -12,7 +12,7 @@ public class with_sse_preferred_over_websocket : given.a_transport_selector
 
     void Establish()
     {
-        _options.PreferredTransports = [TransportType.ServerSentEvents, TransportType.WebSocket];
+        _options.PreferredTransport = TransportType.ServerSentEvents;
         _selector = new TransportSelector(Microsoft.Extensions.Options.Options.Create(_options));
         _httpContext = new DefaultHttpContext();
         _webSocketFeature = Substitute.For<IHttpWebSocketFeature>();

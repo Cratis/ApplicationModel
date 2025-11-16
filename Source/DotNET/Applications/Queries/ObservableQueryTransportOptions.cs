@@ -9,14 +9,15 @@ namespace Cratis.Applications.Queries;
 public class ObservableQueryTransportOptions
 {
     /// <summary>
-    /// Gets or sets the preferred transport types in order of preference.
-    /// The system will attempt to use transports in the order specified.
-    /// Default: [WebSocket, ServerSentEvents].
+    /// Gets or sets the preferred transport type.
+    /// The system will attempt to use this transport first.
+    /// Default: ServerSentEvents.
     /// </summary>
-    public IList<TransportType> PreferredTransports { get; set; } = [TransportType.WebSocket, TransportType.ServerSentEvents];
+    public TransportType PreferredTransport { get; set; } = TransportType.ServerSentEvents;
 
     /// <summary>
-    /// Gets or sets a value indicating whether to enable automatic fallback to the next transport if the preferred one fails.
+    /// Gets or sets a value indicating whether to enable automatic fallback to the other transport if the preferred one is not available.
+    /// When enabled, if PreferredTransport is ServerSentEvents and not available, it will try WebSocket, and vice versa.
     /// Default: true.
     /// </summary>
     public bool EnableFallback { get; set; } = true;

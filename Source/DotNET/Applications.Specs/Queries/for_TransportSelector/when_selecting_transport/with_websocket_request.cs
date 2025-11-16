@@ -9,6 +9,8 @@ public class with_websocket_request : given.a_transport_selector
 
     void Establish()
     {
+        _options.PreferredTransport = TransportType.WebSocket;
+        _selector = new TransportSelector(Microsoft.Extensions.Options.Options.Create(_options));
         _webSocketFeature.IsWebSocketRequest.Returns(true);
         _httpContext.Request.Headers.Upgrade = "websocket";
         _httpContext.Request.Headers.Connection = "Upgrade";

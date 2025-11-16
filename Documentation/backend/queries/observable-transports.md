@@ -37,18 +37,21 @@ Server-Sent Events (SSE) provides a unidirectional, server-to-client streaming m
 
 The application model automatically selects the appropriate transport based on:
 
-1. **Configured transport preferences** (default: WebSocket → SSE)
+1. **Configured preferred transport** (default: ServerSentEvents)
 2. **Client request headers**
 3. **Transport availability**
+4. **Fallback settings** (default: enabled)
 
 ### Default Behavior
 
-By default, the system attempts to use WebSocket first, falling back to SSE if WebSocket is not available:
+By default, the system prefers Server-Sent Events (SSE) as the primary transport, with automatic fallback to WebSocket if needed:
 
 ```csharp
 // Default configuration (no action needed)
-// 1. Try WebSocket if client sends upgrade headers
-// 2. Fall back to SSE for regular HTTP requests
+// PreferredTransport: ServerSentEvents
+// EnableFallback: true
+// 1. Try SSE for any HTTP request
+// 2. Fall back to WebSocket if client sends upgrade headers and SSE is not available
 ```
 
 ### Custom Transport Configuration
@@ -65,10 +68,10 @@ public class Program
         // Configure observable query transports
         builder.Services.ConfigureObservableQueryTransport(options =>
         {
-            // Prefer SSE over WebSocket
-            options.PreferredTransports = [TransportType.ServerSentEvents, TransportType.WebSocket];
+            // Prefer WebSocket over SSE
+            options.PreferredTransport = TransportType.WebSocket;
             
-            // Disable automatic fallback (use only first available transport)
+            // Disable automatic fallback (use only preferred transport)
             options.EnableFallback = false;
         });
         
@@ -78,14 +81,27 @@ public class Program
 }
 ```
 
-### SSE-Only Configuration
+### WebSocket-Preferred Configuration
 
-To use only Server-Sent Events:
+To prefer WebSocket with SSE fallback:
 
 ```csharp
 builder.Services.ConfigureObservableQueryTransport(options =>
 {
-    options.PreferredTransports = [TransportType.ServerSentEvents];
+    options.PreferredTransport = TransportType.WebSocket;
+    // EnableFallback defaults to true
+});
+```
+
+### SSE-Only Configuration
+
+To use only Server-Sent Events (no fallback):
+
+```csharp
+builder.Services.ConfigureObservableQueryTransport(options =>
+{
+    options.PreferredTransport = TransportType.ServerSentEvents;
+    options.EnableFallback = false;
 });
 ```
 
@@ -96,7 +112,8 @@ To use only WebSocket (no fallback):
 ```csharp
 builder.Services.ConfigureObservableQueryTransport(options =>
 {
-    options.PreferredTransports = [TransportType.WebSocket];
+    options.PreferredTransport = TransportType.WebSocket;
+    options.EnableFallback = false;
 });
 ```
 
