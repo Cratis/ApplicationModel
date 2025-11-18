@@ -8,6 +8,7 @@
 import { Command, CommandPropertyValidators, CommandValidator } from '@cratis/applications/commands';
 import { useCommand, SetCommandValues, ClearCommandValues } from '@cratis/applications.react/commands';
 import { Validator } from '@cratis/applications/validation';
+import { PropertyDescriptor } from '@cratis/applications/reflection';
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';
 {{/Imports}}
@@ -41,6 +42,11 @@ export class {{Name}} extends Command<I{{Name}}> implements I{{Name}} {
     readonly route: string = '{{{Route}}}';
     readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
     readonly validation: CommandValidator = new {{Name}}Validator();
+    readonly propertyDescriptors: PropertyDescriptor[] = [
+        {{#Properties}}
+        new PropertyDescriptor('{{Name}}', {{Constructor}}),
+        {{/Properties}}
+    ];
 
     {{#Properties}}
     {{#if IsEnumerable}}
