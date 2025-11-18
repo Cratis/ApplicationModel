@@ -7,6 +7,8 @@ using FluentValidation;
 namespace Cratis.Applications.Validation;
 
 #pragma warning disable CS0618 // Type or member is obsolete (Related to FluentValidation and the Transform method)
+#pragma warning disable IDE0004 // Remove unnecessary cast (We need to do this to access the correct RuleFor())
+
 /// <summary>
 /// Represents a base validator that we use for discovery.
 /// </summary>
@@ -40,147 +42,359 @@ public class BaseValidator<T> : AbstractValidator<T>
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, string> RuleFor(Expression<Func<T, ConceptAs<string>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, string> RuleFor(Expression<Func<T, ConceptAs<string>>> expression)
+    {
+        // If the expression is just the parameter itself (x => x), use the traditional approach
+        // of transforming the value, which unwraps the concept to its primitive type
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for bool.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, bool> RuleFor(Expression<Func<T, ConceptAs<bool>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, bool> RuleFor(Expression<Func<T, ConceptAs<bool>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for Guid.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, Guid> RuleFor(Expression<Func<T, ConceptAs<Guid>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, Guid> RuleFor(Expression<Func<T, ConceptAs<Guid>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for DateOnly.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, DateOnly> RuleFor(Expression<Func<T, ConceptAs<DateOnly>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, DateOnly> RuleFor(Expression<Func<T, ConceptAs<DateOnly>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for TimeOnly.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, TimeOnly> RuleFor(Expression<Func<T, ConceptAs<TimeOnly>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, TimeOnly> RuleFor(Expression<Func<T, ConceptAs<TimeOnly>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for DateTime.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, DateTime> RuleFor(Expression<Func<T, ConceptAs<DateTime>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, DateTime> RuleFor(Expression<Func<T, ConceptAs<DateTime>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for DateTimeOffset.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, DateTimeOffset> RuleFor(Expression<Func<T, ConceptAs<DateTimeOffset>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, DateTimeOffset> RuleFor(Expression<Func<T, ConceptAs<DateTimeOffset>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for float.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, float> RuleFor(Expression<Func<T, ConceptAs<float>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, float> RuleFor(Expression<Func<T, ConceptAs<float>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for double.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, double> RuleFor(Expression<Func<T, ConceptAs<double>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, double> RuleFor(Expression<Func<T, ConceptAs<double>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for decimal.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, decimal> RuleFor(Expression<Func<T, ConceptAs<decimal>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, decimal> RuleFor(Expression<Func<T, ConceptAs<decimal>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for sbyte.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, sbyte> RuleFor(Expression<Func<T, ConceptAs<sbyte>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, sbyte> RuleFor(Expression<Func<T, ConceptAs<sbyte>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for short.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, short> RuleFor(Expression<Func<T, ConceptAs<short>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, short> RuleFor(Expression<Func<T, ConceptAs<short>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for int.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, int> RuleFor(Expression<Func<T, ConceptAs<int>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, int> RuleFor(Expression<Func<T, ConceptAs<int>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for long.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, long> RuleFor(Expression<Func<T, ConceptAs<long>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, long> RuleFor(Expression<Func<T, ConceptAs<long>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for byte.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, byte> RuleFor(Expression<Func<T, ConceptAs<byte>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, byte> RuleFor(Expression<Func<T, ConceptAs<byte>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for ushort.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, ushort> RuleFor(Expression<Func<T, ConceptAs<ushort>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, ushort> RuleFor(Expression<Func<T, ConceptAs<ushort>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for uint.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, uint> RuleFor(Expression<Func<T, ConceptAs<uint>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, uint> RuleFor(Expression<Func<T, ConceptAs<uint>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
+
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
 
     /// <summary>
     /// Defines a validation rules for a specific property based on <see cref="ConceptAs{T}"/> for ulong.
     /// </summary>
     /// <param name="expression">The expression representing the property to validate.</param>
     /// <returns>An IRuleBuilder instance on which validators can be defined.</returns>
-    public IRuleBuilderInitial<T, ulong> RuleFor(Expression<Func<T, ConceptAs<ulong>>> expression) =>
-        RuleFor(CreateTransform(expression));
+    public IRuleBuilderInitial<T, ulong> RuleFor(Expression<Func<T, ConceptAs<ulong>>> expression)
+    {
+        if (expression.Body is ParameterExpression)
+        {
+            var transformExpression = CreateTransformExpression(expression);
+            return ((AbstractValidator<T>)this).RuleFor(transformExpression);
+        }
 
-    static Expression<Func<T, TProperty>> CreateTransform<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)
+        var propertyName = GetPropertyName(expression);
+        var valueExpression = CreateValueExpression(expression);
+        return ((AbstractValidator<T>)this).RuleFor(valueExpression).OverridePropertyName(propertyName);
+    }
+
+    static Expression<Func<T, TProperty>> CreateValueExpression<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)
         where TProperty : IComparable
-        => arg => expression.Compile().Invoke(arg).Value;
+    {
+        var parameter = expression.Parameters[0];
+        var body = expression.Body;
+        var valueProperty = Expression.Property(body, nameof(ConceptAs<TProperty>.Value));
+        return Expression.Lambda<Func<T, TProperty>>(valueProperty, parameter);
+    }
+
+    static Expression<Func<T, TProperty>> CreateTransformExpression<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)
+        where TProperty : IComparable
+    {
+        var parameter = expression.Parameters[0];
+
+        // Create: arg => expression.Compile().Invoke(arg).Value
+        var compiled = expression.Compile();
+        var invokeExpression = Expression.Invoke(Expression.Constant(compiled), parameter);
+        var valueProperty = Expression.Property(invokeExpression, nameof(ConceptAs<TProperty>.Value));
+        return Expression.Lambda<Func<T, TProperty>>(valueProperty, parameter);
+    }
+
+    static string GetPropertyName<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)
+        where TProperty : IComparable
+    {
+        if (expression.Body is MemberExpression memberExpression)
+        {
+            return memberExpression.Member.Name;
+        }
+
+        throw new ArgumentException("Expression must be a member expression", nameof(expression));
+    }
 }
+
 #pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore IDE0004 // Remove unnecessary cast (We need to do this to access the correct RuleFor())
