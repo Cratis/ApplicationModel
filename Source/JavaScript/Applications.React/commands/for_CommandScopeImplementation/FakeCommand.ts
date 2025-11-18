@@ -3,11 +3,13 @@
 
 import sinon from 'sinon';
 import { CommandResult, ICommand, PropertyChanged } from '@cratis/applications/commands';
+import { PropertyDescriptor } from '@cratis/applications/reflection';
 
 /* eslint-disable */
 
 export class FakeCommand implements ICommand {
     route = '';
+    propertyDescriptors: PropertyDescriptor[] = [];
     private _hasChanges: boolean;
 
     constructor(hasChanges: boolean) {

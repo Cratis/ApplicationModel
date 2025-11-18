@@ -3,6 +3,7 @@
 
 import { ICanBeConfigured } from '../ICanBeConfigured';
 import { CommandResult } from './CommandResult';
+import { PropertyDescriptor } from '../reflection/PropertyDescriptor';
 
 /**
  * Callback for when a property changes.
@@ -17,6 +18,11 @@ export interface ICommand<TCommandContent = object, TCommandResponse = object> e
      * Gets the route information for the command.
      */
     readonly route: string;
+
+    /**
+     * Gets the property descriptors for the command.
+     */
+    readonly propertyDescriptors: PropertyDescriptor[];
 
     /**
      * Execute the {@link ICommand}.

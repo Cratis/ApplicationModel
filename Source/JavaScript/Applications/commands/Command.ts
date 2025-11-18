@@ -9,6 +9,7 @@ import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
 import { GetHttpHeaders } from '../GetHttpHeaders';
+import { PropertyDescriptor } from '../reflection/PropertyDescriptor';
 
 type Callback = {
     callback: WeakRef<PropertyChanged>;
@@ -26,6 +27,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     abstract readonly route: string;
     abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
+    abstract readonly propertyDescriptors: PropertyDescriptor[];
     abstract get requestParameters(): string[];
     abstract get properties(): string[];
 
