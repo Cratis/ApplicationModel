@@ -44,7 +44,7 @@ export class {{Name}} extends Command<I{{Name}}> implements I{{Name}} {
     readonly validation: CommandValidator = new {{Name}}Validator();
     readonly propertyDescriptors: PropertyDescriptor[] = [
         {{#Properties}}
-        new PropertyDescriptor('{{Name}}', {{Constructor}}),
+        new PropertyDescriptor('{{camelcase Name}}', {{Constructor}}),
         {{/Properties}}
     ];
 
