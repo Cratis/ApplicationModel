@@ -5,6 +5,7 @@ import * as commands from './commands';
 import * as identity from './identity';
 import * as queries from './queries';
 import * as validation from './validation';
+import * as reflection from './reflection';
 export * from './joinPaths';
 export * from './deepEqual';
 export * from './Globals';
@@ -16,4 +17,5 @@ export {
     identity,
     queries,
     validation,
+    reflection,
 };

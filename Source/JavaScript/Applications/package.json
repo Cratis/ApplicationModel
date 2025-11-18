@@ -46,6 +46,11 @@
             "types": "./dist/esm/validation/index.d.ts",
             "import": "./dist/esm/validation/index.js",
             "require": "./dist/cjs/validation/index.js"
+        },
+        "./reflection": {
+            "types": "./dist/esm/reflection/index.d.ts",
+            "import": "./dist/esm/reflection/index.js",
+            "require": "./dist/cjs/reflection/index.js"
         }
     },
     "scripts": {

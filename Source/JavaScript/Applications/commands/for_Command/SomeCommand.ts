@@ -4,6 +4,7 @@
 import { Command } from '../Command';
 import Handlebars from 'handlebars';
 import { CommandValidator } from '../CommandValidator';
+import { PropertyDescriptor } from '../../reflection/PropertyDescriptor';
 
 export interface ISomeCommand {
     someProperty: string;
@@ -13,6 +14,9 @@ export class SomeCommand extends Command<ISomeCommand> implements ISomeCommand {
     validation!: CommandValidator;
     route = '';
     routeTemplate!: Handlebars.TemplateDelegate;
+    propertyDescriptors: PropertyDescriptor[] = [
+        new PropertyDescriptor('someProperty', String)
+    ];
 
     constructor() {
         super(Object, false);
