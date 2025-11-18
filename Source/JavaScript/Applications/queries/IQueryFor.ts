@@ -22,7 +22,7 @@ export interface IQueryFor<TDataType, TArguments = object> extends IQuery {
     get parameters(): TArguments | undefined;
 
     /**
-     * Sets the current arguments for the query.git p
+     * Sets the current arguments for the query.
      */
     set parameters(value: TArguments);
 
