@@ -46,7 +46,7 @@
         <Message Importance="High" Text="Resolved Handlebars assembly: @(HandlebarsAssembly)" />
         
         <ItemGroup>
-            <!-- Include the resolved assemblies in both net8.0 and net9.0 task folders -->
+            <!-- Include the resolved assemblies in both net8.0, net9.0 and net10.0 task folders -->
             <Content Include="@(HandlebarsAssembly)" PackagePath="tasks/net8.0/" />
             <Content Include="@(DependencyModelAssembly)" PackagePath="tasks/net8.0/" />
             <Content Include="@(MetadataLoadContextAssembly)" PackagePath="tasks/net8.0/" />
@@ -54,6 +54,10 @@
             <Content Include="@(HandlebarsAssembly)" PackagePath="tasks/net9.0/" />
             <Content Include="@(DependencyModelAssembly)" PackagePath="tasks/net9.0/" />
             <Content Include="@(MetadataLoadContextAssembly)" PackagePath="tasks/net9.0/" />
+
+            <Content Include="@(HandlebarsAssembly)" PackagePath="tasks/net10.0/" />
+            <Content Include="@(DependencyModelAssembly)" PackagePath="tasks/net10.0/" />
+            <Content Include="@(MetadataLoadContextAssembly)" PackagePath="tasks/net10.0/" />
         </ItemGroup>
     </Target>
 
@@ -61,5 +65,6 @@
     <ItemGroup>
         <Content Include="$(MSBuildThisFileDirectory)bin/$(Configuration)/net8.0/**/*" PackagePath="tasks/net8.0" />
         <Content Include="$(MSBuildThisFileDirectory)bin/$(Configuration)/net9.0/**/*" PackagePath="tasks/net9.0" />
+        <Content Include="$(MSBuildThisFileDirectory)bin/$(Configuration)/net10.0/**/*" PackagePath="tasks/net10.0" />
     </ItemGroup>       
 </Project>
