@@ -29,7 +29,7 @@ public class when_validating_concept_as_property : Specification
     void Because() => _result = _validator.Validate(new TestCommand(new TestConcept(""), new TestConcept("not-an-email")));
 
     [Fact] void should_fail_validation() => _result.IsValid.ShouldBeFalse();
-    [Fact] void should_have_error_for_name_property() => _result.Errors.ShouldContain(error => error.PropertyName == "Name");
-    [Fact] void should_have_error_for_email_property() => _result.Errors.ShouldContain(error => error.PropertyName == "Email");
+    [Fact] void should_have_error_for_name_property() => _result.Errors.ShouldContain(error => error.PropertyName == "name");
+    [Fact] void should_have_error_for_email_property() => _result.Errors.ShouldContain(error => error.PropertyName == "email");
     [Fact] void should_not_have_error_with_value_in_property_name() => _result.Errors.ShouldNotContain(error => error.PropertyName.Contains("Value"));
 }

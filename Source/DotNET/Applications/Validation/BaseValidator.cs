@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Linq.Expressions;
+using Cratis.Strings;
 using FluentValidation;
 
 namespace Cratis.Applications.Validation;
@@ -389,7 +390,7 @@ public class BaseValidator<T> : AbstractValidator<T>
     {
         if (expression.Body is MemberExpression memberExpression)
         {
-            return memberExpression.Member.Name;
+            return memberExpression.Member.Name.ToCamelCase();
         }
 
         throw new ArgumentException("Expression must be a member expression", nameof(expression));
