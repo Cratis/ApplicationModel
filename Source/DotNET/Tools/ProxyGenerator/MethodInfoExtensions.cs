@@ -23,9 +23,18 @@ public static class MethodInfoExtensions
 
         if (method.ReturnType.IsAssignableTo<Task>() && method.ReturnType.IsGenericType)
         {
-            hasResponse = true;
             var responseType = method.ReturnType.GetGenericArguments()[0];
-            responseModel = responseType.ToModelDescriptor();
+
+            if (responseType.IsGenericType && responseType.FullName!.StartsWith("System.ValueTuple"))
+            {
+                responseType = responseType.GetBestTupleType();
+            }
+
+            if (!responseType.IsOneOf())
+            {
+                hasResponse = true;
+                responseModel = responseType.ToModelDescriptor();
+            }
         }
         else if (method.ReturnType != TypeExtensions._voidType && method.ReturnType != TypeExtensions._taskType)
         {
@@ -33,11 +42,14 @@ public static class MethodInfoExtensions
             if (returnType.IsGenericType &&
                 returnType.FullName!.StartsWith("System.ValueTuple"))
             {
-                returnType = returnType.GetGenericArguments()[0];
+                returnType = returnType.GetBestTupleType();
             }
 
-            hasResponse = true;
-            responseModel = returnType.ToModelDescriptor();
+            if (!returnType.IsOneOf())
+            {
+                hasResponse = true;
+                responseModel = returnType.ToModelDescriptor();
+            }
         }
 
         return (hasResponse, responseModel);

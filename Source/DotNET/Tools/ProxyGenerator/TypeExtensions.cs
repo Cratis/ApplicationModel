@@ -647,6 +647,42 @@ public static class TypeExtensions
     public static bool ImplementsEnumerable(this Type type) =>
         type.ImplementsOpenGeneric(_genericEnumerableType) || (type.IsGenericType && type.GetGenericTypeDefinition() == _genericEnumerableType);
 
+    /// <summary>
+    /// Check if a type implements IOneOf from the OneOf namespace.
+    /// </summary>
+    /// <param name="type"><see cref="Type"/> to check.</param>
+    /// <returns>True if type implements IOneOf, false if not.</returns>
+    public static bool IsOneOf(this Type type)
+    {
+        return type.GetInterfaces().Any(i =>
+            i.FullName == "OneOf.IOneOf" ||
+            (i.Namespace == "OneOf" && i.Name == "IOneOf"));
+    }
+
+    /// <summary>
+    /// Get the best type from a tuple by selecting either a ConceptAs implementation or a primitive type.
+    /// </summary>
+    /// <param name="type">Tuple <see cref="Type"/> to inspect.</param>
+    /// <returns>The best type found, or the first generic argument if none match the criteria.</returns>
+    public static Type GetBestTupleType(this Type type)
+    {
+        if (!type.IsGenericType || !type.FullName!.StartsWith("System.ValueTuple"))
+        {
+            return type;
+        }
+
+        var genericArguments = type.GetGenericArguments();
+
+        var conceptType = genericArguments.FirstOrDefault(t => t.IsConcept());
+        if (conceptType is not null)
+        {
+            return conceptType;
+        }
+
+        var primitiveType = genericArguments.FirstOrDefault(t => t.IsAPrimitiveType());
+        return primitiveType ?? genericArguments[0];
+    }
+
     static void InitializeWellKnownTypes()
     {
         var assembly = _metadataLoadContext!.CoreAssembly!;
