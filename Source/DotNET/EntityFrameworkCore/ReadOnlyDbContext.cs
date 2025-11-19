@@ -11,6 +11,11 @@ namespace Cratis.Applications.EntityFrameworkCore;
 /// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
 public class ReadOnlyDbContext(DbContextOptions options) : BaseDbContext(options)
 {
+    /// <summary>
+    /// Gets a value indicating whether eager loading is enabled for all navigations.
+    /// </summary>
+    protected virtual bool IsEagerLoadingEnabled => true;
+
     /// <inheritdoc/>
     public override int SaveChanges() => throw new InvalidOperationException("This DbContext is read-only and does not support saving changes.");
 
@@ -21,5 +26,24 @@ public class ReadOnlyDbContext(DbContextOptions options) : BaseDbContext(options
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        if (!IsEagerLoadingEnabled)
+        {
+            return;
+        }
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var navigation in entityType.GetNavigations())
+            {
+                navigation.SetIsEagerLoaded(true);
+            }
+        }
     }
 }
