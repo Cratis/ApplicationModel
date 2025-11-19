@@ -14,7 +14,7 @@ public class ReadOnlyDbContext(DbContextOptions options) : BaseDbContext(options
     /// <summary>
     /// Gets a value indicating whether eager loading is enabled for all navigations.
     /// </summary>
-    protected virtual bool EagerLoadingEnabled => true;
+    protected virtual bool IsEagerLoadingEnabled => true;
 
     /// <inheritdoc/>
     public override int SaveChanges() => throw new InvalidOperationException("This DbContext is read-only and does not support saving changes.");
@@ -33,7 +33,7 @@ public class ReadOnlyDbContext(DbContextOptions options) : BaseDbContext(options
     {
         base.OnModelCreating(modelBuilder);
 
-        if (!EagerLoadingEnabled)
+        if (!IsEagerLoadingEnabled)
         {
             return;
         }
