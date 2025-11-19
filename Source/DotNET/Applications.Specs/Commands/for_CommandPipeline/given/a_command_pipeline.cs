@@ -15,14 +15,15 @@ public class a_command_pipeline : Specification
     protected ICommandContextValuesBuilder _commandContextValuesBuilder;
     protected IServiceProvider _serviceProvider;
     protected CommandPipeline _commandPipeline;
+    protected CorrelationId _correlationId;
 
     void Establish()
     {
-        var correlationId = CorrelationId.New();
+        _correlationId = CorrelationId.New();
         _correlationIdAccessor = Substitute.For<ICorrelationIdAccessor>();
-        _correlationIdAccessor.Current.Returns(correlationId);
+        _correlationIdAccessor.Current.Returns(_correlationId);
         _commandFilters = Substitute.For<ICommandFilters>();
-        _commandFilters.OnExecution(Arg.Any<CommandContext>()).Returns(CommandResult.Success(correlationId));
+        _commandFilters.OnExecution(Arg.Any<CommandContext>()).Returns(CommandResult.Success(_correlationId));
         _commandHandlerProviders = Substitute.For<ICommandHandlerProviders>();
         _commandResponseValueHandlers = Substitute.For<ICommandResponseValueHandlers>();
         _commandContextModifier = Substitute.For<ICommandContextModifier>();

@@ -25,6 +25,7 @@ public class and_handler_returns_a_one_of_value_without_value_handler : given.a_
     [Fact] void should_not_call_value_handlers() => _commandResponseValueHandlers.DidNotReceive().Handle(Arg.Any<CommandContext>(), _value);
     [Fact] void should_return_command_result_with_response() => _result.ShouldBeOfExactType<CommandResult<string>>();
     [Fact] void should_have_response_value() => ((CommandResult<string>)_result).Response.ShouldEqual(_value);
+    [Fact] void should_have_correlation_id() => _result.CorrelationId.ShouldEqual(_correlationId);
     [Fact] void should_be_successful() => _result.IsSuccess.ShouldBeTrue();
     [Fact] void should_set_current_command_context() => _commandContextModifier.Received(1).SetCurrent(Arg.Any<CommandContext>());
 }
