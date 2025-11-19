@@ -369,8 +369,15 @@ public class BaseValidator<T> : AbstractValidator<T>
     {
         var parameter = expression.Parameters[0];
         var body = expression.Body;
+
+        // Check if concept is null, and if so return default (null for reference types)
+        // This prevents NullReferenceException when accessing .Value on a null concept
+        var nullCheck = Expression.NotEqual(body, Expression.Constant(null, body.Type));
         var valueProperty = Expression.Property(body, nameof(ConceptAs<TProperty>.Value));
-        return Expression.Lambda<Func<T, TProperty>>(valueProperty, parameter);
+        var defaultValue = Expression.Default(typeof(TProperty));
+        var conditional = Expression.Condition(nullCheck, valueProperty, defaultValue);
+
+        return Expression.Lambda<Func<T, TProperty>>(conditional, parameter);
     }
 
     static Expression<Func<T, TProperty>> CreateTransformExpression<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)
@@ -378,11 +385,15 @@ public class BaseValidator<T> : AbstractValidator<T>
     {
         var parameter = expression.Parameters[0];
 
-        // Create: arg => expression.Compile().Invoke(arg).Value
+        // Create: arg => expression.Compile().Invoke(arg) != null ? expression.Compile().Invoke(arg).Value : default
         var compiled = expression.Compile();
         var invokeExpression = Expression.Invoke(Expression.Constant(compiled), parameter);
+        var nullCheck = Expression.NotEqual(invokeExpression, Expression.Constant(null, invokeExpression.Type));
         var valueProperty = Expression.Property(invokeExpression, nameof(ConceptAs<TProperty>.Value));
-        return Expression.Lambda<Func<T, TProperty>>(valueProperty, parameter);
+        var defaultValue = Expression.Default(typeof(TProperty));
+        var conditional = Expression.Condition(nullCheck, valueProperty, defaultValue);
+
+        return Expression.Lambda<Func<T, TProperty>>(conditional, parameter);
     }
 
     static string GetPropertyName<TProperty>(Expression<Func<T, ConceptAs<TProperty>>> expression)

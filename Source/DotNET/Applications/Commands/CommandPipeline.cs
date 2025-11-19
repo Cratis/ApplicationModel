@@ -67,7 +67,7 @@ public class CommandPipeline(
                     {
                         var commandResultType = typeof(CommandResult<>).MakeGenericType(tupleResult.ResponseValue.GetType());
                         commandContext = commandContext with { Response = tupleResult.ResponseValue };
-                        result = (Activator.CreateInstance(commandResultType, tupleResult.ResponseValue) as CommandResult)!;
+                        result = CreateCommandResultWithResponse(correlationId, tupleResult.ResponseValue);
                     }
 
                     foreach (var valueToHandle in tupleResult.ValuesToHandle)
@@ -91,7 +91,7 @@ public class CommandPipeline(
                     else
                     {
                         commandContext = commandContext with { Response = oneOf.Value };
-                        result = CreateCommandResultWithResponse(oneOf.Value);
+                        result = CreateCommandResultWithResponse(correlationId, oneOf.Value);
                     }
                 }
                 else if (valueHandlers.CanHandle(commandContext, response))
@@ -101,7 +101,7 @@ public class CommandPipeline(
                 else
                 {
                     commandContext = commandContext with { Response = response };
-                    result = CreateCommandResultWithResponse(response);
+                    result = CreateCommandResultWithResponse(correlationId, response);
                 }
             }
         }
@@ -160,9 +160,9 @@ public class CommandPipeline(
         return correlationId;
     }
 
-    CommandResult CreateCommandResultWithResponse(object response)
+    CommandResult CreateCommandResultWithResponse(CorrelationId correlationId, object response)
     {
         var commandResultType = typeof(CommandResult<>).MakeGenericType(response.GetType());
-        return (Activator.CreateInstance(commandResultType, response) as CommandResult)!;
+        return (Activator.CreateInstance(commandResultType, correlationId, response) as CommandResult)!;
     }
 }

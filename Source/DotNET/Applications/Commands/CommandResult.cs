@@ -131,6 +131,17 @@ public class CommandResult<TResponse> : CommandResult
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="CommandResult{T}"/> class.
+    /// </summary>
+    /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
+    /// <param name="response">The response.</param>
+    public CommandResult(CorrelationId correlationId, TResponse? response)
+    {
+        CorrelationId = correlationId;
+        Response = response;
+    }
+
+    /// <summary>
     /// Gets or sets the optional response object that will be returned from the command handler.
     /// </summary>
     public TResponse? Response { get; set; }
