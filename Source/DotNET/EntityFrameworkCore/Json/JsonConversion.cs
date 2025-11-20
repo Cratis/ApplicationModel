@@ -3,6 +3,7 @@
 
 using System.Text.Json;
 using Cratis.Json;
+using Cratis.Strings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -116,7 +117,7 @@ public static class JsonConversion
             .ToHashSet();
 
         var allPropertiesWithJson = propertiesWithAttribute
-            .Union(parametersWithAttribute.Select(name => char.ToUpper(name[0]) + name.Substring(1)))
+            .Union(parametersWithAttribute.Select(static name => name.ToPascalCase()))
             .Distinct()
             .ToList();
 
