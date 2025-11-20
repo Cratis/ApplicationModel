@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import Handlebars from 'handlebars';
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { QueryResult } from './QueryResult';
 import { IQuery } from './IQuery';
@@ -18,7 +17,6 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
  */
 export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
-    readonly routeTemplate: Handlebars.TemplateDelegate;
     readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;
 

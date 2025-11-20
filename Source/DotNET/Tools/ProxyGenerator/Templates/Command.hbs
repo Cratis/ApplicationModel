@@ -12,9 +12,6 @@ import { PropertyDescriptor } from '@cratis/applications/reflection';
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';
 {{/Imports}}
-import Handlebars from 'handlebars';
-
-const routeTemplate = Handlebars.compile('{{{RouteTemplate}}}');
 
 export interface I{{Name}} {
     {{#Properties}}
@@ -40,7 +37,6 @@ export class {{Name}} extends Command<I{{Name}}, {{ResponseType.Name}}> implemen
 export class {{Name}} extends Command<I{{Name}}> implements I{{Name}} {
 {{/if}}
     readonly route: string = '{{{Route}}}';
-    readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
     readonly validation: CommandValidator = new {{Name}}Validator();
     readonly propertyDescriptors: PropertyDescriptor[] = [
         {{#Properties}}

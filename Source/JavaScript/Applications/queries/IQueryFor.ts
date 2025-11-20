@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { QueryResult } from './QueryResult';
-import Handlebars from 'handlebars';
 import { IQuery } from './IQuery';
 
 /**
@@ -12,7 +11,6 @@ import { IQuery } from './IQuery';
  */
 export interface IQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
-    readonly routeTemplate: Handlebars.TemplateDelegate;
     readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;
 

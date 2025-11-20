@@ -3,7 +3,6 @@
 
 import { IQueryFor } from './IQueryFor';
 import { QueryResult } from "./QueryResult";
-import Handlebars from 'handlebars';
 import { ValidateRequestArguments } from './ValidateRequestArguments';
 import { Constructor } from '@cratis/fundamentals';
 import { Paging } from './Paging';
@@ -24,7 +23,6 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
     private _origin: string;
     private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
-    abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract get requiredRequestParameters(): string[];
     abstract defaultValue: TDataType;
     abortController?: AbortController;
@@ -85,8 +83,26 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
 
         this.abortController = new AbortController();
 
-        actualRoute = this.routeTemplate(args);
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const { route, unusedParameters } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        actualRoute = joinPaths(this._apiBasePath, route);
+        
+        const additionalParams: Record<string, string | number> = {};
+        if (this.paging.hasPaging) {
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
+        }
+
+        if (this.sorting.hasSorting) {
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
+        }
+
+        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
+        const queryString = queryParams.toString();
+        if (queryString) {
+            actualRoute += '?' + queryString;
+        }
+        
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         const headers = {
@@ -101,16 +117,6 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
             headers[Globals.microserviceHttpHeader] = this._microservice;
         }
 
-        if (this.paging.hasPaging) {
-            actualRoute = this.addQueryParameter(actualRoute, 'page', this.paging.page);
-            actualRoute = this.addQueryParameter(actualRoute, 'pageSize', this.paging.pageSize);
-        }
-
-        if (this.sorting.hasSorting) {
-            actualRoute = this.addQueryParameter(actualRoute, 'sortBy', this.sorting.field);
-            actualRoute = this.addQueryParameter(actualRoute, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
-        }
-
         const response = await fetch(url, {
             method: 'GET',
             headers,
@@ -123,11 +129,5 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         } catch {
             return noSuccess;
         }
-    }
-
-    private addQueryParameter(route: string, key: string, value: unknown): string {
-        route += (route.indexOf('?') > 0) ? '&' : '?';
-        route += `${key}=${value}`;
-        return route;
     }
 }

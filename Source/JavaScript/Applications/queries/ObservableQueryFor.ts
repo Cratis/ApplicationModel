@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { IObservableQueryFor, OnNextResult } from './IObservableQueryFor';
-import Handlebars from 'handlebars';
 import { ObservableQueryConnection } from './ObservableQueryConnection';
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { ValidateRequestArguments } from './ValidateRequestArguments';
@@ -33,7 +32,6 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     private _httpHeadersCallback: GetHttpHeaders;
 
     abstract readonly route: string;
-    abstract readonly routeTemplate: Handlebars.TemplateDelegate<any>;
     abstract readonly defaultValue: TDataType;
     abstract get requiredRequestParameters(): string[];
     sorting: Sorting;
@@ -119,8 +117,25 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             });
         }
 
-        let actualRoute = this.buildRoute(args);
-        actualRoute = this.addPagingAndSortingToRoute(actualRoute);
+        const { route, unusedParameters } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        let actualRoute = joinPaths(this._apiBasePath, route);
+        
+        const additionalParams: Record<string, string | number> = {};
+        if (this.paging.hasPaging) {
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
+        }
+
+        if (this.sorting.hasSorting) {
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
+        }
+
+        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
+        const queryString = queryParams.toString();
+        if (queryString) {
+            actualRoute += '?' + queryString;
+        }
 
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
@@ -152,8 +167,8 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private buildRoute(args?: TParameters): string {
-        let actualRoute = this.routeTemplate(args);
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const { route } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        const actualRoute = joinPaths(this._apiBasePath, route);
         return actualRoute;
     }
 
@@ -174,16 +189,24 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private addPagingAndSortingToRoute(route: string): string {
+        const additionalParams: Record<string, string | number> = {};
+        
         if (this.paging.hasPaging) {
-            route = this.addQueryParameter(route, 'page', this.paging.page);
-            route = this.addQueryParameter(route, 'pageSize', this.paging.pageSize);
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
         }
 
         if (this.sorting.hasSorting) {
-            route = this.addQueryParameter(route, 'sortBy', this.sorting.field);
-            route = this.addQueryParameter(route, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
+        const queryParams = UrlHelpers.buildQueryParams({}, additionalParams);
+        const queryString = queryParams.toString();
+        if (queryString) {
+            route += '?' + queryString;
+        }
+        
         return route;
     }
 
@@ -197,11 +220,5 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         } else {
             result.data = JsonSerializer.deserializeFromInstance(this.modelType, result.data);
         }
-    }
-
-    private addQueryParameter(route: string, key: string, value: unknown): string {
-        route += (route.indexOf('?') > 0) ? '&' : '?';
-        route += `${key}=${value}`;
-        return route;
     }
 }

@@ -25,7 +25,6 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     private _origin: string;
     private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
-    abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
     abstract readonly propertyDescriptors: PropertyDescriptor[];
     abstract get requestParameters(): string[];
@@ -77,7 +76,8 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         });
 
         if (this.requestParameters && this.requestParameters.length > 0) {
-            actualRoute = this.routeTemplate(payload);
+            const { route } = UrlHelpers.replaceRouteParameters(this.route, payload);
+            actualRoute = route;
         }
 
         const headers = {

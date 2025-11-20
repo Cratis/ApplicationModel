@@ -1,14 +1,13 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { a_query_for } from '../given/a_query_for';
+import { an_observable_query_for } from '../given/an_observable_query_for';
 import { given } from '../../../given';
-
 import * as sinon from 'sinon';
 import { QueryResult } from '../../QueryResult';
-import { Paging } from '../../Paging';
+import { expect } from 'chai';
 
-describe('with paging', given(a_query_for, context => {
+describe('when performing with route parameters and unused parameters', given(an_observable_query_for, context => {
     let result: QueryResult<string>;
     let fetchStub: sinon.SinonStub;
     const mockResponse = {
@@ -29,7 +28,6 @@ describe('with paging', given(a_query_for, context => {
     };
 
     beforeEach(async () => {
-        // Setup fetch mock
         fetchStub = sinon.stub(global, 'fetch');
         fetchStub.resolves({
             json: sinon.stub().resolves(mockResponse),
@@ -38,25 +36,36 @@ describe('with paging', given(a_query_for, context => {
         } as unknown as Response);
 
         context.query.setOrigin('https://api.example.com');
-        context.query.paging = new Paging(2, 10); // page 2, 10 items per page
+        context.query.setApiBasePath('/api/v1');
 
-        // Call perform with valid arguments
-        result = await context.query.perform({ id: 'test-id' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        result = await context.query.perform({ id: 'test-id', status: 'completed', priority: 'high' } as any);
     });
 
     afterEach(() => {
         fetchStub.restore();
     });
 
-    it('should call fetch with URL including paging parameters', () => {
-        fetchStub.should.have.been.calledOnce;
-        const call = fetchStub.getCall(0);
-        const url = call.args[0].href;
-        url.should.include('page=2');
-        url.should.include('pageSize=10');
-    });
-
     it('should return successful result', () => {
-        result.isSuccess.should.be.true;
+        expect(result.isSuccess).to.be.true;
+    });
+    
+    it('should return correct data', () => {
+        expect(result.data).to.equal('test-result');
+    });
+    
+    it('should include route parameter in path', () => {
+        const call = fetchStub.getCall(0);
+        call.args[0].href.should.include('/test-id');
+    });
+    
+    it('should include unused status parameter in query string', () => {
+        const call = fetchStub.getCall(0);
+        call.args[0].href.should.include('status=completed');
+    });
+    
+    it('should include unused priority parameter in query string', () => {
+        const call = fetchStub.getCall(0);
+        call.args[0].href.should.include('priority=high');
     });
 }));

@@ -55,7 +55,6 @@ public static class CommandExtensions
             method.DeclaringType!,
             method,
             route,
-            route.MakeRouteTemplate(),
             commandName,
             properties,
             imports.OrderBy(_ => _.Module),
