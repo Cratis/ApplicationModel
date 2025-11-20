@@ -69,80 +69,55 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     /** @inheritdoc */
     async execute(): Promise<CommandResult<TCommandResponse>> {
         let actualRoute = this.route;
-        const payload = {};
-
-        this.properties.forEach(property => {
-            payload[property] = this[property];
-        });
 
         if (this.requestParameters && this.requestParameters.length > 0) {
+            const payload = this.buildPayload();
             const { route } = UrlHelpers.replaceRouteParameters(this.route, payload);
             actualRoute = route;
         }
 
-        const headers = {
-            ... this._httpHeadersCallback?.(), ...
-            {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
-
-        if (this._microservice?.length > 0) {
-            headers[Globals.microserviceHttpHeader] = this._microservice;
-        }
-
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
-        const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers,
-                body: JsonSerializer.serialize(payload)
-            });
-            this.setInitialValuesFromCurrentValues();
-
-            if (response.status === 404) {
-                return CommandResult.failed([`Command not found at route '${actualRoute}'`]) as CommandResult<TCommandResponse>;
-            }
-
-            const result = await response.json();
-            return new CommandResult(result, this._responseType, this._isResponseTypeEnumerable);
-        } catch (ex) {
-            return CommandResult.failed([`Error during server call: ${ex}`]) as CommandResult<TCommandResponse>;
-        }
+        const result = await this.performRequest(actualRoute, 'Command not found at route', 'Error during server call');
+        this.setInitialValuesFromCurrentValues();
+        return result;
     }
 
     /** @inheritdoc */
     async validate(): Promise<CommandResult<TCommandResponse>> {
-        let actualRoute = this.route;
-        const payload = {};
+        const actualRoute = `${this.route}/validate`;
+        return this.performRequest(actualRoute, 'Command validation endpoint not found at route', 'Error during validation call');
+    }
 
+    private buildPayload(): object {
+        const payload = {};
         this.properties.forEach(property => {
             payload[property] = this[property];
         });
+        return payload;
+    }
 
-        if (this.requestParameters && this.requestParameters.length > 0) {
-            actualRoute = this.routeTemplate(payload);
-        }
-
-        // Append /validate to the route
-        actualRoute = `${actualRoute}/validate`;
-
+    private buildHeaders(): HeadersInit {
+        const customHeaders = this._httpHeadersCallback?.() ?? {};
         const headers = {
-            ... this._httpHeadersCallback?.(), ...
-            {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            ...customHeaders,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         };
 
         if (this._microservice?.length > 0) {
             headers[Globals.microserviceHttpHeader] = this._microservice;
         }
 
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        return headers;
+    }
+
+    private async performRequest(
+        route: string,
+        notFoundMessage: string,
+        errorMessage: string
+    ): Promise<CommandResult<TCommandResponse>> {
+        const payload = this.buildPayload();
+        const headers = this.buildHeaders();
+        const actualRoute = joinPaths(this._apiBasePath, route);
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
         try {
@@ -153,13 +128,13 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
             });
 
             if (response.status === 404) {
-                return CommandResult.failed([`Command validation endpoint not found at route '${actualRoute}'`]) as CommandResult<TCommandResponse>;
+                return CommandResult.failed([`${notFoundMessage} '${actualRoute}'`]) as CommandResult<TCommandResponse>;
             }
 
             const result = await response.json();
             return new CommandResult(result, this._responseType, this._isResponseTypeEnumerable);
         } catch (ex) {
-            return CommandResult.failed([`Error during validation call: ${ex}`]) as CommandResult<TCommandResponse>;
+            return CommandResult.failed([`${errorMessage}: ${ex}`]) as CommandResult<TCommandResponse>;
         }
     }
 
