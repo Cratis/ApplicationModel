@@ -21,6 +21,7 @@ public class a_base_db_context : Specification
         var options = new DbContextOptionsBuilder<TDbContext>()
             .UseSqlite(":memory:")
             .UseApplicationServiceProvider(appServiceProvider)
+            .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ManyServiceProvidersCreatedWarning))
             .Options;
 
         return (TDbContext)Activator.CreateInstance(typeof(TDbContext), options)!;
