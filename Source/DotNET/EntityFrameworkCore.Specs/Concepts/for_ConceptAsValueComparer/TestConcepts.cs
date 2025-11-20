@@ -6,6 +6,7 @@ using Cratis.Concepts;
 namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsValueComparer;
 
 #pragma warning disable SA1402 // Single type per file
+#pragma warning disable SA1649 // File name should match first type name
 
 public record TestStringConcept(string Value) : ConceptAs<string>(Value)
 {

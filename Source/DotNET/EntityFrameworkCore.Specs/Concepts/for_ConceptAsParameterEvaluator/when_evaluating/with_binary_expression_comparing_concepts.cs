@@ -20,7 +20,7 @@ public class with_binary_expression_comparing_concepts : Specification
         // The evaluator should unwrap closure.Id to a constant with the underlying Guid value
         var closureConstant = Expression.Constant(closure);
         var closureIdAccess = Expression.Property(closureConstant, nameof(TestClosure.Id));
-        
+
         var entity = new TestEntity { Id = new TestIdConcept(_testId) };
         var entityConstant = Expression.Constant(entity);
         var entityIdAccess = Expression.Property(entityConstant, nameof(TestEntity.Id));

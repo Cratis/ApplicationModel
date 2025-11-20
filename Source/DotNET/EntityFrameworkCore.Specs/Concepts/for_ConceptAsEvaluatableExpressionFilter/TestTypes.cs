@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsEvaluatableExpressionFilter;
 
 #pragma warning disable SA1402 // Single type per file
+#pragma warning disable SA1649 // File name should match first type name
 
 public record TestIdConcept(Guid Value) : ConceptAs<Guid>(Value)
 {
@@ -33,7 +34,7 @@ public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TestEntity>().HasKey(e => e.Id);
-        
+
         // Apply concept converters
         modelBuilder.Entity<TestEntity>()
             .Property(e => e.Id)

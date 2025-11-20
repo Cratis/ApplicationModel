@@ -14,12 +14,11 @@ public class with_binary_comparison : Specification
     {
         // Create expression: entity.Id == closure.Id (both concepts)
         // The rewriter should transform this to: entity.Id.Value == closure.Id.Value
-        var entity = new TestEntity { Id = new TestIdConcept(Guid.NewGuid()) };
         var closure = new TestClosure { Id = new TestIdConcept(Guid.NewGuid()) };
 
         var entityParameter = Expression.Parameter(typeof(TestEntity), "e");
         var entityIdAccess = Expression.Property(entityParameter, nameof(TestEntity.Id));
-        
+
         var closureConstant = Expression.Constant(closure);
         var closureIdAccess = Expression.Property(closureConstant, nameof(TestClosure.Id));
 
@@ -30,5 +29,5 @@ public class with_binary_comparison : Specification
 
     [Fact] void should_return_binary_expression() => (_result is BinaryExpression).ShouldBeTrue();
     [Fact] void should_rewrite_left_side_to_access_value() => (((BinaryExpression)_result).Left is MemberExpression).ShouldBeTrue();
-    [Fact] void should_have_primitive_comparison() => ((MemberExpression)((BinaryExpression)_result).Left).Type.ShouldEqual(typeof(Guid));
+    [Fact] void should_have_primitive_comparison() => ((BinaryExpression)_result).Left.Type.ShouldEqual(typeof(Guid));
 }

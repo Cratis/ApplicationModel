@@ -1,9 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-
 namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsDbCommandInterceptor.when_executing_reader;
 
 public class with_concept_parameters : given.a_concept_as_db_command_interceptor
@@ -28,7 +25,7 @@ public class with_concept_parameters : given.a_concept_as_db_command_interceptor
     void Because()
     {
         // Directly test the unwrapping logic without needing EventDefinition
-        _interceptor.ReaderExecuting(_command, default, default);
+        _interceptor.ReaderExecuting(_command, default!, default);
     }
 
     [Fact] void should_unwrap_string_concept_to_underlying_value() => _stringParam.Value.ShouldEqual("test value");
