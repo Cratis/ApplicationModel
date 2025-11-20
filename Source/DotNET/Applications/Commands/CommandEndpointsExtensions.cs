@@ -7,6 +7,7 @@ using Cratis.Applications.Execution;
 using Cratis.Execution;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -37,6 +38,7 @@ public static class CommandEndpointsExtensions
             var prefix = options.RoutePrefix.Trim('/');
             var group = endpoints.MapGroup($"/{prefix}");
 
+            // Map model-bound command endpoints
             foreach (var handler in commandHandlerProviders.Handlers)
             {
                 var location = handler.Location.Skip(options.SegmentsToSkipForRoute);
@@ -93,6 +95,15 @@ public static class CommandEndpointsExtensions
                 .WithName($"Validate{handler.CommandType.Name}")
                 .WithSummary($"Validate {handler.CommandType.Name} command without executing it");
             }
+
+            // Map controller-based command validation endpoints
+            var actionDescriptorProvider = app.ApplicationServices.GetRequiredService<IActionDescriptorCollectionProvider>();
+            var controllerCommandMapper = new ControllerCommandEndpointMapper(
+                actionDescriptorProvider,
+                commandPipeline,
+                correlationIdAccessor,
+                jsonSerializerOptions);
+            controllerCommandMapper.MapValidationEndpoints(endpoints, appModelOptions);
         }
 
         return app;

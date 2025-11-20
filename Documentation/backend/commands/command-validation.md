@@ -78,6 +78,53 @@ For model-bound commands, validation endpoints are automatically created alongsi
 
 The validation endpoint accepts the same payload as the execute endpoint but only runs filters.
 
+### Controller-Based Commands
+
+For controller-based commands, validation endpoints are **automatically discovered and created** at application startup. The system scans all controller actions that:
+
+- Are POST methods
+- Have a single `[FromBody]` parameter (the command)
+
+For each matching controller action, a corresponding `/validate` endpoint is automatically registered.
+
+**Example Controller:**
+
+```csharp
+[Route("api/carts")]
+public class Carts : ControllerBase
+{
+    [HttpPost("add")]
+    public Task AddItemToCart([FromBody] AddItemToCart command)
+    {
+        // Execute the command
+    }
+}
+```
+
+**Automatically Created Endpoints:**
+
+- **Execute**: `POST /api/carts/add`
+- **Validate**: `POST /api/carts/add/validate` _(automatically created)_
+
+**Key Points:**
+
+- Validation endpoints are automatically created for all controller command actions
+- No attributes or special configuration required
+- The system detects commands by looking for POST actions with `[FromBody]` parameters
+- The route pattern for validation is: `{controller-action-route}/validate`
+- Only validation and authorization filters run; the action method is not executed
+
+**How It Works:**
+
+During application startup, the `ControllerCommandEndpointMapper` service:
+
+1. Discovers all controller actions using `IActionDescriptorCollectionProvider`
+2. Identifies command actions (POST methods with `[FromBody]` parameter)
+3. Creates corresponding `/validate` endpoints using Minimal APIs
+4. Routes validation requests through the command pipeline's `Validate` method
+
+This approach provides the same validation functionality as model-bound commands without requiring developers to manually create validation actions.
+
 ## Frontend Support
 
 ### Command.validate() Method
