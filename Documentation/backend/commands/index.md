@@ -14,6 +14,7 @@ The Application Model provides comprehensive support for implementing commands i
 | [Response Value Handlers](./response-value-handlers.md) | How to customize command response handling with value handlers. |
 | [Response Examples](./response-examples.md) | Comprehensive examples of different command response patterns. |
 | [Validation](./validation.md) | How to implement validation for commands. |
+| [Command Validation](./command-validation.md) | How to validate commands without executing them for pre-flight validation. |
 
 > **💡 Frontend Integration**: Automatically generate TypeScript proxies for your commands with the [Proxy Generation](../proxy-generation.md) feature.
 
@@ -26,6 +27,7 @@ Commands in the Application Model are designed to be simple to implement while p
 - **Automatic Response Handling**: Command handlers can return any value, which will either be processed by custom response value handlers or automatically become a typed `CommandResult<T>` response
 - **Flexible Return Types**: Support for single values, tuples, and OneOf types with intelligent processing
 - **Built-in Validation**: Automatic command validation before execution
+- **Pre-flight Validation**: Validate commands without executing them using the `validate()` method for early user feedback
 - **Response Value Handlers**: Extensible system for processing specific types of return values
 - **Controller and Model-Bound Support**: Multiple patterns for implementing commands
 - **TypeScript Integration**: Automatic proxy generation for frontend integration

@@ -32,6 +32,15 @@ export interface ICommand<TCommandContent = object, TCommandResponse = object> e
     execute(): Promise<CommandResult<TCommandResponse>>;
 
     /**
+     * Validate the {@link ICommand} without executing it.
+     * @returns {CommandResult} for the validation containing authorization and validation status.
+     * @remarks
+     * This method performs authorization and validation checks on the server without executing the command handler.
+     * Use this for pre-flight validation to provide early feedback to users.
+     */
+    validate(): Promise<CommandResult<TCommandResponse>>;
+
+    /**
      * Clear the command properties and reset them to their default values. This will also clear the initial values.
      * This is used when the command is not needed anymore and should be cleared.
      */

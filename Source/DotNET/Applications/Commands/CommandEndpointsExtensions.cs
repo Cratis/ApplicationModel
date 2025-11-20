@@ -69,6 +69,29 @@ public static class CommandEndpointsExtensions
                 .WithTags(string.Join('.', location))
                 .WithName($"Execute{handler.CommandType.Name}")
                 .WithSummary($"Execute {handler.CommandType.Name} command");
+
+                // Add validation endpoint
+                var validateUrl = $"{url}/validate";
+                group.MapPost(validateUrl, async (HttpRequest request, HttpResponse response) =>
+                {
+                    var context = request.HttpContext;
+                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+                    var command = await request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                    CommandResult commandResult;
+                    if (command is null)
+                    {
+                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
+                    }
+                    else
+                    {
+                        commandResult = await commandPipeline.Validate(command);
+                    }
+                    response.SetResponseStatusCode(commandResult);
+                    await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                })
+                .WithTags(string.Join('.', location))
+                .WithName($"Validate{handler.CommandType.Name}")
+                .WithSummary($"Validate {handler.CommandType.Name} command without executing it");
             }
         }
 

@@ -12,3 +12,5 @@
   href: response-examples.md
 - name: Validation
   href: validation.md
+- name: Command Validation
+  href: command-validation.md

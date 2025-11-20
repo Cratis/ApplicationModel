@@ -113,6 +113,39 @@ public class CommandPipeline(
         return result;
     }
 
+    /// <inheritdoc/>
+    public async Task<CommandResult> Validate(object command)
+    {
+        var correlationId = GetCorrelationId();
+        var result = CommandResult.Success(correlationId);
+        try
+        {
+            handlerProviders.TryGetHandlerFor(command, out var commandHandler);
+            if (commandHandler is null)
+            {
+                return CommandResult.MissingHandler(correlationId, command.GetType());
+            }
+
+            var dependencies = commandHandler.Dependencies.Select(serviceProvider.GetRequiredService);
+            var commandContext = new CommandContext(
+                correlationId,
+                command.GetType(),
+                command,
+                dependencies,
+                contextValuesBuilder.Build(command));
+            contextModifier.SetCurrent(commandContext);
+
+            // Run only filters (authorization and validation), skip handler execution
+            result = await commandFilters.OnExecution(commandContext);
+        }
+        catch (Exception ex)
+        {
+            result.MergeWith(CommandResult.Error(correlationId, ex));
+        }
+
+        return result;
+    }
+
     (object? ResponseValue, IEnumerable<object> ValuesToHandle) ProcessTuple(ITuple tuple, CommandContext commandContext)
     {
         var allValues = new List<object>();
