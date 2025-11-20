@@ -76,7 +76,8 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         });
 
         if (this.requestParameters && this.requestParameters.length > 0) {
-            actualRoute = this.replaceRouteParameters(this.route, payload);
+            const { route } = UrlHelpers.replaceRouteParameters(this.route, payload);
+            actualRoute = route;
         }
 
         const headers = {
@@ -180,14 +181,5 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
 
     private updateHasChanges() {
         this._hasChanges = this.properties.some(property => this[property] !== this._initialValues[property]);
-    }
-
-    private replaceRouteParameters(route: string, payload: object): string {
-        let result = route;
-        for (const [key, value] of Object.entries(payload)) {
-            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
-            result = result.replace(pattern, encodeURIComponent(String(value)));
-        }
-        return result;
     }
 }

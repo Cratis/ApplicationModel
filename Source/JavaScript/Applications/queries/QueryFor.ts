@@ -83,20 +83,21 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
 
         this.abortController = new AbortController();
 
-        actualRoute = this.replaceRouteParameters(this.route, args);
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const { route, unusedParameters } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        actualRoute = joinPaths(this._apiBasePath, route);
         
-        const queryParams = new URLSearchParams();
+        const additionalParams: Record<string, string | number> = {};
         if (this.paging.hasPaging) {
-            queryParams.set('page', this.paging.page.toString());
-            queryParams.set('pageSize', this.paging.pageSize.toString());
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
         }
 
         if (this.sorting.hasSorting) {
-            queryParams.set('sortBy', this.sorting.field);
-            queryParams.set('sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
+        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
             actualRoute += '?' + queryString;
@@ -128,18 +129,5 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         } catch {
             return noSuccess;
         }
-    }
-
-    private replaceRouteParameters(route: string, args?: TParameters): string {
-        if (!args) {
-            return route;
-        }
-
-        let result = route;
-        for (const [key, value] of Object.entries(args)) {
-            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
-            result = result.replace(pattern, encodeURIComponent(String(value)));
-        }
-        return result;
     }
 }

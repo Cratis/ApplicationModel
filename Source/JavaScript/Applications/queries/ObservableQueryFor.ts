@@ -117,8 +117,25 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             });
         }
 
-        let actualRoute = this.buildRoute(args);
-        actualRoute = this.addPagingAndSortingToRoute(actualRoute);
+        const { route, unusedParameters } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        let actualRoute = joinPaths(this._apiBasePath, route);
+        
+        const additionalParams: Record<string, string | number> = {};
+        if (this.paging.hasPaging) {
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
+        }
+
+        if (this.sorting.hasSorting) {
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
+        }
+
+        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
+        const queryString = queryParams.toString();
+        if (queryString) {
+            actualRoute += '?' + queryString;
+        }
 
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
 
@@ -150,22 +167,9 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private buildRoute(args?: TParameters): string {
-        let actualRoute = this.replaceRouteParameters(this.route, args);
-        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const { route } = UrlHelpers.replaceRouteParameters(this.route, args as object);
+        const actualRoute = joinPaths(this._apiBasePath, route);
         return actualRoute;
-    }
-
-    private replaceRouteParameters(route: string, args?: TParameters): string {
-        if (!args) {
-            return route;
-        }
-
-        let result = route;
-        for (const [key, value] of Object.entries(args)) {
-            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
-            result = result.replace(pattern, encodeURIComponent(String(value)));
-        }
-        return result;
     }
 
     private buildQueryArguments(): any {
@@ -185,18 +189,19 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private addPagingAndSortingToRoute(route: string): string {
-        const queryParams = new URLSearchParams();
+        const additionalParams: Record<string, string | number> = {};
         
         if (this.paging.hasPaging) {
-            queryParams.set('page', this.paging.page.toString());
-            queryParams.set('pageSize', this.paging.pageSize.toString());
+            additionalParams.page = this.paging.page;
+            additionalParams.pageSize = this.paging.pageSize;
         }
 
         if (this.sorting.hasSorting) {
-            queryParams.set('sortBy', this.sorting.field);
-            queryParams.set('sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+            additionalParams.sortBy = this.sorting.field;
+            additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
+        const queryParams = UrlHelpers.buildQueryParams({}, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
             route += '?' + queryString;

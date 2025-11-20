@@ -16,4 +16,56 @@ export class UrlHelpers {
 
         return new URL(route, `${origin}${apiBasePath}`);
     }
+
+    /**
+     * Replaces route parameters in the route template with values from the parameters object.
+     * Returns both the updated route and the parameters that were not used in the route.
+     * @param route The route template with placeholders like {paramName}.
+     * @param parameters The parameters to replace in the route.
+     * @returns An object containing the updated route and unused parameters.
+     */
+    static replaceRouteParameters<T extends object>(route: string, parameters?: T): { route: string; unusedParameters: Partial<T> } {
+        if (!parameters) {
+            return { route, unusedParameters: {} };
+        }
+
+        let result = route;
+        const unusedParameters: Partial<T> = { ...parameters };
+
+        for (const [key, value] of Object.entries(parameters)) {
+            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
+            const newRoute = result.replace(pattern, encodeURIComponent(String(value)));
+            
+            if (newRoute !== result) {
+                delete unusedParameters[key as keyof T];
+                result = newRoute;
+            }
+        }
+
+        return { route: result, unusedParameters };
+    }
+
+    /**
+     * Builds URLSearchParams from the given parameters and additional query parameters.
+     * @param unusedParameters Parameters that were not used in route replacement.
+     * @param additionalParams Additional query parameters to include.
+     * @returns URLSearchParams containing all parameters.
+     */
+    static buildQueryParams(unusedParameters: object, additionalParams?: Record<string, string | number>): URLSearchParams {
+        const queryParams = new URLSearchParams();
+
+        for (const [key, value] of Object.entries(unusedParameters)) {
+            if (value !== undefined && value !== null) {
+                queryParams.set(key, String(value));
+            }
+        }
+
+        if (additionalParams) {
+            for (const [key, value] of Object.entries(additionalParams)) {
+                queryParams.set(key, String(value));
+            }
+        }
+
+        return queryParams;
+    }
 }
