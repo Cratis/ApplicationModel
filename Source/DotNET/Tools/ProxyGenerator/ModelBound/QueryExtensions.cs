@@ -117,7 +117,6 @@ public static class QueryExtensions
             readModelType,
             method,
             route,
-            route.MakeRouteTemplate(),
             method.Name,
             responseModel.Name,
             responseModel.Constructor,

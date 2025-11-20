@@ -50,15 +50,12 @@ describe('with sorting', given(a_query_for, context => {
             fetchStub.restore();
         });
 
-        it('should call fetch with URL without sorting parameters due to implementation bug', () => {
-            // Note: This test documents a bug where sorting parameters are added after URL creation
+        it('should call fetch with URL including sorting parameters', () => {
             fetchStub.should.have.been.calledOnce;
             const call = fetchStub.getCall(0);
             const url = call.args[0].href;
-            // The parameters should be included but aren't due to timing issue in implementation
-            url.should.not.include('sortBy=name');
-            url.should.not.include('sortDirection=asc');
-            url.should.equal('https://api.example.com/api/test/test-id');
+            url.should.include('sortBy=name');
+            url.should.include('sortDirection=asc');
         });
 
         it('should return successful result', () => {
@@ -87,15 +84,12 @@ describe('with sorting', given(a_query_for, context => {
             fetchStub.restore();
         });
 
-        it('should call fetch with URL without sorting parameters due to implementation bug', () => {
-            // Note: This test documents a bug where sorting parameters are added after URL creation
+        it('should call fetch with URL including sorting parameters', () => {
             fetchStub.should.have.been.calledOnce;
             const call = fetchStub.getCall(0);
             const url = call.args[0].href;
-            // The parameters should be included but aren't due to timing issue in implementation
-            url.should.not.include('sortBy=name');
-            url.should.not.include('sortDirection=desc');
-            url.should.equal('https://api.example.com/api/test/test-id');
+            url.should.include('sortBy=name');
+            url.should.include('sortDirection=desc');
         });
 
         it('should return successful result', () => {

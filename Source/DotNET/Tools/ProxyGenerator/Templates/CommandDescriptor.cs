@@ -11,7 +11,6 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="Type">The controller type that owns the command.</param>
 /// <param name="Method">The method that represents the command.</param>
 /// <param name="Route">API route for the command.</param>
-/// <param name="RouteTemplate">API route template for the command.</param>
 /// <param name="Name">Name of the command.</param>
 /// <param name="Properties">Properties on the command.</param>
 /// <param name="Imports">Additional import statements.</param>
@@ -23,7 +22,6 @@ public record CommandDescriptor(
     Type Type,
     MethodInfo Method,
     string Route,
-    string RouteTemplate,
     string Name,
     IEnumerable<PropertyDescriptor> Properties,
     IOrderedEnumerable<ImportStatement> Imports,

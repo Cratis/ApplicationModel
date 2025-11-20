@@ -48,15 +48,12 @@ describe('with paging', given(a_query_for, context => {
         fetchStub.restore();
     });
 
-    it('should call fetch with URL without paging parameters due to implementation bug', () => {
-        // Note: This test documents a bug where paging parameters are added after URL creation
+    it('should call fetch with URL including paging parameters', () => {
         fetchStub.should.have.been.calledOnce;
         const call = fetchStub.getCall(0);
         const url = call.args[0].href;
-        // The parameters should be included but aren't due to timing issue in implementation
-        url.should.not.include('page=2');
-        url.should.not.include('pageSize=10');
-        url.should.equal('https://api.example.com/api/test/test-id');
+        url.should.include('page=2');
+        url.should.include('pageSize=10');
     });
 
     it('should return successful result', () => {

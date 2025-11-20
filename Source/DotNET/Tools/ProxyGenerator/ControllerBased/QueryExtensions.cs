@@ -70,7 +70,6 @@ public static class QueryExtensions
             method.DeclaringType!,
             method,
             route,
-            route.MakeRouteTemplate(),
             method.Name,
             responseModel.Name,
             responseModel.Constructor,

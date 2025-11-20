@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { IObservableQueryFor, OnNextResult } from './IObservableQueryFor';
-import Handlebars from 'handlebars';
 import { ObservableQueryConnection } from './ObservableQueryConnection';
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { ValidateRequestArguments } from './ValidateRequestArguments';
@@ -33,7 +32,6 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     private _httpHeadersCallback: GetHttpHeaders;
 
     abstract readonly route: string;
-    abstract readonly routeTemplate: Handlebars.TemplateDelegate<any>;
     abstract readonly defaultValue: TDataType;
     abstract get requiredRequestParameters(): string[];
     sorting: Sorting;
@@ -152,9 +150,22 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private buildRoute(args?: TParameters): string {
-        let actualRoute = this.routeTemplate(args);
+        let actualRoute = this.replaceRouteParameters(this.route, args);
         actualRoute = joinPaths(this._apiBasePath, actualRoute);
         return actualRoute;
+    }
+
+    private replaceRouteParameters(route: string, args?: TParameters): string {
+        if (!args) {
+            return route;
+        }
+
+        let result = route;
+        for (const [key, value] of Object.entries(args)) {
+            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
+            result = result.replace(pattern, encodeURIComponent(String(value)));
+        }
+        return result;
     }
 
     private buildQueryArguments(): any {
@@ -174,16 +185,23 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
     }
 
     private addPagingAndSortingToRoute(route: string): string {
+        const queryParams = new URLSearchParams();
+        
         if (this.paging.hasPaging) {
-            route = this.addQueryParameter(route, 'page', this.paging.page);
-            route = this.addQueryParameter(route, 'pageSize', this.paging.pageSize);
+            queryParams.set('page', this.paging.page.toString());
+            queryParams.set('pageSize', this.paging.pageSize.toString());
         }
 
         if (this.sorting.hasSorting) {
-            route = this.addQueryParameter(route, 'sortBy', this.sorting.field);
-            route = this.addQueryParameter(route, 'sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
+            queryParams.set('sortBy', this.sorting.field);
+            queryParams.set('sortDirection', (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc');
         }
 
+        const queryString = queryParams.toString();
+        if (queryString) {
+            route += '?' + queryString;
+        }
+        
         return route;
     }
 
@@ -197,11 +215,5 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         } else {
             result.data = JsonSerializer.deserializeFromInstance(this.modelType, result.data);
         }
-    }
-
-    private addQueryParameter(route: string, key: string, value: unknown): string {
-        route += (route.indexOf('?') > 0) ? '&' : '?';
-        route += `${key}=${value}`;
-        return route;
     }
 }

@@ -25,7 +25,6 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     private _origin: string;
     private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
-    abstract readonly routeTemplate: Handlebars.TemplateDelegate;
     abstract readonly validation: CommandValidator;
     abstract readonly propertyDescriptors: PropertyDescriptor[];
     abstract get requestParameters(): string[];
@@ -77,7 +76,7 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
         });
 
         if (this.requestParameters && this.requestParameters.length > 0) {
-            actualRoute = this.routeTemplate(payload);
+            actualRoute = this.replaceRouteParameters(this.route, payload);
         }
 
         const headers = {
@@ -181,5 +180,14 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
 
     private updateHasChanges() {
         this._hasChanges = this.properties.some(property => this[property] !== this._initialValues[property]);
+    }
+
+    private replaceRouteParameters(route: string, payload: object): string {
+        let result = route;
+        for (const [key, value] of Object.entries(payload)) {
+            const pattern = new RegExp(`\\{${key}\\}`, 'gi');
+            result = result.replace(pattern, encodeURIComponent(String(value)));
+        }
+        return result;
     }
 }

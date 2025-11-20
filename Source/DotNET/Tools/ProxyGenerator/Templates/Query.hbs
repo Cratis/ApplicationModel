@@ -18,9 +18,6 @@ import { useQuery, PerformQuery } from '@cratis/applications.react/queries';
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';
 {{/Imports}}
-import Handlebars from 'handlebars';
-
-const routeTemplate = Handlebars.compile('{{{RouteTemplate}}}');
 
 {{#if IsEnumerable}}
 class {{Name}}SortBy {
@@ -78,7 +75,6 @@ export class {{Name}} extends QueryFor<{{Model}}> {
 {{/if}}
 {{/if}}
     readonly route: string = '{{{Route}}}';
-    readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
 {{#if IsEnumerable}}
     readonly defaultValue: {{Model}}[] = [];
     private readonly _sortBy: {{Name}}SortBy;

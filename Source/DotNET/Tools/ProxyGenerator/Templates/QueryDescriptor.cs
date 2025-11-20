@@ -11,7 +11,6 @@ namespace Cratis.Applications.ProxyGenerator.Templates;
 /// <param name="Type">The controller type that owns the query.</param>
 /// <param name="Method">The method that represents the query.</param>
 /// <param name="Route">API route for the query.</param>
-/// <param name="RouteTemplate">API route template for the query.</param>
 /// <param name="Name">Name of the query.</param>
 /// <param name="Model">Type of model the query is for.</param>
 /// <param name="Constructor">The JavaScript constructor for the model type.</param>
@@ -26,7 +25,6 @@ public record QueryDescriptor(
     Type Type,
     MethodInfo Method,
     string Route,
-    string RouteTemplate,
     string Name,
     string Model,
     string Constructor,
