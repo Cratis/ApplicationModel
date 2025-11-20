@@ -14,4 +14,15 @@ public interface ICommandPipeline
     /// <param name="command">The command to execute.</param>
     /// <returns>A <see cref="CommandResult"/> representing the result of executing the command.</returns>
     Task<CommandResult> Execute(object command);
+
+    /// <summary>
+    /// Validates the given command without executing it.
+    /// </summary>
+    /// <param name="command">The command to validate.</param>
+    /// <returns>A <see cref="CommandResult"/> representing the validation result.</returns>
+    /// <remarks>
+    /// This method runs authorization and validation filters but does not invoke the command handler.
+    /// Use this for pre-flight validation before executing a command.
+    /// </remarks>
+    Task<CommandResult> Validate(object command);
 }

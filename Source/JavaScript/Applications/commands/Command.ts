@@ -115,6 +115,55 @@ export abstract class Command<TCommandContent = object, TCommandResponse = objec
     }
 
     /** @inheritdoc */
+    async validate(): Promise<CommandResult<TCommandResponse>> {
+        let actualRoute = this.route;
+        const payload = {};
+
+        this.properties.forEach(property => {
+            payload[property] = this[property];
+        });
+
+        if (this.requestParameters && this.requestParameters.length > 0) {
+            actualRoute = this.routeTemplate(payload);
+        }
+
+        // Append /validate to the route
+        actualRoute = `${actualRoute}/validate`;
+
+        const headers = {
+            ... this._httpHeadersCallback?.(), ...
+            {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        if (this._microservice?.length > 0) {
+            headers[Globals.microserviceHttpHeader] = this._microservice;
+        }
+
+        actualRoute = joinPaths(this._apiBasePath, actualRoute);
+        const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers,
+                body: JsonSerializer.serialize(payload)
+            });
+
+            if (response.status === 404) {
+                return CommandResult.failed([`Command validation endpoint not found at route '${actualRoute}'`]) as CommandResult<TCommandResponse>;
+            }
+
+            const result = await response.json();
+            return new CommandResult(result, this._responseType, this._isResponseTypeEnumerable);
+        } catch (ex) {
+            return CommandResult.failed([`Error during validation call: ${ex}`]) as CommandResult<TCommandResponse>;
+        }
+    }
+
+    /** @inheritdoc */
     clear(): void {
         this.properties.forEach(property => {
             this[property] = undefined;
