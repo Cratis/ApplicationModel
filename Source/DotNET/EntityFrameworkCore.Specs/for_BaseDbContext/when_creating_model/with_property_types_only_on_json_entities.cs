@@ -24,20 +24,23 @@ public class with_property_types_only_on_json_entities : given.a_base_db_context
         _configurationProperty = _storeEntityType.FindProperty(nameof(Store.Configuration))!;
     }
 
-    [Fact] void should_not_have_configuration_details_as_separate_entity()
+    [Fact]
+    void should_not_have_configuration_details_as_separate_entity()
     {
         var configurationDetailsEntity = _model.FindEntityType(typeof(ConfigurationDetails));
         configurationDetailsEntity.ShouldBeNull();
     }
 
-    [Fact] void should_not_have_configuration_code_property_in_store()
+    [Fact]
+    void should_not_have_configuration_code_property_in_store()
     {
         var properties = _storeEntityType.GetProperties();
         var configurationCodeProperty = properties.FirstOrDefault(p => p.Name == "ConfigurationCode");
         configurationCodeProperty.ShouldBeNull();
     }
 
-    [Fact] void should_not_have_unique_id_property_in_store()
+    [Fact]
+    void should_not_have_unique_id_property_in_store()
     {
         var properties = _storeEntityType.GetProperties();
         var uniqueIdProperty = properties.FirstOrDefault(p => p.Name == "UniqueId");
