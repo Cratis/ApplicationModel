@@ -6,5 +6,5 @@ namespace Cratis.Applications.EntityFrameworkCore.Json;
 /// <summary>
 /// Attribute that marks a property as being stored in a Json column.
 /// </summary>
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
 public sealed class JsonAttribute : Attribute;

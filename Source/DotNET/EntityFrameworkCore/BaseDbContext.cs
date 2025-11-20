@@ -7,6 +7,7 @@ using Cratis.Applications.EntityFrameworkCore.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Cratis.Applications.EntityFrameworkCore;
 
@@ -16,6 +17,17 @@ namespace Cratis.Applications.EntityFrameworkCore;
 /// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
 public class BaseDbContext(DbContextOptions options) : DbContext(options)
 {
+    /// <inheritdoc/>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .ReplaceService<IEvaluatableExpressionFilter, ConceptAsEvaluatableExpressionFilter>()
+            .ReplaceService<IModelCustomizer, ConceptAsModelCustomizer>()
+            .AddInterceptors(new ConceptAsQueryExpressionInterceptor(), new ConceptAsDbCommandInterceptor());
+
+        base.OnConfiguring(optionsBuilder);
+    }
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
