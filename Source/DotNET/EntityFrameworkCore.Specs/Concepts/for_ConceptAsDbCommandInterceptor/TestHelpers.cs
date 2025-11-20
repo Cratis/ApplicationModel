@@ -8,6 +8,7 @@ using Cratis.Concepts;
 namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsDbCommandInterceptor;
 
 #pragma warning disable SA1402 // Single type per file
+#pragma warning disable SA1649 // File name should match first type name
 
 public record TestStringConcept(string Value) : ConceptAs<string>(Value)
 {
@@ -55,7 +56,9 @@ public class TestDbParameter : DbParameter
     public override void ResetDbType() { }
 }
 
+#pragma warning disable CA1010 // Generic interface should also be implemented
 public class TestDbParameterCollection(List<DbParameter> parameters) : DbParameterCollection
+#pragma warning restore CA1010 // Generic interface should also be implemented
 {
     public override int Count => parameters.Count;
     public override object SyncRoot => parameters;
