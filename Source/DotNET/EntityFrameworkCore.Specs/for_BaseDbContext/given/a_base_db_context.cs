@@ -13,17 +13,15 @@ public class a_base_db_context : Specification
     protected TDbContext CreateDbContext<TDbContext>()
         where TDbContext : DbContext
     {
-        var services = new ServiceCollection();
-        services.AddEntityFrameworkSqlite();
-
-        // Add a stub IEntityTypeRegistrar that does nothing
-        services.AddSingleton<IEntityTypeRegistrar>(new StubEntityTypeRegistrar());
-
-        var serviceProvider = services.BuildServiceProvider();
+        // Create application services (not EF internal services)
+        var appServices = new ServiceCollection();
+        appServices.AddSingleton<IEntityTypeRegistrar, StubEntityTypeRegistrar>();
+        var appServiceProvider = appServices.BuildServiceProvider();
 
         var options = new DbContextOptionsBuilder<TDbContext>()
             .UseSqlite(":memory:")
-            .UseInternalServiceProvider(serviceProvider)
+            .UseApplicationServiceProvider(appServiceProvider)
+            .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.CoreEventId.ManyServiceProvidersCreatedWarning))
             .Options;
 
         return (TDbContext)Activator.CreateInstance(typeof(TDbContext), options)!;

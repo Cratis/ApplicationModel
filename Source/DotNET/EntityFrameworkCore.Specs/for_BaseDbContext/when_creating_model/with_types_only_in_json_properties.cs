@@ -24,14 +24,16 @@ public class with_types_only_in_json_properties : given.a_base_db_context
         _settingsProperty = _departmentEntityType.FindProperty(nameof(Department.Settings))!;
     }
 
-    [Fact] void should_not_have_settings_id_concept_in_department_properties()
+    [Fact]
+    void should_not_have_settings_id_concept_in_department_properties()
     {
         var properties = _departmentEntityType.GetProperties();
         var settingsIdProperty = properties.FirstOrDefault(p => p.Name == "SettingsId");
         settingsIdProperty.ShouldBeNull();
     }
 
-    [Fact] void should_not_have_tracking_id_guid_in_department_properties()
+    [Fact]
+    void should_not_have_tracking_id_guid_in_department_properties()
     {
         var properties = _departmentEntityType.GetProperties();
         var trackingIdProperty = properties.FirstOrDefault(p => p.Name == "TrackingId");

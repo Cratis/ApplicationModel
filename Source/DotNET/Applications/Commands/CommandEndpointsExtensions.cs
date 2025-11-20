@@ -7,6 +7,7 @@ using Cratis.Applications.Execution;
 using Cratis.Execution;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -37,6 +38,7 @@ public static class CommandEndpointsExtensions
             var prefix = options.RoutePrefix.Trim('/');
             var group = endpoints.MapGroup($"/{prefix}");
 
+            // Map model-bound command endpoints
             foreach (var handler in commandHandlerProviders.Handlers)
             {
                 var location = handler.Location.Skip(options.SegmentsToSkipForRoute);
@@ -69,7 +71,39 @@ public static class CommandEndpointsExtensions
                 .WithTags(string.Join('.', location))
                 .WithName($"Execute{handler.CommandType.Name}")
                 .WithSummary($"Execute {handler.CommandType.Name} command");
+
+                // Add validation endpoint
+                var validateUrl = $"{url}/validate";
+                group.MapPost(validateUrl, async (HttpRequest request, HttpResponse response) =>
+                {
+                    var context = request.HttpContext;
+                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+                    var command = await request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                    CommandResult commandResult;
+                    if (command is null)
+                    {
+                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
+                    }
+                    else
+                    {
+                        commandResult = await commandPipeline.Validate(command);
+                    }
+                    response.SetResponseStatusCode(commandResult);
+                    await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                })
+                .WithTags(string.Join('.', location))
+                .WithName($"Validate{handler.CommandType.Name}")
+                .WithSummary($"Validate {handler.CommandType.Name} command without executing it");
             }
+
+            // Map controller-based command validation endpoints
+            var actionDescriptorProvider = app.ApplicationServices.GetRequiredService<IActionDescriptorCollectionProvider>();
+            var controllerCommandMapper = new ControllerCommandEndpointMapper(
+                actionDescriptorProvider,
+                commandPipeline,
+                correlationIdAccessor,
+                jsonSerializerOptions);
+            controllerCommandMapper.MapValidationEndpoints(endpoints, appModelOptions);
         }
 
         return app;
