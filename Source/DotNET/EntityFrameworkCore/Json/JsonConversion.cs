@@ -56,6 +56,24 @@ public static class JsonConversion
                     typesInNonJsonProperties.Add(propertyType);
                 }
             }
+
+            foreach (var constructor in entityType.ClrType.GetConstructors())
+            {
+                foreach (var parameter in constructor.GetParameters())
+                {
+                    var hasJsonAttribute = Attribute.IsDefined(parameter, typeof(JsonAttribute), inherit: true);
+                    var parameterType = parameter.ParameterType;
+
+                    if (hasJsonAttribute)
+                    {
+                        typesInJsonProperties.Add(parameterType);
+                    }
+                    else
+                    {
+                        typesInNonJsonProperties.Add(parameterType);
+                    }
+                }
+            }
         }
 
         foreach (var entityType in entityTypesWithJson)
@@ -74,6 +92,9 @@ public static class JsonConversion
     /// <returns>True if the entity has JSON properties; otherwise, false.</returns>
     public static bool HasJsonProperties(this IMutableEntityType entity) =>
         entity.ClrType.GetProperties()
+            .Any(p => Attribute.IsDefined(p, typeof(JsonAttribute), inherit: true)) ||
+        entity.ClrType.GetConstructors()
+            .SelectMany(c => c.GetParameters())
             .Any(p => Attribute.IsDefined(p, typeof(JsonAttribute), inherit: true));
 
     /// <summary>
@@ -83,12 +104,30 @@ public static class JsonConversion
     /// <param name="databaseType">The database provider, if specific configuration is needed.</param>
     public static void ApplyJsonConversion(this EntityTypeBuilder entityTypeBuilder, DatabaseType databaseType)
     {
-        var properties = entityTypeBuilder.Metadata.ClrType.GetProperties()
+        var propertiesWithAttribute = entityTypeBuilder.Metadata.ClrType.GetProperties()
             .Where(p => Attribute.IsDefined(p, typeof(JsonAttribute), inherit: true))
+            .Select(p => p.Name)
+            .ToHashSet();
+
+        var parametersWithAttribute = entityTypeBuilder.Metadata.ClrType.GetConstructors()
+            .SelectMany(c => c.GetParameters())
+            .Where(p => Attribute.IsDefined(p, typeof(JsonAttribute), inherit: true))
+            .Select(p => p.Name!)
+            .ToHashSet();
+
+        var allPropertiesWithJson = propertiesWithAttribute
+            .Union(parametersWithAttribute.Select(name => char.ToUpper(name[0]) + name.Substring(1)))
+            .Distinct()
             .ToList();
 
-        foreach (var property in properties)
+        foreach (var propertyName in allPropertiesWithJson)
         {
+            var property = entityTypeBuilder.Metadata.ClrType.GetProperty(propertyName);
+            if (property is null)
+            {
+                continue;
+            }
+
             var propertyBuilder = entityTypeBuilder.Property(property.Name);
             var converterType = typeof(JsonValueConverter<>).MakeGenericType(property.PropertyType);
             var comparerType = typeof(JsonValueComparer<>).MakeGenericType(property.PropertyType);
