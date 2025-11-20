@@ -1,5 +1,7 @@
 - name: Commands
   href: commands.md
+- name: Command Validation
+  href: command-validation.md
 - name: Queries
   href: queries.md
 - name: Identity

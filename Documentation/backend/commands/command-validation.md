@@ -11,6 +11,11 @@ Command validation allows you to check authorization and validation rules withou
 - **Authorization Checks**: Verify user permissions without side effects
 - **Progressive Validation**: Validate fields as users interact with forms
 
+For frontend usage of command validation, see:
+
+- [Core Command Validation](../../frontend/core/command-validation.md) - TypeScript/JavaScript API
+- [React Command Validation](../../frontend/react/command-validation.md) - React-specific patterns and hooks
+
 ## Backend Support
 
 ### ICommandPipeline.Validate
@@ -125,114 +130,9 @@ During application startup, the `ControllerCommandEndpointMapper` service:
 
 This approach provides the same validation functionality as model-bound commands without requiring developers to manually create validation actions.
 
-## Frontend Support
-
-### Command.validate() Method
-
-All generated TypeScript command proxies include a `validate()` method:
-
-```typescript
-interface ICommand<TCommandContent, TCommandResponse> {
-    /**
-     * Validate the command without executing it.
-     * Returns validation and authorization status.
-     */
-    validate(): Promise<CommandResult<TCommandResponse>>;
-    
-    /**
-     * Execute the command.
-     */
-    execute(): Promise<CommandResult<TCommandResponse>>;
-}
-```
-
-### React Usage
-
-```typescript
-import { CreateOrder } from './generated/commands';
-
-function OrderForm() {
-    const [command, setValues] = CreateOrder.use();
-    const [validationErrors, setValidationErrors] = useState<string[]>([]);
-
-    const handleFieldBlur = async () => {
-        // Validate on field blur for early feedback
-        const result = await command.validate();
-        
-        if (!result.isValid) {
-            setValidationErrors(result.validationResults.map(v => v.message));
-        } else {
-            setValidationErrors([]);
-        }
-    };
-
-    const handleSubmit = async () => {
-        // Execute the command
-        const result = await command.execute();
-        
-        if (result.isSuccess) {
-            // Handle success
-        }
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <input 
-                value={command.orderNumber}
-                onChange={e => command.orderNumber = e.target.value}
-                onBlur={handleFieldBlur}
-            />
-            {validationErrors.map(error => (
-                <div className="error">{error}</div>
-            ))}
-            <button type="submit">Create Order</button>
-        </form>
-    );
-}
-```
-
-### Progressive Validation Example
-
-```typescript
-function ProductOrderForm() {
-    const [command, setValues] = CreateOrder.use();
-    const [canSubmit, setCanSubmit] = useState(false);
-
-    useEffect(() => {
-        // Validate whenever command properties change
-        const validateCommand = async () => {
-            const result = await command.validate();
-            setCanSubmit(result.isSuccess);
-        };
-
-        validateCommand();
-    }, [command.hasChanges]);
-
-    return (
-        <form>
-            <input 
-                value={command.productId}
-                onChange={e => command.productId = e.target.value}
-            />
-            <input 
-                value={command.quantity}
-                onChange={e => command.quantity = parseInt(e.target.value)}
-            />
-            <button 
-                type="submit" 
-                disabled={!canSubmit}
-                onClick={() => command.execute()}
-            >
-                Create Order
-            </button>
-        </form>
-    );
-}
-```
-
 ## Validation Filters
 
-The `validate()` method runs all registered command filters:
+The validation pipeline runs all registered command filters:
 
 ### Built-in Filters
 
@@ -242,76 +142,29 @@ The `validate()` method runs all registered command filters:
 
 For more information, see [Command Filters](./command-filters.md).
 
-## CommandResult Structure
-
-Both `execute()` and `validate()` return the same `CommandResult` structure:
-
-```typescript
-interface CommandResult<TResponse> {
-    correlationId: string;
-    isSuccess: boolean;        // Overall success (authorized + valid + no exceptions)
-    isAuthorized: boolean;     // Authorization status
-    isValid: boolean;          // Validation status
-    hasExceptions: boolean;    // Whether exceptions occurred
-    validationResults: ValidationResult[];
-    exceptionMessages: string[];
-    exceptionStackTrace: string;
-    response?: TResponse;      // Only populated on execute()
-}
-```
-
-**Note**: The `response` property will be `null` or `undefined` when using `validate()` since the handler is not executed.
-
 ## Best Practices
 
-### When to Use Validate
+### When to Implement Validation
 
 ✅ **Good Use Cases:**
 
-- Form validation as users type or blur fields
-- Enabling/disabling submit buttons based on validation state
-- Showing validation messages before submission
-- Checking authorization before showing UI elements
+- Commands that modify critical business data
+- Commands with complex authorization requirements
+- Commands with expensive validation logic that benefits from early feedback
+- Commands used in interactive forms
 
-❌ **Avoid:**
+❌ **Less Beneficial:**
 
-- Calling validate() immediately before execute() (execute already validates)
-- Over-validating (don't validate on every keystroke for performance)
-- Using validate() as a substitute for client-side validation
+- Simple CRUD operations with minimal validation
+- Commands only executed by background processes
+- Commands with very fast execution times
 
 ### Performance Considerations
 
-- Validation makes a server round-trip, so use judiciously
-- Consider debouncing validation calls for real-time feedback
-- Client-side validation is still important for immediate feedback
-- Server validation ensures security and data integrity
-
-### Example: Debounced Validation
-
-```typescript
-import { useMemo } from 'react';
-import { debounce } from 'lodash';
-
-function OrderForm() {
-    const [command] = CreateOrder.use();
-
-    const debouncedValidate = useMemo(
-        () => debounce(async () => {
-            const result = await command.validate();
-            // Update UI with validation results
-        }, 500),
-        []
-    );
-
-    useEffect(() => {
-        if (command.hasChanges) {
-            debouncedValidate();
-        }
-    }, [command.orderNumber, command.quantity]);
-
-    return (/* form UI */);
-}
-```
+- Validation runs all filters, which may include database queries
+- Optimize validator implementations for performance
+- Consider caching authorization checks where appropriate
+- Use appropriate indexes for validation queries
 
 ## Security Considerations
 
@@ -319,20 +172,19 @@ function OrderForm() {
 - Unauthorized users receive 401/403 responses from validation endpoints
 - Validation does not expose sensitive data since handlers aren't executed
 - Validation results may reveal authorization policies (by design)
+- Always implement proper authorization filters for commands
 
 ## Troubleshooting
 
 ### Validation endpoint returns 404
 
-**Cause**: The validation endpoint is only created for model-bound commands.
+**Cause**: The validation endpoint may not be properly registered for controller-based commands.
 
-**Solution**: For controller-based commands, call the execute endpoint and handle validation results, or implement a custom validation endpoint.
+**Solution**: Ensure the controller action follows the pattern:
 
-### Validation passes but execute fails
-
-**Cause**: State may have changed between validate and execute calls, or the handler encountered an error.
-
-**Solution**: This is expected behavior. Always check the result of `execute()` for the authoritative status.
+- Is a POST method
+- Has a single `[FromBody]` parameter
+- The validation endpoint should be automatically created at `{route}/validate`
 
 ### Validation is slow
 
@@ -340,6 +192,13 @@ function OrderForm() {
 
 **Solution**:
 
-- Debounce validation calls
 - Optimize validator implementations
-- Consider client-side validation for immediate feedback
+- Add appropriate database indexes
+- Consider caching validation results where appropriate
+- Profile validator performance to identify bottlenecks
+
+### Validation passes but execute fails
+
+**Cause**: State may have changed between validate and execute calls, or the handler encountered an error.
+
+**Solution**: This is expected behavior in concurrent systems. Validation is a pre-flight check, not a guarantee of execution success.

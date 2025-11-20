@@ -6,6 +6,8 @@
   href: dialogs.md
 - name: Commands
   href: commands.md
+- name: Command Validation
+  href: command-validation.md
 - name: Command Scope
   href: command-scope.md
 - name: Queries
