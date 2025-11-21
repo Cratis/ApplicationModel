@@ -49,7 +49,7 @@ public static class IdentityProviderServiceCollectionExtensions
     public static IServiceCollection AddIdentityProvider(this IServiceCollection services, Type type)
     {
         TypeIsNotAnIdentityDetailsProvider.ThrowIfNotAnIdentityDetailsProvider(type);
-        services.AddSingleton(typeof(IProvideIdentityDetails), type);
+        services.AddTransient(typeof(IProvideIdentityDetails), type);
         services.AddSingleton<IdentityProviderEndpoint>();
 
         return services;
