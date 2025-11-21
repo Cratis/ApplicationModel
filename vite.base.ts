@@ -1,8 +1,9 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 /// <reference types="vitest/config" />
 import commonjs from 'vite-plugin-commonjs';
 import tsconfigPaths from 'vite-tsconfig-paths';
-
-const cwd = process.cwd();
 
 export function createConfig() {
     return {
