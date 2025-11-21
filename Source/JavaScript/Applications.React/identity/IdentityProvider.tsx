@@ -29,19 +29,27 @@ export interface IdentityProviderProps {
 export const IdentityProvider = (props: IdentityProviderProps) => {
     const [context, setContext] = useState<IIdentity>(defaultIdentityContext);
 
+    const wrapRefresh = (identity: IIdentity): IIdentity => {
+        const originalRefresh = identity.refresh.bind(identity);
+        return {
+            ...identity,
+            refresh: () => {
+                return new Promise<IIdentity>(resolve => {
+                    originalRefresh().then(newIdentity => {
+                        const wrappedIdentity = wrapRefresh(newIdentity);
+                        setContext(wrappedIdentity);
+                        resolve(wrappedIdentity);
+                    });
+                });
+            }
+        };
+    };
+
     useEffect(() => {
         RootIdentityProvider.setHttpHeadersCallback(props.httpHeadersCallback!);
         RootIdentityProvider.getCurrent().then(identity => {
-            const refresh = identity.refresh;
-            identity.refresh = () => {
-                return new Promise<IIdentity>(resolve => {
-                    refresh().then(newIdentity => {
-                        setContext(newIdentity);
-                        resolve(newIdentity);
-                    });
-                });
-            };
-            setContext(identity);
+            const wrappedIdentity = wrapRefresh(identity);
+            setContext(wrappedIdentity);
         });
     }, []);
 
