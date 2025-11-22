@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Reflection;
 using Castle.DynamicProxy;
 using MongoDB.Driver;
 using Polly;
@@ -20,60 +19,41 @@ public class MongoCollectionInterceptorForReturnValues(
     ResiliencePipeline resiliencePipeline,
     SemaphoreSlim openConnectionSemaphore) : IInterceptor
 {
+    const string CollectionNotFoundMessage = "Collection not found";
+
     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
-        Task returnTask = null!;
-        MethodInfo setResultMethod = null!;
-        MethodInfo setExceptionMethod = null!;
-        MethodInfo setCanceledMethod = null!;
-
         var returnType = invocation.Method.ReturnType.GetGenericArguments()[0];
-        var taskType = typeof(TaskCompletionSource<>).MakeGenericType(returnType);
-        var tcs = Activator.CreateInstance(taskType, new[] { TaskCreationOptions.RunContinuationsAsynchronously })!;
-        var tcsType = tcs.GetType();
-        setResultMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetResult))!;
-        setExceptionMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetException), [typeof(Exception)])!;
-        setCanceledMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetCanceled), [])!;
-        returnTask = (tcsType.GetProperty(nameof(TaskCompletionSource<object>.Task))!.GetValue(tcs) as Task)!;
+        var taskCompletionSource = CreateTaskCompletionSource(returnType);
 
-        invocation.ReturnValue = returnTask!;
-        var cancellationToken = invocation.Arguments.FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
+        invocation.ReturnValue = GetTaskFromCompletionSource(taskCompletionSource);
+        var cancellationToken = ExtractCancellationToken(invocation);
 
 #pragma warning disable CA2012 // Use ValueTasks correctly
         resiliencePipeline.ExecuteAsync(
             async (_) =>
             {
-                if (!await openConnectionSemaphore.WaitAsync(1000, cancellationToken))
+                if (!await TryAcquireSemaphore(taskCompletionSource, cancellationToken))
                 {
-                    setExceptionMethod.Invoke(tcs, [new TimeoutException("Failed to acquire semaphore.")]);
                     return ValueTask.CompletedTask;
                 }
+
                 try
                 {
-                    var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
-                    await result.ConfigureAwait(false);
-                    if (result.IsCanceled)
-                    {
-                        setCanceledMethod.Invoke(tcs, []);
-                    }
-                    else
-                    {
-#pragma warning disable CA1849 // Synchronous blocks
-                        var taskResult = result.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(result);
-                        setResultMethod.Invoke(tcs, [taskResult]);
-#pragma warning restore CA1849 // Synchronous blocks
-                    }
+                    await ExecuteMongoOperation(invocation, taskCompletionSource);
                 }
                 catch (OperationCanceledException)
                 {
-                    openConnectionSemaphore.Release(1);
-                    setCanceledMethod.Invoke(tcs, []);
+                    SetCanceled(taskCompletionSource);
+                }
+                catch (MongoCommandException ex) when (ex.Message.Contains(CollectionNotFoundMessage, StringComparison.OrdinalIgnoreCase))
+                {
+                    SetDefaultValueForCollectionNotFound(taskCompletionSource, returnType);
                 }
                 catch (Exception ex)
                 {
-                    openConnectionSemaphore.Release(1);
-                    setExceptionMethod.Invoke(tcs, [ex]);
+                    SetException(taskCompletionSource, ex);
                 }
                 finally
                 {
@@ -84,5 +64,103 @@ public class MongoCollectionInterceptorForReturnValues(
             },
             cancellationToken);
 #pragma warning restore CA2012 // Use ValueTasks correctly
+    }
+
+    static object CreateTaskCompletionSource(Type returnType)
+    {
+        var taskType = typeof(TaskCompletionSource<>).MakeGenericType(returnType);
+        return Activator.CreateInstance(taskType, TaskCreationOptions.RunContinuationsAsynchronously)!;
+    }
+
+    static Task GetTaskFromCompletionSource(object taskCompletionSource)
+    {
+        var tcsType = taskCompletionSource.GetType();
+        return (tcsType.GetProperty(nameof(TaskCompletionSource<object>.Task))!.GetValue(taskCompletionSource) as Task)!;
+    }
+
+    static CancellationToken ExtractCancellationToken(IInvocation invocation) =>
+        invocation.Arguments.FirstOrDefault(argument => argument is CancellationToken) as CancellationToken? ?? CancellationToken.None;
+
+    static async Task ExecuteMongoOperation(IInvocation invocation, object taskCompletionSource)
+    {
+        var result = (invocation.Method.Invoke(invocation.InvocationTarget, invocation.Arguments) as Task)!;
+        await result.ConfigureAwait(false);
+
+        if (result.IsCanceled)
+        {
+            SetCanceled(taskCompletionSource);
+        }
+        else
+        {
+            SetResult(taskCompletionSource, result);
+        }
+    }
+
+    static void SetResult(object taskCompletionSource, Task result)
+    {
+        var tcsType = taskCompletionSource.GetType();
+        var setResultMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetResult))!;
+
+#pragma warning disable CA1849 // Synchronous blocks
+        var taskResult = result.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(result);
+        setResultMethod.Invoke(taskCompletionSource, [taskResult]);
+#pragma warning restore CA1849 // Synchronous blocks
+    }
+
+    static void SetException(object taskCompletionSource, Exception exception)
+    {
+        var tcsType = taskCompletionSource.GetType();
+        var setExceptionMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetException), [typeof(Exception)])!;
+        setExceptionMethod.Invoke(taskCompletionSource, [exception]);
+    }
+
+    static void SetCanceled(object taskCompletionSource)
+    {
+        var tcsType = taskCompletionSource.GetType();
+        var setCanceledMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetCanceled), [])!;
+        setCanceledMethod.Invoke(taskCompletionSource, []);
+    }
+
+    static void SetDefaultValueForCollectionNotFound(object taskCompletionSource, Type returnType)
+    {
+        var defaultValue = CreateDefaultValueForType(returnType);
+        var tcsType = taskCompletionSource.GetType();
+        var setResultMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetResult))!;
+        setResultMethod.Invoke(taskCompletionSource, [defaultValue]);
+    }
+
+    static object? CreateDefaultValueForType(Type returnType)
+    {
+        if (IsAsyncCursorType(returnType))
+        {
+            return CreateEmptyAsyncCursor(returnType);
+        }
+
+        if (returnType.IsValueType)
+        {
+            return Activator.CreateInstance(returnType);
+        }
+
+        return null;
+    }
+
+    static bool IsAsyncCursorType(Type type) =>
+        type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IAsyncCursor<>);
+
+    static object CreateEmptyAsyncCursor(Type asyncCursorType)
+    {
+        var elementType = asyncCursorType.GetGenericArguments()[0];
+        var emptyAsyncCursorType = typeof(EmptyAsyncCursor<>).MakeGenericType(elementType);
+        return Activator.CreateInstance(emptyAsyncCursorType)!;
+    }
+
+    async Task<bool> TryAcquireSemaphore(object taskCompletionSource, CancellationToken cancellationToken)
+    {
+        if (!await openConnectionSemaphore.WaitAsync(1000, cancellationToken))
+        {
+            SetException(taskCompletionSource, new TimeoutException("Failed to acquire semaphore."));
+            return false;
+        }
+        return true;
     }
 }

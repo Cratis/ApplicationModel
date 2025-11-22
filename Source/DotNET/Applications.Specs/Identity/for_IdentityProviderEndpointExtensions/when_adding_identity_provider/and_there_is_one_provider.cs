@@ -36,5 +36,5 @@ public class and_there_is_one_provider : Specification
 
     [Fact] void should_register_expected_provider() => _serviceDescriptor.ShouldNotBeNull();
     [Fact] void should_register_as_identity_details_provider() => _serviceDescriptor.ServiceType.ShouldEqual(typeof(IProvideIdentityDetails));
-    [Fact] void should_register_as_singleton() => _serviceDescriptor.Lifetime.ShouldEqual(ServiceLifetime.Singleton);
+    [Fact] void should_register_as_transient() => _serviceDescriptor.Lifetime.ShouldEqual(ServiceLifetime.Transient);
 }
