@@ -1,6 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text.Json;
 using Cratis.Applications;
 using Cratis.Applications.Commands;
 using Cratis.Applications.Execution;
@@ -49,51 +50,31 @@ public static class CommandEndpointsExtensions
                 var url = options.IncludeCommandNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
 
-                // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
-                //       So we use HttpRequest and HttpResponse instead
-                group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
-                {
-                    var context = request.HttpContext;
-                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
-                    var command = await request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                    CommandResult commandResult;
-                    if (command is null)
-                    {
-                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
-                    }
-                    else
-                    {
-                        commandResult = await commandPipeline.Execute(command);
-                    }
-                    response.SetResponseStatusCode(commandResult);
-                    await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                })
-                .WithTags(string.Join('.', location))
-                .WithName($"Execute{handler.CommandType.Name}")
-                .WithSummary($"Execute {handler.CommandType.Name} command");
+                MapCommandEndpoint(
+                    group,
+                    endpoints,
+                    url,
+                    $"Execute{handler.CommandType.Name}",
+                    $"Execute {handler.CommandType.Name} command",
+                    handler.CommandType,
+                    location,
+                    correlationIdAccessor,
+                    appModelOptions,
+                    jsonSerializerOptions,
+                    commandPipeline.Execute);
 
-                // Add validation endpoint
-                var validateUrl = $"{url}/validate";
-                group.MapPost(validateUrl, async (HttpRequest request, HttpResponse response) =>
-                {
-                    var context = request.HttpContext;
-                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
-                    var command = await request.ReadFromJsonAsync(handler.CommandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                    CommandResult commandResult;
-                    if (command is null)
-                    {
-                        commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{handler.CommandType}' from request body.");
-                    }
-                    else
-                    {
-                        commandResult = await commandPipeline.Validate(command);
-                    }
-                    response.SetResponseStatusCode(commandResult);
-                    await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                })
-                .WithTags(string.Join('.', location))
-                .WithName($"Validate{handler.CommandType.Name}")
-                .WithSummary($"Validate {handler.CommandType.Name} command without executing it");
+                MapCommandEndpoint(
+                    group,
+                    endpoints,
+                    $"{url}/validate",
+                    $"Validate{handler.CommandType.Name}",
+                    $"Validate {handler.CommandType.Name} command without executing it",
+                    handler.CommandType,
+                    location,
+                    correlationIdAccessor,
+                    appModelOptions,
+                    jsonSerializerOptions,
+                    commandPipeline.Validate);
             }
 
             // Map controller-based command validation endpoints
@@ -107,5 +88,47 @@ public static class CommandEndpointsExtensions
         }
 
         return app;
+    }
+
+    static void MapCommandEndpoint(
+        RouteGroupBuilder group,
+        IEndpointRouteBuilder endpoints,
+        string url,
+        string endpointName,
+        string summary,
+        Type commandType,
+        IEnumerable<string> location,
+        ICorrelationIdAccessor correlationIdAccessor,
+        ApplicationModelOptions appModelOptions,
+        JsonSerializerOptions jsonSerializerOptions,
+        Func<object, Task<CommandResult>> commandOperation)
+    {
+        if (endpoints.EndpointExists(endpointName))
+        {
+            return;
+        }
+
+        // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
+        //       So we use HttpRequest and HttpResponse instead
+        group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
+        {
+            var context = request.HttpContext;
+            context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+            var command = await request.ReadFromJsonAsync(commandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+            CommandResult commandResult;
+            if (command is null)
+            {
+                commandResult = CommandResult.Error(correlationIdAccessor.Current, $"Could not deserialize command of type '{commandType}' from request body.");
+            }
+            else
+            {
+                commandResult = await commandOperation(command);
+            }
+            response.SetResponseStatusCode(commandResult);
+            await response.WriteAsJsonAsync(commandResult, commandResult.GetType(), jsonSerializerOptions, cancellationToken: context.RequestAborted);
+        })
+        .WithTags(string.Join('.', location))
+        .WithName(endpointName)
+        .WithSummary(summary);
     }
 }

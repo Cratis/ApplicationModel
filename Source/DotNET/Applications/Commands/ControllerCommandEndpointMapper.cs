@@ -42,6 +42,12 @@ public class ControllerCommandEndpointMapper(
 
             if (commandType is null) continue;
 
+            var endpointName = $"Validate{action.ControllerName}{action.ActionName}";
+            if (endpoints.EndpointExists(endpointName))
+            {
+                continue;
+            }
+
             endpoints.Map(route, async context =>
             {
                 context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
@@ -63,7 +69,7 @@ public class ControllerCommandEndpointMapper(
             })
             .WithMetadata(new HttpMethodMetadata(_postHttpMethod))
             .WithTags(action.ControllerName)
-            .WithName($"Validate{action.ControllerName}{action.ActionName}")
+            .WithName(endpointName)
             .WithSummary($"Validate {action.ActionName} command without executing it");
         }
     }

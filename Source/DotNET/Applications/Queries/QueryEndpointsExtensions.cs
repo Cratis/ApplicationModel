@@ -47,9 +47,12 @@ public static class QueryEndpointsExtensions
                 var url = options.IncludeQueryNameInRoute ? $"{baseUrl}/{typeName.ToKebabCase()}" : baseUrl;
                 url = url.ToLowerInvariant();
 
-                // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
-                //       So we use HttpRequest and HttpResponse instead
-                group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
+                var executeEndpointName = $"Execute{performer.Name}";
+                if (!endpoints.EndpointExists(executeEndpointName))
+                {
+                    // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
+                    //       So we use HttpRequest and HttpResponse instead
+                    group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
                 {
                     var context = request.HttpContext;
                     context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
@@ -76,10 +79,11 @@ public static class QueryEndpointsExtensions
                     // Handle non-streaming results
                     response.SetResponseStatusCode(queryResult);
                     await response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
-                })
-                .WithTags(string.Join('.', location))
-                .WithName($"Execute{performer.Name}")
-                .WithSummary($"Execute {performer.Name} query");
+                    })
+                    .WithTags(string.Join('.', location))
+                    .WithName(executeEndpointName)
+                    .WithSummary($"Execute {performer.Name} query");
+                }
             }
         }
 
