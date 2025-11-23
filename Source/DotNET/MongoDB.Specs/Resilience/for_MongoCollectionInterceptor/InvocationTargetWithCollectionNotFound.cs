@@ -11,7 +11,6 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor;
 
 public class InvocationTargetWithCollectionNotFound
 {
-
     static MongoCommandException CreateCollectionNotFoundException()
     {
         var endPoint = new System.Net.DnsEndPoint("localhost", 27017);
