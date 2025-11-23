@@ -19,8 +19,6 @@ public class MongoCollectionInterceptor(
     ResiliencePipeline resiliencePipeline,
     SemaphoreSlim openConnectionSemaphore) : IInterceptor
 {
-    const string CollectionNotFoundMessage = "Collection not found";
-
     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
@@ -46,7 +44,7 @@ public class MongoCollectionInterceptor(
                 {
                     tcs.SetCanceled();
                 }
-                catch (MongoCommandException ex) when (ex.Message.Contains(CollectionNotFoundMessage, StringComparison.OrdinalIgnoreCase))
+                catch (MongoCommandException ex) when (ex.Message.Contains(WellKnownErrorMessages.CollectionNotFound, StringComparison.OrdinalIgnoreCase))
                 {
                     tcs.SetResult();
                 }
