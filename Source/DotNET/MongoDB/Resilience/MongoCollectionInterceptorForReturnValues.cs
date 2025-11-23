@@ -47,7 +47,7 @@ public class MongoCollectionInterceptorForReturnValues(
                 }
                 catch (MongoCommandException ex) when (ex.Message.Contains(WellKnownErrorMessages.CollectionNotFound, StringComparison.OrdinalIgnoreCase))
                 {
-                    SetDefaultValueForCollectionNotFound(taskCompletionSource, returnType);
+                    SetDefaultValueForCollectionNotFound(taskCompletionSource, returnType, invocation);
                 }
                 catch (Exception ex)
                 {
@@ -119,15 +119,15 @@ public class MongoCollectionInterceptorForReturnValues(
         setCanceledMethod.Invoke(taskCompletionSource, []);
     }
 
-    static void SetDefaultValueForCollectionNotFound(object taskCompletionSource, Type returnType)
+    static void SetDefaultValueForCollectionNotFound(object taskCompletionSource, Type returnType, IInvocation invocation)
     {
-        var defaultValue = CreateDefaultValueForType(returnType);
+        var defaultValue = CreateDefaultValueForType(returnType, invocation);
         var tcsType = taskCompletionSource.GetType();
         var setResultMethod = tcsType.GetMethod(nameof(TaskCompletionSource<object>.SetResult))!;
         setResultMethod.Invoke(taskCompletionSource, [defaultValue]);
     }
 
-    static object? CreateDefaultValueForType(Type returnType)
+    static object? CreateDefaultValueForType(Type returnType, IInvocation invocation)
     {
         if (IsAsyncCursorType(returnType))
         {
@@ -136,7 +136,7 @@ public class MongoCollectionInterceptorForReturnValues(
 
         if (IsChangeStreamCursorType(returnType))
         {
-            return CreateEmptyChangeStreamCursor(returnType);
+            return CreateRetryingChangeStreamCursor(returnType, invocation);
         }
 
         if (returnType.IsValueType)
@@ -160,11 +160,11 @@ public class MongoCollectionInterceptorForReturnValues(
         return Activator.CreateInstance(emptyAsyncCursorType)!;
     }
 
-    static object CreateEmptyChangeStreamCursor(Type changeStreamCursorType)
+    static object CreateRetryingChangeStreamCursor(Type changeStreamCursorType, IInvocation invocation)
     {
         var elementType = changeStreamCursorType.GetGenericArguments()[0];
-        var emptyChangeStreamCursorType = typeof(EmptyChangeStreamCursor<>).MakeGenericType(elementType);
-        return Activator.CreateInstance(emptyChangeStreamCursorType)!;
+        var retryingChangeStreamCursorType = typeof(RetryingChangeStreamCursor<>).MakeGenericType(elementType);
+        return Activator.CreateInstance(retryingChangeStreamCursorType, invocation, TimeSpan.FromSeconds(1))!;
     }
 
     async Task<bool> TryAcquireSemaphore(object taskCompletionSource, CancellationToken cancellationToken)
