@@ -19,8 +19,6 @@ public class MongoCollectionInterceptorForReturnValues(
     ResiliencePipeline resiliencePipeline,
     SemaphoreSlim openConnectionSemaphore) : IInterceptor
 {
-    const string CollectionNotFoundMessage = "Collection not found";
-
     /// <inheritdoc/>
     public void Intercept(IInvocation invocation)
     {
@@ -47,7 +45,7 @@ public class MongoCollectionInterceptorForReturnValues(
                 {
                     SetCanceled(taskCompletionSource);
                 }
-                catch (MongoCommandException ex) when (ex.Message.Contains(CollectionNotFoundMessage, StringComparison.OrdinalIgnoreCase))
+                catch (MongoCommandException ex) when (ex.Message.Contains(WellKnownErrorMessages.CollectionNotFound, StringComparison.OrdinalIgnoreCase))
                 {
                     SetDefaultValueForCollectionNotFound(taskCompletionSource, returnType);
                 }
@@ -136,6 +134,11 @@ public class MongoCollectionInterceptorForReturnValues(
             return CreateEmptyAsyncCursor(returnType);
         }
 
+        if (IsChangeStreamCursorType(returnType))
+        {
+            return CreateEmptyChangeStreamCursor(returnType);
+        }
+
         if (returnType.IsValueType)
         {
             return Activator.CreateInstance(returnType);
@@ -147,11 +150,21 @@ public class MongoCollectionInterceptorForReturnValues(
     static bool IsAsyncCursorType(Type type) =>
         type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IAsyncCursor<>);
 
+    static bool IsChangeStreamCursorType(Type type) =>
+        type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IChangeStreamCursor<>);
+
     static object CreateEmptyAsyncCursor(Type asyncCursorType)
     {
         var elementType = asyncCursorType.GetGenericArguments()[0];
         var emptyAsyncCursorType = typeof(EmptyAsyncCursor<>).MakeGenericType(elementType);
         return Activator.CreateInstance(emptyAsyncCursorType)!;
+    }
+
+    static object CreateEmptyChangeStreamCursor(Type changeStreamCursorType)
+    {
+        var elementType = changeStreamCursorType.GetGenericArguments()[0];
+        var emptyChangeStreamCursorType = typeof(EmptyChangeStreamCursor<>).MakeGenericType(elementType);
+        return Activator.CreateInstance(emptyChangeStreamCursorType)!;
     }
 
     async Task<bool> TryAcquireSemaphore(object taskCompletionSource, CancellationToken cancellationToken)

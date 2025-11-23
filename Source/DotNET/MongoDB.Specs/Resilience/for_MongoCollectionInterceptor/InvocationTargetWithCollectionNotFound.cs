@@ -11,14 +11,13 @@ namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor;
 
 public class InvocationTargetWithCollectionNotFound
 {
-    public const string ErrorMessage = "Collection not found";
 
     static MongoCommandException CreateCollectionNotFoundException()
     {
         var endPoint = new System.Net.DnsEndPoint("localhost", 27017);
         var serverId = new ServerId(new ClusterId(0), endPoint);
         var connectionId = new ConnectionId(serverId);
-        return new(connectionId, ErrorMessage, new BsonDocument());
+        return new(connectionId, WellKnownErrorMessages.CollectionNotFound, new BsonDocument());
     }
 
     public Task DeleteAsyncCollectionNotFound() =>
