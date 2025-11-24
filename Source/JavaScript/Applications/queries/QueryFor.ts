@@ -100,7 +100,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
-            actualRoute += '?' + queryString;
+            actualRoute += (actualRoute.includes('?') ? '&' : '?') + queryString;
         }
         
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);

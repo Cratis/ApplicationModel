@@ -134,7 +134,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
         const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
-            actualRoute += '?' + queryString;
+            actualRoute += (actualRoute.includes('?') ? '&' : '?') + queryString;
         }
 
         const url = UrlHelpers.createUrlFrom(this._origin, this._apiBasePath, actualRoute);
