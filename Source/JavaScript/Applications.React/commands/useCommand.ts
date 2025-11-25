@@ -41,7 +41,7 @@ export function useCommand<TCommand extends Command<TCommandContent>, TCommandCo
     }, []);
 
     const context = React.useContext(CommandScopeContext);
-    context.addCommand?.(command.current!);
+    context.addCommand?.(command.current! as Command<object, object>);
 
     const setCommandValues = (values: TCommandContent) => {
         command!.current!.properties.forEach(property => {
