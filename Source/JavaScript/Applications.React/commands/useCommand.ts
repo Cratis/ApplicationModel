@@ -17,7 +17,14 @@ export type ClearCommandValues = () => void;
  * @param initialValues Any initial values to set for the command.
  * @returns Tuple with the command, a {@link SetCommandValues<TCommandContent>} delegate to set values on command and {@link ClearCommandValues} delegate clear values.
  */
-export function useCommand<TCommand extends Command<TCommandContent>, TCommandContent = object>(commandType: Constructor<TCommand>, initialValues?: TCommandContent): [TCommand, SetCommandValues<TCommandContent>, ClearCommandValues] {
+export function useCommand<
+    TCommand extends Command<TCommandContent, TCommandResponse> & Record<string, unknown>,
+    TCommandContent extends Record<string, unknown> = Record<string, unknown>,
+    TCommandResponse = object
+>(
+    commandType: Constructor<TCommand>,
+    initialValues?: TCommandContent
+): [TCommand, SetCommandValues<TCommandContent>, ClearCommandValues] {
     const command = useRef<TCommand | null>(null);
     const [hasChanges, setHasChanges] = useState(false);
     const applicationModel = useContext(ApplicationModelContext);
@@ -26,7 +33,7 @@ export function useCommand<TCommand extends Command<TCommandContent>, TCommandCo
         if (command.current?.hasChanges !== hasChanges) {
             setHasChanges(command.current?.hasChanges ?? false);
         }
-    }, []);
+    }, [hasChanges]);
 
     command.current = useMemo(() => {
         const instance = new commandType();
@@ -38,22 +45,22 @@ export function useCommand<TCommand extends Command<TCommandContent>, TCommandCo
         }
         instance.onPropertyChanged(propertyChangedCallback, instance);
         return instance;
-    }, []);
+    }, [commandType, applicationModel.microservice, applicationModel.apiBasePath, applicationModel.origin, initialValues, propertyChangedCallback]);
 
     const context = React.useContext(CommandScopeContext);
     context.addCommand?.(command.current! as Command<object, object>);
 
     const setCommandValues = (values: TCommandContent) => {
-        command!.current!.properties.forEach(property => {
+        command!.current!.properties.forEach((property: string) => {
             if (values[property] !== undefined && values[property] != null) {
-                command.current![property] = values[property];
+                (command.current as Record<string, unknown>)[property] = values[property];
             }
         });
     };
 
     const clearCommandValues = () => {
-        command.current!.properties.forEach(property => {
-            command.current![property] = undefined;
+        command.current!.properties.forEach((property: string) => {
+            (command.current as Record<string, unknown>)[property] = undefined;
         });
     };
 
