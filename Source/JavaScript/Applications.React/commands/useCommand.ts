@@ -18,8 +18,8 @@ export type ClearCommandValues = () => void;
  * @returns Tuple with the command, a {@link SetCommandValues<TCommandContent>} delegate to set values on command and {@link ClearCommandValues} delegate clear values.
  */
 export function useCommand<
-    TCommand extends Command<TCommandContent, TCommandResponse> & Record<string, unknown>,
-    TCommandContent extends Record<string, unknown> = Record<string, unknown>,
+    TCommand extends Command<TCommandContent, TCommandResponse>,
+    TCommandContent = object,
     TCommandResponse = object
 >(
     commandType: Constructor<TCommand>,
@@ -51,9 +51,10 @@ export function useCommand<
     context.addCommand?.(command.current! as Command<object, object>);
 
     const setCommandValues = (values: TCommandContent) => {
+        const valuesRecord = values as Record<string, unknown>;
         command!.current!.properties.forEach((property: string) => {
-            if (values[property] !== undefined && values[property] != null) {
-                (command.current as Record<string, unknown>)[property] = values[property];
+            if (valuesRecord[property] !== undefined && valuesRecord[property] != null) {
+                (command.current as Record<string, unknown>)[property] = valuesRecord[property];
             }
         });
     };
