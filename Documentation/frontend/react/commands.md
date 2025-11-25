@@ -12,121 +12,151 @@ Commands automatically include any HTTP headers provided by the `httpHeadersCall
 ## Proxy Generation
 
 With the [proxy generator](./proxy-generation.md) you'll get the commands generated directly to use in the frontend.
-This means you don't have to look at the Swagger API even to know what you have available, the code sits there directly
+This means you don't have to look at the Swagger API to know what you have available - the code sits there directly
 in the form of a generated proxy object. The generator will look at all HTTP Post actions during compile time and
-look for actions marked with `[HttpPost]` and has an parameter marked with `[FromBody]` and assume that this is your command
-representation / payload.
+look for actions marked with `[HttpPost]` that have a parameter marked with `[FromBody]`, and assume that this is your command
+representation/payload.
 
 Take the following controller action in C#:
 
 ```csharp
 [HttpPost]
-public Task OpenDebitAccount([FromBody] OpenDebitAccount create) => _eventLog.Append(create.AccountId, new DebitAccountOpened(create.Name, create.Owner));
-````
+public Task OpenDebitAccount([FromBody] OpenDebitAccount create) => 
+    _eventLog.Append(create.AccountId, new DebitAccountOpened(create.Name, create.Owner));
+```
 
-And the command in this case looking like:
+And the command:
 
 ```csharp
 public record OpenDebitAccount(AccountId AccountId, AccountName Name, CustomerId Owner);
 ```
 
-This all gets generated into a TypeScript representation:
+The proxy generator creates a TypeScript class that extends `Command` and provides:
+
+- Properties matching the command payload
+- Property validation support
+- A static `.use()` method for React integration (see [React Usage](#react-hook-usage) below)
+- Automatic change tracking for data binding
+
+## React Hook Usage
+
+Working with the raw command can be less than intuitive in a React context which has a different
+approach to lifecycle. The proxy-generated command classes provide a static `.use()` method that integrates
+with React's rendering pipeline and provides re-rendering for state changes such as `hasChanges`.
+
+The `.use()` method internally calls the `useCommand()` hook and returns a tuple containing:
+
+1. **Command instance** - The actual command object with all properties and methods
+2. **SetCommandValues function** - A function to update multiple command properties at once
+
+### Basic Usage
 
 ```typescript
-import { Command, CommandValidator, CommandPropertyValidators, useCommand, SetCommandValues } from '@cratis/applications/commands';
-import { Validator } from '@cratis/applications/validation';
-import Handlebars from 'handlebars';
+export const MyComponent = () => {
+    const [openDebitAccount, setCommandValues] = OpenDebitAccount.use();
 
-const routeTemplate = Handlebars.compile('/api/accounts/debit');
+    return (
+        <></>
+    );
+};
+```
 
-export interface IOpenDebitAccount {
-    accountId?: string;
-    name?: string;
-    owner?: string;
-}
+### With Initial Values
 
-export class OpenDebitAccountValidator extends CommandValidator {
-    readonly properties: CommandPropertyValidators = {
-        accountId: new Validator(),
-        name: new Validator(),
-        owner: new Validator(),
+The `.use()` method accepts an optional `initialValues` parameter to set the command's initial state:
+
+```typescript
+export const MyComponent = () => {
+    const [openDebitAccount, setCommandValues] = OpenDebitAccount.use({
+        accountId: 'a23edccc-6cb5-44fd-a7a7-7563716fb080',
+        name: 'My Account',
+        owner: '84cda809-9201-4d8c-8589-0be37c6e3f18'
+    });
+
+    return (
+        <></>
+    );
+};
+```
+
+### Using the Tuple Values
+
+**Command Instance:**
+The first element gives you access to the command's properties, methods, and state:
+
+```typescript
+export const MyComponent = () => {
+    const [command] = OpenDebitAccount.use();
+
+    const handleSubmit = async () => {
+        if (command.hasChanges) {
+            const result = await command.execute();
+            // Handle result - see CommandResult documentation
+        }
     };
-}
 
-export class OpenDebitAccount extends Command implements IOpenDebitAccount {
-    readonly route: string = '/api/accounts/debit';
-    readonly routeTemplate: Handlebars.TemplateDelegate = routeTemplate;
-    readonly validation: CommandValidator = new OpenDebitAccountValidator();
-
-    private _accountId!: string;
-    private _name!: string;
-    private _owner!: string;
-
-    get requestParameters(): string[] {
-        return [
-        ];
-    }
-
-    get properties(): string[] {
-        return [
-            'accountId',
-            'name',
-            'owner',
-        ];
-    }
-
-    get accountId(): string {
-        return this._accountId;
-    }
-
-    set accountId(value: string) {
-        this._accountId = value;
-        this.propertyChanged('accountId');
-    }
-    get name(): string {
-        return this._name;
-    }
-
-    set name(value: string) {
-        this._name = value;
-        this.propertyChanged('name');
-    }
-    get owner(): string {
-        return this._owner;
-    }
-
-    set owner(value: string) {
-        this._owner = value;
-        this.propertyChanged('owner');
-    }
-
-    static use(initialValues?: IOpenDebitAccount): [OpenDebitAccount, SetCommandValues<IOpenDebitAccount>] {
-        return useCommand<OpenDebitAccount, IOpenDebitAccount>(OpenDebitAccount, initialValues);
-    }
-}
+    return (
+        <input 
+            value={command.name} 
+            onChange={(e) => command.name = e.target.value}
+        />
+    );
+};
 ```
 
-## Usage
-
-To execute the command you simply do the following:
+**SetCommandValues Function:**
+The second element allows you to update multiple properties at once, which is useful when loading data from a query or API:
 
 ```typescript
-const command = new CreateDebitCommand();
-command.accountId = 'a23edccc-6cb5-44fd-a7a7-7563716fb080';
-command.name = 'My Account';
-command.owner = '84cda809-9201-4d8c-8589-0be37c6e3f18';
-const result = await command.execute();
+export const MyComponent = () => {
+    const [command, setCommandValues] = OpenDebitAccount.use();
+
+    useEffect(() => {
+        // Load data from an API or query
+        fetchAccountData().then(data => {
+            setCommandValues(data);
+        });
+    }, []);
+
+    return (
+        <></>
+    );
+};
 ```
 
-The result object contains information about whether or not it was successful and any errors that might have occurred, be it
-authorization, validation, business rules.
+This approach ensures React components re-render when the command state changes, providing a seamless integration
+between the command pattern and React's declarative UI model.
 
-## Response
+## Command Result
 
-The controller action that represents the command can also return a response.
-On the `CommandResult` you will find the response. The proxy generator will make this
-type-safe and the internal serializer will make sure to get the JSON output into the
-correct type.
+When a command is executed, it returns a `CommandResult` that provides detailed information about the execution outcome,
+including success/failure status, validation errors, authorization status, and any response data.
+
+For comprehensive information about handling command results, including understanding the differences between
+`isSuccess`, `isValid`, `isAuthorized`, and accessing response data and validation errors, see the
+[CommandResult documentation](../core/command-result.md).
+
+```typescript
+const result = await command.execute();
+
+if (result.isSuccess) {
+    // Command succeeded
+    console.log('Response:', result.response);
+} else {
+    // Handle different failure scenarios
+    if (!result.isAuthorized) {
+        // Show access denied message
+    }
+    if (!result.isValid) {
+        // Display validation errors
+        console.log('Validation errors:', result.validationResults);
+    }
+    if (result.hasExceptions) {
+        // Log exceptions
+        console.error('Exceptions:', result.exceptionMessages);
+    }
+}
+```
 
 ## Data binding and initial values
 
@@ -144,62 +174,43 @@ from the original data. On the command you'll find a property called `hasChanges
 will return `true` if it has changes and `false` if not.
 
 To be able to do this, the command needs to be given a set of initial values that it will
-use to compare current state against.
-
-```typescript
-const command = new CreateDebitCommand();
-command.setInitialValues({
-    accountId: 'a23edccc-6cb5-44fd-a7a7-7563716fb080';
-    name: 'My Account';
-    owner: '84cda809-9201-4d8c-8589-0be37c6e3f18';
-});
-```
+use to compare current state against. This can be done either through the React hook's initial values
+parameter (recommended) or by calling `setInitialValues()` directly.
 
 At this stage `hasChanges` will be returning `false`.
-If we alter something like name:
-
-```typescript
-command.name = 'My other account';
-```
-
-`hasChanges` will now be `true`.
+If you alter a property value, `hasChanges` will become `true`.
 
 If you have a component that has sub components that all work with different commands,
 there is a way to track the state of `hasChanges` for all these. Read more about the [command scope](./command-scope.md) for this.
 
-## React
+## Imperative Usage (Advanced)
 
-Working with the raw command can be less than intuitive in a React context which has a different
-approach to lifecycle. From the generated TypeScript proxy you'll notice there is also a React hook added to the type.
-The purpose of this hook is to join the React rendering pipeline and provide re-rendering for state
-that is useful, such as knowing whether or not there are changes.
+For scenarios where you need more control or are working outside of React's component lifecycle,
+you can use commands imperatively by directly instantiating them:
 
 ```typescript
-export const MyComponent = () => {
-    const [openDebitAccount] = OpenDebitAccount.use();
-
-    return (
-        <></>
-    )
-};
+const command = new OpenDebitAccount();
+command.accountId = 'a23edccc-6cb5-44fd-a7a7-7563716fb080';
+command.name = 'My Account';
+command.owner = '84cda809-9201-4d8c-8589-0be37c6e3f18';
+const result = await command.execute();
 ```
 
-The hook can also take initial values:
+### Setting Initial Values Imperatively
 
 ```typescript
-export const MyComponent = () => {
-    const [openDebitAccount] = OpenDebitAccount.use({
-        accountId: 'a23edccc-6cb5-44fd-a7a7-7563716fb080';
-        name: 'My Account';
-        owner: '84cda809-9201-4d8c-8589-0be37c6e3f18';
-    });
+const command = new OpenDebitAccount();
+command.setInitialValues({
+    accountId: 'a23edccc-6cb5-44fd-a7a7-7563716fb080',
+    name: 'My Account',
+    owner: '84cda809-9201-4d8c-8589-0be37c6e3f18'
+});
 
-    return (
-        <></>
-    )
-};
+// At this point hasChanges is false
+command.name = 'My other account';
+// Now hasChanges is true
 ```
 
-In addition, the hook returns a value in the tuple that enables setting values on the command directly.
-You can modify the properties directly as well, since it is being tracked as a React state. This is more
-for convenience and giving more of a **React** consistent programming model.
+**Note:** For React components, prefer using the [React Hook Usage](#react-hook-usage) approach, as it provides
+automatic re-rendering and better integration with React's lifecycle.
+

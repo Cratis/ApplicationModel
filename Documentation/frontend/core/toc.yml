@@ -1,5 +1,7 @@
 - name: Commands
   href: commands.md
+- name: CommandResult
+  href: command-result.md
 - name: Command Validation
   href: command-validation.md
 - name: Queries
