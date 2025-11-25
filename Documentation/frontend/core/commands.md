@@ -88,19 +88,31 @@ For comprehensive information about setting up and configuring proxy generation,
 
 ## Configuration
 
-Commands support configuration for different deployment scenarios:
+Commands support configuration for different deployment scenarios. These configurations are typically set application-wide using the `<ApplicationModel />` component rather than on individual commands.
 
 ### Microservice Configuration
+
+In microservice architectures, commands need to be routed to the correct service. While you can set this per command:
 
 ```typescript
 command.setMicroservice('user-service');
 ```
 
+**It's recommended to configure this globally** through the `<ApplicationModel />` component's `microservice` property. This automatically applies to all commands and queries in your application. See the [Application Model Configuration](../react/application-model.md#microservice-support) for details.
+
 ### API Base Path Configuration
+
+Similarly, API base paths can be set per command:
+
+### API Base Path Configuration
+
+Similarly, API base paths can be set per command:
 
 ```typescript
 command.setApiBasePath('/api/v1');
 ```
+
+**However, it's recommended to configure this globally** using the `<ApplicationModel />` component's `apiBasePath` property. This ensures consistency across all commands and queries. See the [Application Model Configuration](../react/application-model.md#configuration-options) for details.
 
 ## Error Handling
 

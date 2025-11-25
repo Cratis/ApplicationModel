@@ -17,7 +17,7 @@ export type ClearCommandValues = () => void;
  * @param initialValues Any initial values to set for the command.
  * @returns Tuple with the command, a {@link SetCommandValues<TCommandContent>} delegate to set values on command and {@link ClearCommandValues} delegate clear values.
  */
-export function useCommand<TCommand extends Command, TCommandContent>(commandType: Constructor<TCommand>, initialValues?: TCommandContent): [TCommand, SetCommandValues<TCommandContent>, ClearCommandValues] {
+export function useCommand<TCommand extends Command<TCommandContent>, TCommandContent = object>(commandType: Constructor<TCommand>, initialValues?: TCommandContent): [TCommand, SetCommandValues<TCommandContent>, ClearCommandValues] {
     const command = useRef<TCommand | null>(null);
     const [hasChanges, setHasChanges] = useState(false);
     const applicationModel = useContext(ApplicationModelContext);
@@ -41,7 +41,7 @@ export function useCommand<TCommand extends Command, TCommandContent>(commandTyp
     }, []);
 
     const context = React.useContext(CommandScopeContext);
-    context.addCommand?.(command.current!);
+    context.addCommand?.(command.current! as Command<object, object>);
 
     const setCommandValues = (values: TCommandContent) => {
         command!.current!.properties.forEach(property => {
