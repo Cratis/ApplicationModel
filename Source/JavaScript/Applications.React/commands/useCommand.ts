@@ -33,7 +33,7 @@ export function useCommand<
         if (command.current?.hasChanges !== hasChanges) {
             setHasChanges(command.current?.hasChanges ?? false);
         }
-    }, [hasChanges]);
+    }, []);
 
     command.current = useMemo(() => {
         const instance = new commandType();
@@ -45,7 +45,7 @@ export function useCommand<
         }
         instance.onPropertyChanged(propertyChangedCallback, instance);
         return instance;
-    }, [commandType, applicationModel.microservice, applicationModel.apiBasePath, applicationModel.origin, initialValues, propertyChangedCallback]);
+    }, [applicationModel.microservice, applicationModel.apiBasePath, applicationModel.origin, initialValues]);
 
     const context = React.useContext(CommandScopeContext);
     context.addCommand?.(command.current! as Command<object, object>);
