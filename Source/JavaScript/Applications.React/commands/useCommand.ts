@@ -45,7 +45,7 @@ export function useCommand<
         }
         instance.onPropertyChanged(propertyChangedCallback, instance);
         return instance;
-    }, [applicationModel.microservice, applicationModel.apiBasePath, applicationModel.origin, initialValues]);
+    }, []);
 
     const context = React.useContext(CommandScopeContext);
     context.addCommand?.(command.current! as Command<object, object>);
