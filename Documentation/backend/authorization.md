@@ -36,6 +36,8 @@ With this configuration:
 - **Use `[AllowAnonymous]`** to opt specific endpoints out of the requirement
 - **Explicit `[Authorize]` attributes still work** - They override the fallback policy with their own requirements
 
+> **Note**: Fallback policies are a standard ASP.NET Core authorization feature. For more details on authorization policies, policy requirements, and advanced scenarios, refer to the [ASP.NET Core authorization documentation](https://learn.microsoft.com/aspnet/core/security/authorization/policies).
+
 ### Allowing Anonymous Access with Fallback Policy
 
 When using a fallback policy, use `[AllowAnonymous]` to make specific endpoints publicly accessible:
