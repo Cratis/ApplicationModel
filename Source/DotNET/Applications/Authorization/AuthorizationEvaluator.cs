@@ -16,7 +16,7 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
     /// <inheritdoc/>
     public bool IsAuthorized(Type type)
     {
-        if (IsAnonymousAllowed(type))
+        if (type.IsAnonymousAllowed())
         {
             return true;
         }
@@ -31,7 +31,7 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
     /// <inheritdoc/>
     public bool IsAuthorized(MethodInfo method)
     {
-        if (IsAnonymousAllowed(method))
+        if (method.IsAnonymousAllowed())
         {
             return true;
         }
@@ -53,9 +53,6 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
 
         return true;
     }
-
-    static bool IsAnonymousAllowed(MemberInfo member) =>
-        member.GetCustomAttributes(typeof(AllowAnonymousAttribute), inherit: true).Length > 0;
 
     bool IsAuthorizedWithAttribute(AuthorizeAttribute? authorizeAttribute)
     {

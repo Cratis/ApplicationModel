@@ -38,6 +38,7 @@ public class ModelBoundQueryPerformer : IQueryPerformer
         _queryParameters = performMethod.GetParameters().Where(p => !serviceProviderIsService.IsService(p.ParameterType));
         Dependencies = _dependencies.Select(p => p.ParameterType);
         Parameters = new(_queryParameters.Select(p => new QueryParameter(p.Name ?? string.Empty, p.ParameterType)));
+        AllowsAnonymousAccess = performMethod.IsAnonymousAllowed();
         _performMethod = performMethod;
         _authorizationEvaluator = authorizationEvaluator;
     }
@@ -62,6 +63,9 @@ public class ModelBoundQueryPerformer : IQueryPerformer
 
     /// <inheritdoc/>
     public QueryParameters Parameters { get; }
+
+    /// <inheritdoc/>
+    public bool AllowsAnonymousAccess { get; }
 
     /// <inheritdoc/>
     public bool IsAuthorized(QueryContext context) => _authorizationEvaluator.IsAuthorized(_performMethod);

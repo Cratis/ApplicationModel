@@ -52,7 +52,7 @@ public static class QueryEndpointsExtensions
                 {
                     // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
                     //       So we use HttpRequest and HttpResponse instead
-                    group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
+                    var builder = group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
                     {
                         var context = request.HttpContext;
                         context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
@@ -83,6 +83,11 @@ public static class QueryEndpointsExtensions
                     .WithTags(string.Join('.', location))
                     .WithName(executeEndpointName)
                     .WithSummary($"Execute {performer.Name} query");
+
+                    if (performer.AllowsAnonymousAccess)
+                    {
+                        builder.AllowAnonymous();
+                    }
                 }
             }
         }
