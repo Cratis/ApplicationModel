@@ -708,13 +708,13 @@ public static class TypeExtensions
             }
         }
 
-        var conceptType = candidateTypes.FirstOrDefault(t => t.IsConcept());
+        var conceptType = candidateTypes.Find(t => t.IsConcept());
         if (conceptType is not null)
         {
             return conceptType;
         }
 
-        var primitiveType = candidateTypes.FirstOrDefault(t => t.IsAPrimitiveType());
+        var primitiveType = candidateTypes.Find(t => t.IsAPrimitiveType());
         return primitiveType ?? candidateTypes.FirstOrDefault();
     }
 
