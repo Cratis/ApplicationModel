@@ -257,7 +257,20 @@ public class AccountOwnershipHandler : AuthorizationHandler<AccountOwnershipRequ
 
 ## Anonymous Access
 
-Use `[AllowAnonymous]` to allow public access to specific methods:
+Use `[AllowAnonymous]` to allow public access to specific query methods. This attribute bypasses all authorization requirements, including class-level `[Authorize]` attributes and role requirements.
+
+### How AllowAnonymous Works
+
+The authorization system evaluates attributes in the following order:
+
+1. **Method-level `[AllowAnonymous]`** - If present on the method, allows anonymous access immediately
+2. **Method-level `[Authorize]` or `[Roles]`** - If present on the method, these take precedence over class-level attributes
+3. **Class-level `[AllowAnonymous]`** - If present on the class (and no method-level authorization), allows anonymous access
+4. **Class-level `[Authorize]` or `[Roles]`** - Applied when no method-level attributes are specified
+
+### Method-Level AllowAnonymous
+
+Override class-level authorization for specific query methods:
 
 ```csharp
 [ReadModel]
@@ -280,6 +293,39 @@ public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, dec
         collection.Find(_ => true).ToList();
 }
 ```
+
+### Class-Level AllowAnonymous
+
+Apply `[AllowAnonymous]` at the class level to make all query methods publicly accessible by default:
+
+```csharp
+[ReadModel]
+[AllowAnonymous] // All methods are publicly accessible by default
+public record PublicStatistics(string Category, int Count)
+{
+    public static IEnumerable<PublicStatistics> GetAllStatistics(
+        IMongoCollection<PublicStatistics> collection) =>
+        collection.Find(_ => true).ToList();
+
+    public static PublicStatistics? GetByCategory(
+        string category,
+        IMongoCollection<PublicStatistics> collection) =>
+        collection.Find(s => s.Category == category).FirstOrDefault();
+
+    [Authorize] // Override class-level: this specific method requires authentication
+    public static IEnumerable<PublicStatistics> GetSensitiveStatistics(
+        IMongoCollection<PublicStatistics> collection) =>
+        collection.Find(s => s.Category.StartsWith("Internal")).ToList();
+}
+```
+
+### Common Use Cases for AllowAnonymous
+
+- **Public statistics or counts** - Aggregate data that doesn't expose sensitive information
+- **Product catalogs** - Public product listings for e-commerce sites
+- **Public content** - Blog posts, articles, or documentation
+- **Health checks** - System status information for monitoring
+- **Search endpoints** - Public search functionality
 
 ## Best Practices
 

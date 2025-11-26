@@ -15,6 +15,96 @@ app.UseAuthorization();
 > Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
 > read more about [Microsoft Identity integration](./microsoft-identity.md)
 
+## Protecting All Endpoints by Default
+
+By default, ASP.NET Core endpoints are accessible to anonymous users unless explicitly protected with authorization attributes. You can change this behavior to require authentication for all endpoints by setting a fallback authorization policy.
+
+### Using Fallback Policy
+
+The fallback policy applies to all endpoints that don't have an explicit authorization policy:
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+With this configuration:
+
+- **All endpoints require authentication by default** - No anonymous access unless explicitly allowed
+- **Use `[AllowAnonymous]`** to opt specific endpoints out of the requirement
+- **Explicit `[Authorize]` attributes still work** - They override the fallback policy with their own requirements
+
+### Allowing Anonymous Access with Fallback Policy
+
+When using a fallback policy, use `[AllowAnonymous]` to make specific endpoints publicly accessible:
+
+```csharp
+// This command requires authentication (from fallback policy)
+[Command]
+public record ProcessOrder(OrderId Id)
+{
+    public void Handle(IOrderService orders) => orders.Process(Id);
+}
+
+// This command is publicly accessible despite the fallback policy
+[Command]
+[AllowAnonymous]
+public record GetPublicCatalog()
+{
+    public Catalog Handle(ICatalogService catalog) => catalog.GetPublic();
+}
+```
+
+### Custom Fallback Policies
+
+You can create more specific fallback policies with custom requirements:
+
+```csharp
+// Require a specific role for all endpoints by default
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .RequireRole("User")
+        .Build());
+```
+
+Or create a named policy and set it as the fallback:
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireUserRole", policy => policy
+        .RequireAuthenticatedUser()
+        .RequireRole("User"))
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+### Default Policy vs Fallback Policy
+
+ASP.NET Core distinguishes between two policies:
+
+| Policy | Description |
+| ------ | ----------- |
+| **Default Policy** | Applied when `[Authorize]` is used without parameters |
+| **Fallback Policy** | Applied to endpoints without any authorization attributes |
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    // Default policy: what [Authorize] means
+    .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build())
+    // Fallback policy: applied when no [Authorize] attribute is present
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+> **Recommendation**: For most secure applications, set a fallback policy that requires authentication. This follows the principle of "secure by default" - developers must explicitly opt-in to anonymous access rather than accidentally leaving endpoints unprotected.
+
 ## Role-Based Authorization
 
 The Application Model provides two convenient ways to implement role-based authorization:

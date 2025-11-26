@@ -15,11 +15,11 @@ public record AddItemToCart(string Sku, int Quantity)
 }
 ```
 
-> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the name of the type
+> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../../proxy-generation.md), the name of the type
 > will become the name of the command for the generated TypeScript file and class.
 
 If your handler has side-effects expressed in the return value, the
-command pipeline has an [extensibility point for return values](./response-value-handlers.md).
+command pipeline has an [extensibility point for return values](../response-value-handlers.md).
 
 You can then return anything you know there is a handler for.
 
@@ -28,7 +28,7 @@ You can then return anything you know there is a handler for.
 Your return type can leverage a discriminated union with [`OneOf<>`](https://github.com/mcintyre321/OneOf/) to
 return different types of values depending on the situation, like for instance an explicit validation error.
 
-As long as there are [response handlers](./response-value-handlers.md) for any of the types of the discriminated union, your value
+As long as there are [response handlers](../response-value-handlers.md) for any of the types of the discriminated union, your value
 will be handled.
 
 ```csharp
@@ -59,7 +59,7 @@ public record AddItemToCart(string Sku, int Quantity)
 Sometimes you want to return a value that is part of the `CommandResult` and returned to the
 caller that invoked the command. By returning a tuple, the command pipeline will intelligently
 process each value to determine which should be the response and which should be processed by
-[response value handlers](./response-value-handlers.md).
+[response value handlers](../response-value-handlers.md).
 
 ### How Tuple Processing Works
 
@@ -146,113 +146,14 @@ public record AddItemToCart(string Sku, int Quantity)
 {
     public void Handle(ICartService carts)
     {
-        carts.AddItemToCart(ski, quantity);
+        carts.AddItemToCart(Sku, Quantity);
     }
 }
 ```
-
-## Authorization in Model-Bound Commands
-
-Model-bound commands support comprehensive authorization mechanisms. For detailed information about securing your commands, see the [Authorization](../authorization.md) documentation.
-
-## Programmatic Command Execution with ICommandPipeline
-
-While model-bound commands are typically executed through HTTP endpoints, you can also execute them programmatically using the `ICommandPipeline` service. This is useful for scenarios such as:
-
-- Background services or scheduled tasks
-- Event handlers that need to execute commands
-- Internal service-to-service communication
-- Testing scenarios
-
-### Basic Usage
-
-Inject `ICommandPipeline` into your service and use it to execute commands:
-
-```csharp
-public class OrderProcessingService
-{
-    private readonly ICommandPipeline _commandPipeline;
-
-    public OrderProcessingService(ICommandPipeline commandPipeline)
-    {
-        _commandPipeline = commandPipeline;
-    }
-
-    public async Task ProcessOrder(Order order)
-    {
-        var command = new ProcessOrderCommand(order.Id, order.Items);
-        var result = await _commandPipeline.Execute(command);
-
-        if (result.IsSuccess)
-        {
-            // Command executed successfully
-            var orderId = result.Response; // If the command returns a value
-        }
-        else
-        {
-            // Handle validation errors or other failures
-            foreach (var error in result.ValidationResults)
-            {
-                // Process validation errors
-            }
-        }
-    }
-}
-```
-
-### Command Results
-
-The `ICommandPipeline.Execute()` method returns a `CommandResult` that provides information about the execution:
-
-```csharp
-var result = await _commandPipeline.Execute(command);
-
-// Check if the command was authorized
-if (!result.IsAuthorized)
-{
-    // Handle unauthorized access
-}
-
-// Check if the command executed successfully
-if (result.IsSuccess)
-{
-    // Access the response value if the command returns one
-    var responseValue = result.Response;
-}
-else
-{
-    // Handle validation errors
-    foreach (var validationResult in result.ValidationResults)
-    {
-        // Process each validation error
-    }
-}
-```
-
-### Exception Handling
-
-When using `ICommandPipeline` programmatically, exceptions in the command handler are caught and returned as part of the `CommandResult`:
-
-```csharp
-var result = await _commandPipeline.Execute(command);
-
-if (result.HasExceptions)
-{
-    // An exception was thrown during command execution
-    foreach (var message in result.ExceptionMessages)
-    {
-        // Handle message
-    }
-}
-```
-
-### Context and Authentication
-
-When executing commands programmatically, the current execution context (including user identity and claims) is automatically used. If you need to execute commands under a different context, you'll need to manage the authentication context appropriately in your application.
 
 ## Frontend Integration
 
-Model-bound commands work seamlessly with the [proxy generator](../proxy-generation.md), which automatically creates TypeScript proxies for your commands. The generated proxies provide:
+Model-bound commands work seamlessly with the [proxy generator](../../proxy-generation.md), which automatically creates TypeScript proxies for your commands. The generated proxies provide:
 
 - Strong typing for command properties
 - Automatic validation integration
