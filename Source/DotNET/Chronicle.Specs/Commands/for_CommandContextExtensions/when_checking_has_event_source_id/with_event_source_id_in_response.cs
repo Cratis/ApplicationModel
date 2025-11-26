@@ -3,7 +3,7 @@
 
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_CommandContextExtensions.when_checking_has_event_source_id;
+namespace Cratis.Arc.Chronicle.Commands.for_CommandContextExtensions.when_checking_has_event_source_id;
 
 public class with_event_source_id_in_response : given.a_command_context
 {

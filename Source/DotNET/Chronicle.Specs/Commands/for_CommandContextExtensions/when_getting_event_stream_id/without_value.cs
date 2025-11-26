@@ -3,7 +3,7 @@
 
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_CommandContextExtensions.when_getting_event_stream_id;
+namespace Cratis.Arc.Chronicle.Commands.for_CommandContextExtensions.when_getting_event_stream_id;
 
 public class without_value : given.a_command_context
 {

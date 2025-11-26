@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventsCommandResponseValueHandler.when_checking_can_handle;
+namespace Cratis.Arc.Chronicle.Commands.for_EventsCommandResponseValueHandler.when_checking_can_handle;
 
 public class with_valid_events_collection : given.an_events_command_response_value_handler
 {

@@ -6,7 +6,7 @@ using Cratis.Chronicle.Events;
 using Cratis.Chronicle.Keys;
 using Cratis.Reflection;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Provides extension methods for working with event sources in command contexts.

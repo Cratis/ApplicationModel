@@ -4,8 +4,9 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 using Cratis.Chronicle.EventSequences.Concurrency;
+using Cratis.Execution;
 
-namespace Cratis.Chronicle.Applications.Commands.for_SingleEventCommandResponseValueHandler.when_handling_with_metadata;
+namespace Cratis.Arc.Chronicle.Commands.for_SingleEventCommandResponseValueHandler.when_handling_with_metadata;
 
 public class with_concurrency_on_event_stream_type : given.a_single_event_command_response_value_handler
 {

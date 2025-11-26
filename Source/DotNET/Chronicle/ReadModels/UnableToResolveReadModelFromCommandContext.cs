@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Chronicle.Applications.ReadModels;
+namespace Cratis.Arc.Chronicle.ReadModels;
 
 /// <summary>
 /// Exception that gets thrown when not being able to resolve a read model from command context.

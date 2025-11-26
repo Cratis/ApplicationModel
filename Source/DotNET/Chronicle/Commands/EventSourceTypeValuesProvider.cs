@@ -3,7 +3,7 @@
 
 using Cratis.Arc.Commands;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Represents an implementation of <see cref="ICommandContextValuesProvider"/> that provides values for the event source type.

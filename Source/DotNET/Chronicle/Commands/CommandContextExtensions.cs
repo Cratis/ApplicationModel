@@ -4,7 +4,7 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Extensions for the command context.

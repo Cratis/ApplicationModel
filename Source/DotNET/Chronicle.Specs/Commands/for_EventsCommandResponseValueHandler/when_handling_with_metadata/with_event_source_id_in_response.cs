@@ -4,7 +4,7 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventsCommandResponseValueHandler.when_handling_with_metadata;
+namespace Cratis.Arc.Chronicle.Commands.for_EventsCommandResponseValueHandler.when_handling_with_metadata;
 
 public class with_event_source_id_in_response : given.an_events_command_response_value_handler
 {

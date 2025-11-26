@@ -4,7 +4,7 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventSourceTypeValuesProvider.when_providing;
+namespace Cratis.Arc.Chronicle.Commands.for_EventSourceTypeValuesProvider.when_providing;
 
 public class with_event_source_type_attribute : Specification
 {

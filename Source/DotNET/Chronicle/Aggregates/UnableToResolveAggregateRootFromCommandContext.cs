@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Chronicle.Applications.Aggregates;
+namespace Cratis.Arc.Chronicle.Aggregates;
 
 /// <summary>
 /// The exception that is thrown when an aggregate root cannot be resolved from the current command context.

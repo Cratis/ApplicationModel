@@ -5,7 +5,7 @@ using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 using Cratis.Chronicle.EventSequences;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Represents a command response value handler that can handle a single event as the response value.

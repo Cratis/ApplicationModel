@@ -3,7 +3,7 @@
 
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Provides the event stream id.

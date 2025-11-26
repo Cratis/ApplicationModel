@@ -3,7 +3,7 @@
 
 using Cratis.Arc.Commands;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventStreamIdValuesProvider.when_providing;
+namespace Cratis.Arc.Chronicle.Commands.for_EventStreamIdValuesProvider.when_providing;
 
 public class without_event_stream_id : Specification
 {

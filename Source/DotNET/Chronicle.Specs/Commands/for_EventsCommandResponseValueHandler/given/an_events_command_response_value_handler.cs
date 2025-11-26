@@ -5,8 +5,9 @@ using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 using Cratis.Chronicle.EventSequences;
 using Cratis.Chronicle.EventSequences.Concurrency;
+using Cratis.Execution;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventsCommandResponseValueHandler.given;
+namespace Cratis.Arc.Chronicle.Commands.for_EventsCommandResponseValueHandler.given;
 
 public class an_events_command_response_value_handler : Specification
 {

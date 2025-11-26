@@ -6,7 +6,7 @@ using Cratis.Chronicle.Events;
 using Cratis.Chronicle.Events.Constraints;
 using Cratis.Chronicle.EventSequences;
 
-namespace Cratis.Chronicle.Applications.Commands.for_AppendResultExtensions.when_converting_append_result;
+namespace Cratis.Arc.Chronicle.Commands.for_AppendResultExtensions.when_converting_append_result;
 
 public class with_constraint_violations : given.all_dependencies
 {

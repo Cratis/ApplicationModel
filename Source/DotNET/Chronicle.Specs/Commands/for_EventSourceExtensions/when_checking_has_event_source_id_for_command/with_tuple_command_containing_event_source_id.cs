@@ -4,7 +4,7 @@
 using System.Runtime.CompilerServices;
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_command;
+namespace Cratis.Arc.Chronicle.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_command;
 
 public class with_tuple_command_containing_event_source_id : Specification
 {

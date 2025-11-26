@@ -4,7 +4,7 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.EventSequences;
 
-namespace Cratis.Chronicle.Applications.Commands.for_AppendResultExtensions.when_converting_append_result;
+namespace Cratis.Arc.Chronicle.Commands.for_AppendResultExtensions.when_converting_append_result;
 
 public class with_errors : given.all_dependencies
 {

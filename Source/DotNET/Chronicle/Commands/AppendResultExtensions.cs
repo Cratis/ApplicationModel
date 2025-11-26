@@ -5,7 +5,7 @@ using Cratis.Arc.Commands;
 using Cratis.Arc.Validation;
 using Cratis.Chronicle.EventSequences;
 
-namespace Cratis.Chronicle.Applications.Commands;
+namespace Cratis.Arc.Chronicle.Commands;
 
 /// <summary>
 /// Extension methods for converting append results to command results.

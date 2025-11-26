@@ -6,7 +6,7 @@ using Cratis.Chronicle.Events;
 using Cratis.Chronicle.Events.Constraints;
 using Cratis.Chronicle.EventSequences;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventsCommandResponseValueHandler.when_handling;
+namespace Cratis.Arc.Chronicle.Commands.for_EventsCommandResponseValueHandler.when_handling;
 
 public class and_append_returns_failure : given.an_events_command_response_value_handler
 {

@@ -4,7 +4,7 @@
 using Cratis.Chronicle.Events;
 using Cratis.Chronicle.Keys;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventSourceExtensions.when_getting_event_source_id;
+namespace Cratis.Arc.Chronicle.Commands.for_EventSourceExtensions.when_getting_event_source_id;
 
 public class from_command_with_key_attribute_property : Specification
 {

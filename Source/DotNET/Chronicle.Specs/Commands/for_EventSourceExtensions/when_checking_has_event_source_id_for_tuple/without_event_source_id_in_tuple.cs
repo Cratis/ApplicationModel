@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_tuple;
+namespace Cratis.Arc.Chronicle.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_tuple;
 
 public class without_event_source_id_in_tuple : Specification
 {

@@ -1,11 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Cratis.Arc.Chronicle.Aggregates;
+using Cratis.Arc.Chronicle.Commands;
 using Cratis.Arc.Commands;
 using Cratis.Chronicle;
-using Cratis.Chronicle.Aggregates;
-using Cratis.Chronicle.Applications.Aggregates;
-using Cratis.Chronicle.Applications.Commands;
 using Cratis.Chronicle.Events;
 
 namespace Microsoft.Extensions.DependencyInjection;

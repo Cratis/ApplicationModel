@@ -4,7 +4,7 @@
 using Cratis.Arc.Commands;
 using Cratis.Chronicle.Events;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventStreamIdValuesProvider.when_providing;
+namespace Cratis.Arc.Chronicle.Commands.for_EventStreamIdValuesProvider.when_providing;
 
 public class with_both_attribute_without_value_and_interface : Specification
 {

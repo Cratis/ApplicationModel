@@ -6,7 +6,7 @@ using Cratis.Chronicle.Events;
 using Cratis.Chronicle.EventSequences;
 using Cratis.Chronicle.EventSequences.Concurrency;
 
-namespace Cratis.Chronicle.Applications.Commands.for_AppendResultExtensions.when_converting_append_many_result;
+namespace Cratis.Arc.Chronicle.Commands.for_AppendResultExtensions.when_converting_append_many_result;
 
 public class with_concurrency_violations : given.all_dependencies
 {

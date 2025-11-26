@@ -3,7 +3,7 @@
 
 using Cratis.Arc.Commands;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventsCommandResponseValueHandler.when_checking_can_handle;
+namespace Cratis.Arc.Chronicle.Commands.for_EventsCommandResponseValueHandler.when_checking_can_handle;
 
 public class without_event_source_id : given.an_events_command_response_value_handler
 {

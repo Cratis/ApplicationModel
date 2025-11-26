@@ -3,7 +3,7 @@
 
 using Cratis.Chronicle.Keys;
 
-namespace Cratis.Chronicle.Applications.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_command;
+namespace Cratis.Arc.Chronicle.Commands.for_EventSourceExtensions.when_checking_has_event_source_id_for_command;
 
 public class with_key_attribute_property : Specification
 {

@@ -2,8 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Arc.Commands;
+using Cratis.Execution;
 
-namespace Cratis.Chronicle.Applications.Commands.for_CommandContextExtensions.given;
+namespace Cratis.Arc.Chronicle.Commands.for_CommandContextExtensions.given;
 
 public class a_command_context : Specification
 {
