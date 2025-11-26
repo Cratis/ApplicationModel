@@ -11,7 +11,7 @@ public class when_moving_next_with_cancellation : given.a_retrying_change_stream
     void Establish()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        _cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(100));
+        _cancellationTokenSource.Cancel();
     }
 
     async Task Because()
