@@ -57,6 +57,49 @@ public record GetPublicCatalog()
 }
 ```
 
+### AllowAnonymous Inheritance
+
+The `[AllowAnonymous]` attribute can be applied at different levels and follows specific inheritance rules:
+
+| Scenario | Result |
+| -------- | ------ |
+| `[AllowAnonymous]` on type | All methods inherit anonymous access |
+| `[AllowAnonymous]` on method | Method allows anonymous access |
+| `[Authorize]` on method with `[AllowAnonymous]` on type | Method requires authorization (overrides type) |
+| Both `[AllowAnonymous]` and `[Authorize]` on same member | Error - throws `AmbiguousAuthorizationLevel` |
+
+```csharp
+// Type-level AllowAnonymous - all methods allow anonymous access
+[AllowAnonymous]
+public record PublicQueries
+{
+    public static IEnumerable<Product> GetProducts() => /* ... */;
+    public static IEnumerable<Category> GetCategories() => /* ... */;
+}
+
+// Method-level authorization overrides type-level AllowAnonymous
+[AllowAnonymous]
+public record MixedQueries
+{
+    // Inherits [AllowAnonymous] from type
+    public static IEnumerable<Product> GetPublicProducts() => /* ... */;
+
+    // Requires authorization despite type having [AllowAnonymous]
+    [Authorize]
+    public static IEnumerable<Product> GetInternalProducts() => /* ... */;
+}
+
+// ERROR: This will throw AmbiguousAuthorizationLevel at startup
+[AllowAnonymous]
+[Authorize]  // Cannot have both on the same member!
+public record InvalidCommand
+{
+    public void Handle() { }
+}
+```
+
+> **Warning**: Applying both `[AllowAnonymous]` and `[Authorize]` to the same type or method will result in an `AmbiguousAuthorizationLevel` exception. This prevents accidental security misconfigurations.
+
 ### Custom Fallback Policies
 
 You can create more specific fallback policies with custom requirements:
