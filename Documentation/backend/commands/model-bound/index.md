@@ -38,7 +38,7 @@ using OneOf;
 [Command]
 public record AddItemToCart(string Sku, int Quantity)
 {
-    public OneOf<Guid, ValidationResult> Handle()
+    public Result<ValidationResult, Guid> Handle()
     {
         if( /* code that checks if product is carried */ )
         {
@@ -49,10 +49,51 @@ public record AddItemToCart(string Sku, int Quantity)
             return cartLineIdentifier;
         }
 
-        return new ValidationResult(ValidationResultSeverity.Error, "Product is not carried anymore", [], null!);
+        return ValidationResult.Error("Product is not carried anymore");
     }
 }
 ```
+
+### Result with Tuple Alternatives
+
+You can also combine `Result` with tuples, allowing different alternatives to return different structures. This is useful when some code paths need to return a response with side effects (events, notifications), while others just return a simple value or error.
+
+```csharp
+using Cratis.Applications.Validation;
+using OneOf;
+
+[Command]
+public record CreateOrder(string CustomerId, List<OrderItem> Items)
+{
+    public Result<ValidationResult, (OrderId, OrderCreated)> Handle()
+    {
+        if (!IsValidOrder())
+        {
+            return ValidationResult.Error("Invalid order");
+        }
+
+        var orderId = OrderId.New();
+        
+        // Create the order...
+
+        // Return tuple with response (OrderId) and event (OrderCreated)
+        return (orderId, new OrderCreated(orderId, CustomerId, Items));
+    }
+}
+```
+
+In this example:
+
+- When validation fails, the `ValidationResult` is returned and processed by the validation handler
+- When successful, the tuple `(OrderId, OrderCreated)` is returned:
+  - `OrderCreated` is processed by its response value handler (e.g., Chronicle event handler)
+  - `OrderId` becomes the command response (available in `CommandResult<OrderId>`)
+
+This pattern is particularly powerful when you want to:
+
+- Return different types based on business logic outcomes
+- Combine response values with side effects in success scenarios
+- Keep error handling separate from success handling
 
 ## Tuple
 
@@ -132,6 +173,36 @@ If your tuple contains multiple values that don't have corresponding response va
 // This would throw an exception if neither string nor int have handlers
 public (string, int, SomeEvent) Handle() => ("response1", 42, new SomeEvent());
 ```
+
+### Tuples with Result Values
+
+Tuples can also contain `Result` values. The command pipeline will unwrap the `Result` and process the inner value:
+
+```csharp
+using Cratis.Applications.Validation;
+using OneOf;
+
+[Command]
+public record ProcessPayment(string OrderId, decimal Amount)
+{
+    public (OrderId, Result<PaymentFailed, PaymentSucceeded>) Handle()
+    {
+        var orderId = new OrderId(OrderId);
+        
+        if (ProcessPaymentWithProvider())
+        {
+            return (orderId, new PaymentSucceeded(orderId, Amount));
+        }
+        
+        return (orderId, new PaymentFailed(orderId, "Insufficient funds"));
+    }
+}
+```
+
+In this example:
+
+- `OrderId` becomes the response (assuming no handler exists for it)
+- The `Result` value is unwrapped, and the inner value (`PaymentSucceeded` or `PaymentFailed`) is processed by its respective handler
 
 ## Dependencies
 
