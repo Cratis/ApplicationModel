@@ -19,5 +19,5 @@ public class when_moving_next_with_cancellation : given.a_retrying_change_stream
         _exception = await Catch.Exception(async () => await _cursor.MoveNextAsync(_cancellationTokenSource.Token));
     }
 
-    [Fact] void should_throw_task_canceled_exception() => _exception.ShouldBeOfExactType<TaskCanceledException>();
+    [Fact] void should_throw_operation_canceled_exception() => _exception.ShouldBeOfExactType<OperationCanceledException>();
 }
