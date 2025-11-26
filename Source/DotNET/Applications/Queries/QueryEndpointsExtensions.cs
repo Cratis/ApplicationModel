@@ -53,32 +53,32 @@ public static class QueryEndpointsExtensions
                     // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
                     //       So we use HttpRequest and HttpResponse instead
                     group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
-                {
-                    var context = request.HttpContext;
-                    context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
-
-                    var paging = context.GetPagingInfo();
-                    var sorting = context.GetSortingInfo();
-                    var arguments = context.GetQueryArguments(performer);
-
-                    // Perform the query first
-                    var queryResult = await queryPipeline.Perform(performer.FullyQualifiedName, arguments, paging, sorting);
-
-                    // Check if the result is a streaming result (Subject or AsyncEnumerable)
-                    var webSocketQueryHandler = context.RequestServices.GetRequiredService<IObservableQueryHandler>();
-                    if (queryResult.IsSuccess && webSocketQueryHandler.IsStreamingResult(queryResult.Data))
                     {
-                        // Handle streaming results - both WebSocket and HTTP JSON streaming
-                        var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
-                            correlationIdAccessor.Current : CorrelationId.New();
-                        var queryContext = new QueryContext(performer.FullyQualifiedName, correlationId, paging, sorting, arguments, []);
-                        await webSocketQueryHandler.HandleStreamingResult(context, performer.Name, queryResult.Data!, queryContext);
-                        return;
-                    }
+                        var context = request.HttpContext;
+                        context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
 
-                    // Handle non-streaming results
-                    response.SetResponseStatusCode(queryResult);
-                    await response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
+                        var paging = context.GetPagingInfo();
+                        var sorting = context.GetSortingInfo();
+                        var arguments = context.GetQueryArguments(performer);
+
+                        // Perform the query first
+                        var queryResult = await queryPipeline.Perform(performer.FullyQualifiedName, arguments, paging, sorting);
+
+                        // Check if the result is a streaming result (Subject or AsyncEnumerable)
+                        var webSocketQueryHandler = context.RequestServices.GetRequiredService<IObservableQueryHandler>();
+                        if (queryResult.IsSuccess && webSocketQueryHandler.IsStreamingResult(queryResult.Data))
+                        {
+                            // Handle streaming results - both WebSocket and HTTP JSON streaming
+                            var correlationId = correlationIdAccessor.Current != CorrelationId.NotSet ?
+                                correlationIdAccessor.Current : CorrelationId.New();
+                            var queryContext = new QueryContext(performer.FullyQualifiedName, correlationId, paging, sorting, arguments, []);
+                            await webSocketQueryHandler.HandleStreamingResult(context, performer.Name, queryResult.Data!, queryContext);
+                            return;
+                        }
+
+                        // Handle non-streaming results
+                        response.SetResponseStatusCode(queryResult);
+                        await response.WriteAsJsonAsync(queryResult, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                     })
                     .WithTags(string.Join('.', location))
                     .WithName(executeEndpointName)
