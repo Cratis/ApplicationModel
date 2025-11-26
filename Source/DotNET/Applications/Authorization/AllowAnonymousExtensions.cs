@@ -18,12 +18,27 @@ public static class AllowAnonymousExtensions
     /// <returns>True if anonymous access is allowed, false otherwise.</returns>
     /// <remarks>
     /// This method checks the member itself first, then falls back to checking the declaring type.
+    /// If the member has an explicit [Authorize] attribute without [AllowAnonymous], it will not allow anonymous access.
     /// </remarks>
+    /// <exception cref="AmbiguousAuthorizationLevel">The member has both [Authorize] and [AllowAnonymous] attributes.</exception>
     public static bool IsAnonymousAllowed(this MemberInfo member)
     {
-        if (member.GetCustomAttributes(typeof(AllowAnonymousAttribute), inherit: true).Length > 0)
+        var hasAllowAnonymous = member.GetCustomAttributes(typeof(AllowAnonymousAttribute), inherit: true).Length > 0;
+        var hasAuthorize = member.GetCustomAttributes(typeof(AuthorizeAttribute), inherit: true).Length > 0;
+
+        if (hasAllowAnonymous && hasAuthorize)
+        {
+            throw new AmbiguousAuthorizationLevel(member);
+        }
+
+        if (hasAllowAnonymous)
         {
             return true;
+        }
+
+        if (hasAuthorize)
+        {
+            return false;
         }
 
         return member.DeclaringType?.IsAnonymousAllowed() ?? false;

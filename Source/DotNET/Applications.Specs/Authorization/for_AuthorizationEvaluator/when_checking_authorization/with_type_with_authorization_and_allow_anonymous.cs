@@ -5,9 +5,9 @@ namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.when_chec
 
 public class with_type_with_authorization_and_allow_anonymous : given.an_authorization_helper
 {
-    bool _result;
+    Exception _exception;
 
-    void Because() => _result = _authorizationHelper.IsAuthorized(typeof(given.TypeWithAuthorizationAndAllowAnonymous));
+    void Because() => _exception = Catch.Exception(() => _authorizationHelper.IsAuthorized(typeof(given.TypeWithAuthorizationAndAllowAnonymous)));
 
-    [Fact] void should_return_true() => _result.ShouldBeTrue();
+    [Fact] void should_throw_ambiguous_authorization_level() => _exception.ShouldBeOfExactType<AmbiguousAuthorizationLevel>();
 }
