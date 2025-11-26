@@ -7,7 +7,7 @@ using Cratis.Arc.Tenancy;
 namespace Cratis.Arc;
 
 /// <summary>
-/// Represents the options for the application model.
+/// Represents the options for Arc.
 /// </summary>
 public class ArcOptions
 {

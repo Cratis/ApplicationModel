@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 namespace Microsoft.AspNetCore.Builder;
 
 /// <summary>
-/// Provides extension methods for <see cref="WebApplicationBuilder"/> for configuring the application model services.
+/// Provides extension methods for <see cref="WebApplicationBuilder"/> for configuring Arc services.
 /// </summary>
 public static class WebApplicationBuilderExtensions
 {

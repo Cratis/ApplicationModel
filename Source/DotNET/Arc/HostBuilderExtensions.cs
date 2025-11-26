@@ -16,12 +16,12 @@ using Microsoft.Extensions.Options;
 namespace Microsoft.Extensions.Hosting;
 
 /// <summary>
-/// Provides extension methods for <see cref="IHostBuilder"/> for configuring the application model services.
+/// Provides extension methods for <see cref="IHostBuilder"/> for configuring Arc services.
 /// </summary>
 public static class HostBuilderExtensions
 {
     /// <summary>
-    /// Gets the default section name for the application model configuration.
+    /// Gets the default section name for Arc configuration.
     /// </summary>
     public static readonly string[] DefaultArcSectionPaths = ["Cratis", "Arc"];
 
