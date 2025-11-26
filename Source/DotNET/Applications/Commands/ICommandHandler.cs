@@ -27,6 +27,11 @@ public interface ICommandHandler
     IEnumerable<Type> Dependencies { get; }
 
     /// <summary>
+    /// Gets a value indicating whether anonymous access is allowed for this command.
+    /// </summary>
+    bool AllowsAnonymousAccess { get; }
+
+    /// <summary>
     /// Handles the given command.
     /// </summary>
     /// <param name="commandContext">The context for the command being handled.</param>
