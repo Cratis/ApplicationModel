@@ -16,6 +16,16 @@ public static class AllowAnonymousExtensions
     /// </summary>
     /// <param name="member">The member to check for <see cref="AllowAnonymousAttribute"/>.</param>
     /// <returns>True if anonymous access is allowed, false otherwise.</returns>
-    public static bool IsAnonymousAllowed(this MemberInfo member) =>
-        member.GetCustomAttributes(typeof(AllowAnonymousAttribute), inherit: true).Length > 0;
+    /// <remarks>
+    /// This method checks the member itself first, then falls back to checking the declaring type.
+    /// </remarks>
+    public static bool IsAnonymousAllowed(this MemberInfo member)
+    {
+        if (member.GetCustomAttributes(typeof(AllowAnonymousAttribute), inherit: true).Length > 0)
+        {
+            return true;
+        }
+
+        return member.DeclaringType?.IsAnonymousAllowed() ?? false;
+    }
 }
