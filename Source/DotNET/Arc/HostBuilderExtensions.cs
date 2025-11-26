@@ -33,28 +33,21 @@ public static class HostBuilderExtensions
     /// Cratis:Arc section path.
     /// </remarks>
     /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
+    /// <param name="arcBuilderCallback">Callback for configuring the <see cref="IArcBuilder"/>.</param>
     /// <param name="configSectionPath">The optional configuration section path.</param>
     /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder AddCratisArc(this IHostBuilder builder, string? configSectionPath = null)
+    public static IHostBuilder AddCratisArc(this IHostBuilder builder, Action<IArcBuilder> arcBuilderCallback, string? configSectionPath = null)
     {
-        builder.ConfigureServices(_ => AddOptions(_)
-                .BindConfiguration(configSectionPath ?? ConfigurationPath.Combine(DefaultArcSectionPaths)));
+        builder.AddArcImplementation();
+        builder.ConfigureServices(_ =>
+        {
+            var arcBuilder = new ArcBuilder(_, Internals.Types);
+            arcBuilderCallback(arcBuilder);
+            AddOptions(_, arcBuilder.ConfigureOptions)
+                .BindConfiguration(configSectionPath ?? ConfigurationPath.Combine(DefaultArcSectionPaths));
+        });
 
-        return builder.AddArcImplementation();
-    }
-
-    /// <summary>
-    /// Use Cratis Arc with the <see cref="IHostBuilder"/>.
-    /// </summary>
-    /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
-    /// <param name="configureOptions">Action to configure the <see cref="ArcOptions"/>.</param>
-    /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder AddCratisArc(this IHostBuilder builder, Action<ArcOptions> configureOptions)
-    {
-        builder.ConfigureServices(_ => AddOptions(_, configureOptions));
-        var options = new ArcOptions();
-        configureOptions(options);
-        return builder.AddArcImplementation(options.IdentityDetailsProvider);
+        return builder;
     }
 
     /// <summary>

@@ -1,0 +1,15 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Cratis.Types;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Cratis.Arc;
+
+/// <summary>
+/// Represents a builder for configuring Arc services or extensions.
+/// </summary>
+/// <param name="Services">The service collection to which services can be added.</param>
+/// <param name="Types">The types system used by Arc.</param>
+/// <param name="ConfigureOptions">Optional action for configuring the <see cref="ArcOptions"/>.</param>
+public record ArcBuilder(IServiceCollection Services, ITypes Types, Action<ArcOptions>? ConfigureOptions = default) : IArcBuilder;

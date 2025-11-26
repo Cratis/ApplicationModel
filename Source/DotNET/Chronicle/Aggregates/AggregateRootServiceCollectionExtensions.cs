@@ -4,8 +4,9 @@
 using Cratis.Arc.Chronicle.Aggregates;
 using Cratis.Arc.Chronicle.Commands;
 using Cratis.Arc.Commands;
-using Cratis.Chronicle;
 using Cratis.Chronicle.Events;
+using Cratis.Reflection;
+using Cratis.Types;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -18,11 +19,11 @@ public static class AggregateRootServiceCollectionExtensions
     /// Adds aggregate root auto-discovery and registration to the service collection.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add to.</param>
-    /// <param name="clientArtifactsProvider">The <see cref="IClientArtifactsProvider"/> for type discovery.</param>
+    /// <param name="types">The <see cref="ITypes"/> for type discovery.</param>
     /// <returns>The service collection for continuation.</returns>
-    public static IServiceCollection AddAggregateRoots(this IServiceCollection services, IClientArtifactsProvider clientArtifactsProvider)
+    public static IServiceCollection AddAggregateRoots(this IServiceCollection services, ITypes types)
     {
-        foreach (var aggregateRootType in clientArtifactsProvider.AggregateRoots)
+        foreach (var aggregateRootType in types.All.Where(_ => _.HasInterface<IAggregateRoot>()).ToArray())
         {
             services.AddTransient(aggregateRootType, serviceProvider =>
             {
