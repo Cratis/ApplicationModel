@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { GetHttpHeaders, Globals } from '@cratis/applications';
+import { GetHttpHeaders, Globals } from '@cratis/arc';
 import React from 'react';
 
-export interface ApplicationModelConfiguration {
+export interface ArcConfiguration {
     microservice: string;
     development?: boolean
     origin?: string;
@@ -13,7 +13,7 @@ export interface ApplicationModelConfiguration {
     httpHeadersCallback?: GetHttpHeaders;
 }
 
-export const ApplicationModelContext = React.createContext<ApplicationModelConfiguration>({
+export const ArcContext = React.createContext<ArcConfiguration>({
     microservice: Globals.microservice,
     development: false,
     origin: '',

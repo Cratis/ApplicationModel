@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_validating;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_validating;
 
 public class with_collection_properties : given.a_fluent_validation_filter
 {

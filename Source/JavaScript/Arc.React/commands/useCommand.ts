@@ -3,10 +3,10 @@
 
 import { Constructor } from '@cratis/fundamentals';
 import { useState, useCallback, useContext, useRef, useMemo } from 'react';
-import { Command } from '@cratis/applications/commands';
+import { Command } from '@cratis/arc/commands';
 import React from 'react';
 import { CommandScopeContext } from './CommandScope';
-import { ApplicationModelContext } from '../ApplicationModelContext';
+import { ArcContext } from '../ArcContext';
 
 export type SetCommandValues<TCommandContent> = (command: TCommandContent) => void;
 export type ClearCommandValues = () => void;
@@ -27,7 +27,7 @@ export function useCommand<
 ): [TCommand, SetCommandValues<TCommandContent>, ClearCommandValues] {
     const command = useRef<TCommand | null>(null);
     const [hasChanges, setHasChanges] = useState(false);
-    const applicationModel = useContext(ApplicationModelContext);
+    const arc = useContext(ArcContext);
 
     const propertyChangedCallback = useCallback(() => {
         if (command.current?.hasChanges !== hasChanges) {
@@ -37,9 +37,9 @@ export function useCommand<
 
     command.current = useMemo(() => {
         const instance = new commandType();
-        instance.setMicroservice(applicationModel.microservice);
-        instance.setApiBasePath(applicationModel.apiBasePath ?? '');
-        instance.setOrigin(applicationModel.origin ?? '');
+        instance.setMicroservice(arc.microservice);
+        instance.setApiBasePath(arc.apiBasePath ?? '');
+        instance.setOrigin(arc.origin ?? '');
         if (initialValues) {
             instance.setInitialValues(initialValues);
         }

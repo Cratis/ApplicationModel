@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands.for_CommandContextValuesBuilder.when_building;
+namespace Cratis.Arc.Commands.for_CommandContextValuesBuilder.when_building;
 
 public class with_providers_having_overlapping_keys : given.a_command_context_values_builder
 {

@@ -3,7 +3,7 @@
 
 using Cratis.DependencyInjection;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents an implementation of <see cref="QueryContext"/>.

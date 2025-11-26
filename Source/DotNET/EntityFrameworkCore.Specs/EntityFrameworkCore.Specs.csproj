@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.EntityFrameworkCore.Specs</AssemblyName>
-        <RootNamespace>Cratis.Applications.EntityFrameworkCore</RootNamespace>
+        <AssemblyName>Cratis.Arc.EntityFrameworkCore.Specs</AssemblyName>
+        <RootNamespace>Cratis.Arc.EntityFrameworkCore</RootNamespace>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>

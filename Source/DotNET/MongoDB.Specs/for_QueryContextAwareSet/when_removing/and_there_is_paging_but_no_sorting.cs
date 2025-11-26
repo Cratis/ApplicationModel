@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using MongoDB.Driver;
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_removing;
+namespace Cratis.Arc.MongoDB.for_QueryContextAwareSet.when_removing;
 
 public class and_there_is_paging_but_no_sorting : Specification
 {

@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Orleans.StateMachines.when_activating;
+namespace Cratis.Arc.Orleans.StateMachines.when_activating;
 
 public class with_unknown_current_state : given.a_state_machine
 {

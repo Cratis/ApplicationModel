@@ -3,7 +3,7 @@
 
 using MongoDB.Bson.Serialization.Conventions;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Represents a definition for a MongoDB convention pack.

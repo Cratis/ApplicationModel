@@ -4,7 +4,7 @@
 using Cratis.Strings;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Extension methods for <see cref="ModelError"/>.

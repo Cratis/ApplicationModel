@@ -3,7 +3,7 @@
 
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_adding;
+namespace Cratis.Arc.MongoDB.for_QueryContextAwareSet.when_adding;
 
 public class many_items_with_the_same_id_while_sorting_is_disabled : Specification
 {

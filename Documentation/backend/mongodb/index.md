@@ -29,7 +29,7 @@ To get started with MongoDB in your application:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args)
-    .UseCratisApplicationModel();
+    .UseCratisArc();
 
 builder.UseCratisMongoDB();
 ```

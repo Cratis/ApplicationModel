@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Exception that gets thrown when multiple command handlers are found for the same command type.

@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Extensions for <see cref="IValidationContext"/>.

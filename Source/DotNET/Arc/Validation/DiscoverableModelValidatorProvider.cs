@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Represents a <see cref="IModelValidatorProvider"/> for <see cref="DiscoverableValidator{T}"/>.

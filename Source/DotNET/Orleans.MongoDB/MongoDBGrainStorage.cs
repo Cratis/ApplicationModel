@@ -1,12 +1,12 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.MongoDB;
+using Cratis.Arc.MongoDB;
 using Cratis.Concepts;
 using MongoDB.Driver;
 using Orleans.Storage;
 
-namespace Cratis.Applications.Orleans.MongoDB;
+namespace Cratis.Arc.Orleans.MongoDB;
 
 /// <summary>
 /// Represents a MongoDB implementation of <see cref="IGrainStorage"/>.

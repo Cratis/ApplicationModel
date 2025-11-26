@@ -1,11 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.MongoDB;
+using Cratis.Arc.MongoDB;
 using Microsoft.Extensions.DependencyInjection;
 using Orleans.Storage;
 
-namespace Cratis.Applications.Orleans.MongoDB;
+namespace Cratis.Arc.Orleans.MongoDB;
 
 /// <summary>
 /// Represents a factory for creating instances of <see cref="MongoDBGrainStorage"/>.

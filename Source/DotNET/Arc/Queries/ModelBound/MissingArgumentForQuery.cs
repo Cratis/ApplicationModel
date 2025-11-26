@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.ModelBound;
+namespace Cratis.Arc.Queries.ModelBound;
 
 /// <summary>
 /// The exception that is thrown when a null argument is provided for a non-nullable parameter.

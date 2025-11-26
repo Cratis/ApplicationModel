@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Defines a handler for WebSocket-based query operations.

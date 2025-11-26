@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Extensions for working with database connections.

@@ -4,7 +4,7 @@
 using MongoDB.Driver;
 using Polly;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue.given;
+namespace Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue.given;
 
 public abstract class an_interceptor : Specification
 {

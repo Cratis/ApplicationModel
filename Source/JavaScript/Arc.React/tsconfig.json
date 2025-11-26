@@ -5,14 +5,14 @@
         "rootDir": ".",
         "outDir": "dist/esm",
         "paths": {
-            "@cratis/applications/*": [
-                "../Applications/dist/esm/*"
+            "@cratis/arc/*": [
+                "../Arc/dist/esm/*"
             ]
         }
     },
     "references": [
         {
-            "path": "../Applications"
+            "path": "../Arc"
         }
     ],
     "exclude": [

@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ModelBound;
+namespace Cratis.Arc.ProxyGenerator.ModelBound;
 
 /// <summary>
 /// Extension methods for working with model bound types.

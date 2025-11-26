@@ -5,7 +5,7 @@ using System.Text.Json;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity;
+namespace Cratis.Arc.Identity;
 
 /// <summary>
 /// Extension methods for <see cref="HttpRequest"/> for identity related functionality.

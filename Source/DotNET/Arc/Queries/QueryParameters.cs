@@ -3,7 +3,7 @@
 
 using System.Collections;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents a collection of query parameters.

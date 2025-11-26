@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.Metrics;
-using Cratis.Applications;
+using Cratis.Arc;
 using Cratis.Conversion;
 using Cratis.DependencyInjection;
 using Cratis.Execution;
@@ -23,38 +23,38 @@ public static class HostBuilderExtensions
     /// <summary>
     /// Gets the default section name for the application model configuration.
     /// </summary>
-    public static readonly string[] DefaultApplicationModelSectionPaths = ["Cratis", "ApplicationModel"];
+    public static readonly string[] DefaultArcSectionPaths = ["Cratis", "Arc"];
 
     /// <summary>
-    /// Use Cratis ApplicationModel with the <see cref="IHostBuilder"/>.
+    /// Use Cratis Arc with the <see cref="IHostBuilder"/>.
     /// </summary>
     /// <remarks>
-    /// Binds the <see cref="ApplicationModelOptions"/> configuration to the given config section path or the default
-    /// Cratis:ApplicationModel section path.
+    /// Binds the <see cref="ArcOptions"/> configuration to the given config section path or the default
+    /// Cratis:Arc section path.
     /// </remarks>
     /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
     /// <param name="configSectionPath">The optional configuration section path.</param>
     /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder UseCratisApplicationModel(this IHostBuilder builder, string? configSectionPath = null)
+    public static IHostBuilder UseCratisArc(this IHostBuilder builder, string? configSectionPath = null)
     {
         builder.ConfigureServices(_ => AddOptions(_)
-                .BindConfiguration(configSectionPath ?? ConfigurationPath.Combine(DefaultApplicationModelSectionPaths)));
+                .BindConfiguration(configSectionPath ?? ConfigurationPath.Combine(DefaultArcSectionPaths)));
 
-        return builder.UseApplicationModelImplementation();
+        return builder.UseArcImplementation();
     }
 
     /// <summary>
-    /// Use Cratis ApplicationModel with the <see cref="IHostBuilder"/>.
+    /// Use Cratis Arc with the <see cref="IHostBuilder"/>.
     /// </summary>
     /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
-    /// <param name="configureOptions">Action to configure the <see cref="ApplicationModelOptions"/>.</param>
+    /// <param name="configureOptions">Action to configure the <see cref="ArcOptions"/>.</param>
     /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder UseCratisApplicationModel(this IHostBuilder builder, Action<ApplicationModelOptions> configureOptions)
+    public static IHostBuilder UseCratisArc(this IHostBuilder builder, Action<ArcOptions> configureOptions)
     {
         builder.ConfigureServices(_ => AddOptions(_, configureOptions));
-        var options = new ApplicationModelOptions();
+        var options = new ArcOptions();
         configureOptions(options);
-        return builder.UseApplicationModelImplementation(options.IdentityDetailsProvider);
+        return builder.UseArcImplementation(options.IdentityDetailsProvider);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public static class HostBuilderExtensions
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> to add the meter to.</param>
     /// <returns><see cref="IServiceCollection"/> for building continuation.</returns>
-    public static IServiceCollection AddCratisApplicationModelMeter(this IServiceCollection services)
+    public static IServiceCollection AddCratisArcMeter(this IServiceCollection services)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope
         services.TryAddKeyedSingleton(Internals.MeterName, new Meter(Internals.MeterName));
@@ -70,10 +70,10 @@ public static class HostBuilderExtensions
         return services;
     }
 
-    static OptionsBuilder<ApplicationModelOptions> AddOptions(IServiceCollection services, Action<ApplicationModelOptions>? configureOptions = default)
+    static OptionsBuilder<ArcOptions> AddOptions(IServiceCollection services, Action<ArcOptions>? configureOptions = default)
     {
         var builder = services
-            .AddOptions<ApplicationModelOptions>()
+            .AddOptions<ArcOptions>()
             .ValidateDataAnnotations()
             .ValidateOnStart();
         if (configureOptions is not null)
@@ -84,7 +84,7 @@ public static class HostBuilderExtensions
         return builder;
     }
 
-    static IHostBuilder UseApplicationModelImplementation(this IHostBuilder builder, Type? identityDetailsProvider = default)
+    static IHostBuilder UseArcImplementation(this IHostBuilder builder, Type? identityDetailsProvider = default)
     {
         Internals.Types = Types.Instance;
         Internals.Types.RegisterTypeConvertersForConcepts();
@@ -98,7 +98,7 @@ public static class HostBuilderExtensions
             .ConfigureServices(services =>
             {
                 services.AddHttpContextAccessor();
-                services.AddCratisApplicationModelMeter();
+                services.AddCratisArcMeter();
                 services.AddCratisCommands();
                 services.AddSingleton<ICorrelationIdAccessor>(sp => new CorrelationIdAccessor());
                 services

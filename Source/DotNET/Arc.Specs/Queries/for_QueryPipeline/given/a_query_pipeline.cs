@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Queries.for_QueryPipeline.given;
+namespace Cratis.Arc.Queries.for_QueryPipeline.given;
 
 public class a_query_pipeline : Specification
 {

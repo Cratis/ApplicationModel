@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using Cratis.Applications.ProxyGenerator.ControllerBased;
-using Cratis.Applications.ProxyGenerator.ModelBound;
-using Cratis.Applications.ProxyGenerator.Templates;
+using Cratis.Arc.ProxyGenerator.ControllerBased;
+using Cratis.Arc.ProxyGenerator.ModelBound;
+using Cratis.Arc.ProxyGenerator.Templates;
 
-namespace Cratis.Applications.ProxyGenerator;
+namespace Cratis.Arc.ProxyGenerator;
 
 /// <summary>
 /// Represents the actual generator.

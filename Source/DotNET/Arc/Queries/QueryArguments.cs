@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents arguments for a query, providing a strongly-typed wrapper around dictionary functionality.

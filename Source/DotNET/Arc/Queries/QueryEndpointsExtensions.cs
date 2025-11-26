@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications;
-using Cratis.Applications.Execution;
-using Cratis.Applications.Queries;
+using Cratis.Arc;
+using Cratis.Arc.Execution;
+using Cratis.Arc.Queries;
 using Cratis.Execution;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +27,7 @@ public static class QueryEndpointsExtensions
     {
         if (app is IEndpointRouteBuilder endpoints)
         {
-            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
+            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
             var options = appModelOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var queryPipeline = app.ApplicationServices.GetRequiredService<IQueryPipeline>();

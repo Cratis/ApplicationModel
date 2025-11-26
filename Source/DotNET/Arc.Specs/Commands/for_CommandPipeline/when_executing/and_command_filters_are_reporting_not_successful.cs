@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
+namespace Cratis.Arc.Commands.for_CommandPipeline.when_executing;
 
 public class and_command_filters_are_reporting_not_successful : given.a_command_pipeline_and_a_handler_for_command
 {

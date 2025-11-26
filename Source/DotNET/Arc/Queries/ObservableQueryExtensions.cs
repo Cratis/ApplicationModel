@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Provides extension methods for working with observable queries.

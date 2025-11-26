@@ -4,7 +4,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 
-namespace Cratis.Applications.MongoDB.for_BsonClassMapExtensions;
+namespace Cratis.Arc.MongoDB.for_BsonClassMapExtensions;
 
 public class when_applying_conventions : Specification
 {

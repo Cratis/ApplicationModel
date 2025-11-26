@@ -1,12 +1,12 @@
 {
-    "name": "@cratis/applications",
+    "name": "@cratis/arc",
     "version": "1.0.0",
     "description": "",
     "author": "Cratis",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cratis/applicationmodel.git"
+        "url": "git+https://github.com/cratis/arc.git"
     },
     "publishConfig": {
         "access": "public"

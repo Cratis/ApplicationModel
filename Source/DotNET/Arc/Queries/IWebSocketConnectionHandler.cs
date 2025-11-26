@@ -5,7 +5,7 @@ using System.Net.WebSockets;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Defines a system that knows how to handle the <see cref="WebSocket"/> connection for observable queries.

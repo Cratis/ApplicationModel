@@ -3,7 +3,7 @@
 
 using Cratis.Concepts;
 
-namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.when_performing;
+namespace Cratis.Arc.Queries.ModelBound.for_ModelBoundQueryPerformer.when_performing;
 
 public class with_concept_parameters : given.a_model_bound_query_performer
 {

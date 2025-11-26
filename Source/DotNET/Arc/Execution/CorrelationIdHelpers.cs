@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Execution;
+namespace Cratis.Arc.Execution;
 
 /// <summary>
 /// Provides helper methods for handling correlation IDs.

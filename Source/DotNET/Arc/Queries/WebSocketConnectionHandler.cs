@@ -6,7 +6,7 @@ using System.Text.Json;
 using Cratis.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents an implementation of <see cref="IWebSocketConnectionHandler"/>.

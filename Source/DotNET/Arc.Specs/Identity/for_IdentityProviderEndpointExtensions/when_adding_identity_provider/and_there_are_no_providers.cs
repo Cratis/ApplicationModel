@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderEndpointExtensions.when_adding_identity_provider;
+namespace Cratis.Arc.Identity.for_IdentityProviderEndpointExtensions.when_adding_identity_provider;
 
 public class and_there_are_no_providers : Specification
 {

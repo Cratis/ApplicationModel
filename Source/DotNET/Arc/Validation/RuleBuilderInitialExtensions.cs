@@ -4,7 +4,7 @@
 using System.Reflection;
 using FluentValidation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Extensions for working with <see cref="IRuleBuilderInitial{T, TProperty}"/>.

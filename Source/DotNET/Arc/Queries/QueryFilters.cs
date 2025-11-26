@@ -4,7 +4,7 @@
 using Cratis.DependencyInjection;
 using Cratis.Types;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents an instance of <see cref="IQueryFilters"/>.

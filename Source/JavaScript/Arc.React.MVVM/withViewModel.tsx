@@ -16,16 +16,16 @@ import {
     useDialogMediator
 } from './dialogs';
 import { IViewModelDetached } from './IViewModelDetached';
-import { ApplicationModelContext } from '@cratis/applications.react';
+import { ArcContext } from '@cratis/arc.react';
 import { WellKnownBindings } from "./WellKnownBindings";
-import { deepEqual } from '@cratis/applications';
+import { deepEqual } from '@cratis/arc';
 import { IHandleParams } from 'IHandleParams';
 import { IHandleQueryParams } from 'IHandleQueryParams';
 import { IHandleProps } from 'IHandleProps';
-import { ObservableQueryFor, QueryFor } from '@cratis/applications/queries';
-import { Command } from '@cratis/applications/commands';
-import { ICanBeConfigured } from '@cratis/applications/ICanBeConfigured';
-import { DialogComponentsContext, DialogContextContent, IDialogComponents, useDialogContext } from '@cratis/applications.react/dialogs';
+import { ObservableQueryFor, QueryFor } from '@cratis/arc/queries';
+import { Command } from '@cratis/arc/commands';
+import { ICanBeConfigured } from '@cratis/arc/ICanBeConfigured';
+import { DialogComponentsContext, DialogContextContent, IDialogComponents, useDialogContext } from '@cratis/arc.react/dialogs';
 
 interface IViewModel extends IViewModelDetached {
     __childContainer: DependencyContainer;
@@ -83,7 +83,7 @@ export function withViewModel<TViewModel extends object, TProps extends object =
     targetComponent: FunctionComponent<IViewContext<TViewModel, TProps>>) {
 
     const renderComponent = (props: TProps) => {
-        const applicationContext = useContext(ApplicationModelContext);
+        const applicationContext = useContext(ArcContext);
         const dialogComponentsContext = useContext<IDialogComponents>(DialogComponentsContext);
         const params = useParams();
         const [currentProps, setCurrentProps] = useState(props);

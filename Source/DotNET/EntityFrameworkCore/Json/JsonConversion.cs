@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Cratis.Applications.EntityFrameworkCore.Json;
+namespace Cratis.Arc.EntityFrameworkCore.Json;
 
 /// <summary>
 /// Provides JSON conversion capabilities for entity properties.

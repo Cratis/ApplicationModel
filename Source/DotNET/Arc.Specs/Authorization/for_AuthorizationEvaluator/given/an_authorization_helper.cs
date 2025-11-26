@@ -4,7 +4,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.given;
+namespace Cratis.Arc.Authorization.for_AuthorizationEvaluator.given;
 
 public class an_authorization_helper : Specification
 {

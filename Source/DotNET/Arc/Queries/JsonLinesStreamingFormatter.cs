@@ -6,7 +6,7 @@ using System.Text.Json;
 using Cratis.Json;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents a formatter for streaming JSON lines.

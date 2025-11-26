@@ -6,7 +6,7 @@ using System.Text.Json;
 using Cratis.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity;
+namespace Cratis.Arc.Identity;
 
 /// <summary>
 /// Represents an implementation of <see cref="IIdentityProviderResultHandler"/>.

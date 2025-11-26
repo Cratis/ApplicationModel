@@ -3,11 +3,11 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Cratis.Applications.Validation;
-using CratisValidationResult = Cratis.Applications.Validation.ValidationResult;
+using Cratis.Arc.Validation;
+using CratisValidationResult = Cratis.Arc.Validation.ValidationResult;
 using SystemValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
-namespace Cratis.Applications.Queries.Filters;
+namespace Cratis.Arc.Queries.Filters;
 
 /// <summary>
 /// Represents a query filter that validates queries that has parameter values adorned with data annotations.

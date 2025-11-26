@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.Filters.for_AuthorizationFilter.when_performing;
+namespace Cratis.Arc.Queries.Filters.for_AuthorizationFilter.when_performing;
 
 public class with_no_performer_found : given.an_authorization_filter
 {

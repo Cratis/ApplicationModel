@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_validating;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_validating;
 
 public class with_multiple_levels_of_nesting : given.a_fluent_validation_filter
 {

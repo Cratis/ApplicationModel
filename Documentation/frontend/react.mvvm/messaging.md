@@ -18,7 +18,7 @@ This creates for a more decoupled approach and making your code and structure ea
 
 ## IMessenger
 
-In the Cratis ApplicationModel the system that deals with this is called `IMessenger`.
+In the Cratis Arc the system that deals with this is called `IMessenger`.
 It has a method called `publish()` for publishing messages, and one for subscribing called `subscribe()`.
 Both of these methods work on types and require a runtime type like a `class` to be the message type.
 
@@ -36,7 +36,7 @@ export class UserSelected {
 Then for the list component we would typically have something like the following:
 
 ```ts
-import { IMessenger } from '@cratis/applications.react.mvvm/messaging';
+import { IMessenger } from '@cratis/arc.react.mvvm/messaging';
 
 @injectable()
 export class UsersListViewModel {
@@ -58,7 +58,7 @@ would then publish the message.
 For the details component, the view model would then need to subscribe to this:
 
 ```ts
-import { IMessenger } from '@cratis/applications.react.mvvm/messaging';
+import { IMessenger } from '@cratis/arc.react.mvvm/messaging';
 
 @injectable()
 export class UserDetailsViewModel {

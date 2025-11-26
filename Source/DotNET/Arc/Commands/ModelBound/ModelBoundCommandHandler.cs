@@ -4,7 +4,7 @@
 using System.Reflection;
 using Cratis.Tasks;
 
-namespace Cratis.Applications.Commands.ModelBound;
+namespace Cratis.Arc.Commands.ModelBound;
 
 /// <summary>
 /// Represents an implementation of <see cref="ICommandHandler"/> for model-bound commands.

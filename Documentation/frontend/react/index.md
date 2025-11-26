@@ -2,7 +2,7 @@
 
 | Topic | Description |
 | ------- | ----------- |
-| [Application Model](./application-model.md) | How to configure use of Application Model. |
+| [Arc](./arc.md) | How to configure use of Arc. |
 | [Identity](./identity.md) | How to work with identity in React. |
 | [Dialogs](./dialogs.md) | How to work with dialogs in a consistent way. |
 | [Commands](./commands.md) | What commands are and how they work with them in React. |

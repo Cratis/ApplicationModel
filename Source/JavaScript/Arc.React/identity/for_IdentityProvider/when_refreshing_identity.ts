@@ -5,7 +5,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { IdentityProvider } from '../IdentityProvider';
 import { useIdentity } from '../useIdentity';
-import { IIdentity } from '@cratis/applications/identity';
+import { IIdentity } from '@cratis/arc/identity';
 import sinon from 'sinon';
 
 describe('when refreshing identity', async () => {

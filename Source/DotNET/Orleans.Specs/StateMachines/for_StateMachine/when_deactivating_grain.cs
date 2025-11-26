@@ -3,7 +3,7 @@
 
 using Orleans.TestKit;
 
-namespace Cratis.Applications.Orleans.StateMachines;
+namespace Cratis.Arc.Orleans.StateMachines;
 
 public class when_deactivating_grain : given.a_state_machine_with_well_known_states
 {

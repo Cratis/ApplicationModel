@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json;
-using Cratis.Applications;
-using Cratis.Applications.Commands;
-using Cratis.Applications.Execution;
+using Cratis.Arc;
+using Cratis.Arc.Commands;
+using Cratis.Arc.Execution;
 using Cratis.Execution;
 using Cratis.Json;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +29,7 @@ public static class CommandEndpointsExtensions
     {
         if (app is IEndpointRouteBuilder endpoints)
         {
-            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ApplicationModelOptions>>().Value;
+            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
             var options = appModelOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
@@ -99,7 +99,7 @@ public static class CommandEndpointsExtensions
         Type commandType,
         IEnumerable<string> location,
         ICorrelationIdAccessor correlationIdAccessor,
-        ApplicationModelOptions appModelOptions,
+        ArcOptions appModelOptions,
         JsonSerializerOptions jsonSerializerOptions,
         Func<object, Task<CommandResult>> commandOperation)
     {

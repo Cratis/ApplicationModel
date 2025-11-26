@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Exception that gets thrown when the service provider has not been configured.
@@ -11,7 +11,7 @@ public class ServiceProviderNotConfigured : Exception
     /// <summary>
     /// Initializes a new instance of <see cref="ServiceProviderNotConfigured"/>.
     /// </summary>
-    public ServiceProviderNotConfigured() : base("Service provider has not been configured, have you forgotten to call 'UseCratisApplicationModel()' on your application during setup?")
+    public ServiceProviderNotConfigured() : base("Service provider has not been configured, have you forgotten to call 'UseCratisArc()' on your application during setup?")
     {
     }
 }

@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.Validation.for_ModelErrorExtensions;
+namespace Cratis.Arc.Validation.for_ModelErrorExtensions;
 
 public class when_converting_simple_member : Specification
 {

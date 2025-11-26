@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Execution.for_CorrelationIdHelpers.given;
+namespace Cratis.Arc.Execution.for_CorrelationIdHelpers.given;
 
 public class a_correlation_id_helpers_context : Specification
 {

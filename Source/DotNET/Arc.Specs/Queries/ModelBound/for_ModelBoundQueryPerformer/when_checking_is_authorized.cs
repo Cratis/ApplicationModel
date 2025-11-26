@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer;
+namespace Cratis.Arc.Queries.ModelBound.for_ModelBoundQueryPerformer;
 
 public class when_checking_is_authorized : given.a_model_bound_query_performer
 {

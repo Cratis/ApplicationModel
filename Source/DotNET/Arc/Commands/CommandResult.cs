@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 #pragma warning disable SA1402 // File may only contain a single type
 

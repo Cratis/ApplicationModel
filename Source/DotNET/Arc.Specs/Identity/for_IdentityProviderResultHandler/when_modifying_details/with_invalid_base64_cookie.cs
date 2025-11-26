@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_modifying_details;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler.when_modifying_details;
 
 public class with_invalid_base64_cookie : given.an_identity_provider_result_handler
 {

@@ -7,7 +7,7 @@ using Cratis.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using OneOf;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Represents an implementation of <see cref="ICommandPipeline"/>.

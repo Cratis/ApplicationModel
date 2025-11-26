@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsEvaluatableExpressionFilter.given;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsEvaluatableExpressionFilter.given;
 
 public class an_evaluatable_expression_filter : Specification
 {

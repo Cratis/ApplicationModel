@@ -5,7 +5,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Authorization;
+namespace Cratis.Arc.Authorization;
 
 /// <summary>
 /// Helper class for performing authorization checks.

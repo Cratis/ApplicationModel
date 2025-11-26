@@ -4,7 +4,7 @@
 using System.Reflection;
 using Cratis.Reflection;
 
-namespace Cratis.Applications.Queries.ModelBound;
+namespace Cratis.Arc.Queries.ModelBound;
 
 /// <summary>
 /// Extension methods for the <see cref="ReadModelAttribute"/>.

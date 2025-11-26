@@ -3,7 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Defines a provider for command handlers.

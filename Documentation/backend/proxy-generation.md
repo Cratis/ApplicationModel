@@ -11,10 +11,10 @@ The proxy generator runs as part of your build process using the C# Roslyn compi
 
 ## Package Dependency
 
-To enable proxy generation, add a reference to the [Cratis.Applications.ProxyGenerator.Build](https://www.nuget.org/packages/Cratis.Applications.ProxyGenerator.Build/) NuGet package to your project:
+To enable proxy generation, add a reference to the [Cratis.Arc.ProxyGenerator.Build](https://www.nuget.org/packages/Cratis.Arc.ProxyGenerator.Build/) NuGet package to your project:
 
 ```xml
-<PackageReference Include="Cratis.Applications.ProxyGenerator.Build" Version="1.0.0" />
+<PackageReference Include="Cratis.Arc.ProxyGenerator.Build" Version="1.0.0" />
 ```
 
 > **Important**: All projects that contain controllers (commands or queries) should reference this package, as the proxy generation runs as part of the compilation process.
@@ -107,7 +107,7 @@ Commands are generated from HTTP POST controller actions. The generator looks fo
 
 Generated command classes:
 
-- Extend the `Command` base class from `@cratis/applications/commands`
+- Extend the `Command` base class from `@cratis/arc/commands`
 - Include all properties from route parameters, query parameters, and body content
 - Provide a static `use()` method for React hook integration
 
@@ -161,10 +161,10 @@ This allows for more granular control over API route generation, which can be pa
 
 ## Frontend Prerequisites
 
-The generated proxies depend on the [@cratis/applications](https://www.npmjs.com/package/@cratis/applications) NPM package. Install it in your frontend project:
+The generated proxies depend on the [@cratis/arc](https://www.npmjs.com/package/@cratis/arc) NPM package. Install it in your frontend project:
 
 ```bash
-npm install @cratis/applications
+npm install @cratis/arc
 ```
 
 ## Build Integration

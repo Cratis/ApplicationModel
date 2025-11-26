@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands.for_CommandHandlerProviders;
+namespace Cratis.Arc.Commands.for_CommandHandlerProviders;
 
 public class when_creating_with_two_providers_providing_commands_for_same_command_type : Specification
 {

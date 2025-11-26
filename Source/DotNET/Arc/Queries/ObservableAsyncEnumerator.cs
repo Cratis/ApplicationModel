@@ -3,7 +3,7 @@
 
 using System.Collections.Concurrent;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents an <see cref="IAsyncEnumerator{T}"/> for a <see cref="ClientObservable{T}"/>.

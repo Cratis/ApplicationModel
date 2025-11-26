@@ -3,7 +3,7 @@
 
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience;
+namespace Cratis.Arc.MongoDB.Resilience;
 
 /// <summary>
 /// Represents an empty <see cref="IAsyncCursor{TDocument}"/> that returns no documents.

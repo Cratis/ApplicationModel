@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands.for_CommandHandlerProviders.given;
+namespace Cratis.Arc.Commands.for_CommandHandlerProviders.given;
 
 public class two_providers_with_one_command_handler_each : Specification
 {

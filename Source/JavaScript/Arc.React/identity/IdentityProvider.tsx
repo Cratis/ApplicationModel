@@ -3,9 +3,9 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { IIdentity } from '@cratis/applications/identity';
-import { IdentityProvider as RootIdentityProvider } from '@cratis/applications/identity';
-import { GetHttpHeaders } from '@cratis/applications';
+import { IIdentity } from '@cratis/arc/identity';
+import { IdentityProvider as RootIdentityProvider } from '@cratis/arc/identity';
+import { GetHttpHeaders } from '@cratis/arc';
 
 const defaultIdentityContext: IIdentity = {
     id: '',

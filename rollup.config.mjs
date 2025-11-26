@@ -30,7 +30,7 @@ export function rollup(cjsPath, esmPath, tsconfigPath, pkg) {
         external: [
             ...Object.keys(pkg.dependencies || {}),
             ...Object.keys(pkg.peerDependencies || {}),
-            /^@cratis\/applications/,
+            /^@cratis\/arc/,
             'react',
             'react-dom',
         ],

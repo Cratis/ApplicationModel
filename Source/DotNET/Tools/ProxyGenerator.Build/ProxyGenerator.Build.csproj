@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.ProxyGenerator.Build</AssemblyName>
+        <AssemblyName>Cratis.Arc.ProxyGenerator.Build</AssemblyName>
         <OutputType>Exe</OutputType>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
@@ -29,7 +29,7 @@
 
     <ItemGroup>
         <EmbeddedResource Include="$(MSBuildThisFileDirectory)../ProxyGenerator/Templates/**/*.hbs">
-             <LogicalName>Cratis.Applications.ProxyGenerator.Templates.%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+             <LogicalName>Cratis.Arc.ProxyGenerator.Templates.%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
         </EmbeddedResource>
     </ItemGroup>
 

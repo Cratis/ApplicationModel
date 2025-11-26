@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.ModelBinding;
+namespace Cratis.Arc.ModelBinding;
 
 /// <summary>
 /// Specifies that a parameter or property should be bound using the request body and allowing to be combined with route and query string using [FromRoute], [FromQuery] inside the object.

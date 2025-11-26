@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { CloseDialog } from '@cratis/applications.react/dialogs';
+import { CloseDialog } from '@cratis/arc.react/dialogs';
 
 /**
  * Represents the delegate for a dialog request.

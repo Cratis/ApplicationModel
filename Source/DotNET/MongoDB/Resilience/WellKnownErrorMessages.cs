@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.MongoDB.Resilience;
+namespace Cratis.Arc.MongoDB.Resilience;
 
 /// <summary>
 /// Contains known error messages used for resilience handling in MongoDB operations.

@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Json.for_JsonConversion.given;
+namespace Cratis.Arc.EntityFrameworkCore.Json.for_JsonConversion.given;
 
 public class a_json_conversion_context : Specification
 {

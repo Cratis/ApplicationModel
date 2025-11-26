@@ -4,7 +4,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_modifying_details;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler.when_modifying_details;
 
 public class with_invalid_json_in_cookie : given.an_identity_provider_result_handler
 {

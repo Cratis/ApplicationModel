@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import sinon from 'sinon';
-import { CommandResult, ICommand, PropertyChanged } from '@cratis/applications/commands';
-import { PropertyDescriptor } from '@cratis/applications/reflection';
+import { CommandResult, ICommand, PropertyChanged } from '@cratis/arc/commands';
+import { PropertyDescriptor } from '@cratis/arc/reflection';
 
 /* eslint-disable */
 

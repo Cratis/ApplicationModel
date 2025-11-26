@@ -1,15 +1,15 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Execution;
-using Cratis.Applications.Tenancy;
+using Cratis.Arc.Execution;
+using Cratis.Arc.Tenancy;
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Represents the options for the application model.
 /// </summary>
-public class ApplicationModelOptions
+public class ArcOptions
 {
     /// <summary>
     /// Gets or sets the options for the correlation ID.

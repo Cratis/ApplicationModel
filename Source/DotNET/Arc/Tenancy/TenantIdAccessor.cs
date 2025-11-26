@@ -3,7 +3,7 @@
 
 using Cratis.DependencyInjection;
 
-namespace Cratis.Applications.Tenancy;
+namespace Cratis.Arc.Tenancy;
 
 /// <summary>
 /// Represents an implementation of <see cref="ITenantIdAccessor"/>.

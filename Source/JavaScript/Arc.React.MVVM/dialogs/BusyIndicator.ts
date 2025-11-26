@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { CloseDialog, DialogResult } from '@cratis/applications.react/dialogs';
+import { CloseDialog, DialogResult } from '@cratis/arc.react/dialogs';
 
 /**
  * Represents a busy indicator dialog.

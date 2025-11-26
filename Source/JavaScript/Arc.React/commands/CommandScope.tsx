@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import React, { useEffect, useState } from 'react';
-import { Command, CommandResult, CommandResults } from '@cratis/applications/commands';
+import { Command, CommandResult, CommandResults } from '@cratis/arc/commands';
 import { CommandScopeImplementation } from './CommandScopeImplementation';
 import { ICommandScope } from './ICommandScope';
 

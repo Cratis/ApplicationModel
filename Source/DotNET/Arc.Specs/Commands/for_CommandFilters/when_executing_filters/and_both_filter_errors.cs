@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandFilters.when_executing_filters;
+namespace Cratis.Arc.Commands.for_CommandFilters.when_executing_filters;
 
 public class and_both_filter_errors : Specification
 {

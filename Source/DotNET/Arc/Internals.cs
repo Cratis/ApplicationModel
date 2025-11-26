@@ -3,7 +3,7 @@
 
 using Cratis.Types;
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Internal properties.
@@ -13,7 +13,7 @@ internal static class Internals
     /// <summary>
     /// Gets the name of the meter used by the Application Model.
     /// </summary>
-    internal const string MeterName = "Cratis.Applications";
+    internal const string MeterName = "Cratis.Arc";
     static IServiceProvider? _serviceProvider;
     static ITypes? _types;
 

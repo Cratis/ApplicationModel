@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.Extensions.Diagnostics.Enrichment;
 
-namespace Cratis.Applications.Execution;
+namespace Cratis.Arc.Execution;
 
 /// <summary>
 /// Represents an implementation of <see cref="ILogEnricher"/> that enriches logs with the current correlation ID.

@@ -7,7 +7,7 @@ In addition to this, the controller can have authorization policies associated w
 
 ## HTTP Headers
 
-Commands automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This allows you to dynamically include authentication cookies, authorization tokens, or other custom headers with every command request without having to manually configure each command.
+Commands automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./application-model.md). This allows you to dynamically include authentication cookies, authorization tokens, or other custom headers with every command request without having to manually configure each command.
 
 ## Proxy Generation
 

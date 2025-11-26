@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
+namespace Cratis.Arc.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
 
 public class with_method_with_multiple_roles_and_user_has_no_required_roles : given.an_authorization_helper
 {

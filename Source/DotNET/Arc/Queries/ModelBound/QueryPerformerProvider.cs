@@ -3,11 +3,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 using Cratis.Types;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Queries.ModelBound;
+namespace Cratis.Arc.Queries.ModelBound;
 
 /// <summary>
 /// Represents a provider for query performers that are model bound.

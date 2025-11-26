@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Interceptor for saving changes in a read-only DbContext.

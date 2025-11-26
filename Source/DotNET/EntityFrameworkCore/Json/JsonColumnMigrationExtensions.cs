@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 
-namespace Cratis.Applications.EntityFrameworkCore.Json;
+namespace Cratis.Arc.EntityFrameworkCore.Json;
 
 /// <summary>
 /// Extension methods for working with Json columns.

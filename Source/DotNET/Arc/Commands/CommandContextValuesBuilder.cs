@@ -3,7 +3,7 @@
 
 using Cratis.Types;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Represents an implementation of <see cref="ICommandContextValuesBuilder"/>.

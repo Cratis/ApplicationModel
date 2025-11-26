@@ -3,7 +3,7 @@
 
 using Cratis.Concepts;
 
-namespace Cratis.Applications.Validation.for_ConceptValidator;
+namespace Cratis.Arc.Validation.for_ConceptValidator;
 
 #pragma warning disable SA1649, SA1402
 public record StringConcept(string Value) : ConceptAs<string>(Value);

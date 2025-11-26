@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.Extensions.Primitives;
 
-namespace Cratis.Applications.Execution.for_CorrelationIdHelpers.when_handling_correlation_id;
+namespace Cratis.Arc.Execution.for_CorrelationIdHelpers.when_handling_correlation_id;
 
 public class with_empty_correlation_id_and_current_not_set : given.a_correlation_id_helpers_context
 {

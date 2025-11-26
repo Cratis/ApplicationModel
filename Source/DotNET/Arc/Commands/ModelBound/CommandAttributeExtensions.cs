@@ -4,7 +4,7 @@
 using System.Reflection;
 using Cratis.Reflection;
 
-namespace Cratis.Applications.Commands.ModelBound;
+namespace Cratis.Arc.Commands.ModelBound;
 
 /// <summary>
 /// Extension methods for the <see cref="CommandAttribute"/>.

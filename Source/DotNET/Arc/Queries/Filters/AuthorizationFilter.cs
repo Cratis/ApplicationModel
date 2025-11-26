@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 
-namespace Cratis.Applications.Queries.Filters;
+namespace Cratis.Arc.Queries.Filters;
 
 /// <summary>
 /// Represents a query filter that authorizes queries before they are performed.

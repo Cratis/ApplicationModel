@@ -1,9 +1,9 @@
 # Application Model
 
 As with the backend, you can mix and match from the features you want to use. But there is a convenience wrapper that will help you configure it all in
-the form of a custom component that provides the `ApplicationModelContext` and configures other application model contexts in one go.
+the form of a custom component that provides the `ArcContext` and configures other application model contexts in one go.
 
-However, if you're looking to use some of the microservice capabilities, you will have to use the `ApplicationModelContext` to provide the name of the
+However, if you're looking to use some of the microservice capabilities, you will have to use the `ArcContext` to provide the name of the
 currently running microservice. Internally, the application model uses this information to add the correct headers / query string parameters to distinguish
 one microservice from the other in a composition with a single ingress in front of it.
 
@@ -12,16 +12,16 @@ To add the application model, you simply add the following to your application:
 ```tsx
 export const App = () => {
     return (
-        <ApplicationModel>
+        <Arc>
             {/* Your application */}
-        </ApplicationModel>
+        </Arc>
     );
 };
 ```
 
 ## Configuration Options
 
-The `<ApplicationModel />` component provides centralized configuration for all commands and queries in your application. These settings apply cross-cuttingly to all operations, eliminating the need to configure individual commands or queries.
+The `<Arc />` component provides centralized configuration for all commands and queries in your application. These settings apply cross-cuttingly to all operations, eliminating the need to configure individual commands or queries.
 
 | Option | Type | Purpose |
 | ------ | ---- | ------- |
@@ -37,9 +37,9 @@ Example:
 ```tsx
 export const App = () => {
     return (
-        <ApplicationModel apiBasePath="/some/location">
+        <Arc apiBasePath="/some/location">
             {/* Your application */}
-        </ApplicationModel>
+        </Arc>
     );
 };
 ```
@@ -55,9 +55,9 @@ When you specify a microservice name, the Application Model adds this informatio
 ```tsx
 export const App = () => {
     return (
-        <ApplicationModel microservice="user-service">
+        <Arc microservice="user-service">
             {/* Your application */}
-        </ApplicationModel>
+        </Arc>
     );
 };
 ```
@@ -75,12 +75,12 @@ export const App = () => {
     const isDevelopment = import.meta.env.DEV;
 
     return (
-        <ApplicationModel 
+        <Arc 
             microservice={microserviceName}
             apiBasePath={apiBasePath}
             development={isDevelopment}>
             {/* Your application */}
-        </ApplicationModel>
+        </Arc>
     );
 };
 ```
@@ -108,19 +108,19 @@ This approach allows you to:
 
 ### Multiple Microservices in One Frontend
 
-If your frontend application needs to communicate with multiple microservices, you can override the microservice configuration for specific sections of your application using nested `<ApplicationModel />` components:
+If your frontend application needs to communicate with multiple microservices, you can override the microservice configuration for specific sections of your application using nested `<Arc />` components:
 
 ```tsx
 export const App = () => {
     return (
-        <ApplicationModel microservice="main-service" apiBasePath="/api">
+        <Arc microservice="main-service" apiBasePath="/api">
             <MainContent />
             
             {/* This section communicates with a different microservice */}
-            <ApplicationModel microservice="reporting-service">
+            <Arc microservice="reporting-service">
                 <ReportingDashboard />
-            </ApplicationModel>
-        </ApplicationModel>
+            </Arc>
+        </Arc>
     );
 };
 ```
@@ -140,11 +140,11 @@ export const App = () => {
     };
 
     return (
-        <ApplicationModel 
+        <Arc 
             apiBasePath="/api" 
             httpHeadersCallback={getHeaders}>
             {/* Your application */}
-        </ApplicationModel>
+        </Arc>
     );
 };
 ```

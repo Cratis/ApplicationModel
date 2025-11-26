@@ -35,13 +35,13 @@ This will enable the necessary reflection metadata for Tsyringe to work properly
 ## Vite
 
 If you're using Vite you will find that things are not working as expected. This is because Vite during development with the dev server will not provide the
-necessary metadata. The Cratis ApplicationModel offers a vite plugin for emitting the necessary metadata.
+necessary metadata. The Cratis Arc offers a vite plugin for emitting the necessary metadata.
 
-Add a dev package reference to `@cratis/applications.vite`. Then in your `vite.config` you can add it to plugins:
+Add a dev package reference to `@cratis/arc.vite`. Then in your `vite.config` you can add it to plugins:
 
 ```js
 import { defineConfig } from 'vite';
-import { EmitMetadataPlugin } from '@cratis/applications.vite';
+import { EmitMetadataPlugin } from '@cratis/arc.vite';
 
 export default defineConfig({
     plugins: [
@@ -58,7 +58,7 @@ a dependency to in your view models. Within the package sits a type called `Bind
 > Note: If you're using the [MVVM context](./mvvm-context.md) all bindings are automatically configured for the MVVM scenario and you are good to go and you can skip this step.
 
 ```ts
-import { Bindings } from '@cratis/applications.react.mvvm`;
+import { Bindings } from '@cratis/arc.react.mvvm`;
 
 Bindings.initialize();
 ```

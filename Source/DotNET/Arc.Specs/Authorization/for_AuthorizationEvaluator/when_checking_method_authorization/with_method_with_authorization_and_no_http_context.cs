@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
+namespace Cratis.Arc.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
 
 public class with_method_with_authorization_and_no_http_context : given.an_authorization_helper
 {

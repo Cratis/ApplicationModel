@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_executing_command;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_executing_command;
 
 public class with_no_validator_found : given.a_fluent_validation_filter
 {

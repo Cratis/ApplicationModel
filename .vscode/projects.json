@@ -7,6 +7,6 @@
     {
         "name": "ProxyGenerator",
         "path": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator",
-        "outputPath": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net9.0/Cratis.Applications.ProxyGenerator.dll"
+        "outputPath": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net9.0/Cratis.Arc.ProxyGenerator.dll"
     }
 ]

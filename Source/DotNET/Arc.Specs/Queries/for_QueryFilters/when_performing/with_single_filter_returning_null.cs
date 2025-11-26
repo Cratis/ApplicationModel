@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.for_QueryFilters.when_performing;
+namespace Cratis.Arc.Queries.for_QueryFilters.when_performing;
 
 public class with_single_filter_returning_null : given.a_query_filters
 {

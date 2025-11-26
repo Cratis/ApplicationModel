@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandFilters.when_executing_filters;
+namespace Cratis.Arc.Commands.for_CommandFilters.when_executing_filters;
 
 public class and_first_filter_returns_null : Specification
 {

@@ -7,7 +7,7 @@ using Cratis.Strings;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.for_NamingPolicyNameConvention;
+namespace Cratis.Arc.MongoDB.for_NamingPolicyNameConvention;
 
 public class when_applying_convention_to_all_class_map_members : Specification
 {

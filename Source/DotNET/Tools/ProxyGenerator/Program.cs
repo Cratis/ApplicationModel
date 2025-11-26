@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.ProxyGenerator;
-using static Cratis.Applications.ProxyGenerator.PathHelpers;
+using Cratis.Arc.ProxyGenerator;
+using static Cratis.Arc.ProxyGenerator.PathHelpers;
 
 Console.WriteLine("Cratis Proxy Generator\n");
 

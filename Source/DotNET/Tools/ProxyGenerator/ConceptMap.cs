@@ -4,7 +4,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator;
+namespace Cratis.Arc.ProxyGenerator;
 
 /// <summary>
 /// Maps a concept type to the underlying primitive type.

@@ -3,7 +3,7 @@
 
 using NSubstitute.ExceptionExtensions;
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
+namespace Cratis.Arc.Commands.for_CommandPipeline.when_executing;
 
 public class and_an_exception_is_thrown_in_handler : given.a_command_pipeline_and_a_handler_for_command
 {

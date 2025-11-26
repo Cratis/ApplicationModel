@@ -5,7 +5,7 @@ using System.Reflection;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorSelector.when_selecting_interceptors;
+namespace Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptorSelector.when_selecting_interceptors;
 
 public class for_async_methods_with_return_value : given.an_interceptor_selector
 {

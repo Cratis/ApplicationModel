@@ -1,6 +1,5 @@
 {
   "cSpell.words": [
-    "applicationmodel",
     "appsettings",
     "Autoincrement",
     "Brotli",
@@ -26,7 +25,7 @@
     "Unmaps",
     "Upserts"
   ],
-  "dotnet.defaultSolution": "ApplicationModel.sln",
+  "dotnet.defaultSolution": "Arc.sln",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "search.exclude": {
     "**/.yarn": true,

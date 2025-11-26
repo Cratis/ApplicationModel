@@ -4,7 +4,7 @@
 using Cratis.Concepts;
 using FluentValidation;
 
-namespace Cratis.Applications.Validation.for_BaseValidator;
+namespace Cratis.Arc.Validation.for_BaseValidator;
 
 public class when_validating_concept_as_property : Specification
 {

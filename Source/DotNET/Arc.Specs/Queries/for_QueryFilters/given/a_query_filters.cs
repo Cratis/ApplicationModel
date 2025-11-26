@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Queries.for_QueryFilters.given;
+namespace Cratis.Arc.Queries.for_QueryFilters.given;
 
 public class a_query_filters : Specification
 {

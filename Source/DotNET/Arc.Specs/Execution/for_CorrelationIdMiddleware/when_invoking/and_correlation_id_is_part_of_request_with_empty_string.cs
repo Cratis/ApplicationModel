@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.Extensions.Primitives;
 
-namespace Cratis.Applications.Execution.for_CorrelationIdMiddleware.when_invoking;
+namespace Cratis.Arc.Execution.for_CorrelationIdMiddleware.when_invoking;
 
 public class and_correlation_id_is_part_of_request_with_empty_string : given.a_correlation_id_middleware
 {

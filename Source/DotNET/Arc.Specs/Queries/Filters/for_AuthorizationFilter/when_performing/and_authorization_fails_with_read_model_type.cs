@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.Filters.for_AuthorizationFilter.when_performing;
+namespace Cratis.Arc.Queries.Filters.for_AuthorizationFilter.when_performing;
 
 public class and_authorization_fails_with_read_model_type : given.an_authorization_filter
 {

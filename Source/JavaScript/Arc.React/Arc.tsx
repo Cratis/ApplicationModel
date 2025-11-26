@@ -4,10 +4,10 @@
 import { CommandScope } from './commands';
 import { IdentityProvider } from './identity';
 import { Bindings } from './Bindings';
-import { ApplicationModelConfiguration, ApplicationModelContext } from './ApplicationModelContext';
-import { GetHttpHeaders } from '@cratis/applications';
+import { ArcConfiguration, ArcContext } from './ArcContext';
+import { GetHttpHeaders } from '@cratis/arc';
 
-export interface ApplicationModelProps {
+export interface ArcProps {
     children?: JSX.Element | JSX.Element[];
     microservice?: string;
     development?: boolean;
@@ -17,8 +17,8 @@ export interface ApplicationModelProps {
     httpHeadersCallback?: GetHttpHeaders;
 }
 
-export const ApplicationModel = (props: ApplicationModelProps) => {
-    const configuration: ApplicationModelConfiguration = {
+export const Arc = (props: ArcProps) => {
+    const configuration: ArcConfiguration = {
         microservice: props.microservice ?? '',
         development: props.development ?? false,
         origin: props.origin ?? '',
@@ -34,11 +34,11 @@ export const ApplicationModel = (props: ApplicationModelProps) => {
         configuration.httpHeadersCallback);
 
     return (
-        <ApplicationModelContext.Provider value={configuration}>
+        <ArcContext.Provider value={configuration}>
             <IdentityProvider httpHeadersCallback={props.httpHeadersCallback}>
                 <CommandScope>
                     {props.children}
                 </CommandScope>
             </IdentityProvider>
-        </ApplicationModelContext.Provider>);
+        </ArcContext.Provider>);
 };

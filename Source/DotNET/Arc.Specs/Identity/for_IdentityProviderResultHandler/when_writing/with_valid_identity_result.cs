@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_writing;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler.when_writing;
 
 public class with_valid_identity_result : given.an_identity_provider_result_handler
 {

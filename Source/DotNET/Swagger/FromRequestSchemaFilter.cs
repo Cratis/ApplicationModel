@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Cratis.Applications.Swagger;
+namespace Cratis.Arc.Swagger;
 
 /// <summary>
 /// Represents an implementation of <see cref="ISchemaFilter"/> that removes properties that are decorated with <see cref="FromRouteAttribute"/> or <see cref="FromQueryAttribute"/>.

@@ -5,7 +5,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler;
 
 public class TestRequestCookieCollection : IRequestCookieCollection
 {

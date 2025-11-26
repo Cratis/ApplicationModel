@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 #pragma warning disable CS0618 // Type or member is obsolete - Transform() in FluentValidation is marked as obsolete, but we need to use it for now. We will remove this when we upgrade to a newer version of FluentValidation.
 
 /// <summary>

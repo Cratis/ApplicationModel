@@ -5,7 +5,7 @@ using System.Net;
 using Cratis.Strings;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Provides common query processing functionality that can be used by both controller-based queries and pipeline-based queries.

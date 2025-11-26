@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Represents the context for a command being executed.

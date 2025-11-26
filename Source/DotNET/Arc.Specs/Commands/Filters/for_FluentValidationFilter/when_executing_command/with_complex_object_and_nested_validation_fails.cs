@@ -1,11 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_executing_command;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_executing_command;
 
 public class with_complex_object_and_nested_validation_fails : given.a_fluent_validation_filter
 {

@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandResult;
+namespace Cratis.Arc.Commands.for_CommandResult;
 
 public class when_merging_multiple_command_results : Specification
 {

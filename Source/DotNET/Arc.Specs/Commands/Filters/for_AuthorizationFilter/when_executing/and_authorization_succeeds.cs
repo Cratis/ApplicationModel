@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands.Filters.for_AuthorizationFilter.when_executing;
+namespace Cratis.Arc.Commands.Filters.for_AuthorizationFilter.when_executing;
 
 public class and_authorization_succeeds : given.an_authorization_filter
 {

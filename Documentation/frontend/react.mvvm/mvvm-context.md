@@ -10,7 +10,7 @@ configures mobx and also ensures the necessary bindings for [tsyringe](./tsyring
 All you need to do is include it in your application setup:
 
 ```tsx
-import { MVVM } from '@cratis/applications.react.mvvm';
+import { MVVM } from '@cratis/arc.react.mvvm';
 
 export const App = () => {
     return (

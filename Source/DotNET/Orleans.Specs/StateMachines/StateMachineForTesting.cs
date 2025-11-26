@@ -3,7 +3,7 @@
 
 using System.Collections.Immutable;
 
-namespace Cratis.Applications.Orleans.StateMachines;
+namespace Cratis.Arc.Orleans.StateMachines;
 
 public class StateMachineForTesting(IEnumerable<IState<StateMachineStateForTesting>> states, Type? initialState = default) : StateMachine<StateMachineStateForTesting>
 {

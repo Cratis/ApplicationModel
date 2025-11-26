@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{CB3628
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNET", "DotNET", "{856932F6-D1D1-41CC-808B-A3741518DACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications", "Source\DotNET\Applications\Applications.csproj", "{AA6A18EA-D0F5-41C7-AF7D-1BD124022C71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arc", "Source\DotNET\Arc\Arc.csproj", "{AA6A18EA-D0F5-41C7-AF7D-1BD124022C71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications.Specs", "Source\DotNET\Applications.Specs\Applications.Specs.csproj", "{B692D48E-BD85-4F12-ADE3-15F3D3A1F710}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arc.Specs", "Source\DotNET\Arc.Specs\Arc.Specs.csproj", "{B692D48E-BD85-4F12-ADE3-15F3D3A1F710}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{FC67C7C1-EBC1-430E-9229-BF694CC67820}"
 	ProjectSection(SolutionItems) = preProject

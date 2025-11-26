@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using Cratis.Applications.ProxyGenerator.Templates;
+using Cratis.Arc.ProxyGenerator.Templates;
 
-namespace Cratis.Applications.ProxyGenerator.ModelBound;
+namespace Cratis.Arc.ProxyGenerator.ModelBound;
 
 /// <summary>
 /// Extensions for query types.

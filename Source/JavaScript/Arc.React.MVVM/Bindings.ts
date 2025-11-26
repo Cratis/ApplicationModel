@@ -5,7 +5,7 @@ import { container } from 'tsyringe';
 import { IMessenger, Messenger } from './messaging';
 import { Constructor } from '@cratis/fundamentals';
 import { ILocalStorage, INavigation, Navigation } from './browser';
-import { IdentityProvider, IIdentityProvider } from '@cratis/applications/identity';
+import { IdentityProvider, IIdentityProvider } from '@cratis/arc/identity';
 
 export class Bindings {
     static initialize() {

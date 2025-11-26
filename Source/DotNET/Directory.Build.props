@@ -9,8 +9,8 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <RepositoryUrl>https://github.com/Cratis/ApplicationModel</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/Cratis/ApplicationModel</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/cratis/arc</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/cratis/arc</PackageProjectUrl>
 
         <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
         <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>

@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.Metrics;
-using Cratis.Applications;
-using Cratis.Applications.MongoDB;
+using Cratis.Arc;
+using Cratis.Arc.MongoDB;
 using Cratis.Metrics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
-namespace Cratis.Applications.ModelBinding;
+namespace Cratis.Arc.ModelBinding;
 
 /// <summary>
 /// Represents a <see cref="IModelBinderProvider"/> supporting the <see cref="FromRequestBindingSource"/>.

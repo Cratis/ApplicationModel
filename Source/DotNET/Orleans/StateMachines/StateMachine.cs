@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Orleans;
 
-namespace Cratis.Applications.Orleans.StateMachines;
+namespace Cratis.Arc.Orleans.StateMachines;
 
 /// <summary>
 /// Represents a base implementation of <see cref="IStateMachine{TStoredState}"/>.

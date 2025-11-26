@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.Orleans.Specs</AssemblyName>
-        <RootNamespace>Cratis.Applications.Orleans</RootNamespace>
+        <AssemblyName>Cratis.Arc.Orleans.Specs</AssemblyName>
+        <RootNamespace>Cratis.Arc.Orleans</RootNamespace>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>

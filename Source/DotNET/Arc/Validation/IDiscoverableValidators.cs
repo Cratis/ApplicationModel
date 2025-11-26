@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Defines a service that can lookup <see cref="IValidator"/> for a given model type.

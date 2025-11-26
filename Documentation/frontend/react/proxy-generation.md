@@ -21,15 +21,15 @@ Once proxy generation is configured in your backend projects, you'll get automat
 
 ### Prerequisites
 
-Install the base [`@cratis/applications`](https://www.npmjs.com/package/@cratis/applications) NPM package in your React project, as the generated proxies inherit from and leverage types found in this package:
+Install the base [`@cratis/arc`](https://www.npmjs.com/package/@cratis/arc) NPM package in your React project, as the generated proxies inherit from and leverage types found in this package:
 
 ```bash
-npm install @cratis/applications
+npm install @cratis/arc
 ```
 
 ## Commands
 
-Commands represent actions you want to perform and correspond to **HttpPost** operations on your backend controllers. The generated proxies inherit from the `Command` type found in `@cratis/applications/commands` and provide type-safe access to all command parameters.
+Commands represent actions you want to perform and correspond to **HttpPost** operations on your backend controllers. The generated proxies inherit from the `Command` type found in `@cratis/arc/commands` and provide type-safe access to all command parameters.
 
 ### Example Generated Command
 

@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Represents an attribute that indicates that the result of actions in a controller should be returned as an ASP.NET result.

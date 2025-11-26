@@ -4,7 +4,7 @@
 using Orleans.Core;
 using Orleans.TestKit;
 
-namespace Cratis.Applications.Orleans.StateMachines.given;
+namespace Cratis.Arc.Orleans.StateMachines.given;
 
 public abstract class a_state_machine : Specification
 {

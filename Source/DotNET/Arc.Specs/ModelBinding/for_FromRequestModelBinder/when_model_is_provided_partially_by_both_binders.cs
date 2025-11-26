@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.ModelBinding.for_FromRequestModelBinder;
+namespace Cratis.Arc.ModelBinding.for_FromRequestModelBinder;
 
 public class when_model_is_provided_partially_by_both_binders : Specification
 {

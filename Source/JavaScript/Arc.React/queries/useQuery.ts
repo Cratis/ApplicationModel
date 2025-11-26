@@ -1,13 +1,13 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { IQueryFor, QueryResultWithState, QueryResult, Paging, Sorting } from '@cratis/applications/queries';
+import { IQueryFor, QueryResultWithState, QueryResult, Paging, Sorting } from '@cratis/arc/queries';
 import { Constructor } from '@cratis/fundamentals';
 import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
 import { SetPage } from './SetPage';
 import { SetPageSize } from './SetPageSize';
-import { ApplicationModelContext } from '../ApplicationModelContext';
+import { ArcContext } from '../ArcContext';
 
 /**
  * Delegate type for performing a {@link IQueryFor} in the context of the {@link useQuery} hook.
@@ -20,7 +20,7 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
     [QueryResultWithState<TDataType>, PerformQuery<TArguments>, SetSorting, SetPage, SetPageSize] {
     paging ??= Paging.noPaging;
     sorting ??= Sorting.none;
-    const applicationModel = useContext(ApplicationModelContext);
+    const arc = useContext(ArcContext);
     const queryInstance = useRef<TQuery | null>(null);
     const [renderCounter, setRenderCounter] = useState(0);
 
@@ -28,9 +28,9 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
         const instance = new query() as TQuery;
         instance.paging = paging;
         instance.sorting = sorting;
-        instance.setMicroservice(applicationModel.microservice);
-        instance.setApiBasePath(applicationModel.apiBasePath ?? '');
-        instance.setOrigin(applicationModel.origin ?? '');
+        instance.setMicroservice(arc.microservice);
+        instance.setApiBasePath(arc.apiBasePath ?? '');
+        instance.setOrigin(arc.origin ?? '');
         return instance;
     }, []);
 

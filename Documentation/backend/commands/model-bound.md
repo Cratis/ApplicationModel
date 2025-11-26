@@ -15,7 +15,7 @@ public record AddItemToCart(string Sku, int Quantity)
 }
 ```
 
-> **Note**: If you're using the Cratis ApplicationModel [proxy generator](../proxy-generation.md), the name of the type
+> **Note**: If you're using the Cratis Arc [proxy generator](../proxy-generation.md), the name of the type
 > will become the name of the command for the generated TypeScript file and class.
 
 If your handler has side-effects expressed in the return value, the
@@ -32,7 +32,7 @@ As long as there are [response handlers](./response-value-handlers.md) for any o
 will be handled.
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -75,7 +75,7 @@ The command pipeline processes tuples as follows:
 ### Simple Tuple (2 values)
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 [Command]
 public record AddItemToCart(string Sku, int Quantity)
@@ -139,7 +139,7 @@ Your command handler method can also take dependencies to any services configure
 service collection. This is done by just specifying your dependencies on the methods signature:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 [Command]
 public record AddItemToCart(string Sku, int Quantity)

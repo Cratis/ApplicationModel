@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications;
+using Cratis.Arc;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.AspNetCore.Builder;
@@ -12,30 +12,30 @@ namespace Microsoft.AspNetCore.Builder;
 public static class WebApplicationBuilderExtensions
 {
     /// <summary>
-    /// Use Cratis ApplicationModel with the <see cref="WebApplicationBuilder"/>.
+    /// Use Cratis Arc with the <see cref="WebApplicationBuilder"/>.
     /// </summary>
     /// <remarks>
-    /// Binds the <see cref="ApplicationModelOptions"/> configuration to the given config section path or the default
-    /// Cratis:ApplicationModel section path.
+    /// Binds the <see cref="ArcOptions"/> configuration to the given config section path or the default
+    /// Cratis:Arc section path.
     /// </remarks>
     /// <param name="builder"><see cref="WebApplicationBuilder"/> to extend.</param>
     /// <param name="configSectionPath">The optional configuration section path.</param>
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
-    public static WebApplicationBuilder UseCratisApplicationModel(this WebApplicationBuilder builder, string? configSectionPath = null)
+    public static WebApplicationBuilder UseCratisArc(this WebApplicationBuilder builder, string? configSectionPath = null)
     {
-        builder.Host.UseCratisApplicationModel(configSectionPath);
+        builder.Host.UseCratisArc(configSectionPath);
         return builder;
     }
 
     /// <summary>
-    /// Use Cratis ApplicationModel with the <see cref="WebApplicationBuilder"/>.
+    /// Use Cratis Arc with the <see cref="WebApplicationBuilder"/>.
     /// </summary>
     /// <param name="builder"><see cref="WebApplicationBuilder"/> to extend.</param>
-    /// <param name="configureOptions">Action to configure the <see cref="ApplicationModelOptions"/>.</param>
+    /// <param name="configureOptions">Action to configure the <see cref="ArcOptions"/>.</param>
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
-    public static WebApplicationBuilder UseCratisApplicationModel(this WebApplicationBuilder builder, Action<ApplicationModelOptions> configureOptions)
+    public static WebApplicationBuilder UseCratisArc(this WebApplicationBuilder builder, Action<ArcOptions> configureOptions)
     {
-        builder.Host.UseCratisApplicationModel(configureOptions);
+        builder.Host.UseCratisArc(configureOptions);
         return builder;
     }
 }

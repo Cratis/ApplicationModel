@@ -4,7 +4,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Cratis.Applications.EntityFrameworkCore.Json.for_JsonConversion.when_applying_json_conversion_to_model;
+namespace Cratis.Arc.EntityFrameworkCore.Json.for_JsonConversion.when_applying_json_conversion_to_model;
 
 public class with_mixed_json_usage_excluding_shared_types : given.a_json_conversion_context
 {

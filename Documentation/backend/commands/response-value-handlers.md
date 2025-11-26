@@ -14,7 +14,7 @@ This means that **command handlers can return any type of value**, and it will e
 
 ## Built-in Value Handlers
 
-Out-of-the-box the Cratis ApplicationModel comes with the following value handlers:
+Out-of-the-box the Cratis Arc comes with the following value handlers:
 
 | Type | Description |
 | ---- | ----------- |

@@ -7,7 +7,7 @@ using Cratis.Types;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Represents an implementation of <see cref="IDiscoverableValidators"/> that can discover validators from assemblies.

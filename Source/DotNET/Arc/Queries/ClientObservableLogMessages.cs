@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 internal static partial class ClientObservableLogMessages
 {

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.ModelBinding;
+namespace Cratis.Arc.ModelBinding;
 
 /// <summary>
 /// Represents a <see cref="IModelBinder"/> for <see cref="FromRequestBindingSource"/>.

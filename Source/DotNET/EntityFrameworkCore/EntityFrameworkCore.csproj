@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.EntityFrameworkCore</AssemblyName>
-        <RootNamespace>Cratis.Applications.EntityFrameworkCore</RootNamespace>
+        <AssemblyName>Cratis.Arc.EntityFrameworkCore</AssemblyName>
+        <RootNamespace>Cratis.Arc.EntityFrameworkCore</RootNamespace>
         <NoWarn>$(NoWarn);NU5104</NoWarn>
     </PropertyGroup>
     <ItemGroup>
@@ -18,6 +18,6 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="../Applications/Applications.csproj" />
+        <ProjectReference Include="../Arc/Arc.csproj" />
     </ItemGroup>
 </Project>

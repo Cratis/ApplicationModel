@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsParameterEvaluator.when_evaluating;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsParameterEvaluator.when_evaluating;
 
 public class with_concept_member_access_on_constant : Specification
 {

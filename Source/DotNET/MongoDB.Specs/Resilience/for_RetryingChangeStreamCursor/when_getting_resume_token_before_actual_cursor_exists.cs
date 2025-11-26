@@ -3,7 +3,7 @@
 
 using MongoDB.Bson;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_RetryingChangeStreamCursor;
+namespace Cratis.Arc.MongoDB.Resilience.for_RetryingChangeStreamCursor;
 
 public class when_getting_resume_token_before_actual_cursor_exists : given.a_retrying_change_stream_cursor
 {

@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 using Cratis.Execution;
 
-namespace Cratis.Applications.Queries.Filters.for_AuthorizationFilter.given;
+namespace Cratis.Arc.Queries.Filters.for_AuthorizationFilter.given;
 
 public class an_authorization_filter : Specification
 {

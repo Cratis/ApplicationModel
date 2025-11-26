@@ -4,13 +4,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Cratis.Applications.Tenancy;
+namespace Cratis.Arc.Tenancy;
 
 /// <summary>
 /// Represents an implementation of <see cref="IMiddleware"/> that sets the tenant ID for the request.
 /// </summary>
 /// <param name="options">The options for the application model.</param>
-public class TenantIdMiddleware(IOptions<ApplicationModelOptions> options) : IMiddleware
+public class TenantIdMiddleware(IOptions<ArcOptions> options) : IMiddleware
 {
     /// <inheritdoc/>
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)

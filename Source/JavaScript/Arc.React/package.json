@@ -1,12 +1,12 @@
 {
-    "name": "@cratis/applications.react",
+    "name": "@cratis/arc.react",
     "version": "1.0.0",
     "description": "",
     "author": "Cratis",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cratis/applicationmodel.git"
+        "url": "git+https://github.com/cratis/arc.git"
     },
     "publishConfig": {
         "access": "public"
@@ -59,7 +59,7 @@
         "up": "yarn g:up"
     },
     "dependencies": {
-        "@cratis/applications": "1.0.0",
+        "@cratis/arc": "1.0.0",
         "@cratis/fundamentals": "^7.2.3",
         "tsyringe": "^4.10.0"
     },

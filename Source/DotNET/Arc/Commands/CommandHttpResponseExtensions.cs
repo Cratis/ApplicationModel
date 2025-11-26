@@ -4,7 +4,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Provides extension methods for handling command results and Http responses.

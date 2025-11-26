@@ -5,7 +5,7 @@ using System.Reflection;
 using Cratis.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Extension methods for methods representing commands.

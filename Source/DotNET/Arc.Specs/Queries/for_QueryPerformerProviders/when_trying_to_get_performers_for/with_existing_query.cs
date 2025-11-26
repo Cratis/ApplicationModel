@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.for_QueryPerformerProviders.when_trying_to_get_performers_for;
+namespace Cratis.Arc.Queries.for_QueryPerformerProviders.when_trying_to_get_performers_for;
 
 public class with_existing_query : given.an_initialized_query_performer_providers
 {

@@ -13,7 +13,7 @@ Command filters are executed as part of the command pipeline, before the actual 
 To create a custom command filter, implement the `ICommandFilter` interface:
 
 ```csharp
-using Cratis.Applications.Commands;
+using Cratis.Arc.Commands;
 
 public class MyCustomFilter : ICommandFilter
 {
@@ -49,7 +49,7 @@ Command filters are automatically discovered and registered through the dependen
 
 ## Built-in Filters
 
-The following filters are provided out of the box in the `Cratis.Applications.Commands.Filters` namespace:
+The following filters are provided out of the box in the `Cratis.Arc.Commands.Filters` namespace:
 
 | Filter | Description |
 |--------|-------------|
@@ -102,7 +102,7 @@ public record CreateUser(
     int Age);
 ```
 
-Or the convenience wrapper provided by Cratis ApplicationModel for  roles, allowing a more intuitive way of specifying multiple roles:
+Or the convenience wrapper provided by Cratis Arc for  roles, allowing a more intuitive way of specifying multiple roles:
 
 ```csharp
 [Command]

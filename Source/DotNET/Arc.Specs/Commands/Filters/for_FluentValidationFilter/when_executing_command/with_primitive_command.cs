@@ -4,7 +4,7 @@
 using FluentValidation;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_executing_command;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_executing_command;
 
 public class with_primitive_command : given.a_fluent_validation_filter
 {

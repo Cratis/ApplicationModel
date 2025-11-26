@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization;
+namespace Cratis.Arc.Authorization;
 
 /// <summary>
 /// Represents an <see cref="AuthorizeAttribute"/> for specifying roles.

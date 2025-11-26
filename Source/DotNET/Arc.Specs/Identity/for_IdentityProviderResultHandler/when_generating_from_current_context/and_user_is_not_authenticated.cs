@@ -3,7 +3,7 @@
 
 using System.Security.Claims;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_generating_from_current_context;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler.when_generating_from_current_context;
 
 public class and_user_is_not_authenticated : given.an_identity_provider_result_handler
 {

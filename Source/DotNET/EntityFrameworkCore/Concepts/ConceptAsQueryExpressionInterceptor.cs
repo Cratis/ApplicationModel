@@ -4,7 +4,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Interceptor that rewrites LINQ expressions to handle ConceptAs types before EF Core translates them to SQL.

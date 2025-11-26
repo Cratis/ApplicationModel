@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json;
-using Cratis.Applications.Execution;
+using Cratis.Arc.Execution;
 using Cratis.Execution;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Maps validation endpoints for controller-based commands.
@@ -33,7 +33,7 @@ public class ControllerCommandEndpointMapper(
     /// </summary>
     /// <param name="endpoints">The endpoint route builder.</param>
     /// <param name="appModelOptions">Application model options.</param>
-    public void MapValidationEndpoints(IEndpointRouteBuilder endpoints, ApplicationModelOptions appModelOptions)
+    public void MapValidationEndpoints(IEndpointRouteBuilder endpoints, ArcOptions appModelOptions)
     {
         foreach (var action in GetControllerCommandActions())
         {

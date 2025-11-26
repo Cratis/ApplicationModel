@@ -6,14 +6,14 @@
 // eslint-disable-next-line header/header
 {{#if IsEnumerable}}
 {{#if Properties.[0]}}
-import { ObservableQueryFor, QueryResultWithState, Sorting, SortingActions, SortingActionsForObservableQuery, Paging } from '@cratis/applications/queries';
+import { ObservableQueryFor, QueryResultWithState, Sorting, SortingActions, SortingActionsForObservableQuery, Paging } from '@cratis/arc/queries';
 {{else}}
-import { ObservableQueryFor, QueryResultWithState, Sorting, Paging } from '@cratis/applications/queries';
+import { ObservableQueryFor, QueryResultWithState, Sorting, Paging } from '@cratis/arc/queries';
 {{/if}}
-import { useObservableQuery, useObservableQueryWithPaging, SetSorting, SetPage, SetPageSize } from '@cratis/applications.react/queries';
+import { useObservableQuery, useObservableQueryWithPaging, SetSorting, SetPage, SetPageSize } from '@cratis/arc.react/queries';
 {{else}}
-import { ObservableQueryFor, QueryResultWithState } from '@cratis/applications/queries';
-import { useObservableQuery } from '@cratis/applications.react/queries';
+import { ObservableQueryFor, QueryResultWithState } from '@cratis/arc/queries';
+import { useObservableQuery } from '@cratis/arc.react/queries';
 {{/if}}
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';

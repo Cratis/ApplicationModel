@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import React from 'react';
-import { ICommand, CommandResults } from '@cratis/applications/commands';
+import { ICommand, CommandResults } from '@cratis/arc/commands';
 import { ICommandScope } from './ICommandScope';
 
 

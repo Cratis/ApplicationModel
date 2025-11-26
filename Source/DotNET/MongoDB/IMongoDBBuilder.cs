@@ -3,7 +3,7 @@
 
 using Cratis.Serialization;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Defines the builder for MongoDB.

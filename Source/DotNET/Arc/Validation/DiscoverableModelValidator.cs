@@ -4,7 +4,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 /// <summary>
 /// Represents a <see cref="IModelValidator"/> for <see cref="BaseValidator{T}"/>.

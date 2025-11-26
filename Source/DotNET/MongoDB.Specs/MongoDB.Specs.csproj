@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.MongoDB.Specs</AssemblyName>
-        <RootNamespace>Cratis.Applications.MongoDB</RootNamespace>
+        <AssemblyName>Cratis.Arc.MongoDB.Specs</AssemblyName>
+        <RootNamespace>Cratis.Arc.MongoDB</RootNamespace>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>

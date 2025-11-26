@@ -6,7 +6,7 @@ using Orleans.Serialization;
 using Orleans.Serialization.Cloning;
 using Orleans.Serialization.Serializers;
 
-namespace Cratis.Applications.Orleans.Concepts;
+namespace Cratis.Arc.Orleans.Concepts;
 
 /// <summary>
 /// Represents a set of extensions for the Orleans serializer.

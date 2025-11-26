@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json.Serialization;
-using Cratis.Applications;
-using Cratis.Applications.ModelBinding;
-using Cratis.Applications.Validation;
+using Cratis.Arc;
+using Cratis.Arc.ModelBinding;
+using Cratis.Arc.Validation;
 using Cratis.Json;
 using Cratis.Reflection;
 using Cratis.Serialization;
@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
 
         var discoverableValidators = new DiscoverableValidators(types);
         services.AddSingleton<IDiscoverableValidators>(discoverableValidators);
-        services.AddTransient<IStartupFilter, ApplicationModelStartupFilter>();
+        services.AddTransient<IStartupFilter, ArcStartupFilter>();
         services.AddTenancy();
         services.AddCorrelationId();
 

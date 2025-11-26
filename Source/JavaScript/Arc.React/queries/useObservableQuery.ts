@@ -1,28 +1,28 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { QueryResultWithState, IObservableQueryFor, Sorting, Paging } from '@cratis/applications/queries';
+import { QueryResultWithState, IObservableQueryFor, Sorting, Paging } from '@cratis/arc/queries';
 import { Constructor } from '@cratis/fundamentals';
 import { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { SetSorting } from './SetSorting';
 import { SetPage } from './SetPage';
 import { SetPageSize } from './SetPageSize';
-import { ApplicationModelContext } from '../ApplicationModelContext';
+import { ArcContext } from '../ArcContext';
 
 function useObservableQueryInternal<TDataType, TQuery extends IObservableQueryFor<TDataType>, TArguments = object>(query: Constructor<TQuery>, sorting?: Sorting, paging?: Paging, args?: TArguments):
     [QueryResultWithState<TDataType>, SetSorting, SetPage, SetPageSize] {
     const [currentPaging, setCurrentPaging] = useState<Paging>(paging ?? Paging.noPaging);
     const [currentSorting, setCurrentSorting] = useState<Sorting>(sorting ?? Sorting.none);
-    const applicationModel = useContext(ApplicationModelContext);
+    const arc = useContext(ArcContext);
     const queryInstance = useRef<TQuery | null>(null);
 
     queryInstance.current = useMemo(() => {
         const instance = new query() as TQuery;
         instance.paging = currentPaging;
         instance.sorting = currentSorting;
-        instance.setMicroservice(applicationModel.microservice);
-        instance.setApiBasePath(applicationModel.apiBasePath ?? '');
-        instance.setOrigin(applicationModel.origin ?? '');
+        instance.setMicroservice(arc.microservice);
+        instance.setApiBasePath(arc.apiBasePath ?? '');
+        instance.setOrigin(arc.origin ?? '');
         return instance;
     }, [currentPaging, currentSorting]);
 

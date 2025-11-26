@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.ModelBound.for_ModelBoundCommandHandler.when_handling;
+namespace Cratis.Arc.Commands.ModelBound.for_ModelBoundCommandHandler.when_handling;
 
 public class and_handler_returns_async_task_without_value : Specification
 {

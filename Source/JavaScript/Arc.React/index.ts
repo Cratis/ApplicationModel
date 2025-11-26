@@ -6,8 +6,8 @@ import * as dialogs from './dialogs';
 import * as identity from './identity';
 import * as queries from './queries';
 
-export * from './ApplicationModel';
-export * from './ApplicationModelContext';
+export * from './Arc';
+export * from './ArcContext';
 export * from './WellKnownBindings';
 
 export {

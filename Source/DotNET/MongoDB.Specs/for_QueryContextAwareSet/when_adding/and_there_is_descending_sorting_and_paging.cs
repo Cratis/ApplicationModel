@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using MongoDB.Driver;
-using SortDirection = Cratis.Applications.Queries.SortDirection;
+using SortDirection = Cratis.Arc.Queries.SortDirection;
 
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_adding;
+namespace Cratis.Arc.MongoDB.for_QueryContextAwareSet.when_adding;
 
 public class and_there_is_descending_sorting_and_paging : Specification
 {

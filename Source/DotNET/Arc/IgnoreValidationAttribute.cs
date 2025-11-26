@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Represents an attribute that indicates that the validation should be ignored for actions in a controller. This means you'll get the default behavior of ASP.NET Core.

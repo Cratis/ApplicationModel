@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using FluentValidation;
 
-namespace Cratis.Applications.Commands.Filters;
+namespace Cratis.Arc.Commands.Filters;
 
 /// <summary>
 /// Represents a command filter that validates commands before they are handled.

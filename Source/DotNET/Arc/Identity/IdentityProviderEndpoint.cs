@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity;
+namespace Cratis.Arc.Identity;
 
 /// <summary>
 /// Represents the actual endpoint called for identity details (/.cratis/me).

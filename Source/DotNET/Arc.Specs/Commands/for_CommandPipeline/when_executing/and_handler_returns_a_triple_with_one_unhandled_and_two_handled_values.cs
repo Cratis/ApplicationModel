@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
+namespace Cratis.Arc.Commands.for_CommandPipeline.when_executing;
 
 public class and_handler_returns_a_triple_with_one_unhandled_and_two_handled_values : given.a_command_pipeline_and_a_handler_for_command
 {

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Cratis.Types;
 
-namespace Cratis.Applications.Commands.ModelBound;
+namespace Cratis.Arc.Commands.ModelBound;
 
 /// <summary>
 /// Represents a provider for command handlers that are model bound.

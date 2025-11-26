@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { IdentityProviderContext } from './IdentityProvider';
-import { IIdentity } from '@cratis/applications/identity';
+import { IIdentity } from '@cratis/arc/identity';
 
 /**
  * Hook to get the identity context.

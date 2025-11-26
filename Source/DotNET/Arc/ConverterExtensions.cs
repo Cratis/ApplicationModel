@@ -3,7 +3,7 @@
 
 using System.ComponentModel;
 
-namespace Cratis.Applications;
+namespace Cratis.Arc;
 
 /// <summary>
 /// Provides methods for converting values between different types.

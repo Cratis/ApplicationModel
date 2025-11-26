@@ -4,7 +4,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Provides a set of methods for working with <see cref="IQueryable"/>.

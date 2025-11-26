@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderResultHandler.when_modifying_details;
+namespace Cratis.Arc.Identity.for_IdentityProviderResultHandler.when_modifying_details;
 
 public class without_existing_identity_cookie : given.an_identity_provider_result_handler
 {

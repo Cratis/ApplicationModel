@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsValueComparer.when_comparing;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsValueComparer.when_comparing;
 
 public class with_different_int_concepts : given.a_concept_as_value_comparer
 {

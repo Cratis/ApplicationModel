@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { Constructor } from '@cratis/fundamentals';
-import { CloseDialog, DialogResponse } from '@cratis/applications.react/dialogs';
+import { CloseDialog, DialogResponse } from '@cratis/arc.react/dialogs';
 import { DialogRegistration, DialogRequest } from './DialogRegistration';
 
 /**

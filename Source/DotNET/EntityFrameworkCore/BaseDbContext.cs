@@ -1,15 +1,15 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.EntityFrameworkCore.Concepts;
-using Cratis.Applications.EntityFrameworkCore.Json;
-using Cratis.Applications.EntityFrameworkCore.Mapping;
+using Cratis.Arc.EntityFrameworkCore.Concepts;
+using Cratis.Arc.EntityFrameworkCore.Json;
+using Cratis.Arc.EntityFrameworkCore.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Base class for DbContexts that needs standard things configured.

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.MongoDB</AssemblyName>
-        <RootNamespace>Cratis.Applications.MongoDB</RootNamespace>
+        <AssemblyName>Cratis.Arc.MongoDB</AssemblyName>
+        <RootNamespace>Cratis.Arc.MongoDB</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <InternalsVisibleTo Include="Cratis.Applications.MongoDB.Specs" />
+        <InternalsVisibleTo Include="Cratis.Arc.MongoDB.Specs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Cratis.Fundamentals" />
@@ -17,6 +17,6 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="../Applications/Applications.csproj" />
+        <ProjectReference Include="../Arc/Arc.csproj" />
     </ItemGroup>
 </Project>

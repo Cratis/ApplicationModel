@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.when_getting_parameters;
+namespace Cratis.Arc.Queries.ModelBound.for_ModelBoundQueryPerformer.when_getting_parameters;
 
 public class with_only_query_parameters : given.a_model_bound_query_performer
 {

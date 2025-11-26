@@ -5,20 +5,20 @@
         "rootDir": ".",
         "outDir": "dist/esm",
         "paths": {
-            "@cratis/applications/*": [
-                "../Applications/dist/esm/*"
+            "@cratis/arc/*": [
+                "../Arc/dist/esm/*"
             ],
-            "@cratis/applications.react/*": [
-                "../Applications.React/dist/esm/*"
+            "@cratis/arc.react/*": [
+                "../Arc.React/dist/esm/*"
             ]
         }
     },
     "references": [
         {
-            "path": "../Applications"
+            "path": "../Arc"
         },
         {
-            "path": "../Applications.React"
+            "path": "../Arc.React"
         }
     ],
      "exclude": [

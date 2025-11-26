@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization;
+namespace Cratis.Arc.Authorization;
 
 /// <summary>
 /// Defines a contract for performing authorization checks.

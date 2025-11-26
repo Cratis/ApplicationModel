@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandResponseValueHandlers.when_checking_can_handle;
+namespace Cratis.Arc.Commands.for_CommandResponseValueHandlers.when_checking_can_handle;
 
 public class and_no_handler_can_handle : Specification
 {

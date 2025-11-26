@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Cratis.Strings;
 using FluentValidation;
 
-namespace Cratis.Applications.Validation;
+namespace Cratis.Arc.Validation;
 
 #pragma warning disable CS0618 // Type or member is obsolete (Related to FluentValidation and the Transform method)
 #pragma warning disable IDE0004 // Remove unnecessary cast (We need to do this to access the correct RuleFor())

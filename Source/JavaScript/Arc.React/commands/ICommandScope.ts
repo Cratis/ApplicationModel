@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { ICommand, CommandResults } from '@cratis/applications/commands';
+import { ICommand, CommandResults } from '@cratis/arc/commands';
 
 /**
  * Defines the system for tracking commands in a scope.

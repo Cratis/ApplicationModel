@@ -3,7 +3,7 @@
 
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet;
+namespace Cratis.Arc.MongoDB.for_QueryContextAwareSet;
 
 public class InMemoryFluentFind<TDocument>(IEnumerable<TDocument> collection, int? limit = null) : FindFluentBase<TDocument, TDocument>
 {

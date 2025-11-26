@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Cratis.DependencyInjection;
 using Cratis.Types;
 
-namespace Cratis.Applications.Commands;
+namespace Cratis.Arc.Commands;
 
 /// <summary>
 /// Represents an implementation of <see cref="ICommandHandlerProviders"/>.

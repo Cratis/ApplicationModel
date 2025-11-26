@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandResponseValueHandlers.when_handling;
+namespace Cratis.Arc.Commands.for_CommandResponseValueHandlers.when_handling;
 
 public class and_two_handlers_can_handle : Specification
 {

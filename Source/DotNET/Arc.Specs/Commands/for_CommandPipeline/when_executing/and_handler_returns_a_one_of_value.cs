@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using OneOf;
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
+namespace Cratis.Arc.Commands.for_CommandPipeline.when_executing;
 
 public class and_handler_returns_a_one_of_value : given.a_command_pipeline_and_a_handler_for_command
 {

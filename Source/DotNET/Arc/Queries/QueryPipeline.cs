@@ -4,7 +4,7 @@
 using Cratis.Execution;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Queries;
+namespace Cratis.Arc.Queries;
 
 /// <summary>
 /// Represents a query pipeline.

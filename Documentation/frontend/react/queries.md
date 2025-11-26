@@ -8,7 +8,7 @@ Queries in the frontend is divided into the following:
 
 ## HTTP Headers
 
-Queries automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This enables you to dynamically include authentication cookies, authorization tokens, or other custom headers with every query request without manual configuration for each query.
+Queries automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./application-model.md). This enables you to dynamically include authentication cookies, authorization tokens, or other custom headers with every query request without manual configuration for each query.
 
 ## Proxy Generation
 

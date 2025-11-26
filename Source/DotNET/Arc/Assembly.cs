@@ -3,5 +3,5 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Cratis.Applications.MongoDB")]
-[assembly: InternalsVisibleTo("Cratis.Applications.Specs")]
+[assembly: InternalsVisibleTo("Cratis.Arc.MongoDB")]
+[assembly: InternalsVisibleTo("Cratis.Arc.Specs")]

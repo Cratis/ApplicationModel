@@ -354,7 +354,7 @@ public Task<IEnumerable<DebitAccount>> GetSecureAccounts()
 }
 ```
 
-Or the convenience `[Roles]` attribute provided by Cratis ApplicationModel:
+Or the convenience `[Roles]` attribute provided by Cratis Arc:
 
 ```csharp
 [HttpGet("admin-accounts")]

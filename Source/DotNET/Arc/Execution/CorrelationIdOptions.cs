@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Execution;
+namespace Cratis.Arc.Execution;
 
 /// <summary>
 /// Represents the options for the correlation ID.

@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.when_executing;
+namespace Cratis.Arc.Commands.for_CommandPipeline.when_executing;
 
 public class and_handler_returns_a_value_without_value_handler : given.a_command_pipeline_and_a_handler_for_command
 {

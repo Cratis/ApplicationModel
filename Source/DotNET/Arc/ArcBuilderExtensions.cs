@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications;
+using Cratis.Arc;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -15,7 +15,7 @@ public static class ApplicationBuilderExtensions
     /// </summary>
     /// <param name="app"><see cref="IApplicationBuilder"/> to extend.</param>
     /// <returns><see cref="IApplicationBuilder"/> for continuation.</returns>
-    public static IApplicationBuilder UseCratisApplicationModel(this IApplicationBuilder app)
+    public static IApplicationBuilder UseCratisArc(this IApplicationBuilder app)
     {
         Internals.ServiceProvider = app.ApplicationServices;
         app.MapIdentityProvider();

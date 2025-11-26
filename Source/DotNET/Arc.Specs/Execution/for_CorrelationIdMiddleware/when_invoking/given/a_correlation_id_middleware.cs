@@ -5,14 +5,14 @@ using Cratis.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Cratis.Applications.Execution.for_CorrelationIdMiddleware.when_invoking.given;
+namespace Cratis.Arc.Execution.for_CorrelationIdMiddleware.when_invoking.given;
 
 public class a_correlation_id_middleware : Specification
 {
     protected CorrelationIdMiddleware _correlationIdMiddleware;
     protected HttpContext _httpContext;
     protected RequestDelegate _next;
-    protected IOptions<ApplicationModelOptions> _options;
+    protected IOptions<ArcOptions> _options;
     protected ICorrelationIdAccessor _correlationIdAccessor;
     protected ICorrelationIdModifier _correlationIdModifier;
     protected HttpRequest _httpRequest;
@@ -27,7 +27,7 @@ public class a_correlation_id_middleware : Specification
         {
             HttpHeader = Constants.DefaultCorrelationIdHeader
         };
-        _options = Options.Create(new ApplicationModelOptions
+        _options = Options.Create(new ArcOptions
         {
             CorrelationId = _correlationIdOptions
         });

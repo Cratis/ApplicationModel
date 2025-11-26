@@ -9,7 +9,7 @@
 
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == true">$(CratisProxyPackedAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
         <CratisProxyGeneratorAssemblyDirectory Condition="Exists($(CratisProxyPackedAssemblyDirectory)) == false">$(CratisProxyDevAssemblyDirectory)</CratisProxyGeneratorAssemblyDirectory>
-        <CratisProxyGeneratorAssembly>Cratis.Applications.ProxyGenerator.Build.dll</CratisProxyGeneratorAssembly>
+        <CratisProxyGeneratorAssembly>Cratis.Arc.ProxyGenerator.Build.dll</CratisProxyGeneratorAssembly>
     </PropertyGroup>
     
     <Target Name="CratisProxyGenerator" AfterTargets="AfterBuild"> 

@@ -3,7 +3,7 @@
 
 using Cratis.Serialization;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// The exception that is thrown when the naming policy for MongoDB has not been configured.

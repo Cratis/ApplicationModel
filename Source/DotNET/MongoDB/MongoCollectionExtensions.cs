@@ -4,8 +4,8 @@
 using System.Linq.Expressions;
 using System.Reactive.Subjects;
 using System.Reflection;
-using Cratis.Applications;
-using Cratis.Applications.Queries;
+using Cratis.Arc;
+using Cratis.Arc.Queries;
 using Cratis.Concepts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -344,7 +344,7 @@ public static class MongoCollectionExtensions
             var classMap = BsonClassMap.LookupClassMap(typeof(TDocument));
             var memberMap = classMap.GetMemberMap(queryContext.Sorting.Field);
 
-            var sort = queryContext.Sorting.Direction == Cratis.Applications.Queries.SortDirection.Ascending ?
+            var sort = queryContext.Sorting.Direction == Cratis.Arc.Queries.SortDirection.Ascending ?
                 Builders<TDocument>.Sort.Ascending(memberMap.ElementName) :
                 Builders<TDocument>.Sort.Descending(memberMap.ElementName);
             response = response.Sort(sort);

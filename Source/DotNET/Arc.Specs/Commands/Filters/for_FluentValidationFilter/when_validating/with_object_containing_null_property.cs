@@ -1,11 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.when_validating;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.when_validating;
 
 public class with_object_containing_null_property : given.a_fluent_validation_filter
 {

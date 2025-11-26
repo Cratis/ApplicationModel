@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.Orleans</AssemblyName>
-        <RootNamespace>Cratis.Applications.Orleans</RootNamespace>
+        <AssemblyName>Cratis.Arc.Orleans</AssemblyName>
+        <RootNamespace>Cratis.Arc.Orleans</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

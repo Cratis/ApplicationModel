@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Custom evaluatable expression filter that marks ConceptAs member accesses as evaluatable

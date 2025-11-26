@@ -11,7 +11,7 @@ component. This will establish a React context for this part of the hierarchy an
 used within any descendants.
 
 ```typescript
-import { CommandScope } from '@cratis/applications/commands';
+import { CommandScope } from '@cratis/arc/commands';
 
 export const MyComposition = () => {
     return (
@@ -36,7 +36,7 @@ Within this context there are the following that can be used:
 To consume the command scope context you can use the hook that is provided.
 
 ```typescript
-import { useCommandScope } from '@cratis/applications/commands';
+import { useCommandScope } from '@cratis/arc/commands';
 
 export const Toolbar = () => {
     const commandScope = useCommandScope();
@@ -53,7 +53,7 @@ The hook is a convenience hook that makes it easier to get the context.
 You can also consume the context directly by using its consumer:
 
 ```typescript
-import { CommandScopeContext } from '@cratis/applications/commands';
+import { CommandScopeContext } from '@cratis/arc/commands';
 
 export const Toolbar = () => {
     return (

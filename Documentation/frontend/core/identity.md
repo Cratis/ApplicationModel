@@ -21,7 +21,7 @@ All access to identity goes through what is called `IdentityProvider`.
 The `IdentityProvider` provides functionality for getting the current identity.
 
 ```typescript
-import { IdentityProvider } from '@cratis/applications/identity';
+import { IdentityProvider } from '@cratis/arc/identity';
 
 const identity = await IdentityProvider.getCurrent();
 
@@ -39,7 +39,7 @@ application or ingress should be responsible for filling out. Details can be con
 The `getCurrent()` method takes a generic parameter that allows you to specify the type of the details object.
 
 ```typescript
-import { IdentityProvider } from '@cratis/applications/identity';
+import { IdentityProvider } from '@cratis/arc/identity';
 
 type IdentityDetails = {
     department: string,
@@ -73,7 +73,7 @@ identity and details.
 To refresh the identity you can call the `refresh()` method on the identity object itself.
 
 ```typescript
-import { IdentityProvider } from '@cratis/applications/identity';
+import { IdentityProvider } from '@cratis/arc/identity';
 
 let identity = await IdentityProvider.getCurrent();
 identity = await identity.refresh();

@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Value comparer for ConceptAs types that compares based on the underlying primitive value.

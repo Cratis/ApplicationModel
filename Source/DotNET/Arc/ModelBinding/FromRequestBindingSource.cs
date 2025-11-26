@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Cratis.Applications.ModelBinding;
+namespace Cratis.Arc.ModelBinding;
 
 /// <summary>
 /// Represents a binding source for a binding type that allows an object to be bound in a combination of values on the HTTP body, route and querystring.

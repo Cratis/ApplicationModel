@@ -1,10 +1,10 @@
 # Configuration
 
-The Cratis Application Model can be configured both through `appsettings.json` and programmatically to customize its behavior. The main configuration is handled through the `ApplicationModelOptions` class.
+The Cratis Application Model can be configured both through `appsettings.json` and programmatically to customize its behavior. The main configuration is handled through the `ArcOptions` class.
 
 ## Default Configuration Section
 
-By default, the Application Model looks for configuration under the `Cratis:ApplicationModel` section in your `appsettings.json` file.
+By default, the Application Model looks for configuration under the `Cratis:Arc` section in your `appsettings.json` file.
 
 ## Configuration Options
 
@@ -15,7 +15,7 @@ Here's a complete example showing all available configuration options in `appset
 ```json
 {
   "Cratis": {
-    "ApplicationModel": {
+    "Arc": {
       "CorrelationId": {
         "HttpHeader": "X-Correlation-ID"
       },
@@ -69,11 +69,11 @@ The most common approach is to use the configuration file with the default secti
 ```csharp
 var builder = Host.CreateDefaultBuilder(args);
 
-// Use default configuration section (Cratis:ApplicationModel)
-builder.UseCratisApplicationModel();
+// Use default configuration section (Cratis:Arc)
+builder.UseCratisArc();
 
 var app = builder.Build();
-app.UseCratisApplicationModel();
+app.UseCratisArc();
 ```
 
 ### Using Custom Configuration Section
@@ -84,10 +84,10 @@ You can specify a custom configuration section path:
 var builder = Host.CreateDefaultBuilder(args);
 
 // Use custom configuration section
-builder.UseCratisApplicationModel("MyApp:CratisConfig");
+builder.UseCratisArc("MyApp:CratisConfig");
 
 var app = builder.Build();
-app.UseCratisApplicationModel();
+app.UseCratisArc();
 ```
 
 ### Programmatic Configuration
@@ -97,7 +97,7 @@ You can configure the options entirely through code:
 ```csharp
 var builder = Host.CreateDefaultBuilder(args);
 
-builder.UseCratisApplicationModel(options =>
+builder.UseCratisArc(options =>
 {
     // Configure correlation ID
     options.CorrelationId.HttpHeader = "X-My-Correlation-ID";
@@ -116,7 +116,7 @@ builder.UseCratisApplicationModel(options =>
 });
 
 var app = builder.Build();
-app.UseCratisApplicationModel();
+app.UseCratisArc();
 ```
 
 ### Hybrid Configuration
@@ -127,10 +127,10 @@ You can combine configuration file settings with programmatic overrides:
 var builder = Host.CreateDefaultBuilder(args);
 
 // First bind from configuration, then override specific values
-builder.UseCratisApplicationModel("Cratis:ApplicationModel")
+builder.UseCratisArc("Cratis:Arc")
        .ConfigureServices(services =>
        {
-           services.Configure<ApplicationModelOptions>(options =>
+           services.Configure<ArcOptions>(options =>
            {
                // Override specific settings programmatically
                options.GeneratedApis.RoutePrefix = "v1/api";
@@ -138,7 +138,7 @@ builder.UseCratisApplicationModel("Cratis:ApplicationModel")
        });
 
 var app = builder.Build();
-app.UseCratisApplicationModel();
+app.UseCratisArc();
 ```
 
 ## Environment-Specific Configuration
@@ -150,7 +150,7 @@ You can use different configurations for different environments using the standa
 ```json
 {
   "Cratis": {
-    "ApplicationModel": {
+    "Arc": {
       "GeneratedApis": {
         "RoutePrefix": "api"
       }
@@ -164,7 +164,7 @@ You can use different configurations for different environments using the standa
 ```json
 {
   "Cratis": {
-    "ApplicationModel": {
+    "Arc": {
       "CorrelationId": {
         "HttpHeader": "X-Dev-Correlation-ID"
       }
@@ -178,7 +178,7 @@ You can use different configurations for different environments using the standa
 ```json
 {
   "Cratis": {
-    "ApplicationModel": {
+    "Arc": {
       "GeneratedApis": {
         "RoutePrefix": "v1"
       }

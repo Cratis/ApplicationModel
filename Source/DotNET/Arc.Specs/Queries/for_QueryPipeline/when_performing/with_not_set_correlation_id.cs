@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Queries.for_QueryPipeline.when_performing;
+namespace Cratis.Arc.Queries.for_QueryPipeline.when_performing;
 
 public class with_not_set_correlation_id : given.a_query_pipeline
 {

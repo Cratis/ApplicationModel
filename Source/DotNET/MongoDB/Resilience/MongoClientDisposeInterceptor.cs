@@ -4,7 +4,7 @@
 using Castle.DynamicProxy;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience;
+namespace Cratis.Arc.MongoDB.Resilience;
 
 /// <summary>
 /// Represents an interceptor for <see cref="IMongoClient"/> Dispose method.

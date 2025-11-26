@@ -1,11 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using Cratis.Execution;
 using FluentValidation.Results;
 
-namespace Cratis.Applications.Commands.Filters.for_FluentValidationFilter.given;
+namespace Cratis.Arc.Commands.Filters.for_FluentValidationFilter.given;
 
 public class a_fluent_validation_filter : Specification
 {

@@ -3,7 +3,7 @@
 
 using Cratis.Execution;
 
-namespace Cratis.Applications.Commands.for_CommandPipeline.given;
+namespace Cratis.Arc.Commands.for_CommandPipeline.given;
 
 public class a_command_pipeline : Specification
 {

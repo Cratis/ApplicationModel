@@ -3,7 +3,7 @@
 
 using System.Collections.Immutable;
 
-namespace Cratis.Applications.Orleans.StateMachines;
+namespace Cratis.Arc.Orleans.StateMachines;
 
 /// <summary>
 /// Represents an implementation of <see cref="IState{TStoredState}"/>.

@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Http;
 
-namespace Cratis.Applications.Identity.for_IdentityProviderEndpoint.given;
+namespace Cratis.Arc.Identity.for_IdentityProviderEndpoint.given;
 
 public class an_identity_provider_endpoint : Specification
 {

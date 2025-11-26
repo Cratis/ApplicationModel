@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.when_getting_parameters;
+namespace Cratis.Arc.Queries.ModelBound.for_ModelBoundQueryPerformer.when_getting_parameters;
 
 public class with_only_dependencies : given.a_model_bound_query_performer
 {

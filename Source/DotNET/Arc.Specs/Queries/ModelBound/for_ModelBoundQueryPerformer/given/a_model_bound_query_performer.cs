@@ -1,11 +1,11 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 using Cratis.Execution;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Queries.ModelBound.for_ModelBoundQueryPerformer.given;
+namespace Cratis.Arc.Queries.ModelBound.for_ModelBoundQueryPerformer.given;
 
 public class a_model_bound_query_performer : Specification
 {

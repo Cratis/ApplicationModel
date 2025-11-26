@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 using Cratis.Reflection;
 using Cratis.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.Queries.ModelBound;
+namespace Cratis.Arc.Queries.ModelBound;
 
 /// <summary>
 /// Represents a model bound query performer.

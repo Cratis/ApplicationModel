@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace Cratis.Applications.Validation.for_ConceptValidator.when_concept;
+namespace Cratis.Arc.Validation.for_ConceptValidator.when_concept;
 
 public class for_uint : Specification
 {
