@@ -45,7 +45,7 @@ public class MicrosoftIDentityPlatformAuthHandler(
         }
         catch (Exception ex)
         {
-            _logger.FailedResolvingClientPrincipal(Request.Headers[MicrosoftIdentityPlatformHeaders.PrincipalHeader].ToString(), ex);
+            _logger.FailedResolvingClientPrincipal(ex);
         }
 
         if (clientPrincipal == null)

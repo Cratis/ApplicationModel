@@ -10,6 +10,6 @@ namespace Cratis.Arc.Identity;
 
 internal static partial class MicrosoftIDentityPlatformAuthHandlerLogMessages
 {
-    [LoggerMessage(LogLevel.Error, "Failed resolving client principal - value was {Principal}")]
-    internal static partial void FailedResolvingClientPrincipal(this ILogger<MicrosoftIDentityPlatformAuthHandler> logger, string principal, Exception exception);
+    [LoggerMessage(LogLevel.Error, "Failed resolving client principal")]
+    internal static partial void FailedResolvingClientPrincipal(this ILogger<MicrosoftIDentityPlatformAuthHandler> logger, Exception exception);
 }
