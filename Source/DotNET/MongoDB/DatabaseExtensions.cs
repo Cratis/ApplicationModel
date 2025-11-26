@@ -29,7 +29,7 @@ public static class DatabaseExtensions
     /// <returns>The collection for your type.</returns>
     public static IMongoCollection<T> GetCollection<T>(this IMongoDatabase database, MongoCollectionSettings? settings = default)
     {
-        return database.GetCollection<T>(NamingPolicy!.GetReadModelName(typeof(T)), settings);
+        return database.GetCollection<T>(NamingPolicy.GetReadModelName(typeof(T)), settings);
     }
 
     /// <summary>
