@@ -170,7 +170,7 @@ public ISubject<IEnumerable<DebitAccount>> GetFilteredAccountsObservable(
 
 ## Argument Types
 
-The application model supports various argument types:
+Arc supports various argument types:
 
 ### Primitive Types
 

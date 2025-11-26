@@ -43,7 +43,7 @@ Once this is done you would simply add code to one of your microservices in your
 implement the `IProvideIdentityDetails` interface found in the `Cratis.Arc.Identity` namespace. It will automatically be discovered and
 called when needed.
 
-This is unwrapped by the application model and encapsulates it into what is called a `IdentityProviderContext` for you as a developer to consume in a type-safe
+This is unwrapped by Arc and encapsulates it into what is called a `IdentityProviderContext` for you as a developer to consume in a type-safe
 manner.
 
 > Note: If your application has just one microservice, you let it implement the `IProvideIdentityDetails` interface.

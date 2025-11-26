@@ -6,7 +6,7 @@ functionality for free.
 
 ## Automatic Sorting and Paging
 
-The application model automatically processes query string parameters for sorting and paging:
+Arc automatically processes query string parameters for sorting and paging:
 
 - `sortby` - Field to sort by
 - `sortDirection` - `asc` or `desc`
@@ -150,7 +150,7 @@ public class DebitAccountQueryRenderer : IQueryRendererFor<IQueryable<DebitAccou
 
 ### Built-in Renderers
 
-The application model includes built-in query renderers:
+Arc includes built-in query renderers:
 
 #### QueryableQueryRenderer
 
@@ -172,7 +172,7 @@ This automatically gets:
 
 ## MongoDB Extensions
 
-The application model provides MongoDB-specific extensions for observable queries:
+Arc provides MongoDB-specific extensions for observable queries:
 
 ### Observe() Extension
 
@@ -287,7 +287,7 @@ public class AccountSecurityFilter : IQueryFilter
 
 ### Built-in Query Filters
 
-The application model includes several built-in query filters that provide essential functionality:
+Arc includes several built-in query filters that provide essential functionality:
 
 | Filter | Description |
 |--------|-------------|

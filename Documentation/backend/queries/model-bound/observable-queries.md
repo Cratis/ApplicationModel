@@ -504,7 +504,7 @@ The `ISubject<T>` return type automatically establishes and manages WebSocket co
 
 ## Connection Management
 
-The application model automatically handles WebSocket connections for observable queries:
+Arc automatically handles WebSocket connections for observable queries:
 
 - **Connection establishment** - Automatic WebSocket upgrade for observable endpoints
 - **Message serialization** - Automatic JSON serialization of observable data

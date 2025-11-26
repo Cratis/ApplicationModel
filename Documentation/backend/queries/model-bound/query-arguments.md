@@ -394,7 +394,7 @@ public static IEnumerable<DebitAccount> SearchAccounts(
 
 ## URL Generation
 
-The application model generates URLs based on your method names and parameters:
+Arc generates URLs based on your method names and parameters:
 
 ```csharp
 [ReadModel]

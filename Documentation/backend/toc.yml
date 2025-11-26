@@ -16,6 +16,8 @@
   href: queries/toc.yml
 - name: Proxy Generation
   href: proxy-generation.md
+- name: Chronicle
+  href: chronicle/toc.yml
 - name: Swagger
   href: swagger.md
 - name: Validation
