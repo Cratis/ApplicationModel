@@ -683,6 +683,62 @@ public static class TypeExtensions
         return primitiveType ?? genericArguments[0];
     }
 
+    /// <summary>
+    /// Get the best response type from a OneOf type by examining all alternatives.
+    /// If an alternative is a tuple, applies tuple type extraction logic.
+    /// </summary>
+    /// <param name="type">OneOf <see cref="Type"/> to inspect.</param>
+    /// <returns>The best response type found, or null if no suitable type is found.</returns>
+    public static Type? GetBestOneOfResponseType(this Type type)
+    {
+        if (!type.IsOneOf())
+        {
+            return null;
+        }
+
+        var genericArguments = type.GetGenericArguments();
+        var candidateTypes = new List<Type>();
+
+        foreach (var arg in genericArguments)
+        {
+            var unwrappedType = UnwrapType(arg);
+            if (unwrappedType is not null)
+            {
+                candidateTypes.Add(unwrappedType);
+            }
+        }
+
+        var conceptType = candidateTypes.Find(t => t.IsConcept());
+        if (conceptType is not null)
+        {
+            return conceptType;
+        }
+
+        var primitiveType = candidateTypes.Find(t => t.IsAPrimitiveType());
+        return primitiveType ?? candidateTypes.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Unwrap a type to get the best response type candidate.
+    /// Handles tuples and OneOf types recursively.
+    /// </summary>
+    /// <param name="type"><see cref="Type"/> to unwrap.</param>
+    /// <returns>The unwrapped type, or null if the type should be skipped.</returns>
+    static Type? UnwrapType(Type type)
+    {
+        if (type.IsGenericType && type.FullName!.StartsWith("System.ValueTuple"))
+        {
+            return type.GetBestTupleType();
+        }
+
+        if (type.IsOneOf())
+        {
+            return type.GetBestOneOfResponseType();
+        }
+
+        return type;
+    }
+
     static void InitializeWellKnownTypes()
     {
         var assembly = _metadataLoadContext!.CoreAssembly!;
