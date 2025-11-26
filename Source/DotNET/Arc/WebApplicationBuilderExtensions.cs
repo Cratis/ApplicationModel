@@ -23,7 +23,7 @@ public static class WebApplicationBuilderExtensions
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
     public static WebApplicationBuilder AddCratisArc(this WebApplicationBuilder builder, string? configSectionPath = null)
     {
-        builder.Host.UseCratisArc(configSectionPath);
+        builder.Host.AddCratisArc(configSectionPath);
         return builder;
     }
 
@@ -35,7 +35,7 @@ public static class WebApplicationBuilderExtensions
     /// <returns><see cref="WebApplicationBuilder"/> for building continuation.</returns>
     public static WebApplicationBuilder AddCratisArc(this WebApplicationBuilder builder, Action<ArcOptions> configureOptions)
     {
-        builder.Host.UseCratisArc(configureOptions);
+        builder.Host.AddCratisArc(configureOptions);
         return builder;
     }
 }

@@ -35,12 +35,12 @@ public static class HostBuilderExtensions
     /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
     /// <param name="configSectionPath">The optional configuration section path.</param>
     /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder UseCratisArc(this IHostBuilder builder, string? configSectionPath = null)
+    public static IHostBuilder AddCratisArc(this IHostBuilder builder, string? configSectionPath = null)
     {
         builder.ConfigureServices(_ => AddOptions(_)
                 .BindConfiguration(configSectionPath ?? ConfigurationPath.Combine(DefaultArcSectionPaths)));
 
-        return builder.UseArcImplementation();
+        return builder.AddArcImplementation();
     }
 
     /// <summary>
@@ -49,12 +49,12 @@ public static class HostBuilderExtensions
     /// <param name="builder"><see cref="IHostBuilder"/> to extend.</param>
     /// <param name="configureOptions">Action to configure the <see cref="ArcOptions"/>.</param>
     /// <returns><see cref="IHostBuilder"/> for building continuation.</returns>
-    public static IHostBuilder UseCratisArc(this IHostBuilder builder, Action<ArcOptions> configureOptions)
+    public static IHostBuilder AddCratisArc(this IHostBuilder builder, Action<ArcOptions> configureOptions)
     {
         builder.ConfigureServices(_ => AddOptions(_, configureOptions));
         var options = new ArcOptions();
         configureOptions(options);
-        return builder.UseArcImplementation(options.IdentityDetailsProvider);
+        return builder.AddArcImplementation(options.IdentityDetailsProvider);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public static class HostBuilderExtensions
         return builder;
     }
 
-    static IHostBuilder UseArcImplementation(this IHostBuilder builder, Type? identityDetailsProvider = default)
+    static IHostBuilder AddArcImplementation(this IHostBuilder builder, Type? identityDetailsProvider = default)
     {
         Internals.Types = Types.Instance;
         Internals.Types.RegisterTypeConvertersForConcepts();
