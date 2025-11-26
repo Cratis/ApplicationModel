@@ -27,7 +27,7 @@ public static class WebApplicationBuilderExtensions
         this WebApplicationBuilder builder,
         Action<MongoDBOptions>? configureOptions = default,
         Action<IMongoDBBuilder>? configureMongoDB = default,
-        string? mongoDBConfigSectionPath = null) => builder.Host.UseCratisMongoDB(
+        string? mongoDBConfigSectionPath = null) => builder.Host.AddCratisMongoDB(
             configureOptions,
             configureMongoDB,
             mongoDBConfigSectionPath);
