@@ -7,10 +7,15 @@ import sinon from 'sinon';
 import { useQuery } from '../useQuery';
 import { FakeQuery } from './FakeQuery';
 import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
-import { Sorting, Paging } from '@cratis/applications/queries';
+import { Sorting } from '@cratis/applications/queries';
 
 describe('when creating instance with sorting', () => {
     let fetchStub: sinon.SinonStub;
+    let queryInstance: FakeQuery | null = null;
+
+    const captureInstance = (instance: FakeQuery) => {
+        queryInstance = instance;
+    };
 
     beforeEach(() => {
         fetchStub = sinon.stub(global, 'fetch').resolves({
@@ -26,15 +31,14 @@ describe('when creating instance with sorting', () => {
         microservice: 'test-microservice'
     };
 
-    let queryInstance: FakeQuery | null = null;
     const sorting = new Sorting('name', 1);
     
-    const SpyQuery = class extends FakeQuery {
+    class SpyQuery extends FakeQuery {
         constructor() {
             super();
-            queryInstance = this;
+            captureInstance(this);
         }
-    };
+    }
 
     render(
         React.createElement(

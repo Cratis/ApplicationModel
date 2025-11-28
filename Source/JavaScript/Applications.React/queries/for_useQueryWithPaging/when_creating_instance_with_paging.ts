@@ -9,8 +9,15 @@ import { FakeQuery } from '../for_useQuery/FakeQuery';
 import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
 import { Paging } from '@cratis/applications/queries';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 describe('when creating instance with paging', () => {
     let fetchStub: sinon.SinonStub;
+    let queryInstance: FakeQuery | null = null;
+
+    const captureInstance = (instance: FakeQuery) => {
+        queryInstance = instance;
+    };
 
     beforeEach(() => {
         fetchStub = sinon.stub(global, 'fetch').resolves({
@@ -29,15 +36,14 @@ describe('when creating instance with paging', () => {
         httpHeadersCallback: () => ({ 'X-Custom-Header': 'custom-value' })
     };
 
-    let queryInstance: FakeQuery | null = null;
     const paging = new Paging(1, 10);
     
-    const SpyQuery = class extends FakeQuery {
+    class SpyQuery extends FakeQuery {
         constructor() {
             super();
-            queryInstance = this;
+            captureInstance(this);
         }
-    };
+    }
 
     render(
         React.createElement(
@@ -51,11 +57,11 @@ describe('when creating instance with paging', () => {
     );
 
     it('should set paging on the query', () => queryInstance!.paging.should.equal(paging));
-    it('should set microservice from context', () => queryInstance!['_microservice'].should.equal('test-microservice'));
-    it('should set api base path from context', () => queryInstance!['_apiBasePath'].should.equal('/api'));
-    it('should set origin from context', () => queryInstance!['_origin'].should.equal('https://example.com'));
+    it('should set microservice from context', () => ((queryInstance as any)._microservice).should.equal('test-microservice'));
+    it('should set api base path from context', () => ((queryInstance as any)._apiBasePath).should.equal('/api'));
+    it('should set origin from context', () => ((queryInstance as any)._origin).should.equal('https://example.com'));
     it('should set http headers callback from context', () => {
-        const headers = queryInstance!['_httpHeadersCallback']();
+        const headers = (queryInstance as any)._httpHeadersCallback();
         headers.should.deep.equal({ 'X-Custom-Header': 'custom-value' });
     });
 });

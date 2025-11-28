@@ -8,9 +8,15 @@ import { useQuery } from '../useQuery';
 import { FakeQuery } from './FakeQuery';
 import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 describe('when creating instance', () => {
-    let capturedQuery: FakeQuery | null = null;
     let fetchStub: sinon.SinonStub;
+    let queryInstance: FakeQuery | null = null;
+
+    const captureInstance = (instance: FakeQuery) => {
+        queryInstance = instance;
+    };
 
     beforeEach(() => {
         fetchStub = sinon.stub(global, 'fetch').resolves({
@@ -22,11 +28,6 @@ describe('when creating instance', () => {
         fetchStub.restore();
     });
 
-    const TestComponent = ({ onQuery }: { onQuery: (query: FakeQuery) => void }) => {
-        const [result] = useQuery(FakeQuery);
-        return React.createElement('div', null, 'Test');
-    };
-
     const config: ApplicationModelConfiguration = {
         microservice: 'test-microservice',
         apiBasePath: '/api',
@@ -34,17 +35,12 @@ describe('when creating instance', () => {
         httpHeadersCallback: () => ({ 'X-Custom-Header': 'custom-value' })
     };
 
-    // We need to capture the query instance via a different approach
-    // Since useQuery doesn't expose the query instance directly, we'll spy on the QueryFor constructor
-    let queryInstance: FakeQuery | null = null;
-    const originalConstructor = FakeQuery.prototype.constructor;
-    
-    const SpyQuery = class extends FakeQuery {
+    class SpyQuery extends FakeQuery {
         constructor() {
             super();
-            queryInstance = this;
+            captureInstance(this);
         }
-    };
+    }
 
     render(
         React.createElement(
@@ -57,11 +53,11 @@ describe('when creating instance', () => {
         )
     );
 
-    it('should set microservice from context', () => queryInstance!['_microservice'].should.equal('test-microservice'));
-    it('should set api base path from context', () => queryInstance!['_apiBasePath'].should.equal('/api'));
-    it('should set origin from context', () => queryInstance!['_origin'].should.equal('https://example.com'));
+    it('should set microservice from context', () => ((queryInstance as any)._microservice).should.equal('test-microservice'));
+    it('should set api base path from context', () => ((queryInstance as any)._apiBasePath).should.equal('/api'));
+    it('should set origin from context', () => ((queryInstance as any)._origin).should.equal('https://example.com'));
     it('should set http headers callback from context', () => {
-        const headers = queryInstance!['_httpHeadersCallback']();
+        const headers = (queryInstance as any)._httpHeadersCallback();
         headers.should.deep.equal({ 'X-Custom-Header': 'custom-value' });
     });
 });
