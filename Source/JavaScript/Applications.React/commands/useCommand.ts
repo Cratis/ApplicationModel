@@ -40,6 +40,7 @@ export function useCommand<
         instance.setMicroservice(applicationModel.microservice);
         instance.setApiBasePath(applicationModel.apiBasePath ?? '');
         instance.setOrigin(applicationModel.origin ?? '');
+        instance.setHttpHeadersCallback(applicationModel.httpHeadersCallback ?? (() => ({})));
         if (initialValues) {
             instance.setInitialValues(initialValues);
         }

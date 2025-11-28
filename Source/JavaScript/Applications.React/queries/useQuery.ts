@@ -31,6 +31,7 @@ function useQueryInternal<TDataType, TQuery extends IQueryFor<TDataType>, TArgum
         instance.setMicroservice(applicationModel.microservice);
         instance.setApiBasePath(applicationModel.apiBasePath ?? '');
         instance.setOrigin(applicationModel.origin ?? '');
+        instance.setHttpHeadersCallback(applicationModel.httpHeadersCallback ?? (() => ({})));
         return instance;
     }, []);
 
