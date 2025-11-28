@@ -45,6 +45,7 @@ type ServerCommandResult = {
     }[];
     exceptionMessages: string[];
     exceptionStackTrace: string;
+    authorizationFailureReason: string;
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
     response: any;
@@ -65,6 +66,7 @@ export class CommandResult<TResponse = object> implements ICommandResult<TRespon
         validationResults: [],
         exceptionMessages: [],
         exceptionStackTrace: '',
+        authorizationFailureReason: '',
         response: null
     }, Object, false);
 
@@ -78,6 +80,7 @@ export class CommandResult<TResponse = object> implements ICommandResult<TRespon
             validationResults: [],
             exceptionMessages: exceptionMessages,
             exceptionStackTrace: '',
+            authorizationFailureReason: '',
             response: null
         }, Object, false);
     };
@@ -107,6 +110,9 @@ export class CommandResult<TResponse = object> implements ICommandResult<TRespon
     readonly exceptionStackTrace: string;
 
     /** @inheritdoc */
+    readonly authorizationFailureReason: string;
+
+    /** @inheritdoc */
     readonly response?: TResponse;
 
     /**
@@ -124,6 +130,7 @@ export class CommandResult<TResponse = object> implements ICommandResult<TRespon
         this.validationResults = result.validationResults.map(_ => new ValidationResult(_.severity, _.message, _.members, _.state));
         this.exceptionMessages = result.exceptionMessages;
         this.exceptionStackTrace = result.exceptionStackTrace;
+        this.authorizationFailureReason = result.authorizationFailureReason;
 
         if (result.response) {
             if (isResponseTypeEnumerable) {

@@ -60,6 +60,19 @@ export class CommandResults implements ICommandResult {
     }
 
     /** @inheritdoc */
+    get authorizationFailureReason(): string {
+        const reasons: string[] = [];
+
+        for (const result of this._commandResultsPerCommand.values()) {
+            if (result.authorizationFailureReason) {
+                reasons.push(result.authorizationFailureReason);
+            }
+        }
+
+        return reasons.join('; ');
+    }
+
+    /** @inheritdoc */
     get exceptionStackTrace(): string {
         let stackTraces = '';
 

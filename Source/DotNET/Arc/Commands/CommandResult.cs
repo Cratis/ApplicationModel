@@ -54,6 +54,11 @@ public class CommandResult
     public string ExceptionStackTrace { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the reason for authorization failure, if any.
+    /// </summary>
+    public string AuthorizationFailureReason { get; set; } = string.Empty;
+
+    /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing a successful command execution.
     /// </summary>
     /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
@@ -64,8 +69,9 @@ public class CommandResult
     /// Creates a new <see cref="CommandResult"/> representing an unauthorized command execution.
     /// </summary>
     /// <param name="correlationId">The <see cref="CorrelationId"/> associated with the command.</param>
+    /// <param name="reason">Optional reason for the authorization failure.</param>
     /// <returns>A <see cref="CommandResult"/>.</returns>
-    public static CommandResult Unauthorized(CorrelationId correlationId) => new() { CorrelationId = correlationId, IsAuthorized = false };
+    public static CommandResult Unauthorized(CorrelationId correlationId, string? reason = default) => new() { CorrelationId = correlationId, IsAuthorized = false, AuthorizationFailureReason = reason ?? string.Empty };
 
     /// <summary>
     /// Creates a new <see cref="CommandResult"/> representing a missing handler.

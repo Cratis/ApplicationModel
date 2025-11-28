@@ -44,6 +44,11 @@ import { ValidationResult } from '../validation/ValidationResult';
      readonly exceptionMessages: string[];
 
      /**
+      * Gets the reason for authorization failure, if any.
+      */
+     readonly authorizationFailureReason: string;
+
+     /**
       * Gets the stack trace if there was an exception.
       */
      readonly exceptionStackTrace: string;
