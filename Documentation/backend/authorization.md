@@ -15,6 +15,141 @@ app.UseAuthorization();
 > Note: If you're interested in leveraging the Microsoft Identity way of working with identity,
 > read more about [Microsoft Identity integration](./microsoft-identity.md)
 
+## Protecting All Endpoints by Default
+
+By default, ASP.NET Core endpoints are accessible to anonymous users unless explicitly protected with authorization attributes. You can change this behavior to require authentication for all endpoints by setting a fallback authorization policy.
+
+### Using Fallback Policy
+
+The fallback policy applies to all endpoints that don't have an explicit authorization policy:
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+With this configuration:
+
+- **All endpoints require authentication by default** - No anonymous access unless explicitly allowed
+- **Use `[AllowAnonymous]`** to opt specific endpoints out of the requirement
+- **Explicit `[Authorize]` attributes still work** - They override the fallback policy with their own requirements
+
+> **Note**: Fallback policies are a standard ASP.NET Core authorization feature. For more details on authorization policies, policy requirements, and advanced scenarios, refer to the [ASP.NET Core authorization documentation](https://learn.microsoft.com/aspnet/core/security/authorization/policies).
+
+### Allowing Anonymous Access with Fallback Policy
+
+When using a fallback policy, use `[AllowAnonymous]` to make specific endpoints publicly accessible:
+
+```csharp
+// This command requires authentication (from fallback policy)
+[Command]
+public record ProcessOrder(OrderId Id)
+{
+    public void Handle(IOrderService orders) => orders.Process(Id);
+}
+
+// This command is publicly accessible despite the fallback policy
+[Command]
+[AllowAnonymous]
+public record GetPublicCatalog()
+{
+    public Catalog Handle(ICatalogService catalog) => catalog.GetPublic();
+}
+```
+
+### AllowAnonymous Inheritance
+
+The `[AllowAnonymous]` attribute can be applied at different levels and follows specific inheritance rules:
+
+| Scenario | Result |
+| -------- | ------ |
+| `[AllowAnonymous]` on type | All methods inherit anonymous access |
+| `[AllowAnonymous]` on method | Method allows anonymous access |
+| `[Authorize]` on method with `[AllowAnonymous]` on type | Method requires authorization (overrides type) |
+| Both `[AllowAnonymous]` and `[Authorize]` on same member | Error - throws `AmbiguousAuthorizationLevel` |
+
+```csharp
+// Type-level AllowAnonymous - all methods allow anonymous access
+[AllowAnonymous]
+public record PublicQueries
+{
+    public static IEnumerable<Product> GetProducts() => /* ... */;
+    public static IEnumerable<Category> GetCategories() => /* ... */;
+}
+
+// Method-level authorization overrides type-level AllowAnonymous
+[AllowAnonymous]
+public record MixedQueries
+{
+    // Inherits [AllowAnonymous] from type
+    public static IEnumerable<Product> GetPublicProducts() => /* ... */;
+
+    // Requires authorization despite type having [AllowAnonymous]
+    [Authorize]
+    public static IEnumerable<Product> GetInternalProducts() => /* ... */;
+}
+
+// ERROR: This will throw AmbiguousAuthorizationLevel at startup
+[AllowAnonymous]
+[Authorize]  // Cannot have both on the same member!
+public record InvalidCommand
+{
+    public void Handle() { }
+}
+```
+
+> **Warning**: Applying both `[AllowAnonymous]` and `[Authorize]` to the same type or method will result in an `AmbiguousAuthorizationLevel` exception. This prevents accidental security misconfigurations.
+
+### Custom Fallback Policies
+
+You can create more specific fallback policies with custom requirements:
+
+```csharp
+// Require a specific role for all endpoints by default
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .RequireRole("User")
+        .Build());
+```
+
+Or create a named policy and set it as the fallback:
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireUserRole", policy => policy
+        .RequireAuthenticatedUser()
+        .RequireRole("User"))
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+### Default Policy vs Fallback Policy
+
+ASP.NET Core distinguishes between two policies:
+
+| Policy | Description |
+| ------ | ----------- |
+| **Default Policy** | Applied when `[Authorize]` is used without parameters |
+| **Fallback Policy** | Applied to endpoints without any authorization attributes |
+
+```csharp
+builder.Services.AddAuthorizationBuilder()
+    // Default policy: what [Authorize] means
+    .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build())
+    // Fallback policy: applied when no [Authorize] attribute is present
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build());
+```
+
+> **Recommendation**: For most secure applications, set a fallback policy that requires authentication. This follows the principle of "secure by default" - developers must explicitly opt-in to anonymous access rather than accidentally leaving endpoints unprotected.
+
 ## Role-Based Authorization
 
 The Application Model provides two convenient ways to implement role-based authorization:

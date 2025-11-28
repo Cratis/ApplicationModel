@@ -59,50 +59,9 @@ public class CommandPipeline(
             var response = await commandHandler.Handle(commandContext);
             if (response is not null)
             {
-                if (response is ITuple tuple)
-                {
-                    var tupleResult = ProcessTuple(tuple, commandContext);
-
-                    if (tupleResult.ResponseValue is not null)
-                    {
-                        var commandResultType = typeof(CommandResult<>).MakeGenericType(tupleResult.ResponseValue.GetType());
-                        commandContext = commandContext with { Response = tupleResult.ResponseValue };
-                        result = CreateCommandResultWithResponse(correlationId, tupleResult.ResponseValue);
-                    }
-
-                    foreach (var valueToHandle in tupleResult.ValuesToHandle)
-                    {
-                        if (valueToHandle is IOneOf oneOf)
-                        {
-                            result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
-                        }
-                        else
-                        {
-                            result.MergeWith(await valueHandlers.Handle(commandContext, valueToHandle));
-                        }
-                    }
-                }
-                else if (response is IOneOf oneOf)
-                {
-                    if (valueHandlers.CanHandle(commandContext, oneOf.Value))
-                    {
-                        result.MergeWith(await valueHandlers.Handle(commandContext, oneOf.Value));
-                    }
-                    else
-                    {
-                        commandContext = commandContext with { Response = oneOf.Value };
-                        result = CreateCommandResultWithResponse(correlationId, oneOf.Value);
-                    }
-                }
-                else if (valueHandlers.CanHandle(commandContext, response))
-                {
-                    result.MergeWith(await valueHandlers.Handle(commandContext, response));
-                }
-                else
-                {
-                    commandContext = commandContext with { Response = response };
-                    result = CreateCommandResultWithResponse(correlationId, response);
-                }
+                var processedResult = await ProcessResponseValue(response, commandContext, correlationId, result);
+                commandContext = processedResult.CommandContext;
+                result = processedResult.Result;
             }
         }
         catch (Exception ex)
@@ -146,7 +105,7 @@ public class CommandPipeline(
         return result;
     }
 
-    (object? ResponseValue, IEnumerable<object> ValuesToHandle) ProcessTuple(ITuple tuple, CommandContext commandContext)
+    (object? ResponseValue, IEnumerable<object> ValuesToHandle) ExtractValuesFromTuple(ITuple tuple, CommandContext commandContext)
     {
         var allValues = new List<object>();
         for (var i = 0; i < tuple.Length; i++)
@@ -162,13 +121,14 @@ public class CommandPipeline(
 
         foreach (var value in allValues)
         {
-            if (valueHandlers.CanHandle(commandContext, value))
+            if (CanHandleValue(value, commandContext))
             {
                 handledValues.Add(value);
             }
             else
             {
-                unhandledValues.Add(value);
+                var unwrappedValue = UnwrapValue(value);
+                unhandledValues.Add(unwrappedValue);
             }
         }
 
@@ -180,6 +140,147 @@ public class CommandPipeline(
         var responseValue = unhandledValues.Count == 1 ? unhandledValues[0] : null;
 
         return (responseValue, handledValues);
+    }
+
+    object UnwrapValue(object value)
+    {
+        return value switch
+        {
+            IOneOf oneOf => UnwrapValue(oneOf.Value),
+            _ => value
+        };
+    }
+
+    bool CanHandleValue(object value, CommandContext commandContext)
+    {
+        return value switch
+        {
+            IOneOf oneOf => CanHandleOneOfValue(oneOf, commandContext),
+            ITuple tuple => CanHandleTuple(tuple, commandContext),
+            _ => valueHandlers.CanHandle(commandContext, value)
+        };
+    }
+
+    bool CanHandleOneOfValue(IOneOf oneOf, CommandContext commandContext)
+    {
+        if (valueHandlers.CanHandle(commandContext, oneOf))
+        {
+            return true;
+        }
+
+        return CanHandleValue(oneOf.Value, commandContext);
+    }
+
+    bool CanHandleTuple(ITuple tuple, CommandContext commandContext)
+    {
+        for (var i = 0; i < tuple.Length; i++)
+        {
+            var element = tuple[i];
+            if (element is null)
+            {
+                continue;
+            }
+
+            if (!CanHandleValue(element, commandContext))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    async Task<(CommandContext CommandContext, CommandResult Result)> ProcessResponseValue(
+        object response,
+        CommandContext commandContext,
+        CorrelationId correlationId,
+        CommandResult result)
+    {
+        return response switch
+        {
+            ITuple tuple => await ProcessTupleResponse(tuple, commandContext, correlationId, result),
+            IOneOf oneOf => await ProcessOneOfResponse(oneOf, commandContext, correlationId, result),
+            _ => await ProcessSimpleResponse(response, commandContext, correlationId, result)
+        };
+    }
+
+    async Task<(CommandContext CommandContext, CommandResult Result)> ProcessTupleResponse(
+        ITuple tuple,
+        CommandContext commandContext,
+        CorrelationId correlationId,
+        CommandResult result)
+    {
+        var tupleResult = ExtractValuesFromTuple(tuple, commandContext);
+
+        if (tupleResult.ResponseValue is not null)
+        {
+            commandContext = commandContext with { Response = tupleResult.ResponseValue };
+            result = CreateCommandResultWithResponse(correlationId, tupleResult.ResponseValue);
+        }
+
+        foreach (var valueToHandle in tupleResult.ValuesToHandle)
+        {
+            result.MergeWith(await HandleValue(valueToHandle, commandContext));
+        }
+
+        return (commandContext, result);
+    }
+
+    async Task<(CommandContext CommandContext, CommandResult Result)> ProcessOneOfResponse(
+        IOneOf oneOf,
+        CommandContext commandContext,
+        CorrelationId correlationId,
+        CommandResult result)
+    {
+        var innerValue = oneOf.Value;
+        return await ProcessResponseValue(innerValue, commandContext, correlationId, result);
+    }
+
+    async Task<(CommandContext CommandContext, CommandResult Result)> ProcessSimpleResponse(
+        object response,
+        CommandContext commandContext,
+        CorrelationId correlationId,
+        CommandResult result)
+    {
+        if (valueHandlers.CanHandle(commandContext, response))
+        {
+            result.MergeWith(await valueHandlers.Handle(commandContext, response));
+        }
+        else
+        {
+            commandContext = commandContext with { Response = response };
+            result = CreateCommandResultWithResponse(correlationId, response);
+        }
+
+        return (commandContext, result);
+    }
+
+    async Task<CommandResult> HandleValue(object value, CommandContext commandContext)
+    {
+        return value switch
+        {
+            ITuple tuple => await HandleTuple(tuple, commandContext),
+            IOneOf oneOf => await HandleValue(oneOf.Value, commandContext),
+            _ => await valueHandlers.Handle(commandContext, value)
+        };
+    }
+
+    async Task<CommandResult> HandleTuple(ITuple tuple, CommandContext commandContext)
+    {
+        var result = CommandResult.Success(commandContext.CorrelationId);
+
+        for (var i = 0; i < tuple.Length; i++)
+        {
+            var element = tuple[i];
+            if (element is null)
+            {
+                continue;
+            }
+
+            result.MergeWith(await HandleValue(element, commandContext));
+        }
+
+        return result;
     }
 
     CorrelationId GetCorrelationId()

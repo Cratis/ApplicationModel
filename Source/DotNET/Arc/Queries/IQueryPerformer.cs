@@ -50,6 +50,11 @@ public interface IQueryPerformer
     QueryParameters Parameters { get; }
 
     /// <summary>
+    /// Gets a value indicating whether anonymous access is allowed for this query.
+    /// </summary>
+    bool AllowsAnonymousAccess { get; }
+
+    /// <summary>
     /// Checks if the current user is authorized to perform this query.
     /// </summary>
     /// <param name="context">The context for the query.</param>

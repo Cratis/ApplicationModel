@@ -25,28 +25,38 @@ Out-of-the-box the Cratis Arc comes with the following value handlers:
 ### Single Value Return
 
 ```csharp
-public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand>
+[Command]
+public record CreateUser(string Name, string Email)
 {
-    public Task<object?> Handle(CommandContext context)
+    public Guid Handle()
     {
         var userId = Guid.NewGuid();
         // This will automatically create CommandResult<Guid> with userId as response
-        return Task.FromResult<object?>(userId);
+        return userId;
     }
 }
 ```
 
-### OneOf Return
+### Result Return
 
 ```csharp
-public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand>
+using Cratis.Applications.Validation;
+using OneOf;
+
+[Command]
+public record CreateUser(string Name, string Email)
 {
-    public Task<object?> Handle(CommandContext context)
+    public Result<ValidationResult, UserId> Handle()
     {
-        var result = OneOf<UserId, ValidationResult>.FromT0(new UserId(Guid.NewGuid()));
+        if (!IsValidEmail(Email))
+        {
+            return ValidationResult.Error("Invalid email address");
+        }
+
+        var userId = new UserId(Guid.NewGuid());
         // If no handler can process UserId, it becomes CommandResult<UserId>
         // If ValidationResultResponseValueHandler processes ValidationResult, it affects the command result
-        return Task.FromResult<object?>(result);
+        return userId;
     }
 }
 ```
@@ -54,9 +64,10 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand>
 ### Tuple Return
 
 ```csharp
-public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand>
+[Command]
+public record CreateUser(string Name, string Email)
 {
-    public Task<object?> Handle(CommandContext context)
+    public (UserId, AuditInfo) Handle()
     {
         var userId = new UserId(Guid.NewGuid());
         var auditInfo = new AuditInfo(DateTime.UtcNow, "system");
@@ -64,7 +75,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand>
         // Each value is checked against available handlers
         // If no handler processes userId, it becomes the response
         // If a handler processes auditInfo, it affects the command result
-        return Task.FromResult<object?>((userId, auditInfo));
+        return (userId, auditInfo);
     }
 }
 ```
@@ -115,14 +126,51 @@ When a command handler returns a tuple, the command pipeline intelligently proce
    - If **multiple values** have no handlers, a `MultipleUnhandledTupleValuesException` is thrown
    - If **all values** have handlers, no response is set (`CommandContext.Response` remains `null`)
 
-### OneOf Processing Behavior
+### Result Processing Behavior
 
-When a command handler returns a `OneOf<T1, T2, ...>` value:
+When a command handler returns a `Result<TError, TSuccess>` or `OneOf<T1, T2, ...>` value:
 
-1. **The inner value** is extracted from the OneOf wrapper
+1. **The inner value** is extracted from the Result/OneOf wrapper
 2. **Value handlers are checked** using the `CanHandle` method on the inner value
 3. **If a handler can process it**, the handler processes the value
 4. **If no handler can process it**, the inner value automatically becomes a `CommandResult<T>` response
+
+#### Result with Tuple Alternatives
+
+The command pipeline also supports `Result` types where one or more alternatives are tuples. In this case:
+
+1. **The inner value** is extracted from the Result wrapper
+2. **If the inner value is a tuple**, it is processed using the standard tuple processing rules (see above)
+3. **If the inner value is a simple type**, it follows the standard Result processing rules
+
+```csharp
+using Cratis.Applications.Validation;
+using OneOf;
+
+[Command]
+public record CreateOrder(string CustomerId, List<OrderItem> Items)
+{
+    public Result<ValidationResult, (OrderId, OrderCreated)> Handle()
+    {
+        if (!IsValidOrder())
+        {
+            return ValidationResult.Error("Invalid order");
+        }
+        
+        var orderId = OrderId.New();
+        
+        // Return a tuple with response and event
+        return (orderId, new OrderCreated(orderId, CustomerId, Items));
+    }
+}
+```
+
+In this example:
+
+- When validation fails, the `ValidationResult` is returned and processed by the validation handler
+- When successful, the tuple is returned:
+  - `OrderCreated` is processed by its response value handler (e.g., event handler)
+  - `OrderId` becomes the response (assuming it has no handler)
 
 ## Key Benefits
 

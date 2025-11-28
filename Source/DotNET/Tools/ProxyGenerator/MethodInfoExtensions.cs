@@ -24,34 +24,35 @@ public static class MethodInfoExtensions
         if (method.ReturnType.IsAssignableTo<Task>() && method.ReturnType.IsGenericType)
         {
             var responseType = method.ReturnType.GetGenericArguments()[0];
-
-            if (responseType.IsGenericType && responseType.FullName!.StartsWith("System.ValueTuple"))
-            {
-                responseType = responseType.GetBestTupleType();
-            }
-
-            if (!responseType.IsOneOf())
-            {
-                hasResponse = true;
-                responseModel = responseType.ToModelDescriptor();
-            }
+            (hasResponse, responseModel) = GetResponseFromType(responseType);
         }
         else if (method.ReturnType != TypeExtensions._voidType && method.ReturnType != TypeExtensions._taskType)
         {
-            var returnType = method.ReturnType;
-            if (returnType.IsGenericType &&
-                returnType.FullName!.StartsWith("System.ValueTuple"))
-            {
-                returnType = returnType.GetBestTupleType();
-            }
-
-            if (!returnType.IsOneOf())
-            {
-                hasResponse = true;
-                responseModel = returnType.ToModelDescriptor();
-            }
+            (hasResponse, responseModel) = GetResponseFromType(method.ReturnType);
         }
 
         return (hasResponse, responseModel);
+    }
+
+    static (bool HasResponse, ModelDescriptor ResponseModel) GetResponseFromType(Type type)
+    {
+        if (type.IsGenericType && type.FullName!.StartsWith("System.ValueTuple"))
+        {
+            var bestType = type.GetBestTupleType();
+            return (true, bestType.ToModelDescriptor());
+        }
+
+        if (type.IsOneOf())
+        {
+            var bestType = type.GetBestOneOfResponseType();
+            if (bestType is not null)
+            {
+                return (true, bestType.ToModelDescriptor());
+            }
+
+            return (false, ModelDescriptor.Empty);
+        }
+
+        return (true, type.ToModelDescriptor());
     }
 }

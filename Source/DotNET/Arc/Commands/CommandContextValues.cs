@@ -9,6 +9,11 @@ namespace Cratis.Arc.Commands;
 public class CommandContextValues : Dictionary<string, object>
 {
     /// <summary>
+    /// Gets an empty set of command context values.
+    /// </summary>
+    public static readonly CommandContextValues Empty = new();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="CommandContextValues"/> class.
     /// </summary>
     public CommandContextValues()

@@ -16,6 +16,11 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
     /// <inheritdoc/>
     public bool IsAuthorized(Type type)
     {
+        if (type.IsAnonymousAllowed())
+        {
+            return true;
+        }
+
         var authorizeAttribute = type.GetCustomAttributes(typeof(AuthorizeAttribute), inherit: true)
             .OfType<AuthorizeAttribute>()
             .FirstOrDefault();
@@ -26,11 +31,27 @@ public class AuthorizationEvaluator(IHttpContextAccessor httpContextAccessor) : 
     /// <inheritdoc/>
     public bool IsAuthorized(MethodInfo method)
     {
-        var authorizeAttribute = method.GetCustomAttributes(typeof(AuthorizeAttribute), inherit: true)
+        if (method.IsAnonymousAllowed())
+        {
+            return true;
+        }
+
+        var methodAuthorizeAttribute = method.GetCustomAttributes(typeof(AuthorizeAttribute), inherit: true)
             .OfType<AuthorizeAttribute>()
             .FirstOrDefault();
 
-        return IsAuthorizedWithAttribute(authorizeAttribute);
+        if (methodAuthorizeAttribute is not null)
+        {
+            return IsAuthorizedWithAttribute(methodAuthorizeAttribute);
+        }
+
+        var declaringType = method.DeclaringType;
+        if (declaringType is not null)
+        {
+            return IsAuthorized(declaringType);
+        }
+
+        return true;
     }
 
     bool IsAuthorizedWithAttribute(AuthorizeAttribute? authorizeAttribute)

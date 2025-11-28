@@ -7,7 +7,8 @@ The Application Model provides comprehensive support for implementing commands i
 | Topic | Description |
 | ------- | ----------- |
 | [Controller based](./controller-based.md) | How to implement commands using controller-based approach. |
-| [Model Bound](./model-bound.md) | How to work with model-bound commands for simplified parameter handling. |
+| [Model Bound](./model-bound/index.md) | How to work with model-bound commands for simplified parameter handling. |
+| [Command Pipeline](./command-pipeline.md) | How to execute commands programmatically using `ICommandPipeline`. |
 | [Command Context](./command-context.md) | Understanding CommandContext and how to extend it with custom values for the non-controller-based pipeline. |
 | [Command Filters](./command-filters.md) | How to implement command filters for cross-cutting concerns in the non-controller-based pipeline. |
 | [Authorization](../authorization.md) | How to use authorization attributes for role-based and policy-based authorization. |

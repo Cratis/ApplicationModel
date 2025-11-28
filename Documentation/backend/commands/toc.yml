@@ -1,7 +1,9 @@
 - name: Controller based
   href: controller-based.md
 - name: Model Bound
-  href: model-bound.md
+  href: model-bound/toc.yml
+- name: Command Pipeline
+  href: command-pipeline.md
 - name: Command Context
   href: command-context.md
 - name: Command Filters

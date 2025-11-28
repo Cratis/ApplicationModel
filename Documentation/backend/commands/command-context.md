@@ -92,25 +92,17 @@ services.AddSingleton<ICommandContextValuesProvider, AuditContextValuesProvider>
 Within command handlers, filters, or other components in the command pipeline, you can access the current command context through the `ICommandContextAccessor`:
 
 ```csharp
-public class MyCommandHandler : ICommandHandler<MyCommand>
+[Command]
+public record MyCommand(string SomeProperty)
 {
-    private readonly ICommandContextAccessor _contextAccessor;
-
-    public MyCommandHandler(ICommandContextAccessor contextAccessor)
+    public object Handle(ICommandContextAccessor contextAccessor)
     {
-        _contextAccessor = contextAccessor;
-    }
-
-    public async Task<object> Handle(CommandContext context)
-    {
-        // Access values from the context
+        // Access values from the current context
+        var context = contextAccessor.Current;
         if (context.Values.TryGetValue("ExecutedBy", out var executedBy))
         {
             // Use the execution user information for logging or business logic
         }
-
-        // Or access through the accessor
-        var currentContext = _contextAccessor.Current;
         
         return new { Success = true };
     }

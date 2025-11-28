@@ -58,6 +58,7 @@ public static class CommandEndpointsExtensions
                     $"Execute {handler.CommandType.Name} command",
                     handler.CommandType,
                     location,
+                    handler.AllowsAnonymousAccess,
                     correlationIdAccessor,
                     appModelOptions,
                     jsonSerializerOptions,
@@ -71,6 +72,7 @@ public static class CommandEndpointsExtensions
                     $"Validate {handler.CommandType.Name} command without executing it",
                     handler.CommandType,
                     location,
+                    handler.AllowsAnonymousAccess,
                     correlationIdAccessor,
                     appModelOptions,
                     jsonSerializerOptions,
@@ -98,6 +100,7 @@ public static class CommandEndpointsExtensions
         string summary,
         Type commandType,
         IEnumerable<string> location,
+        bool allowAnonymous,
         ICorrelationIdAccessor correlationIdAccessor,
         ArcOptions appModelOptions,
         JsonSerializerOptions jsonSerializerOptions,
@@ -110,7 +113,7 @@ public static class CommandEndpointsExtensions
 
         // Note: If we use the minimal API "MapPost" with HttpContext parameter, it does not show up in Swagger
         //       So we use HttpRequest and HttpResponse instead
-        group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
+        var builder = group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
         {
             var context = request.HttpContext;
             context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
@@ -130,5 +133,10 @@ public static class CommandEndpointsExtensions
         .WithTags(string.Join('.', location))
         .WithName(endpointName)
         .WithSummary(summary);
+
+        if (allowAnonymous)
+        {
+            builder.AllowAnonymous();
+        }
     }
 }

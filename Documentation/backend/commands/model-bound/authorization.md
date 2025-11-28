@@ -1,0 +1,145 @@
+# Authorization
+
+Model-bound commands support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Application Model.
+
+## Using the Authorize Attribute
+
+You can secure commands using the standard `[Authorize]` attribute at the class level:
+
+```csharp
+[Command]
+[Authorize]
+public record AddItemToCart(string Sku, int Quantity)
+{
+    public void Handle(ICartService carts)
+    {
+        carts.AddItemToCart(Sku, Quantity);
+    }
+}
+```
+
+With role requirements:
+
+```csharp
+[Command]
+[Authorize(Roles = "Admin,Manager")]
+public record DeleteProduct(ProductId Id)
+{
+    public void Handle(IProductService products)
+    {
+        products.Delete(Id);
+    }
+}
+```
+
+## Using the Roles Attribute
+
+The Application Model provides a more convenient `[Roles]` attribute for cleaner syntax when specifying multiple roles:
+
+```csharp
+[Command]
+[Roles("Admin", "Manager")]
+public record UpdateProductPrice(ProductId Id, decimal NewPrice)
+{
+    public void Handle(IProductService products)
+    {
+        products.UpdatePrice(Id, NewPrice);
+    }
+}
+```
+
+The user needs to have **at least one** of the specified roles to execute the command.
+
+## Anonymous Access with AllowAnonymous
+
+Use `[AllowAnonymous]` to allow public access to specific commands. This is particularly useful when you have a global authorization requirement but need certain commands to be accessible without authentication:
+
+```csharp
+[Command]
+[AllowAnonymous]
+public record RegisterUser(string Email, string Password)
+{
+    public void Handle(IUserService users)
+    {
+        users.Register(Email, Password);
+    }
+}
+```
+
+### Combining with Global Authorization
+
+When your application has global authorization requirements (e.g., via `[Authorize]` on controllers or through middleware), you can use `[AllowAnonymous]` to exempt specific commands:
+
+```csharp
+// This command can be executed without authentication
+// even if global authorization is configured
+[Command]
+[AllowAnonymous]
+public record RequestPasswordReset(string Email)
+{
+    public void Handle(IPasswordResetService service)
+    {
+        service.SendResetEmail(Email);
+    }
+}
+
+// This command requires authentication
+[Command]
+[Authorize]
+public record ChangePassword(string CurrentPassword, string NewPassword)
+{
+    public void Handle(IPasswordService service)
+    {
+        service.ChangePassword(CurrentPassword, NewPassword);
+    }
+}
+```
+
+### Common Use Cases for AllowAnonymous
+
+- **User registration** - New users need to create accounts before they can authenticate
+- **Password reset requests** - Users who forgot their password can't authenticate
+- **Public data submissions** - Contact forms, feedback submissions
+- **Health checks or status endpoints** - System monitoring that shouldn't require authentication
+
+## Policy-Based Authorization
+
+For more complex authorization scenarios, you can use policy-based authorization:
+
+```csharp
+[Command]
+[Authorize(Policy = "RequireElevatedAccess")]
+public record PerformSensitiveOperation(string Data)
+{
+    public void Handle(ISensitiveOperationService service)
+    {
+        service.Execute(Data);
+    }
+}
+```
+
+## Authorization Results
+
+When authorization fails, the command pipeline returns an unauthorized result. The command handler will not be executed:
+
+```csharp
+var result = await commandPipeline.Execute(command);
+
+if (!result.IsAuthorized)
+{
+    // Handle unauthorized access
+    // The command was not executed
+}
+```
+
+## Best Practices
+
+1. **Apply authorization at the command level** - Each command should declare its own authorization requirements
+2. **Use the `[Roles]` attribute** - More convenient than the standard `[Authorize(Roles = "...")]` syntax
+3. **Be explicit about public access** - Use `[AllowAnonymous]` to clearly indicate intentionally public commands
+4. **Consider the principle of least privilege** - Only grant the minimum access required
+5. **Test authorization** - Ensure unauthorized users cannot execute protected commands
+6. **Use policies for complex logic** - Implement custom authorization policies for domain-specific rules
+7. **Log authorization failures** - Monitor and log unauthorized access attempts
+
+> **Note**: Authorization is evaluated as part of the command filter pipeline before the command handler is called. If authorization fails, the command will not be executed and the `CommandResult.IsAuthorized` will be `false`.
