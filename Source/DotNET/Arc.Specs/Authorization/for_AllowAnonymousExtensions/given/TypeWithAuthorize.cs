@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization.for_AllowAnonymousExtensions.given;
+namespace Cratis.Arc.Authorization.for_AllowAnonymousExtensions.given;
 
 [Authorize]
 public static class TypeWithAuthorize

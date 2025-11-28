@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization.for_AllowAnonymousExtensions.when_checking_if_anonymous_is_allowed;
+namespace Cratis.Arc.Authorization.for_AllowAnonymousExtensions.when_checking_if_anonymous_is_allowed;
 
 public class with_method_without_attributes_on_type_without_attributes : Specification
 {

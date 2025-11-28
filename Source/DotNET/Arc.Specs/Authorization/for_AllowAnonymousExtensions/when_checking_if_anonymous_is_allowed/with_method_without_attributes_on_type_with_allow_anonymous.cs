@@ -3,14 +3,14 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization.for_AllowAnonymousExtensions.when_checking_if_anonymous_is_allowed;
+namespace Cratis.Arc.Authorization.for_AllowAnonymousExtensions.when_checking_if_anonymous_is_allowed;
 
-public class with_method_with_allow_anonymous : Specification
+public class with_method_without_attributes_on_type_with_allow_anonymous : Specification
 {
     bool _result;
     MethodInfo _method;
 
-    void Establish() => _method = typeof(given.TypeWithMethodAllowAnonymous).GetMethod(nameof(given.TypeWithMethodAllowAnonymous.Method))!;
+    void Establish() => _method = typeof(given.TypeWithAllowAnonymous).GetMethod(nameof(given.TypeWithAllowAnonymous.Method))!;
 
     void Because() => _result = _method.IsAnonymousAllowed();
 

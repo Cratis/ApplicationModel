@@ -3,12 +3,11 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization.for_AllowAnonymousExtensions.given;
+namespace Cratis.Arc.Authorization.for_AllowAnonymousExtensions.given;
 
-[AllowAnonymous]
-[Authorize]
-public static class TypeWithAllowAnonymousAndAuthorize
+public static class TypeWithMethodAllowAnonymous
 {
+    [AllowAnonymous]
     public static void Method()
     {
     }
