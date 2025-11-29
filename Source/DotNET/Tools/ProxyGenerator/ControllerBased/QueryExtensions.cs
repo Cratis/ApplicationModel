@@ -64,7 +64,7 @@ public static class QueryExtensions
 
         imports = [.. imports.DistinctBy(_ => _.Type)];
 
-        var route = method.GetRoute(arguments);
+        var route = method.GetRoute(arguments, includeQueryStringParameters: false);
 
         return new(
             method.DeclaringType!,

@@ -15,6 +15,7 @@ import { useObservableQuery, useObservableQueryWithPaging, SetSorting, SetPage, 
 import { ObservableQueryFor, QueryResultWithState } from '@cratis/arc/queries';
 import { useObservableQuery } from '@cratis/arc.react/queries';
 {{/if}}
+import { ParameterDescriptor } from '@cratis/applications/reflection';
 {{#Imports}}
 import { {{Type}} } from '{{Module}}';
 {{/Imports}}
@@ -96,6 +97,16 @@ export class {{Name}} extends ObservableQueryFor<{{Model}}> {
             {{/RequiredParameters}}
         ];
     }
+
+    readonly parameterDescriptors: ParameterDescriptor[] = [
+        {{#Parameters}}
+        new ParameterDescriptor('{{camelcase Name}}', {{Constructor}}),
+        {{/Parameters}}
+    ];
+
+{{#Parameters}}
+    {{camelcase Name}}!: {{Type}};
+{{/Parameters}}
 
 {{#if IsEnumerable}}
     get sortBy(): {{Name}}SortBy {

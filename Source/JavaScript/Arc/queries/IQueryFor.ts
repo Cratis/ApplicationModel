@@ -3,13 +3,14 @@
 
 import { QueryResult } from './QueryResult';
 import { IQuery } from './IQuery';
+import { IHaveParameters } from '../reflection/IHaveParameters';
 
 /**
  * Defines the base of a query.
  * @template TDataType Type of model the query is for.
  * @template TArguments Optional type of arguments to use for the query.
  */
-export interface IQueryFor<TDataType, TArguments = object> extends IQuery {
+export interface IQueryFor<TDataType, TArguments = object> extends IQuery, IHaveParameters {
     readonly route: string;
     readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;

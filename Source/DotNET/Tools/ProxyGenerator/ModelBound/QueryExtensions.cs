@@ -85,11 +85,6 @@ public static class QueryExtensions
         var segments = location.Skip(segmentsToSkip).Select(segment => segment.ToKebabCase());
         var baseUrl = $"/{apiPrefix}/{string.Join('/', segments)}";
         var route = skipQueryNameInRoute ? baseUrl : $"{baseUrl}/{method.Name.ToKebabCase()}".ToLowerInvariant();
-        if (parameters.Any())
-        {
-            var queryString = string.Join('&', parameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
-            route = $"{route}?{queryString}";
-        }
 
         var relativePath = readModelType.ResolveTargetPath(segmentsToSkip);
         var imports = typesInvolved
@@ -171,7 +166,7 @@ public static class QueryExtensions
         var optional = parameterInfo.IsOptional() || parameterInfo.HasDefaultValue;
 
         // All query parameters are considered query string parameters
-        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, true);
+        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, type.Constructor, optional, true);
     }
 
     /// <summary>

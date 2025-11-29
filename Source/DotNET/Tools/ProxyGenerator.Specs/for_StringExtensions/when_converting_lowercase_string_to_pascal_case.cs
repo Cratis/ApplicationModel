@@ -1,0 +1,13 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Cratis.Applications.ProxyGenerator.for_StringExtensions;
+
+public class when_converting_lowercase_string_to_pascal_case : Specification
+{
+    string _result;
+
+    void Because() => _result = "hello".ToPascalCase();
+
+    [Fact] void should_capitalize_first_letter() => _result.ShouldEqual("Hello");
+}
