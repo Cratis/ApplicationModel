@@ -47,6 +47,7 @@ public static class PropertyExtensions
             propertyInfo.PropertyType,
             propertyInfo.Name!,
             type.Type,
+            type.Constructor,
             optional,
             propertyInfo.IsFromQueryParameter());
     }

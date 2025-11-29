@@ -166,7 +166,7 @@ public static class QueryExtensions
         var optional = parameterInfo.IsOptional() || parameterInfo.HasDefaultValue;
 
         // All query parameters are considered query string parameters
-        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, optional, true);
+        return new RequestParameterDescriptor(parameterInfo.ParameterType, parameterInfo.Name!, type.Type, type.Constructor, optional, true);
     }
 
     /// <summary>
