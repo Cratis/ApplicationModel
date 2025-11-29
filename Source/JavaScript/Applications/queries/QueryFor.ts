@@ -12,6 +12,8 @@ import { SortDirection } from './SortDirection';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
 import { GetHttpHeaders } from '../GetHttpHeaders';
+import { ParameterDescriptor } from '../reflection/ParameterDescriptor';
+import { ParametersHelper } from '../reflection/ParametersHelper';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
@@ -23,6 +25,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
     private _origin: string;
     private _httpHeadersCallback: GetHttpHeaders;
     abstract readonly route: string;
+    abstract readonly parameterDescriptors: ParameterDescriptor[];
     abstract get requiredRequestParameters(): string[];
     abstract defaultValue: TDataType;
     abortController?: AbortController;
@@ -70,7 +73,6 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
 
         args = args || this.parameters;
 
-        let actualRoute = this.route;
         if (!ValidateRequestArguments(this.constructor.name, this.requiredRequestParameters, args as object)) {
             return new Promise<QueryResult<TDataType>>((resolve) => {
                 resolve(noSuccess);
@@ -84,7 +86,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         this.abortController = new AbortController();
 
         const { route, unusedParameters } = UrlHelpers.replaceRouteParameters(this.route, args as object);
-        actualRoute = joinPaths(this._apiBasePath, route);
+        let actualRoute = joinPaths(this._apiBasePath, route);
         
         const additionalParams: Record<string, string | number> = {};
         if (this.paging.hasPaging) {
@@ -97,7 +99,10 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
             additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
-        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
+        // Collect parameter values from parameterDescriptors that are set
+        const parameterValues = ParametersHelper.collectParameterValues(this);
+
+        const queryParams = UrlHelpers.buildQueryParams({ ...unusedParameters, ...parameterValues }, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
             actualRoute += (actualRoute.includes('?') ? '&' : '?') + queryString;

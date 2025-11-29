@@ -16,8 +16,9 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="method">Method to get for.</param>
     /// <param name="parameters">Parameters for the method.</param>
+    /// <param name="includeQueryStringParameters">Whether to include query string parameters in the route.</param>
     /// <returns>The full route.</returns>
-    public static string GetRoute(this MethodInfo method, IEnumerable<RequestParameterDescriptor> parameters)
+    public static string GetRoute(this MethodInfo method, IEnumerable<RequestParameterDescriptor> parameters, bool includeQueryStringParameters = true)
     {
         var routeTemplates = new string[]
         {
@@ -35,11 +36,14 @@ public static class MethodInfoExtensions
 
         if (!route.StartsWith('/')) route = $"/{route}";
 
-        var queryStringParameters = parameters.Where(parameter => parameter.IsQueryStringParameter).ToArray();
-        if (queryStringParameters.Length > 0)
+        if (includeQueryStringParameters)
         {
-            var queryString = string.Join('&', queryStringParameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
-            route = $"{route}?{queryString}";
+            var queryStringParameters = parameters.Where(parameter => parameter.IsQueryStringParameter).ToArray();
+            if (queryStringParameters.Length > 0)
+            {
+                var queryString = string.Join('&', queryStringParameters.Select(_ => $"{_.Name}={{{_.Name}}}"));
+                route = $"{route}?{queryString}";
+            }
         }
         return route;
     }

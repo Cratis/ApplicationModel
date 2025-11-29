@@ -4,6 +4,7 @@
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { QueryResult } from './QueryResult';
 import { IQuery } from './IQuery';
+import { IHaveParameters } from '../reflection/IHaveParameters';
 
 /**
  * The delegate type representing the callback of result from the server.
@@ -15,7 +16,7 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
  * @template TDataType Type of model the query is for.
  * @template TArguments Optional type of arguments to use for the query.
  */
-export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery {
+export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery, IHaveParameters {
     readonly route: string;
     readonly requiredRequestParameters: string[];
     readonly defaultValue: TDataType;

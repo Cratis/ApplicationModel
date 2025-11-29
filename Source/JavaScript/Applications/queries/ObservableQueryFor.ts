@@ -17,6 +17,8 @@ import { Globals } from '../Globals';
 import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
 import { GetHttpHeaders } from '../GetHttpHeaders';
+import { ParameterDescriptor } from '../reflection/ParameterDescriptor';
+import { ParametersHelper } from '../reflection/ParametersHelper';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -33,6 +35,7 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
 
     abstract readonly route: string;
     abstract readonly defaultValue: TDataType;
+    abstract readonly parameterDescriptors: ParameterDescriptor[];
     abstract get requiredRequestParameters(): string[];
     sorting: Sorting;
     paging: Paging;
@@ -131,7 +134,10 @@ export abstract class ObservableQueryFor<TDataType, TParameters = object> implem
             additionalParams.sortDirection = (this.sorting.direction === SortDirection.descending) ? 'desc' : 'asc';
         }
 
-        const queryParams = UrlHelpers.buildQueryParams(unusedParameters, additionalParams);
+        // Collect parameter values from parameterDescriptors that are set
+        const parameterValues = ParametersHelper.collectParameterValues(this);
+
+        const queryParams = UrlHelpers.buildQueryParams({ ...unusedParameters, ...parameterValues }, additionalParams);
         const queryString = queryParams.toString();
         if (queryString) {
             actualRoute += (actualRoute.includes('?') ? '&' : '?') + queryString;
