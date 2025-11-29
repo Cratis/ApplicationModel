@@ -13,6 +13,7 @@ import { joinPaths } from '../joinPaths';
 import { UrlHelpers } from '../UrlHelpers';
 import { GetHttpHeaders } from '../GetHttpHeaders';
 import { ParameterDescriptor } from '../reflection/ParameterDescriptor';
+import { ParametersHelper } from '../reflection/ParametersHelper';
 
 /**
  * Represents an implementation of {@link IQueryFor}.
@@ -99,7 +100,7 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         }
 
         // Collect parameter values from parameterDescriptors that are set
-        const parameterValues = this.collectParameterValues();
+        const parameterValues = ParametersHelper.collectParameterValues(this);
 
         const queryParams = UrlHelpers.buildQueryParams({ ...unusedParameters, ...parameterValues }, additionalParams);
         const queryString = queryParams.toString();
@@ -133,16 +134,5 @@ export abstract class QueryFor<TDataType, TParameters = object> implements IQuer
         } catch {
             return noSuccess;
         }
-    }
-
-    private collectParameterValues(): Record<string, unknown> {
-        const values: Record<string, unknown> = {};
-        for (const descriptor of this.parameterDescriptors) {
-            const value = this[descriptor.name];
-            if (value !== undefined && value !== null) {
-                values[descriptor.name] = value;
-            }
-        }
-        return values;
     }
 }
