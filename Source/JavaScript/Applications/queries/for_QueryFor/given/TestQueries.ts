@@ -50,3 +50,23 @@ export class TestQueryForWithoutRequiredParams extends QueryFor<string, object> 
         super(String as Constructor, false);
     }
 }
+
+export class TestQueryForWithParameterDescriptorValues extends QueryFor<string, object> {
+    readonly route = '/api/search';
+    readonly defaultValue = '';
+    readonly parameterDescriptors: ParameterDescriptor[] = [
+        new ParameterDescriptor('filter', String as Constructor),
+        new ParameterDescriptor('limit', Number as Constructor)
+    ];
+
+    filter?: string;
+    limit?: number;
+
+    get requiredRequestParameters(): string[] {
+        return [];
+    }
+
+    constructor() {
+        super(String as Constructor, false);
+    }
+}

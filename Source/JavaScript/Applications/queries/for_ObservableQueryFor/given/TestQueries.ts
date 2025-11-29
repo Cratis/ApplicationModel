@@ -36,3 +36,23 @@ export class TestEnumerableQuery extends ObservableQueryFor<string[], { category
         super(String as Constructor, true);
     }
 }
+
+export class TestObservableQueryWithParameterDescriptorValues extends ObservableQueryFor<string, object> {
+    readonly route = '/api/search';
+    readonly defaultValue = '';
+    readonly parameterDescriptors: ParameterDescriptor[] = [
+        new ParameterDescriptor('filter', String as Constructor),
+        new ParameterDescriptor('limit', Number as Constructor)
+    ];
+
+    filter?: string;
+    limit?: number;
+
+    get requiredRequestParameters(): string[] {
+        return [];
+    }
+
+    constructor() {
+        super(String as Constructor, false);
+    }
+}
