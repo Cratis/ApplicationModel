@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import { useQuery } from '../useQuery';
 import { FakeQuery } from './FakeQuery';
 import { ArcContext, ArcConfiguration } from '../../ArcContext';
-import { Sorting } from '@cratis/applications/queries';
+import { Sorting } from '@cratis/arc/queries';
 
 describe('when creating instance with sorting', () => {
     let fetchStub: sinon.SinonStub;

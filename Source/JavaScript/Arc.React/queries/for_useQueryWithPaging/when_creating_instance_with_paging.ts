@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import { useQueryWithPaging } from '../useQuery';
 import { FakeQuery } from '../for_useQuery/FakeQuery';
 import { ArcContext, ArcConfiguration } from '../../ArcContext';
-import { Paging } from '@cratis/applications/queries';
+import { Paging } from '@cratis/arc/queries';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
