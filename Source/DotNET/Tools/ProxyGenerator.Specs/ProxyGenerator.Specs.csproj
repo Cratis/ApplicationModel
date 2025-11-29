@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>Cratis.Applications.ProxyGenerator.Specs</AssemblyName>
+        <RootNamespace>Cratis.Applications.ProxyGenerator</RootNamespace>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Disable StyleCop rules for test helper files containing multiple types -->
+        <NoWarn>$(NoWarn);SA1649;SA1402</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../ProxyGenerator/ProxyGenerator.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="$(MSBuildThisFileDirectory)../../GlobalUsings.Specs.cs" />
+    </ItemGroup>
+</Project>

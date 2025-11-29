@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore", "Sour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.Specs", "Source\DotNET\EntityFrameworkCore.Specs\EntityFrameworkCore.Specs.csproj", "{F91ECDB8-4D68-5B72-BA6A-9CDEEF86FF87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyGenerator.Specs", "Source\DotNET\Tools\ProxyGenerator.Specs\ProxyGenerator.Specs.csproj", "{DBB503AF-6402-4345-B38E-9CDD7E523F07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,18 @@ Global
 		{F91ECDB8-4D68-5B72-BA6A-9CDEEF86FF87}.Release|x64.Build.0 = Release|Any CPU
 		{F91ECDB8-4D68-5B72-BA6A-9CDEEF86FF87}.Release|x86.ActiveCfg = Release|Any CPU
 		{F91ECDB8-4D68-5B72-BA6A-9CDEEF86FF87}.Release|x86.Build.0 = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|x64.Build.0 = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Debug|x86.Build.0 = Debug|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|x64.ActiveCfg = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|x64.Build.0 = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|x86.ActiveCfg = Release|Any CPU
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,5 +224,6 @@ Global
 		{60FCC3B5-C43E-48DB-B824-048CB83E3121} = {856932F6-D1D1-41CC-808B-A3741518DACC}
 		{E90DBEC8-3D68-4B72-AA6A-8BDEEF86EF86} = {856932F6-D1D1-41CC-808B-A3741518DACC}
 		{F91ECDB8-4D68-5B72-BA6A-9CDEEF86FF87} = {856932F6-D1D1-41CC-808B-A3741518DACC}
+		{DBB503AF-6402-4345-B38E-9CDD7E523F07} = {A495F734-D1D2-453B-97BA-90FD1F95A66B}
 	EndGlobalSection
 EndGlobal
