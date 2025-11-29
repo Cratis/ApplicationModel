@@ -22,7 +22,7 @@ public interface IArcBuilder
     ITypes Types { get; }
 
     /// <summary>
-    /// Gets the Arc options.
+    /// Gets or sets the Arc options configurator.
     /// </summary>
-    Action<ArcOptions>? ConfigureOptions { get; }
+    Action<ArcOptions>? ConfigureOptions { get; set; }
 }
