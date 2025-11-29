@@ -6,7 +6,7 @@ import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import { useQuery } from '../useQuery';
 import { FakeQuery } from './FakeQuery';
-import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
+import { ArcContext, ArcConfiguration } from '../../ArcContext';
 import { Sorting } from '@cratis/applications/queries';
 
 describe('when creating instance with sorting', () => {
@@ -27,7 +27,7 @@ describe('when creating instance with sorting', () => {
         fetchStub.restore();
     });
 
-    const config: ApplicationModelConfiguration = {
+    const config: ArcConfiguration = {
         microservice: 'test-microservice'
     };
 
@@ -42,7 +42,7 @@ describe('when creating instance with sorting', () => {
 
     render(
         React.createElement(
-            ApplicationModelContext.Provider,
+            ArcContext.Provider,
             { value: config },
             React.createElement(() => {
                 useQuery(SpyQuery, undefined, sorting);

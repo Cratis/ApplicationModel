@@ -6,7 +6,7 @@ import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import { useQuery } from '../useQuery';
 import { FakeQuery } from './FakeQuery';
-import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
+import { ArcContext, ArcConfiguration } from '../../ArcContext';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -28,7 +28,7 @@ describe('when creating instance without optional context values', () => {
         fetchStub.restore();
     });
 
-    const config: ApplicationModelConfiguration = {
+    const config: ArcConfiguration = {
         microservice: 'test-microservice'
     };
 
@@ -41,7 +41,7 @@ describe('when creating instance without optional context values', () => {
 
     render(
         React.createElement(
-            ApplicationModelContext.Provider,
+            ArcContext.Provider,
             { value: config },
             React.createElement(() => {
                 useQuery(SpyQuery);

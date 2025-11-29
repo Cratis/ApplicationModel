@@ -5,7 +5,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { useCommand } from '../useCommand';
 import { FakeCommand } from './FakeCommand';
-import { ApplicationModelContext, ApplicationModelConfiguration } from '../../ApplicationModelContext';
+import { ArcContext, ArcConfiguration } from '../../ArcContext';
 
 describe('when creating instance', () => {
     let capturedCommand: FakeCommand | null = null;
@@ -16,7 +16,7 @@ describe('when creating instance', () => {
         return React.createElement('div', null, 'Test');
     };
 
-    const config: ApplicationModelConfiguration = {
+    const config: ArcConfiguration = {
         microservice: 'test-microservice',
         apiBasePath: '/api',
         origin: 'https://example.com',
@@ -25,7 +25,7 @@ describe('when creating instance', () => {
 
     render(
         React.createElement(
-            ApplicationModelContext.Provider,
+            ArcContext.Provider,
             { value: config },
             React.createElement(TestComponent)
         )
