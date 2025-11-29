@@ -3,6 +3,7 @@
 
 import { QueryResult } from './QueryResult';
 import { IQuery } from './IQuery';
+import { ParameterDescriptor } from '../reflection/ParameterDescriptor';
 
 /**
  * Defines the base of a query.
@@ -12,6 +13,7 @@ import { IQuery } from './IQuery';
 export interface IQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
     readonly requiredRequestParameters: string[];
+    readonly parameterDescriptors: ParameterDescriptor[];
     readonly defaultValue: TDataType;
 
     /**

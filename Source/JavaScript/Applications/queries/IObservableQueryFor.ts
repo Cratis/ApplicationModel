@@ -4,6 +4,7 @@
 import { ObservableQuerySubscription } from './ObservableQuerySubscription';
 import { QueryResult } from './QueryResult';
 import { IQuery } from './IQuery';
+import { ParameterDescriptor } from '../reflection/ParameterDescriptor';
 
 /**
  * The delegate type representing the callback of result from the server.
@@ -18,6 +19,7 @@ export type OnNextResult<TDataType> = (data: TDataType) => void;
 export interface IObservableQueryFor<TDataType, TArguments = object> extends IQuery {
     readonly route: string;
     readonly requiredRequestParameters: string[];
+    readonly parameterDescriptors: ParameterDescriptor[];
     readonly defaultValue: TDataType;
 
     /**
