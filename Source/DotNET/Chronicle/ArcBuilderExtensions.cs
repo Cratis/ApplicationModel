@@ -11,7 +11,7 @@ namespace Cratis.Arc;
 public static class ArcBuilderExtensions
 {
     /// <summary>
-    /// Adds ApplicationModel support to Chronicle configuration.
+    /// Adds Chronicle support to Arc.
     /// </summary>
     /// <param name="builder">The <see cref="IArcBuilder"/> to add to.</param>
     /// <returns><see cref="IArcBuilder"/> for continuation.</returns>
