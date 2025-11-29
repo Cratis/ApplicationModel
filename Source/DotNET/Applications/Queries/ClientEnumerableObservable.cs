@@ -7,6 +7,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
 
+#if NET10_0_OR_GREATER
+/// <summary>
+/// Represents an implementation of <see cref="IClientEnumerableObservable"/>.
+/// </summary>
+/// <typeparam name="T">Type of data being observed.</typeparam>
+/// <param name="enumerable">The <see cref="IAsyncEnumerable{T}"/> to use for streaming.</param>
+/// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
+/// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="serverSentEventsConnectionHandler">The <see cref="IServerSentEventsConnectionHandler"/>.</param>
+/// <param name="logger">The <see cref="ILogger"/>.</param>
+public class ClientEnumerableObservable<T>(
+    IAsyncEnumerable<T> enumerable,
+    JsonOptions jsonOptions,
+    IWebSocketConnectionHandler webSocketConnectionHandler,
+    IServerSentEventsConnectionHandler serverSentEventsConnectionHandler,
+    ILogger<ClientEnumerableObservable<T>> logger)
+    : IClientEnumerableObservable, ISseObservable
+#else
 /// <summary>
 /// Represents an implementation of <see cref="IClientEnumerableObservable"/>.
 /// </summary>
@@ -21,6 +39,7 @@ public class ClientEnumerableObservable<T>(
     IWebSocketConnectionHandler webSocketConnectionHandler,
     ILogger<ClientEnumerableObservable<T>> logger)
     : IClientEnumerableObservable
+#endif
 {
     /// <inheritdoc/>
     public async Task HandleConnection(HttpContext httpContext)
@@ -72,4 +91,33 @@ public class ClientEnumerableObservable<T>(
         await cts.CancelAsync();
         await tsc.Task;
     }
+
+#if NET10_0_OR_GREATER
+    /// <inheritdoc/>
+    public async Task StreamAsSse(HttpContext httpContext)
+    {
+        await serverSentEventsConnectionHandler.StreamQueryResults<T>(
+            httpContext,
+            CreateQueryResultStream(),
+            jsonOptions.JsonSerializerOptions,
+            httpContext.RequestAborted,
+            logger);
+    }
+
+    async IAsyncEnumerable<QueryResult> CreateQueryResultStream()
+    {
+        await foreach (var item in enumerable)
+        {
+            if (item is null)
+            {
+                continue;
+            }
+
+            yield return new QueryResult
+            {
+                Data = item
+            };
+        }
+    }
+#endif
 }

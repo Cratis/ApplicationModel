@@ -10,12 +10,15 @@ Queries are used for retrieving data and are a key component of CQRS (Command Qu
 | [Controller based](./controller-based.md) | How to implement queries using controller-based approach. |
 | [Model Bound](./model-bound.md) | How to work with model-bound queries for simplified parameter handling. |
 | [Query Pipeline](./query-pipeline.md) | Understanding the query pipeline and how queries are processed. |
+| [Observable Transports](./observable-transports.md) | Configure and use WebSocket and Server-Sent Events for observable queries. |
 | [Authorization](../authorization.md) | How to use authorization attributes for role-based and policy-based authorization. |
 | [Validation](./validation.md) | How to implement validation for query parameters. |
 
 > **💡 Query Filters**: The query pipeline supports filters for cross-cutting concerns like validation and authorization. See the [Query Pipeline](./query-pipeline.md#query-filters) section for details on built-in filters and creating custom ones.
 
 > **💡 Frontend Integration**: Automatically generate TypeScript proxies for your queries with the [Proxy Generation](../proxy-generation.md) feature.
+
+> **💡 Observable Queries**: Starting with .NET 10, observable queries support both WebSocket and Server-Sent Events (SSE) transports. See [Observable Transports](./observable-transports.md) for configuration options.
 
 ## Overview
 

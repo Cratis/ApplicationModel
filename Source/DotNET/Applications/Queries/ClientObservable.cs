@@ -10,6 +10,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Cratis.Applications.Queries;
 
+#if NET10_0_OR_GREATER
+/// <summary>
+/// Represents an implementation of <see cref="IClientObservable"/>.
+/// </summary>
+/// <typeparam name="T">Type of data being observed.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ClientObservable{T}"/> class.
+/// </remarks>
+/// <param name="queryContext">The <see cref="QueryContext"/> the observable is for.</param>
+/// <param name="subject">The <see cref="ISubject{T}"/> the observable wraps.</param>
+/// <param name="jsonOptions">The <see cref="JsonOptions"/>.</param>
+/// <param name="webSocketConnectionHandler">The <see cref="IWebSocketConnectionHandler"/>.</param>
+/// <param name="serverSentEventsConnectionHandler">The <see cref="IServerSentEventsConnectionHandler"/>.</param>
+/// <param name="hostApplicationLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
+/// <param name="logger">The <see cref="ILogger"/>.</param>
+public class ClientObservable<T>(
+    QueryContext queryContext,
+    ISubject<T> subject,
+    JsonOptions jsonOptions,
+    IWebSocketConnectionHandler webSocketConnectionHandler,
+    IServerSentEventsConnectionHandler serverSentEventsConnectionHandler,
+    IHostApplicationLifetime hostApplicationLifetime,
+    ILogger<ClientObservable<T>> logger) : IClientObservable,
+    ISseObservable,
+    IAsyncEnumerable<T>
+#else
 /// <summary>
 /// Represents an implementation of <see cref="IClientObservable"/>.
 /// </summary>
@@ -29,7 +55,9 @@ public class ClientObservable<T>(
     JsonOptions jsonOptions,
     IWebSocketConnectionHandler webSocketConnectionHandler,
     IHostApplicationLifetime hostApplicationLifetime,
-    ILogger<ClientObservable<T>> logger) : IClientObservable, IAsyncEnumerable<T>
+    ILogger<ClientObservable<T>> logger) : IClientObservable,
+    IAsyncEnumerable<T>
+#endif
 {
     /// <summary>
     /// Notifies all subscribed and future observers about the arrival of the specified element in the sequence.
@@ -50,6 +78,19 @@ public class ClientObservable<T>(
     /// <inheritdoc/>
     public async Task HandleConnection(HttpContext httpContext) =>
         await HandleConnectionCore(httpContext);
+
+#if NET10_0_OR_GREATER
+    /// <inheritdoc/>
+    public async Task StreamAsSse(HttpContext httpContext)
+    {
+        await serverSentEventsConnectionHandler.StreamQueryResults<T>(
+            httpContext,
+            CreateQueryResultStream(),
+            jsonOptions.JsonSerializerOptions,
+            httpContext.RequestAborted,
+            logger);
+    }
+#endif
 
     async Task HandleConnectionCore(HttpContext httpContext)
     {
@@ -113,4 +154,20 @@ public class ClientObservable<T>(
             tcs.SetResult();
         }
     }
+
+#if NET10_0_OR_GREATER
+    async IAsyncEnumerable<QueryResult> CreateQueryResultStream()
+    {
+        await using var enumerator = GetAsyncEnumerator();
+
+        while (await enumerator.MoveNextAsync())
+        {
+            yield return new QueryResult
+            {
+                Paging = new(queryContext.Paging.Page, queryContext.Paging.Size, queryContext.TotalItems),
+                Data = enumerator.Current!
+            };
+        }
+    }
+#endif
 }
