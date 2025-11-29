@@ -14,7 +14,7 @@ This means that **command handlers can return any type of value**, and it will e
 
 ## Built-in Value Handlers
 
-Out-of-the-box the Cratis ApplicationModel comes with the following value handlers:
+Out-of-the-box the Cratis Arc comes with the following value handlers:
 
 | Type | Description |
 | ---- | ----------- |
@@ -40,7 +40,7 @@ public record CreateUser(string Name, string Email)
 ### Result Return
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -144,7 +144,7 @@ The command pipeline also supports `Result` types where one or more alternatives
 3. **If the inner value is a simple type**, it follows the standard Result processing rules
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]

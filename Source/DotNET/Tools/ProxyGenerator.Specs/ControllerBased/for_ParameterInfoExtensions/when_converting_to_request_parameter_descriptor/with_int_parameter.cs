@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using Cratis.Applications.ProxyGenerator.Templates;
+using Cratis.Arc.ProxyGenerator.Templates;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_ParameterInfoExtensions.when_converting_to_request_parameter_descriptor;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_ParameterInfoExtensions.when_converting_to_request_parameter_descriptor;
 
 public class with_int_parameter : Specification
 {

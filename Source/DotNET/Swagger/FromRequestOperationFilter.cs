@@ -1,12 +1,12 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.ModelBinding;
+using Cratis.Arc.ModelBinding;
 using Cratis.Reflection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Cratis.Applications.Swagger;
+namespace Cratis.Arc.Swagger;
 
 /// <summary>
 /// Represents an implementation of <see cref="IOperationFilter"/> that adds support for <see cref="FromRequestAttribute"/> attribute.

@@ -6,7 +6,7 @@ using Cratis.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Extension methods for adding DbContext services.

@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Search;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Represents an adapter for <see cref="IMongoCollection{T}"/> to overcome shortcomings of open generic service registrations with the default ServiceCollection registrations.

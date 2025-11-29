@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>Cratis.Arc.Chronicle</AssemblyName>
+        <RootNamespace>Cratis.Arc.Chronicle</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Cratis.Arc.Chronicle.Specs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../Arc/Arc.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cratis.Chronicle" />
+    </ItemGroup>
+</Project>

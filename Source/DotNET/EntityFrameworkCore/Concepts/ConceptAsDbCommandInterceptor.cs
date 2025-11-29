@@ -5,7 +5,7 @@ using System.Data.Common;
 using Cratis.Concepts;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Interceptor that unwraps ConceptAs parameter values to their underlying primitive values before SQL execution.

@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Options;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Represents an implementation of <see cref="IMongoDatabaseNameResolver"/> that resolves a configured database name.

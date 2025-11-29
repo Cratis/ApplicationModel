@@ -3,7 +3,7 @@
 
 using HandlebarsDotNet;
 
-namespace Cratis.Applications.ProxyGenerator.Templates;
+namespace Cratis.Arc.ProxyGenerator.Templates;
 
 /// <summary>
 /// Holds all the available templates.

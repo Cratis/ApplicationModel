@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_MethodInfoExtensions.when_checking_if_command_method;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_MethodInfoExtensions.when_checking_if_command_method;
 
 public class with_http_get_method : Specification
 {

@@ -8,16 +8,16 @@ Multi-tenancy in the Application Model is built around three core components:
 
 - **`TenantIdMiddleware`** - Automatically extracts and sets the tenant ID from HTTP headers
 - **`ITenantIdAccessor`** - Provides access to the current tenant ID throughout your application
-- **`ApplicationModelOptions`** - Configures the HTTP header used for tenant identification
+- **`ArcOptions`** - Configures the HTTP header used for tenant identification
 
 The system automatically handles tenant context propagation across async operations using `AsyncLocal<T>`, ensuring that the tenant ID is available throughout the entire request lifecycle.
 
 ## Configuration
 
-Multi-tenancy is configured through the `ApplicationModelOptions` class, specifically using the `Tenancy` property:
+Multi-tenancy is configured through the `ArcOptions` class, specifically using the `Tenancy` property:
 
 ```csharp
-builder.Services.Configure<ApplicationModelOptions>(options =>
+builder.Services.Configure<ArcOptions>(options =>
 {
     options.Tenancy.HttpHeader = "X-Tenant-ID"; // Custom header name
 });
@@ -48,7 +48,7 @@ The middleware is automatically added to your application pipeline when you conf
 The primary way to access the current tenant in your application is through dependency injection of `ITenantIdAccessor`:
 
 ```csharp
-using Cratis.Applications.Tenancy;
+using Cratis.Arc.Tenancy;
 
 public class MyService
 {

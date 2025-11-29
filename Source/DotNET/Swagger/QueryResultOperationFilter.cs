@@ -2,13 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Net;
-using Cratis.Applications.Queries;
+using Cratis.Arc.Queries;
 using Cratis.Concepts;
 using Cratis.Reflection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Cratis.Applications.Swagger;
+namespace Cratis.Arc.Swagger;
 
 /// <summary>
 /// Represents an implementation of <see cref="IOperationFilter"/> that adds the command result to the operation for command methods.

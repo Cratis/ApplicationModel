@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <AssemblyName>Cratis.Applications.ProxyGenerator</AssemblyName>
-        <RootNamespace>Cratis.Applications.ProxyGenerator</RootNamespace>
+        <AssemblyName>Cratis.Arc.ProxyGenerator</AssemblyName>
+        <RootNamespace>Cratis.Arc.ProxyGenerator</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackAsTool>true</PackAsTool>

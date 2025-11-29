@@ -55,7 +55,7 @@ When using automatic registration, the framework applies the following filtering
 If you have a DbContext that should not be automatically registered (for example, if it requires special configuration or should be registered manually), you can exclude it using the `IgnoreAutoRegistrationAttribute`:
 
 ```csharp
-using Cratis.Applications;
+using Cratis.Arc;
 
 [IgnoreAutoRegistration]
 public class SpecialDbContext : ReadOnlyDbContext

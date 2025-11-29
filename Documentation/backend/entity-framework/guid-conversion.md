@@ -56,7 +56,7 @@ The conversion will automatically:
 If you're not using the [`BaseDbContext`](./base-db-context.md), you can manually apply GUID conversion in your `DbContext`:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore;
+using Cratis.Arc.EntityFrameworkCore;
 
 public class StoreDbContext(DbContextOptions options) : DbContext(options)
 {

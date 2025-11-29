@@ -8,8 +8,8 @@ Rather than assembling disparate libraries and creating your own patterns, the A
 
 ## Packages / Deployables
 
-[![Nuget](https://img.shields.io/nuget/v/Cratis.Applications?logo=nuget)](http://nuget.org/packages/cratis.applications)
-[![NPM](https://img.shields.io/npm/v/@cratis/applications?label=@cratis/applications&logo=npm)](https://www.npmjs.com/package/@cratis/applications)
+[![Nuget](https://img.shields.io/nuget/v/Cratis.Arc?logo=nuget)](http://nuget.org/packages/Cratis.Arc)
+[![NPM](https://img.shields.io/npm/v/@cratis/arc?label=@cratis/arc&logo=npm)](https://www.npmjs.com/package/@cratis/arc)
 
 ## Key Benefits
 

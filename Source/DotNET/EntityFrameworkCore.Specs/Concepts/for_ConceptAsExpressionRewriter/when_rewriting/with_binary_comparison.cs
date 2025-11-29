@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsExpressionRewriter.when_rewriting;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsExpressionRewriter.when_rewriting;
 
 public class with_binary_comparison : Specification
 {

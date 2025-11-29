@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsQueryExpressionInterceptor;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsQueryExpressionInterceptor;
 
 public class when_query_compilation_starts : Specification
 {

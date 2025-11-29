@@ -35,7 +35,7 @@ All you need to do is inherit from `BaseDbContext` and register it as you'd do w
 Take the following `DbContext`:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore;
+using Cratis.Arc.EntityFrameworkCore;
 
 public class StoreDbContext : BaseDbContext
 {
@@ -49,4 +49,4 @@ Then you register it as you normally would:
 services.AddDbContext<StoreDbContext>(opt => ...);
 ```
 
-Or leveraging the [automatic database hookup](./automatic-database-hookup.md) extensions provided by Cratis ApplicationModel.
+Or leveraging the [automatic database hookup](./automatic-database-hookup.md) extensions provided by Cratis Arc.

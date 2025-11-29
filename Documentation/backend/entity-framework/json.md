@@ -28,7 +28,7 @@ Using JSON conversion provides several key benefits:
 Your entity models can use complex properties by marking them with the `[Json]` attribute:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore.Json;
+using Cratis.Arc.EntityFrameworkCore.Json;
 
 public class Customer
 {
@@ -62,7 +62,7 @@ The conversion will automatically:
 If you're not using the [`BaseDbContext`](./base-db-context.md), you can manually apply JSON conversion in your `DbContext`:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore.Json;
+using Cratis.Arc.EntityFrameworkCore.Json;
 
 public class StoreDbContext(DbContextOptions options) : DbContext(options)
 {

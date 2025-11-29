@@ -3,7 +3,7 @@
 
 using MongoDB.Bson.Serialization;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Defines a map for mapping a type to bson for MongoDB.

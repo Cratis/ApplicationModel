@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.ProxyGenerator;
+namespace Cratis.Arc.ProxyGenerator;
 
 /// <summary>
 /// Provides a set of extension methods to <see cref="string"/>.

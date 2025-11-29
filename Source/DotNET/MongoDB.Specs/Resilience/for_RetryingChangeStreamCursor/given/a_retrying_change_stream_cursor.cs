@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Castle.DynamicProxy;
-using Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue;
+using Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_RetryingChangeStreamCursor.given;
+namespace Cratis.Arc.MongoDB.Resilience.for_RetryingChangeStreamCursor.given;
 
 public class a_retrying_change_stream_cursor : Specification
 {

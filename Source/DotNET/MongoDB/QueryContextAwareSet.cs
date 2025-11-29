@@ -3,7 +3,7 @@
 
 using System.Collections;
 using System.Reflection;
-using Cratis.Applications.Queries;
+using Cratis.Arc.Queries;
 using Cratis.Strings;
 
 namespace MongoDB.Driver;
@@ -272,7 +272,7 @@ internal sealed class QueryContextAwareSet<TDocument> : IEnumerable<TDocument>
         var sortingFieldX = _getSortingField(value.Document);
         var sortingFieldY = _getSortingField(node.Value.Doucment);
         var comparison = _sortingFieldComparer.Compare(sortingFieldX, sortingFieldY);
-        comparison = _queryContext!.Sorting.Direction is Cratis.Applications.Queries.SortDirection.Descending ? comparison * -1 : comparison;
+        comparison = _queryContext!.Sorting.Direction is Cratis.Arc.Queries.SortDirection.Descending ? comparison * -1 : comparison;
         return comparison < 0;
     }
 

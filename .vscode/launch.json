@@ -23,7 +23,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "cwd": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator",
-            "program": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net9.0/Cratis.Applications.ProxyGenerator.dll",
+            "program": "${workspaceFolder}/Source/DotNET/Tools/ProxyGenerator/bin/Debug/net9.0/Cratis.Arc.ProxyGenerator.dll",
             "args": [
                 "/Volumes/Code/Bliksund/ewa-multiplatform/Source/Core/bin/Debug/net9.0/Core.dll",
                 "/Volumes/Code/Bliksund/ewa-multiplatform/Source/Core",

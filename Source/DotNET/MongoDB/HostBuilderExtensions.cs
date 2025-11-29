@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.Metrics;
-using Cratis.Applications;
-using Cratis.Applications.MongoDB;
+using Cratis.Arc;
+using Cratis.Arc.MongoDB;
 using Cratis.Metrics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ public static class HostBuilderExtensions
     static IMongoServerResolver? _serverResolver;
 
     /// <summary>
-    /// Use MongoDB in the solution. Configures default settings for the MongoDB Driver.
+    /// Add MongoDB to the solution. Configures default settings for the MongoDB Driver.
     /// </summary>
     /// <param name="builder"><see cref="IHostBuilder"/> to use MongoDB with.</param>
     /// <param name="configureOptions">Optional callback for configuring <see cref="MongoDBOptions"/>.</param>
@@ -32,7 +32,7 @@ public static class HostBuilderExtensions
     /// It will automatically hook up any implementations of <see cref="IBsonClassMapFor{T}"/>
     /// and <see cref="ICanFilterMongoDBConventionPacksForType"/>.
     /// </remarks>
-    public static IHostBuilder UseCratisMongoDB(
+    public static IHostBuilder AddCratisMongoDB(
         this IHostBuilder builder,
         Action<MongoDBOptions>? configureOptions = default,
         Action<IMongoDBBuilder>? configureMongoDB = default,
@@ -54,7 +54,7 @@ public static class HostBuilderExtensions
     {
         if (mongoDBBuilder.NamingPolicy is not null)
         {
-            DatabaseExtensions.SetNamingPolicy(mongoDBBuilder.NamingPolicy!);
+            DatabaseExtensions.SetNamingPolicy(mongoDBBuilder.NamingPolicy);
         }
     }
 

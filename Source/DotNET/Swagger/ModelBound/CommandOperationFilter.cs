@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Net;
-using Cratis.Applications.Commands;
+using Cratis.Arc.Commands;
 using Cratis.Concepts;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Cratis.Applications.Swagger.ModelBound;
+namespace Cratis.Arc.Swagger.ModelBound;
 
 /// <summary>
 /// Represents an implementation of <see cref="IOperationFilter"/> that adds command payload and result documentation for model-bound minimal APIs.

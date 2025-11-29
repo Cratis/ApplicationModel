@@ -4,7 +4,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Extensions for working with read-only DbContexts.

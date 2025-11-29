@@ -1,10 +1,10 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.EntityFrameworkCore.Json;
+using Cratis.Arc.EntityFrameworkCore.Json;
 using Cratis.Concepts;
 
-namespace Cratis.Applications.EntityFrameworkCore.for_BaseDbContext;
+namespace Cratis.Arc.EntityFrameworkCore.for_BaseDbContext;
 
 #pragma warning disable SA1402, SA1649 // Single type per file,  File name should match first type name
 

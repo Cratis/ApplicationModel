@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Cratis.Applications.Swagger</AssemblyName>
-        <RootNamespace>Cratis.Applications.Swagger</RootNamespace>
+        <AssemblyName>Cratis.Arc.Swagger</AssemblyName>
+        <RootNamespace>Cratis.Arc.Swagger</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Cratis.Fundamentals"/>
@@ -9,6 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../Applications/Applications.csproj" />
+        <ProjectReference Include="../Arc/Arc.csproj" />
     </ItemGroup>
 </Project>

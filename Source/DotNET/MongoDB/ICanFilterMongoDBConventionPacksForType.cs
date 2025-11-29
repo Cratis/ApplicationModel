@@ -3,7 +3,7 @@
 
 using MongoDB.Bson.Serialization.Conventions;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Defines a system that can tell whether a specific <see cref="Type"/> should be affected by a <see cref="IConventionPack"/>.

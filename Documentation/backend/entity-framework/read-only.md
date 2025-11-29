@@ -31,7 +31,7 @@ give you the common tools.
 All you need to do for your `DbContext` is to inherit from it as shown below:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore;
+using Cratis.Arc.EntityFrameworkCore;
 
 public class StoreDbContext : ReadOnlyDbContext
 {
@@ -56,7 +56,7 @@ This behavior aligns perfectly with the purpose-built read model approach—sinc
 If you want to disable automatic eager loading for a specific DbContext, you can override the `IsEagerLoadingEnabled` property:
 
 ```csharp
-using Cratis.Applications.EntityFrameworkCore;
+using Cratis.Arc.EntityFrameworkCore;
 
 public class StoreDbContext : ReadOnlyDbContext
 {

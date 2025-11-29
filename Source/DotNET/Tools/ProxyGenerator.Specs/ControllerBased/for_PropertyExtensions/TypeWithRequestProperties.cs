@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.ProxyGenerator.ControllerBased.for_MethodInfoExtensions;
+using Cratis.Arc.ProxyGenerator.ControllerBased.for_MethodInfoExtensions;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_PropertyExtensions;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_PropertyExtensions;
 
 public class TypeWithRequestProperties
 {

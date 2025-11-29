@@ -1,0 +1,16 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "dist/esm"
+    },
+    "references": [
+        {
+            "path": "../Arc"
+        }
+    ],
+    "exclude": [
+        "dist",
+        "**/for_*/**"
+    ]
+}

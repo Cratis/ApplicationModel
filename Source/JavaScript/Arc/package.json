@@ -1,0 +1,70 @@
+{
+    "name": "@cratis/arc",
+    "version": "1.0.0",
+    "description": "",
+    "author": "Cratis",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cratis/arc.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "dist",
+        "**/*.ts",
+        "**/*.tsx"
+    ],
+    "type": "module",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "require": "./dist/cjs/index.js",
+            "import": "./dist/esm/index.js"
+        },
+        "./commands": {
+            "types": "./dist/esm/commands/index.d.ts",
+            "import": "./dist/esm/commands/index.js",
+            "require": "./dist/cjs/commands/index.js"
+        },
+        "./identity": {
+            "types": "./dist/esm/identity/index.d.ts",
+            "import": "./dist/esm/identity/index.js",
+            "require": "./dist/cjs/identity/index.js"
+        },
+        "./queries": {
+            "types": "./dist/esm/queries/index.d.ts",
+            "import": "./dist/esm/queries/index.js",
+            "require": "./dist/cjs/queries/index.js"
+        },
+        "./validation": {
+            "types": "./dist/esm/validation/index.d.ts",
+            "import": "./dist/esm/validation/index.js",
+            "require": "./dist/cjs/validation/index.js"
+        },
+        "./reflection": {
+            "types": "./dist/esm/reflection/index.d.ts",
+            "import": "./dist/esm/reflection/index.js",
+            "require": "./dist/cjs/reflection/index.js"
+        }
+    },
+    "scripts": {
+        "prepare": "yarn g:build",
+        "clean": "yarn g:clean",
+        "build": "yarn g:build",
+        "lint": "yarn g:lint",
+        "lint:ci": "yarn g:lint:ci",
+        "test": "yarn g:test",
+        "test:watch": "yarn g:test:watch",
+        "ci": "yarn g:ci",
+        "up": "yarn g:up"
+    },
+    "dependencies": {
+        "@cratis/fundamentals": "^7.2.3"
+    }
+}

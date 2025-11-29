@@ -180,7 +180,7 @@ public record DeleteUser(string UserId);
 The `RolesAttribute` provides cleaner syntax for multiple roles:
 
 ```csharp
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 
 // Equivalent to [Authorize(Roles = "Admin,Manager")]
 [Roles("Admin", "Manager")]

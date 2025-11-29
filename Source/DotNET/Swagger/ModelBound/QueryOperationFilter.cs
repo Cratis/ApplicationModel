@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Net;
-using Cratis.Applications.Queries;
+using Cratis.Arc.Queries;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Cratis.Applications.Swagger.ModelBound;
+namespace Cratis.Arc.Swagger.ModelBound;
 
 /// <summary>
 /// Represents an implementation of <see cref="IOperationFilter"/> that adds query arguments and result documentation for model-bound minimal APIs.

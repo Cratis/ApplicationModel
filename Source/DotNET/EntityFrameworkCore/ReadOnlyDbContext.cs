@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Represents a DbContext that does not allow saving changes.

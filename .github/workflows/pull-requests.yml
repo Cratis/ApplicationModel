@@ -70,8 +70,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           message: |
-            NuGet packages for this PR, e.g. Cratis.Applications:
-            https://github.com/cratis/ApplicationModel/packages/1655206?version=${{ needs.release.outputs.version }}
+            NuGet packages for this PR, e.g. Cratis.Arc:
+            https://github.com/cratis/arc/packages/1655206?version=${{ needs.release.outputs.version }}
           allow-repeats: false
 
   publish-npm-packages:

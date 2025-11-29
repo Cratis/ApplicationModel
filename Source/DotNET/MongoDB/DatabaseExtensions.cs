@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.MongoDB;
+using Cratis.Arc.MongoDB;
 using Cratis.Serialization;
 
 namespace MongoDB.Driver;
@@ -29,7 +29,7 @@ public static class DatabaseExtensions
     /// <returns>The collection for your type.</returns>
     public static IMongoCollection<T> GetCollection<T>(this IMongoDatabase database, MongoCollectionSettings? settings = default)
     {
-        return database.GetCollection<T>(NamingPolicy!.GetReadModelName(typeof(T)), settings);
+        return database.GetCollection<T>(NamingPolicy.GetReadModelName(typeof(T)), settings);
     }
 
     /// <summary>

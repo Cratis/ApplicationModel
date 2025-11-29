@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Json.Nodes;
-using Cratis.Applications.Queries;
+using Cratis.Arc.Queries;
 using Microsoft.OpenApi;
 
-namespace Cratis.Applications.Swagger;
+namespace Cratis.Arc.Swagger;
 
 /// <summary>
 /// Provides utility methods for adding standard query parameters to Swagger operations.

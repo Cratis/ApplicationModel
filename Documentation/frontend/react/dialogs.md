@@ -31,7 +31,7 @@ There is a custom React hook for leveraging this type of dialog.
 
 ```tsx
 import { Button } from 'primereact/button';
-import { DialogButtons, useConfirmationDialog } from '@cratis/applications.react/dialogs';
+import { DialogButtons, useConfirmationDialog } from '@cratis/arc.react/dialogs';
 
 export const Feature = () => {
     const [showConfirmationDialog] = useConfirmationDialog('The title', 'The message', DialogButtons.YesNo);
@@ -52,7 +52,7 @@ returned.
 
 ```tsx
 import { Button } from 'primereact/button';
-import { DialogButtons, useConfirmationDialog } from '@cratis/applications.react/dialogs';
+import { DialogButtons, useConfirmationDialog } from '@cratis/arc.react/dialogs';
 
 export const Feature = () => {
     const [showConfirmationDialog] = useConfirmationDialog();
@@ -82,7 +82,7 @@ Below is an example using [Prime React](http://primereact.org) to create a confi
 
 ```tsx
 import { Dialog } from 'primereact/dialog';
-import { DialogButtons, DialogResult, ConfirmationDialogRequest, useDialogContext } from '@cratis/applications.react/dialogs';
+import { DialogButtons, DialogResult, ConfirmationDialogRequest, useDialogContext } from '@cratis/arc.react/dialogs';
 import { Button } from 'primereact/button';
 
 export const ConfirmationDialog = () => {
@@ -189,7 +189,7 @@ There is a custom React hook for showing a busy indicator.
 
 ```tsx
 import { Button } from 'primereact/button';
-import {useBusyIndicator } from '@cratis/applications.react/dialogs';
+import {useBusyIndicator } from '@cratis/arc.react/dialogs';
 
 export const Feature = () => {
     const [showBusyIndicator, closeBusyIndicator] = useBusyIndicator('The title', 'The message');
@@ -216,7 +216,7 @@ returned.
 
 ```tsx
 import { Button } from 'primereact/button';
-import {useBusyIndicator } from '@cratis/applications.react/dialogs';
+import {useBusyIndicator } from '@cratis/arc.react/dialogs';
 
 export const Feature = () => {
     const [showBusyIndicator, closeBusyIndicator] = useBusyIndicator();
@@ -253,7 +253,7 @@ Below is an example using [Prime React](http://primereact.org) to create a confi
 
 ```tsx
 import { Dialog } from 'primereact/dialog';
-import { BusyIndicatorDialogRequest, useDialogContext } from '@cratis/applications.react/dialogs';
+import { BusyIndicatorDialogRequest, useDialogContext } from '@cratis/arc.react/dialogs';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 export const BusyIndicatorDialog = () => {
@@ -310,7 +310,7 @@ The following code creates a custom dialog component using [Prime React](http://
 ```tsx
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { useDialogContext, DialogResult } from '@cratis/applications.react/dialogs';
+import { useDialogContext, DialogResult } from '@cratis/arc.react/dialogs';
 
 export const CustomDialog = () => {
     const { request, closeDialog } = useDialogContext();

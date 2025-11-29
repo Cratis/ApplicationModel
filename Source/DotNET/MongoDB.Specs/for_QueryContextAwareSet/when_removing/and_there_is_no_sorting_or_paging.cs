@@ -3,7 +3,7 @@
 
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.for_QueryContextAwareSet.when_removing;
+namespace Cratis.Arc.MongoDB.for_QueryContextAwareSet.when_removing;
 
 public class and_there_is_no_sorting_or_paging : Specification
 {

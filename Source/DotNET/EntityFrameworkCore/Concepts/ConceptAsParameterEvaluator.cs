@@ -4,7 +4,7 @@
 using System.Linq.Expressions;
 using Cratis.Concepts;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Expression visitor that evaluates ConceptAs closure variables to constants BEFORE EF Core parametrizes them.

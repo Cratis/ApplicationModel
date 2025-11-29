@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Cratis.Applications.EntityFrameworkCore.for_BaseDbContext.when_creating_model;
+namespace Cratis.Arc.EntityFrameworkCore.for_BaseDbContext.when_creating_model;
 
 public class with_types_in_both_json_and_regular_properties : given.a_base_db_context
 {

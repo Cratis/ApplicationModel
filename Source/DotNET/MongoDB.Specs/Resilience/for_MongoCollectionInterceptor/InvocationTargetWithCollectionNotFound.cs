@@ -7,7 +7,7 @@ using MongoDB.Driver.Core.Clusters;
 using MongoDB.Driver.Core.Connections;
 using MongoDB.Driver.Core.Servers;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor;
+namespace Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptor;
 
 public class InvocationTargetWithCollectionNotFound
 {

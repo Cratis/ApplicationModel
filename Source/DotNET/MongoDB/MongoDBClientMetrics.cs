@@ -4,7 +4,7 @@
 using Cratis.Metrics;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable MA0048 // File name must match type name

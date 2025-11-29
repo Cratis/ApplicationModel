@@ -1,0 +1,23 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": ".",
+        "outDir": "dist/esm",
+        "paths": {
+            "@cratis/arc/*": [
+                "../Arc/dist/esm/*"
+            ]
+        }
+    },
+    "references": [
+        {
+            "path": "../Arc"
+        }
+    ],
+    "exclude": [
+        "dist",
+        "**/for_*/**",
+        "vite.config.mts"
+    ]
+}

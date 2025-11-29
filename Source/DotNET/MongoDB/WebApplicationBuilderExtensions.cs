@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.MongoDB;
+using Cratis.Arc.MongoDB;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.AspNetCore.Builder;
@@ -27,7 +27,7 @@ public static class WebApplicationBuilderExtensions
         this WebApplicationBuilder builder,
         Action<MongoDBOptions>? configureOptions = default,
         Action<IMongoDBBuilder>? configureMongoDB = default,
-        string? mongoDBConfigSectionPath = null) => builder.Host.UseCratisMongoDB(
+        string? mongoDBConfigSectionPath = null) => builder.Host.AddCratisMongoDB(
             configureOptions,
             configureMongoDB,
             mongoDBConfigSectionPath);

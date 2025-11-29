@@ -1,11 +1,11 @@
 # Query Validation
 
-Query parameters can be validated using the application model's validation infrastructure.
+Query parameters can be validated using Arc's validation infrastructure.
 The validation happens in the query pipeline through validation filters before query performers are executed.
 
 ## Validation Filters
 
-The application model provides two validation filters that automatically validate query parameters:
+Arc provides two validation filters that automatically validate query parameters:
 
 ### DataAnnotationValidationFilter
 
@@ -155,7 +155,7 @@ public IEnumerable<DebitAccount> SearchAccounts([FromQuery] AccountSearchQuery q
 
 ## Standard Data Annotations
 
-The application model supports all standard validation attributes:
+Arc supports all standard validation attributes:
 
 ```csharp
 public record ProductSearchQuery(
@@ -221,7 +221,7 @@ public class AccountSearchQueryValidator : QueryValidator<AccountSearchQuery>
 
 ## FluentValidation Support
 
-The application model uses FluentValidation internally, giving you access to powerful validation rules:
+Arc uses FluentValidation internally, giving you access to powerful validation rules:
 
 ```csharp
 public class CustomerQueryValidator : QueryValidator<CustomerQuery>

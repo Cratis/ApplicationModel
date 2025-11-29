@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Generic value converter for ConceptAs types.

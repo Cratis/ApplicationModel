@@ -3,7 +3,7 @@
 
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue.when_intercepting;
+namespace Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptorForReturnValue.when_intercepting;
 
 public class collection_not_found_with_async_cursor_return_type : Specification
 {

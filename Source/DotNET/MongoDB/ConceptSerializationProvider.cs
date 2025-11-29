@@ -4,7 +4,7 @@
 using Cratis.Concepts;
 using MongoDB.Bson.Serialization;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Represents a <see cref="IBsonSerializationProvider"/> for concepts.

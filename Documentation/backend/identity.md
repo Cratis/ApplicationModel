@@ -30,7 +30,7 @@ Typically, you would like your ingress to do the composition of this information
 request without having the frontend do a second request to the server to get more details. And also for the authorization part, you'd like that to happen
 before you enter your application and return not authorized if your application is not allowing entry.
 
-If the user is authorized, the ApplicationModel Identity Provider endpoint will put the result as a base64 encoded JSON string on a cookie called `.cratis-identity`. This cookie is then
+If the user is authorized, the Arc Identity Provider endpoint will put the result as a base64 encoded JSON string on a cookie called `.cratis-identity`. This cookie is then
 automatically picked up by the frontend, read more about [frontend identity integration](../frontend/react/identity.md). The frontend will then use the cookie if present.
 
 To leverage this mechanism, simply map the endpoint to your application:
@@ -40,10 +40,10 @@ app.MapIdentityProvider();
 ```
 
 Once this is done you would simply add code to one of your microservices in your application that provides the additional identity details. You simply
-implement the `IProvideIdentityDetails` interface found in the `Cratis.ApplicationModel.Identity` namespace. It will automatically be discovered and
+implement the `IProvideIdentityDetails` interface found in the `Cratis.Arc.Identity` namespace. It will automatically be discovered and
 called when needed.
 
-This is unwrapped by the application model and encapsulates it into what is called a `IdentityProviderContext` for you as a developer to consume in a type-safe
+This is unwrapped by Arc and encapsulates it into what is called a `IdentityProviderContext` for you as a developer to consume in a type-safe
 manner.
 
 > Note: If your application has just one microservice, you let it implement the `IProvideIdentityDetails` interface.

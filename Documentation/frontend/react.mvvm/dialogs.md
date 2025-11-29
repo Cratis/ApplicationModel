@@ -41,8 +41,8 @@ Below is a full sample of how this works.
 
 ```ts
 import { injectable } from 'tsyringe';
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
+import { DialogResult } from '@cratis/arc.react/dialogs';
+import { DialogButtons, IDialogs } from '@cratis/arc.react.mvvm/dialogs';
 
 @injectable()
 export class YourViewModel {
@@ -76,8 +76,8 @@ Below is a full sample of how this works.
 
 ```ts
 import { injectable } from 'tsyringe';
-import { DialogResult } from '@cratis/applications.react/dialogs';
-import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
+import { DialogResult } from '@cratis/arc.react/dialogs';
+import { DialogButtons, IDialogs } from '@cratis/arc.react.mvvm/dialogs';
 
 @injectable()
 export class YourViewModel {
@@ -118,7 +118,7 @@ The following code creates a custom dialog component.
 ```tsx
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { useDialogContext } from '@cratis/applications.react/dialogs';
+import { useDialogContext } from '@cratis/arc.react/dialogs';
 
 export class CustomDialogRequest { 
     constructor(readonly content: string) {
@@ -153,9 +153,9 @@ With the custom dialog defined, we can start using it.
 Below is an example of a view that leverages the dialog and has a view model behind that actually shows it.
 
 ```tsx
-import { withViewModel } from '@cratis/applications.react.mvvm';
+import { withViewModel } from '@cratis/arc.react.mvvm';
 import { FeatureViewModel } from './FeatureViewModel';
-import { useDialogRequest } from '@cratis/applications.react.mvvm/dialogs';
+import { useDialogRequest } from '@cratis/arc.react.mvvm/dialogs';
 import { CustomDialog, CustomDialogRequest } from './CustomDialog';
 
 export const Feature = withViewModel<FeatureViewModel>(FeatureViewModel, ({ viewModel }) => {
@@ -188,7 +188,7 @@ The last piece of the puzzle is now to use it from the view model. Following is 
 
 ```ts
 import { injectable } from 'tsyringe';
-import { DialogButtons, IDialogs } from '@cratis/applications.react.mvvm/dialogs';
+import { DialogButtons, IDialogs } from '@cratis/arc.react.mvvm/dialogs';
 import { CustomDialogRequest } from './CustomDialogRequest;
 
 @injectable()
@@ -226,8 +226,8 @@ Your dialog view would then look like below:
 ```tsx
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { useDialogContext, CloseDialog } from '@cratis/applications.react/dialogs';
-import { withViewModel } from '@cratis/applications.react.mvvm';
+import { useDialogContext, CloseDialog } from '@cratis/arc.react/dialogs';
+import { withViewModel } from '@cratis/arc.react.mvvm';
 import { CustomDialogViewModel } from './CustomDialogViewModel';
 
 export class CustomDialogRequest { 
@@ -255,7 +255,7 @@ Your view model can then be something like the following:
 
 ```ts
 import { inject, injectable } from 'tsyringe';
-import { DialogContextContent, DialogResult } from '@cratis/applications.react/dialogs';
+import { DialogContextContent, DialogResult } from '@cratis/arc.react/dialogs';
 
 @injectable()
 export class CustomDialogViewModel {

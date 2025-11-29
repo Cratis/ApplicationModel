@@ -6,10 +6,10 @@ using System.Dynamic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using Cratis.Applications.ProxyGenerator.Templates;
+using Cratis.Arc.ProxyGenerator.Templates;
 using Microsoft.Extensions.DependencyModel;
 
-namespace Cratis.Applications.ProxyGenerator;
+namespace Cratis.Arc.ProxyGenerator;
 
 /// <summary>
 /// Extension methods for working with types.

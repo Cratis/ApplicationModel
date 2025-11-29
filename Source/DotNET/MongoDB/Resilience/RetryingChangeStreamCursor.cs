@@ -5,7 +5,7 @@ using Castle.DynamicProxy;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB.Resilience;
+namespace Cratis.Arc.MongoDB.Resilience;
 
 /// <summary>
 /// Represents a <see cref="IChangeStreamCursor{TDocument}"/> that retries creating the actual cursor until the collection exists.

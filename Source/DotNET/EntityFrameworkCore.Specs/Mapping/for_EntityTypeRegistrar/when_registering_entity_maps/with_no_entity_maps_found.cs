@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.when_registering_entity_maps;
+namespace Cratis.Arc.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.when_registering_entity_maps;
 
 public class with_no_entity_maps_found : Specification
 {

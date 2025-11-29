@@ -2,20 +2,20 @@
 
 ## Packages / Deployables
 
-[![Nuget](https://img.shields.io/nuget/v/Cratis.Applications?logo=nuget)](http://nuget.org/packages/cratis.applications)
-[![NPM](https://img.shields.io/npm/v/@cratis/applications?label=@cratis/applications&logo=npm)](https://www.npmjs.com/package/@cratis/applications)
+[![Nuget](https://img.shields.io/nuget/v/Cratis.Arc?logo=nuget)](http://nuget.org/packages/Cratis.Arc)
+[![NPM](https://img.shields.io/npm/v/@cratis/arc?label=@cratis/arc&logo=npm)](https://www.npmjs.com/package/@cratis/arc)
 
 ## Builds
 
-[![.NET Build](https://github.com/cratis/ApplicationModel/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/cratis/ApplicationModel/actions/workflows/dotnet-build.yml)
-[![JavaScript Build](https://github.com/cratis/ApplicationModel/actions/workflows/javascript-build.yml/badge.svg)](https://github.com/cratis/ApplicationModel/actions/workflows/javascript-build.yml)
+[![.NET Build](https://github.com/cratis/arc/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/cratis/arc/actions/workflows/dotnet-build.yml)
+[![JavaScript Build](https://github.com/cratis/arc/actions/workflows/javascript-build.yml/badge.svg)](https://github.com/cratis/arc/actions/workflows/javascript-build.yml)
 [![Documentation site](https://github.com/Cratis/Documentation/actions/workflows/pages.yml/badge.svg)](https://github.com/Cratis/Documentation/actions/workflows/pages.yml)
 
 ## Description
 
 The Cratis Application model represents an opinionated approach to building consistent applications based on the concepts behind CQRS.
-It offers extensions for different frameworks and is built on top of ASP.NET Core. One of the traits the application model has is the
-bridging between the backend and the frontend. The application model provides a tool, called **ProxyGenerator** that generates TypeScript
+It offers extensions for different frameworks and is built on top of ASP.NET Core. One of the traits of Arc has is the
+bridging between the backend and the frontend. Arc provides a tool, called **ProxyGenerator** that generates TypeScript
 code for recognized artifacts matching the criteria of what is considered a **commmand** or a **query**.
 
 ## Contributing

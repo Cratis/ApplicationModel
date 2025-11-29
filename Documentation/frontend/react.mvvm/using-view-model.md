@@ -3,7 +3,7 @@
 Every React functional component can have a view model. This is accomplished using the `withViewModel()` method.
 
 ```tsx
-import { withViewModel } from '@cratis/applications.react.mvvm';
+import { withViewModel } from '@cratis/arc.react.mvvm';
 
 export const Counter = withViewModel(CounterViewModel, ({viewModel}) => {
     return (
@@ -38,7 +38,7 @@ Components can have props associated with them. The `withViewModel` supports spe
 ability to take the props in as a parameter on the render function:
 
 ```tsx
-import { withViewModel } from '@cratis/applications.react.mvvm';
+import { withViewModel } from '@cratis/arc.react.mvvm';
 
 export interface CounterProps {
     initialValue: number;
@@ -73,7 +73,7 @@ If you're component only gets loaded once and the props typically don't change w
 and then loaded again, you can simply inject it as part of the constructor:
 
 ```ts
-import { WellKnownBindings } from '@cratis/applications.react.mvvm';
+import { WellKnownBindings } from '@cratis/arc.react.mvvm';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -89,7 +89,7 @@ For the scenario were the props are changing by a consumer of your component, yo
 It is a generic interface, but the generic argument is optional and is defaulted to `object` if not specified.
 
 ```ts
-import { IHandleProps } from '@cratis/applications.react.mvvm';
+import { IHandleProps } from '@cratis/arc.react.mvvm';
 
 export class MyViewModel implements IHandleProps<Props>  {
     handleProps(props: Props): void {
@@ -110,7 +110,7 @@ If you're component only gets loaded once and the parameters can't change withou
 and then loaded again, you can simply inject it as part of the constructor:
 
 ```ts
-import { WellKnownBindings } from '@cratis/applications.react.mvvm';
+import { WellKnownBindings } from '@cratis/arc.react.mvvm';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -130,7 +130,7 @@ interface is a better option. It is a generic interface, but the generic argumen
 `object` if not specified.
 
 ```ts
-import { IHandleParams } from '@cratis/applications.react.mvvm';
+import { IHandleParams } from '@cratis/arc.react.mvvm';
 
 export class MyViewModel implements IHandleParams<Params>  {
     handleParams(params: Params): void {
@@ -151,7 +151,7 @@ If you're component only gets loaded once and the query parameters can't change 
 and then loaded again, you can simply inject it as part of the constructor:
 
 ```ts
-import { WellKnownBindings } from '@cratis/applications.react.mvvm';
+import { WellKnownBindings } from '@cratis/arc.react.mvvm';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -171,7 +171,7 @@ interface is a better option. It is a generic interface, but the generic argumen
 `object` if not specified.
 
 ```ts
-import { IHandleQueryParams } from '@cratis/applications.react.mvvm';
+import { IHandleQueryParams } from '@cratis/arc.react.mvvm';
 
 export class MyViewModel implements IHandleQueryParams<Params>  {
     handleQueryParams(queryParams: QueryParams): void {
@@ -190,7 +190,7 @@ You can get notified when a view model is detached from its view, typically as a
 This is achieved by implementing the `IViewModelDetached` interface on your view model:
 
 ```ts
-import { IViewModelDetached } from '@cratis/applications.react.mvvm';
+import { IViewModelDetached } from '@cratis/arc.react.mvvm';
 
 export class MyViewModel implements IViewModelDetached {
     detached() {

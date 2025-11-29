@@ -65,7 +65,7 @@ public record OpenDebitAccount(
 A validator for this could then be as follows:
 
 ```csharp
-using Cratis.Applications.Commands;
+using Cratis.Arc.Commands;
 
 public class OpenDebitAccountValidator : CommandValidator<OpenDebitAccount>
 {
@@ -97,7 +97,7 @@ public record AccountName(string Value) : ConceptAs<string>(Value);
 By inheriting the `ConceptValidator<>` type you can create rules for the concept:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 public class AccountNameValidator : ConceptValidator<AccountName>
 {
@@ -123,7 +123,7 @@ apply the validation for all command operations that work on the `UserId` concep
 same type as an argument.
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 public class UserIdValidator : ConceptValidator<UserId>
 {
@@ -150,7 +150,7 @@ just the current. All validators are default, you can then use `ApplyConditionTo
 With the `ApplyConditionTo.CurrentValidator` you can merge into one rule-set:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 public class UserIdValidator : ConceptValidator<UserId>
 {
@@ -168,7 +168,7 @@ public class UserIdValidator : ConceptValidator<UserId>
 If you have multiple rules that should only apply when it is a **command** or **query** you can use the action method:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 public class UserIdValidator : ConceptValidator<UserId>
 {

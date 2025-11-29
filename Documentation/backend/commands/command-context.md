@@ -1,6 +1,6 @@
 # Command Context
 
-The `CommandContext` is a core component of the non-controller-based command pipeline in Cratis ApplicationModel. It provides contextual information and values that are available throughout the command execution lifecycle.
+The `CommandContext` is a core component of the non-controller-based command pipeline in Cratis Arc. It provides contextual information and values that are available throughout the command execution lifecycle.
 
 ## Overview
 

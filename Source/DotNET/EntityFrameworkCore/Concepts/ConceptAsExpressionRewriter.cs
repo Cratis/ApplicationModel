@@ -4,7 +4,7 @@
 using System.Linq.Expressions;
 using Cratis.Concepts;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Query expression visitor that rewrites ConceptAs property accesses and comparisons for EF Core query translation.

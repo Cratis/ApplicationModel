@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Provides extension methods for applying concept-based value conversions.

@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts.for_ConceptAsEvaluatableExpressionFilter.when_checking_is_evaluatable;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts.for_ConceptAsEvaluatableExpressionFilter.when_checking_is_evaluatable;
 
 public class with_concept_member_access_on_closure : given.an_evaluatable_expression_filter
 {

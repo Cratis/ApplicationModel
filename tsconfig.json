@@ -48,16 +48,16 @@
     ],
     "references": [
         {
-            "path": "./Source/JavaScript/Applications",
+            "path": "./Source/JavaScript/Arc",
         },
         {
-            "path": "./Source/JavaScript/Applications.React",
+            "path": "./Source/JavaScript/Arc.React",
         },
         {
-            "path": "./Source/JavaScript/Applications.React.MVVM",
+            "path": "./Source/JavaScript/Arc.React.MVVM",
         },
         {
-            "path": "./Source/JavaScript/Applications.Vite",
+            "path": "./Source/JavaScript/Arc.Vite",
         }
     ]
 }

@@ -1,6 +1,6 @@
 # Swagger
 
-The Cratis Application Model provides enhanced Swagger/OpenAPI support through the `Cratis.Applications.Swagger` package. This extension automatically configures Swagger to properly handle the Application Model's specific features and conventions.
+The Cratis Application Model provides enhanced Swagger/OpenAPI support through the `Cratis.Arc.Swagger` package. This extension automatically configures Swagger to properly handle the Application Model's specific features and conventions.
 
 ## Overview
 

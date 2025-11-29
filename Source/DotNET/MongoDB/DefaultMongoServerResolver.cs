@@ -4,7 +4,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace Cratis.Applications.MongoDB;
+namespace Cratis.Arc.MongoDB;
 
 /// <summary>
 /// Represents an implementation of <see cref="IMongoServerResolver"/> that resolves a configured <see cref="MongoUrl"/>.

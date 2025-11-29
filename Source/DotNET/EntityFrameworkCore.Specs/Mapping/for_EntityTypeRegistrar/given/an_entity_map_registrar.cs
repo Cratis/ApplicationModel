@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Cratis.Applications.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.given;
+namespace Cratis.Arc.EntityFrameworkCore.Mapping.for_EntityTypeRegistrar.given;
 
 public class an_entity_map_registrar : Specification
 {

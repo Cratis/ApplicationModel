@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_ParameterInfoExtensions.when_checking_if_from_query_argument;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_ParameterInfoExtensions.when_checking_if_from_query_argument;
 
 public class with_from_route_parameter : Specification
 {

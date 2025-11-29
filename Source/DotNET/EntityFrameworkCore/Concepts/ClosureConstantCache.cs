@@ -4,7 +4,7 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
-namespace Cratis.Applications.EntityFrameworkCore.Concepts;
+namespace Cratis.Arc.EntityFrameworkCore.Concepts;
 
 /// <summary>
 /// Shared storage for closure constants between the evaluatable filter and parameter evaluator.

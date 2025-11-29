@@ -8,7 +8,7 @@ through its interface `IIdentityProvider`.
 
 ```typescript
 import { injectable } from 'tsyringe';
-import { IIdentityProvider } from '@cratis/applications/identity';
+import { IIdentityProvider } from '@cratis/arc/identity';
 
 type IdentityDetails = {
     department: string,

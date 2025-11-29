@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Cratis.Applications.EntityFrameworkCore;
+namespace Cratis.Arc.EntityFrameworkCore;
 
 /// <summary>
 /// Provides extension methods for applying GUID conversions to entity properties.

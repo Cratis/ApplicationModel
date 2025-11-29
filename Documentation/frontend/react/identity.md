@@ -5,7 +5,7 @@ It provides an encapsulation that feels more natural to a React application.
 
 ## HTTP Headers
 
-Identity requests automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [ApplicationModel](./application-model.md). This is particularly useful for including authentication cookies or other headers needed for identity verification and retrieval.
+Identity requests automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./application-model.md). This is particularly useful for including authentication cookies or other headers needed for identity verification and retrieval.
 
 ## Identity provider context
 
@@ -14,7 +14,7 @@ To use the identity system you need to provide the identity context for your app
 At the top level of your application, typically in your `App.tsx` file you would add the provider by doing the following:
 
 ```typescript
-import { IdentityProvider } from '@cratis/applications.react/identity';
+import { IdentityProvider } from '@cratis/arc.react/identity';
 
 export const App = () => {
     return (
@@ -28,7 +28,7 @@ export const App = () => {
 This context can then be used anywhere by consuming the React context directly:
 
 ```typescript
-import { IdentityProviderContext } from '@cratis/applications.react/identity';
+import { IdentityProviderContext } from '@cratis/arc.react/identity';
 
 export const SomeComponent = () => {
     return (
@@ -54,7 +54,7 @@ the context you find a method called `refresh()`. Calling this will invalidate t
 the backend to get the current identity details.
 
 ```typescript
-import { IdentityProviderContext } from '@cratis/applications.react/identity';
+import { IdentityProviderContext } from '@cratis/arc.react/identity';
 
 export const SomeComponent = () => {
     return (
@@ -78,7 +78,7 @@ export const SomeComponent = () => {
 Anywhere within your application you can then access the identity by adding using the `useIdentity()` hook:
 
 ```typescript
-import { useIdentity } from '@cratis/applications.react/identity';
+import { useIdentity } from '@cratis/arc.react/identity';
 
 export const Home = () => {
     const identity = useIdentity();
@@ -96,7 +96,7 @@ By default, if not specified, the type of the details is `any`. You can change t
 the exact shape of what's expected:
 
 ```typescript
-import { useIdentity } from '@cratis/applications.react/identity';
+import { useIdentity } from '@cratis/arc.react/identity';
 
 type Identity = {
     firstName: string;
@@ -118,7 +118,7 @@ Since the `useIdentity()` returns an instance of the `IIdentityContext`. So for 
 accessible:
 
 ```typescript
-import { useIdentity } from '@cratis/applications.react/identity';
+import { useIdentity } from '@cratis/arc.react/identity';
 
 type Identity = {
     firstName: string;
@@ -146,7 +146,7 @@ This is especially useful when working in local development and the cookie has n
 The default value can be provided as an argument to the `useIdentity()` hook:
 
 ```typescript
-import { useIdentity } from '@cratis/applications.react/identity';
+import { useIdentity } from '@cratis/arc.react/identity';
 
 type Identity = {
     firstName: string;

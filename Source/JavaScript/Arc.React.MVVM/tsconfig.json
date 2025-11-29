@@ -1,0 +1,29 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": ".",
+        "outDir": "dist/esm",
+        "paths": {
+            "@cratis/arc/*": [
+                "../Arc/dist/esm/*"
+            ],
+            "@cratis/arc.react/*": [
+                "../Arc.React/dist/esm/*"
+            ]
+        }
+    },
+    "references": [
+        {
+            "path": "../Arc"
+        },
+        {
+            "path": "../Arc.React"
+        }
+    ],
+     "exclude": [
+        "dist",
+        "**/for_*/**",
+        "vite.config.mts"
+    ]
+}

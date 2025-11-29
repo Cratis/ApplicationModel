@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.MongoDB.Resilience.for_MongoCollectionInterceptor.when_intercepting;
+namespace Cratis.Arc.MongoDB.Resilience.for_MongoCollectionInterceptor.when_intercepting;
 
 public class collection_not_found_with_void_task : Specification
 {

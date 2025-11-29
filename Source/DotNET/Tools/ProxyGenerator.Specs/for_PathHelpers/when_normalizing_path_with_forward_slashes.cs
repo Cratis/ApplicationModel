@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.ProxyGenerator.for_PathHelpers;
+namespace Cratis.Arc.ProxyGenerator.for_PathHelpers;
 
 public class when_normalizing_path_with_forward_slashes : Specification
 {

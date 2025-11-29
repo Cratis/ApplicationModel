@@ -1,7 +1,7 @@
 {
   "cSpell.words": [
-    "applicationmodel",
     "appsettings",
+    "ASPNETCORE",
     "Autoincrement",
     "Brotli",
     "Bson",
@@ -11,12 +11,14 @@
     "customizer",
     "datatable",
     "Expando",
+    "Meziantou",
     "MVVM",
     "Navigations",
     "Npgsql",
     "NVARCHAR",
     "primeicons",
     "primereact",
+    "Roslynator",
     "Swashbuckle",
     "templating",
     "tseslint",
@@ -24,9 +26,10 @@
     "Unmap",
     "unmapping",
     "Unmaps",
-    "Upserts"
+    "Upserts",
+    "xunit"
   ],
-  "dotnet.defaultSolution": "ApplicationModel.sln",
+  "dotnet.defaultSolution": "Arc.sln",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "search.exclude": {
     "**/.yarn": true,

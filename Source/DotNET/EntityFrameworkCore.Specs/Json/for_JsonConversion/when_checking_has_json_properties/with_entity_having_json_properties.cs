@@ -4,7 +4,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Cratis.Applications.EntityFrameworkCore.Json.for_JsonConversion.when_checking_has_json_properties;
+namespace Cratis.Arc.EntityFrameworkCore.Json.for_JsonConversion.when_checking_has_json_properties;
 
 public class with_entity_having_json_properties : Specification
 {
