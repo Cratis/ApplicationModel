@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
+namespace Cratis.Arc.Authorization.for_AuthorizationEvaluator.when_checking_method_authorization;
 
 public class with_method_without_authorization_and_type_with_authorization_and_unauthenticated_user : given.an_authorization_helper
 {

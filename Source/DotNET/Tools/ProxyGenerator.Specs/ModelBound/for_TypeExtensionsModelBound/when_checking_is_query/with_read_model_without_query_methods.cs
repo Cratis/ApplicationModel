@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.ProxyGenerator.ModelBound.for_TypeExtensionsModelBound.when_checking_is_query;
+namespace Cratis.Arc.ProxyGenerator.ModelBound.for_TypeExtensionsModelBound.when_checking_is_query;
 
 public class with_read_model_without_query_methods : Specification
 {

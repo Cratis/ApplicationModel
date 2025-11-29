@@ -40,7 +40,7 @@ public record CreateUser(string Name, string Email)
 ### Result Return
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -144,7 +144,7 @@ The command pipeline also supports `Result` types where one or more alternatives
 3. **If the inner value is a simple type**, it follows the standard Result processing rules
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]

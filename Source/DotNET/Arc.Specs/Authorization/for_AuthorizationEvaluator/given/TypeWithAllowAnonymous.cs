@@ -3,7 +3,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization.for_AuthorizationEvaluator.given;
+namespace Cratis.Arc.Authorization.for_AuthorizationEvaluator.given;
 
 [AllowAnonymous]
 public class TypeWithAllowAnonymous;

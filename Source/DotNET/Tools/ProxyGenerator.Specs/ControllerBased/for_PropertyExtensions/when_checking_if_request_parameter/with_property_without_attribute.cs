@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_PropertyExtensions.when_checking_if_request_parameter;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_PropertyExtensions.when_checking_if_request_parameter;
 
 public class with_property_without_attribute : Specification
 {

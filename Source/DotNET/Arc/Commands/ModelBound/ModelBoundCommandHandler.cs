@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using Cratis.Applications.Authorization;
+using Cratis.Arc.Authorization;
 using Cratis.Tasks;
 
 namespace Cratis.Arc.Commands.ModelBound;

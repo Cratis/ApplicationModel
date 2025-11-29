@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.Authorization;
+namespace Cratis.Arc.Authorization;
 
 /// <summary>
 /// The exception that is thrown when a member has both <see cref="Microsoft.AspNetCore.Authorization.AuthorizeAttribute"/>

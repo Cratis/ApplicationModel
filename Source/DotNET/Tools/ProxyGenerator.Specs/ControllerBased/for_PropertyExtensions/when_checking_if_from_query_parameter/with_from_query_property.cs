@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ControllerBased.for_PropertyExtensions.when_checking_if_from_query_parameter;
+namespace Cratis.Arc.ProxyGenerator.ControllerBased.for_PropertyExtensions.when_checking_if_from_query_parameter;
 
 public class with_from_query_property : Specification
 {

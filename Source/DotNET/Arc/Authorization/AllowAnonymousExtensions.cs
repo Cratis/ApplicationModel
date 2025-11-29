@@ -4,7 +4,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Applications.Authorization;
+namespace Cratis.Arc.Authorization;
 
 /// <summary>
 /// Extension methods for checking if anonymous access is allowed.

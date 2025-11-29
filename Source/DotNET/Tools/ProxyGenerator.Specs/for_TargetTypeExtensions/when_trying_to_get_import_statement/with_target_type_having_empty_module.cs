@@ -1,9 +1,9 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Applications.ProxyGenerator.Templates;
+using Cratis.Arc.ProxyGenerator.Templates;
 
-namespace Cratis.Applications.ProxyGenerator.for_TargetTypeExtensions.when_trying_to_get_import_statement;
+namespace Cratis.Arc.ProxyGenerator.for_TargetTypeExtensions.when_trying_to_get_import_statement;
 
 public class with_target_type_having_empty_module : Specification
 {

@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Cratis.Applications.ProxyGenerator.ModelBound.for_TypeExtensionsModelBound.when_getting_query_methods;
+namespace Cratis.Arc.ProxyGenerator.ModelBound.for_TypeExtensionsModelBound.when_getting_query_methods;
 
 public class from_type_with_query_methods : Specification
 {

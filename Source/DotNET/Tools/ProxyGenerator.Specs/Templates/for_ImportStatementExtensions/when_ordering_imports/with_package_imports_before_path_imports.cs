@@ -1,7 +1,7 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Cratis.Applications.ProxyGenerator.Templates.for_ImportStatementExtensions.when_ordering_imports;
+namespace Cratis.Arc.ProxyGenerator.Templates.for_ImportStatementExtensions.when_ordering_imports;
 
 public class with_package_imports_before_path_imports : Specification
 {

@@ -32,7 +32,7 @@ As long as there are [response handlers](../response-value-handlers.md) for any 
 will be handled.
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -59,7 +59,7 @@ public record AddItemToCart(string Sku, int Quantity)
 You can also combine `Result` with tuples, allowing different alternatives to return different structures. This is useful when some code paths need to return a response with side effects (events, notifications), while others just return a simple value or error.
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -116,7 +116,7 @@ The command pipeline processes tuples as follows:
 ### Simple Tuple (2 values)
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 [Command]
 public record AddItemToCart(string Sku, int Quantity)
@@ -179,7 +179,7 @@ public (string, int, SomeEvent) Handle() => ("response1", 42, new SomeEvent());
 Tuples can also contain `Result` values. The command pipeline will unwrap the `Result` and process the inner value:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 using OneOf;
 
 [Command]
@@ -210,7 +210,7 @@ Your command handler method can also take dependencies to any services configure
 service collection. This is done by just specifying your dependencies on the methods signature:
 
 ```csharp
-using Cratis.Applications.Validation;
+using Cratis.Arc.Validation;
 
 [Command]
 public record AddItemToCart(string Sku, int Quantity)
