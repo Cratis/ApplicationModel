@@ -13,16 +13,12 @@ public class when_executing_command_with_validation_errors : given.a_scenario_we
 
     async Task Because()
     {
-        var properties = new Dictionary<string, object>
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(new ValidatedCommand
         {
-            ["name"] = string.Empty, // Required field missing
-            ["value"] = 150, // Out of range (1-100)
-            ["email"] = "not-an-email" // Invalid email format
-        };
-
-        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
-            "ValidatedCommand",
-            properties);
+            Name = string.Empty,
+            Value = 150,
+            Email = "not-an-email"
+        });
         _result = executionResult.Result;
     }
 

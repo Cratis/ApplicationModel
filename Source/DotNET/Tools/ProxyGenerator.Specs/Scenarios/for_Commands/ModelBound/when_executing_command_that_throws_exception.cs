@@ -13,14 +13,10 @@ public class when_executing_command_that_throws_exception : given.a_scenario_web
 
     async Task Because()
     {
-        var properties = new Dictionary<string, object>
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(new ExceptionCommand
         {
-            ["shouldThrow"] = true
-        };
-
-        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
-            "ExceptionCommand",
-            properties);
+            ShouldThrow = true
+        });
         _result = executionResult.Result;
     }
 

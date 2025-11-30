@@ -52,14 +52,19 @@ public sealed class JavaScriptHttpBridge : IDisposable
     /// The proxy's execute() method will call fetch(), which is intercepted and routed to HTTP.
     /// </summary>
     /// <typeparam name="TResult">The expected result type.</typeparam>
-    /// <param name="commandClassName">The name of the command class.</param>
-    /// <param name="properties">The property values to set on the command.</param>
+    /// <param name="command">The command object.</param>
     /// <returns>The command execution result.</returns>
     /// <exception cref="JavaScriptProxyExecutionFailed">The exception that is thrown when the proxy execution fails.</exception>
-    public async Task<CommandExecutionResult<TResult>> ExecuteCommandViaProxyAsync<TResult>(
-        string commandClassName,
-        Dictionary<string, object> properties)
+    public async Task<CommandExecutionResult<TResult>> ExecuteCommandViaProxyAsync<TResult>(object command)
     {
+        var commandClassName = command.GetType().Name;
+        var commandAsDocument = JsonSerializer.SerializeToDocument(command, _jsonOptions);
+        var properties = new Dictionary<string, object>();
+        foreach (var prop in commandAsDocument.RootElement.EnumerateObject())
+        {
+            properties[prop.Name] = prop.Value.Deserialize<object>(_jsonOptions)!;
+        }
+
         // Set up properties on the command
         var propAssignments = string.Concat(properties.Select(p =>
             $"__cmd.{p.Key} = {JsonSerializer.Serialize(p.Value, _jsonOptions)};"));
@@ -94,7 +99,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
 
         // Get the result from JavaScript
         var resultJson = Runtime.Evaluate<string>("JSON.stringify(__cmdResult)") ?? "{}";
-        var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<TResult>>(resultJson, _jsonOptions);
+        var commandResult = JsonSerializer.Deserialize<Commands.CommandResult<TResult>>(resultJson, _jsonOptions);
 
         return new CommandExecutionResult<TResult>(commandResult, result.ResponseJson);
     }
@@ -147,7 +152,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
 
         // Get the result from JavaScript
         var resultJson = Runtime.Evaluate<string>("JSON.stringify(__queryResult)") ?? "{}";
-        var queryResult = JsonSerializer.Deserialize<Arc.Queries.QueryResult>(resultJson, _jsonOptions);
+        var queryResult = JsonSerializer.Deserialize<Queries.QueryResult>(resultJson, _jsonOptions);
 
         return new QueryExecutionResult<TResult>(queryResult, result.ResponseJson);
     }
@@ -243,7 +248,7 @@ public class JavaScriptProxyExecutionFailed(string message) : Exception(message)
 /// <typeparam name="TResult">The type of the response data.</typeparam>
 /// <param name="Result">The command result.</param>
 /// <param name="RawJson">The raw JSON response.</param>
-public record CommandExecutionResult<TResult>(Arc.Commands.CommandResult<TResult>? Result, string RawJson);
+public record CommandExecutionResult<TResult>(Commands.CommandResult<TResult>? Result, string RawJson);
 
 /// <summary>
 /// Represents the result of performing a query through the JavaScript proxy.
@@ -251,4 +256,4 @@ public record CommandExecutionResult<TResult>(Arc.Commands.CommandResult<TResult
 /// <typeparam name="TResult">The type of the data.</typeparam>
 /// <param name="Result">The query result.</param>
 /// <param name="RawJson">The raw JSON response.</param>
-public record QueryExecutionResult<TResult>(Arc.Queries.QueryResult? Result, string RawJson);
+public record QueryExecutionResult<TResult>(Queries.QueryResult? Result, string RawJson);

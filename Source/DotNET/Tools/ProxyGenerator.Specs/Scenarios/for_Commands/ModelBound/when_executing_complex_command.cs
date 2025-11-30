@@ -13,28 +13,24 @@ public class when_executing_complex_command : given.a_scenario_web_application
 
     async Task Because()
     {
-        var properties = new Dictionary<string, object>
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<ComplexCommandResult>(new ComplexCommand
         {
-            ["nested"] = new Dictionary<string, object>
+            Nested = new NestedType
             {
-                ["name"] = "NestedName",
-                ["child"] = new Dictionary<string, object>
+                Name = "NestedName",
+                Child = new NestedChild
                 {
-                    ["id"] = Guid.NewGuid().ToString(),
-                    ["value"] = 123.45
+                    Id = Guid.NewGuid(),
+                    Value = 123.45
                 }
             },
-            ["items"] = new[] { "item1", "item2", "item3" },
-            ["values"] = new Dictionary<string, int>
+            Items = ["item1", "item2", "item3"],
+            Values = new Dictionary<string, int>
             {
                 ["key1"] = 1,
                 ["key2"] = 2
             }
-        };
-
-        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<ComplexCommandResult>(
-            "ComplexCommand",
-            properties);
+        });
         _result = executionResult.Result;
     }
 

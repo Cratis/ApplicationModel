@@ -13,14 +13,10 @@ public class when_executing_command_with_result : given.a_scenario_web_applicati
 
     async Task Because()
     {
-        var properties = new Dictionary<string, object>
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<CommandResultData>(new CommandWithResult
         {
-            ["input"] = "TestInput"
-        };
-
-        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<CommandResultData>(
-            "CommandWithResult",
-            properties);
+            Input = "TestInput"
+        });
         _result = executionResult.Result;
     }
 

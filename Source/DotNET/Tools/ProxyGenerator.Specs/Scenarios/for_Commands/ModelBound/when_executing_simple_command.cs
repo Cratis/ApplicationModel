@@ -13,15 +13,11 @@ public class when_executing_simple_command : given.a_scenario_web_application
 
     async Task Because()
     {
-        var properties = new Dictionary<string, object>
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(new SimpleCommand
         {
-            ["name"] = "TestName",
-            ["value"] = 42
-        };
-
-        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
-            "SimpleCommand",
-            properties);
+            Name = "TestName",
+            Value = 42
+        });
         _result = executionResult.Result;
     }
 
