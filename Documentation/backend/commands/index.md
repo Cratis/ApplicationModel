@@ -1,6 +1,6 @@
 # Commands
 
-The Application Model provides comprehensive support for implementing commands in your backend application. Commands represent actions or operations that modify the state of your system and are a fundamental part of CQRS (Command Query Responsibility Segregation) architecture.
+The Arc provides comprehensive support for implementing commands in your backend application. Commands represent actions or operations that modify the state of your system and are a fundamental part of CQRS (Command Query Responsibility Segregation) architecture.
 
 ## Topics
 
@@ -21,7 +21,7 @@ The Application Model provides comprehensive support for implementing commands i
 
 ## Overview
 
-Commands in the Application Model are designed to be simple to implement while providing powerful features like automatic validation, response handling, and integration with the overall application architecture. Whether you prefer controller-based approaches or model-bound commands, the framework provides the flexibility to work with your preferred style while maintaining consistency and best practices.
+Commands in the Arc are designed to be simple to implement while providing powerful features like automatic validation, response handling, and integration with the overall application architecture. Whether you prefer controller-based approaches or model-bound commands, the framework provides the flexibility to work with your preferred style while maintaining consistency and best practices.
 
 ### Key Features
 

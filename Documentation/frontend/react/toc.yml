@@ -1,4 +1,4 @@
-- name: Application Model
+- name: Arc
   href: application-model.md
 - name: Identity
   href: identity.md

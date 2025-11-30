@@ -4,7 +4,7 @@ Model-bound queries use method-level dependency injection, where dependencies ar
 
 ## How Method-Level Dependency Injection Works
 
-Unlike controller-based queries that use constructor injection, model-bound queries inject dependencies directly as method parameters. The Application Model framework automatically resolves these dependencies from the service collection based on their parameter types.
+Unlike controller-based queries that use constructor injection, model-bound queries inject dependencies directly as method parameters. The Arc framework automatically resolves these dependencies from the service collection based on their parameter types.
 
 ```csharp
 [ReadModel]

@@ -1,6 +1,6 @@
 # Common Column Types
 
-One of the key design goals of the Cratis Application Model support for Entity Framework is to make it easy to support
+One of the key design goals of Cratis Arc support for Entity Framework is to make it easy to support
 different databases for an application.
 
 If you're willing to hand-roll Entity Framework migrations, you can leverage the extension methods that will give you
@@ -8,7 +8,7 @@ a single migration but support different database types resolved at runtime.
 
 ## Available Column Extension Methods
 
-The following table shows all the column extension methods available in the Cratis Application Model:
+The following table shows all the column extension methods available in Cratis Arc:
 
 | Extension Method | Description | Supported Types | Parameters |
 |------------------|-------------|-----------------|------------|

@@ -1,6 +1,6 @@
 # Property Extensions
 
-The Cratis Application Model provides extension methods for Entity Framework Core's `PropertyBuilder` to help configure properties with cross-database compatibility in mind.
+Cratis Arc provides extension methods for Entity Framework Core's `PropertyBuilder` to help configure properties with cross-database compatibility in mind.
 
 ## AsGuid()
 

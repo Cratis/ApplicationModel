@@ -1,6 +1,6 @@
 # Microsoft Identity
 
-Cratis' Application Model provides a way to easily work with providing an object that represents properties the application finds important for describing
+Cratis' Arc provides a way to easily work with providing an object that represents properties the application finds important for describing
 the logged in user. The purpose of this is to provide details about the logged in user on the ingress level of an application and letting it
 provide the details on the request going in. Having it on the ingress level lets you expose the details to all microservices behind the ingress.
 
@@ -22,7 +22,7 @@ The token in the `x-ms-client-principal` should be a base64 encoded [Microsoft C
 
 ## Authentication / Authorization
 
-To get the Microsoft Client Principal supported in your backend, the Application Model offers an `AuthenticationHandler` that supports the HTTP headers and
+To get the Microsoft Client Principal supported in your backend, the Arc offers an `AuthenticationHandler` that supports the HTTP headers and
 does the right thing to put ASP.NET Core and every `HttpContext` in the right state.
 
 You can add this by calling the `AddMicrosoftIdentityPlatformIdentityAuthentication()` method on your services.

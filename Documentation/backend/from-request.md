@@ -8,7 +8,7 @@ well-structured request model.
 
 ## Overview
 
-When you decorate a parameter with `[FromRequest]`, the Application Model will:
+When you decorate a parameter with `[FromRequest]`, the Arc will:
 
 1. First attempt to bind the entire model from the request body (JSON)
 2. Then attempt to bind the same model from other request sources (route, query, headers)
@@ -203,7 +203,7 @@ This approach enables:
 
 ### Swagger/OpenAPI
 
-The Application Model includes a `FromRequestOperationFilter` that automatically updates your Swagger documentation to correctly represent `[FromRequest]` parameters as request body schemas rather than individual parameters.
+The Arc includes a `FromRequestOperationFilter` that automatically updates your Swagger documentation to correctly represent `[FromRequest]` parameters as request body schemas rather than individual parameters.
 
 ### Proxy Generation
 

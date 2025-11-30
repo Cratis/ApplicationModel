@@ -1,6 +1,6 @@
 # Authorization
 
-The Application Model provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results across controllers, model-bound commands, and queries.
+The Arc provides enhanced authorization capabilities that build upon ASP.NET Core's built-in authorization system. It offers role-based authorization through specialized attributes and integrates authorization state into command and query results across controllers, model-bound commands, and queries.
 
 ## Setup
 
@@ -152,7 +152,7 @@ builder.Services.AddAuthorizationBuilder()
 
 ## Role-Based Authorization
 
-The Application Model provides two convenient ways to implement role-based authorization:
+The Arc provides two convenient ways to implement role-based authorization:
 
 1. **Standard ASP.NET Core `[Authorize]` attribute** - Works with all scenarios
 2. **Convenient `[Roles]` attribute** - Simplifies multi-role scenarios with cleaner syntax
@@ -409,11 +409,11 @@ if (result.IsSuccess)
 
 ## Authorization Integration
 
-The Application Model integrates authorization state into command and query results, allowing you to handle authorization failures gracefully.
+The Arc integrates authorization state into command and query results, allowing you to handle authorization failures gracefully.
 
 ## Policy-Based Authorization
 
-For more complex authorization scenarios, you can use standard ASP.NET Core policy-based authorization alongside the Application Model:
+For more complex authorization scenarios, you can use standard ASP.NET Core policy-based authorization alongside the Arc:
 
 ```csharp
 [Command]
@@ -443,7 +443,7 @@ builder.Services.AddAuthorization(options =>
 
 ### Authorization Filters
 
-The Application Model includes authorization filters that integrate with the command and query pipeline:
+The Arc includes authorization filters that integrate with the command and query pipeline:
 
 ```csharp
 // Custom authorization logic can be implemented through command filters
@@ -482,7 +482,7 @@ public class QueryAuthorizationFilter : IQueryFilter
 
 ## Built-in Authorization Filter
 
-The Application Model provides a built-in `AuthorizationFilter` that automatically handles both `[Authorize]` and `[Roles]` attributes for commands and queries:
+The Arc provides a built-in `AuthorizationFilter` that automatically handles both `[Authorize]` and `[Roles]` attributes for commands and queries:
 
 - **Authentication**: Verifies user is authenticated
 - **Role-based authorization**: Checks required roles if specified

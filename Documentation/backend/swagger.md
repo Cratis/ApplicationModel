@@ -1,6 +1,6 @@
 # Swagger
 
-The Cratis Application Model provides enhanced Swagger/OpenAPI support through the `Cratis.Arc.Swagger` package. This extension automatically configures Swagger to properly handle the Application Model's specific features and conventions.
+Cratis Arc provides enhanced Swagger/OpenAPI support through the `Cratis.Arc.Swagger` package. This extension automatically configures Swagger to properly handle the Arc's specific features and conventions.
 
 ## Overview
 
@@ -102,9 +102,9 @@ The Swagger extension automatically adds consistent response schemas for all com
 
 All error responses use the same result schema as success responses but with error information populated.
 
-## Integration with Application Model Features
+## Integration with Arc Features
 
-The Swagger extension seamlessly integrates with other Application Model features:
+The Swagger extension seamlessly integrates with other Arc features:
 
 - **[FromRequest](./from-request.md)**: Properly documents complex model binding
 - **[Commands](./commands/)**: Accurate documentation of command endpoints and responses
@@ -112,4 +112,4 @@ The Swagger extension seamlessly integrates with other Application Model feature
 - **[Validation](./validation.md)**: Error responses include validation failure information
 - **[Without Wrappers](./without-wrappers.md)**: Works correctly with unwrapped responses
 
-This ensures that your API documentation accurately reflects the actual behavior and capabilities of your Application Model-based API.
+This ensures that your API documentation accurately reflects the actual behavior and capabilities of your Arc-based API.

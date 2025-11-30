@@ -1,4 +1,4 @@
-# Cratis Application Model
+# Cratis Arc
 
 ## Packages / Deployables
 
@@ -13,7 +13,7 @@
 
 ## Description
 
-The Cratis Application model represents an opinionated approach to building consistent applications based on the concepts behind CQRS.
+Cratis Arc represents an opinionated approach to building consistent applications based on the concepts behind CQRS.
 It offers extensions for different frameworks and is built on top of ASP.NET Core. One of the traits of Arc has is the
 bridging between the backend and the frontend. Arc provides a tool, called **ProxyGenerator** that generates TypeScript
 code for recognized artifacts matching the criteria of what is considered a **commmand** or a **query**.

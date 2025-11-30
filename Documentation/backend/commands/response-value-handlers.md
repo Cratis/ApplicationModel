@@ -1,6 +1,6 @@
 # Response Value Handlers
 
-Command handlers can return values that need to be processed by the command pipeline. The Application Model provides a flexible system for handling these return values through Response Value Handlers.
+Command handlers can return values that need to be processed by the command pipeline. The Arc provides a flexible system for handling these return values through Response Value Handlers.
 
 ## Automatic Response Handling
 
@@ -14,7 +14,7 @@ This means that **command handlers can return any type of value**, and it will e
 
 ## Built-in Value Handlers
 
-Out-of-the-box the Cratis Arc comes with the following value handlers:
+Out-of-the-box Cratis Arc comes with the following value handlers:
 
 | Type | Description |
 | ---- | ----------- |
@@ -105,7 +105,7 @@ public class AuditInfoResponseValueHandler : ICommandResponseValueHandler
 }
 ```
 
-The Application Model will automatically discover and register custom value handlers in the command pipeline.
+The Arc will automatically discover and register custom value handlers in the command pipeline.
 
 ## Response Object Availability
 

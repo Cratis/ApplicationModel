@@ -1,10 +1,10 @@
 # Identity
 
-The Cratis Application Model provides a powerful identity system that allows you to provide additional details for logged-in users beyond what's available in identity provider tokens. This system is designed to work seamlessly with your application's ingress flow and can be used with any identity provider.
+Cratis Arc provides a powerful identity system that allows you to provide additional details for logged-in users beyond what's available in identity provider tokens. This system is designed to work seamlessly with your application's ingress flow and can be used with any identity provider.
 
 ## Overview
 
-Identity tokens from providers typically contain limited information. The Application Model's identity system allows you to:
+Identity tokens from providers typically contain limited information. The Arc's identity system allows you to:
 
 - Add domain-specific information to user identities
 - Perform application-level authorization checks

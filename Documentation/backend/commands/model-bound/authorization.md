@@ -1,6 +1,6 @@
 # Authorization
 
-Model-bound commands support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Application Model.
+Model-bound commands support authorization through standard ASP.NET Core authorization attributes as well as the convenient `[Roles]` attribute provided by the Arc.
 
 ## Using the Authorize Attribute
 
@@ -34,7 +34,7 @@ public record DeleteProduct(ProductId Id)
 
 ## Using the Roles Attribute
 
-The Application Model provides a more convenient `[Roles]` attribute for cleaner syntax when specifying multiple roles:
+The Arc provides a more convenient `[Roles]` attribute for cleaner syntax when specifying multiple roles:
 
 ```csharp
 [Command]

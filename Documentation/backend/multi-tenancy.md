@@ -1,10 +1,10 @@
 # Multi-Tenancy
 
-The Cratis Application Model provides comprehensive multi-tenancy support that allows your application to automatically detect and work with tenant-specific data. The framework handles tenant identification through HTTP headers and provides easy access to the current tenant context throughout your application.
+Cratis Arc provides comprehensive multi-tenancy support that allows your application to automatically detect and work with tenant-specific data. The framework handles tenant identification through HTTP headers and provides easy access to the current tenant context throughout your application.
 
 ## Overview
 
-Multi-tenancy in the Application Model is built around three core components:
+Multi-tenancy in the Arc is built around three core components:
 
 - **`TenantIdMiddleware`** - Automatically extracts and sets the tenant ID from HTTP headers
 - **`ITenantIdAccessor`** - Provides access to the current tenant ID throughout your application
@@ -39,7 +39,7 @@ The `TenantIdMiddleware` is automatically registered and configured to run early
 2. **Context Storage**: Stores the tenant ID in the HTTP context items
 3. **Async Local Setting**: Sets the tenant ID in an `AsyncLocal<TenantId>` for thread-safe access
 
-The middleware is automatically added to your application pipeline when you configure the Application Model, so no manual registration is required.
+The middleware is automatically added to your application pipeline when you configure the Arc, so no manual registration is required.
 
 ## Accessing the Current Tenant
 
@@ -73,7 +73,7 @@ public class MyService
 
 ## The TenantId Type
 
-The Application Model provides a strongly-typed `TenantId` concept that wraps the string value:
+The Arc provides a strongly-typed `TenantId` concept that wraps the string value:
 
 ```csharp
 public record TenantId(string Value) : ConceptAs<string>(Value)

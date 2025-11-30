@@ -1,10 +1,10 @@
-# Application Model
+# Arc
 
-## What is the Application Model?
+## What is the Arc?
 
-The Cratis Application Model is a comprehensive development framework that provides a structured, opinionated approach to building modern applications. It delivers a cohesive set of libraries, patterns, and tools that work together to accelerate development while maintaining consistency, quality, and maintainability across your codebase.
+Cratis Arc is a comprehensive development framework that provides a structured, opinionated approach to building modern applications. It delivers a cohesive set of libraries, patterns, and tools that work together to accelerate development while maintaining consistency, quality, and maintainability across your codebase.
 
-Rather than assembling disparate libraries and creating your own patterns, the Application Model provides a unified foundation that covers everything from backend APIs to frontend user interfaces, with built-in support for modern architectural patterns like CQRS, event sourcing, and domain-driven design.
+Rather than assembling disparate libraries and creating your own patterns, the Arc provides a unified foundation that covers everything from backend APIs to frontend user interfaces, with built-in support for modern architectural patterns like CQRS, event sourcing, and domain-driven design.
 
 ## Packages / Deployables
 

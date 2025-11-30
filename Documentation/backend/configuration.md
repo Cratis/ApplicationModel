@@ -1,10 +1,10 @@
 # Configuration
 
-The Cratis Application Model can be configured both through `appsettings.json` and programmatically to customize its behavior. The main configuration is handled through the `ArcOptions` class.
+Cratis Arc can be configured both through `appsettings.json` and programmatically to customize its behavior. The main configuration is handled through the `ArcOptions` class.
 
 ## Default Configuration Section
 
-By default, the Application Model looks for configuration under the `Cratis:Arc` section in your `appsettings.json` file.
+By default, the Arc looks for configuration under the `Cratis:Arc` section in your `appsettings.json` file.
 
 ## Configuration Options
 

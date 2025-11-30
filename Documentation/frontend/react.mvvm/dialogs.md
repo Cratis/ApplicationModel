@@ -4,7 +4,7 @@ Working with dialogs is different when decoupling your code as you do with the M
 Even though the view models are not responsible for rendering and should be blissfully unaware of how things gets rendered,
 you do need at times to interact with the user.
 
-Cratis Application Model supports an approach to working with dialogs and still maintain the clear separation of concerns.
+Cratis Arc supports an approach to working with dialogs and still maintain the clear separation of concerns.
 It promotes the idea of letting the view and React as a rendering library do just that and then bridges everything through a
 service called `IDialogs` and the use of specific hooks to glue it together, making it feel natural for you as a React developer
 whilst having a clear separation and making your view model logic clear and concise.
@@ -14,7 +14,7 @@ The beauty of this is that you can quite easily also write automated unit tests 
 ## Confirmation Dialogs
 
 A common use of modal dialogs are the standard confirmation dialogs. These are dialogs where you ask the user to confirm
-a specific action. The Application Model supports these out of the box and you have options for what type of confirmation you're
+a specific action. The Arc supports these out of the box and you have options for what type of confirmation you're
 looking for in the form of passing it which buttons to show.
 
 There is an enum called `DialogButtons` that has the following options:
