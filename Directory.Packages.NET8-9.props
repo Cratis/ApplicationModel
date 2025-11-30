@@ -13,5 +13,6 @@
         <PackageVersion Update="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.11" />
         <PackageVersion Update="Microsoft.Extensions.Telemetry" Version="9.10.0" />
         <PackageVersion Update="Microsoft.Extensions.Hosting" Version="9.0.11" />       
+        <PackageVersion Update="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />
     </ItemGroup>
 </Project>
