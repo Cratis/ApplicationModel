@@ -104,10 +104,3 @@ public static class JavaScriptResources
     /// <returns>JavaScript code to bootstrap Arc modules.</returns>
     public static string GetArcBootstrap() => EmbeddedResources.GetArcBootstrap();
 }
-
-/// <summary>
-/// The exception that is thrown when the TypeScript compiler is not found.
-/// </summary>
-/// <param name="path">The path where the compiler was expected.</param>
-public class TypeScriptCompilerNotFound(string path)
-    : Exception($"TypeScript compiler not found at '{path}'. Ensure you have run 'yarn install' in the repository root.");

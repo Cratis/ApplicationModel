@@ -10,32 +10,7 @@ namespace Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
 /// </summary>
 public static class EmbeddedResources
 {
-    const string TypeScriptCompilerResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.typescript.min.js";
-    const string ArcRuntimeResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.arc-runtime.js";
     const string ArcBootstrapResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.arc-bootstrap.js";
-
-    /// <summary>
-    /// Gets the TypeScript compiler JavaScript code.
-    /// </summary>
-    /// <returns>The TypeScript compiler code.</returns>
-    /// <exception cref="InvalidOperationException">The exception that is thrown when the TypeScript compiler resource is not found.</exception>
-    public static string GetTypeScriptCompiler()
-    {
-        return GetEmbeddedResource(TypeScriptCompilerResource)
-            ?? throw new InvalidOperationException($"TypeScript compiler not found. Ensure '{TypeScriptCompilerResource}' is embedded as a resource. " +
-                                                   "Download it from https://www.typescriptlang.org/ and place it in the Infrastructure folder.");
-    }
-
-    /// <summary>
-    /// Gets the Arc runtime shim code.
-    /// </summary>
-    /// <returns>The Arc runtime code.</returns>
-    /// <exception cref="InvalidOperationException">The exception that is thrown when the Arc runtime resource is not found.</exception>
-    public static string GetArcRuntime()
-    {
-        return GetEmbeddedResource(ArcRuntimeResource)
-            ?? throw new InvalidOperationException($"Arc runtime not found. Ensure '{ArcRuntimeResource}' is embedded as a resource.");
-    }
 
     /// <summary>
     /// Gets the Arc bootstrap code that sets up the module environment.
