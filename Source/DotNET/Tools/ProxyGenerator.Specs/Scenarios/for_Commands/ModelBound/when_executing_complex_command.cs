@@ -10,31 +10,32 @@ public class when_executing_complex_command : given.a_scenario_web_application
 {
     CommandResult<ComplexCommandResult>? _result;
 
+    void Establish() => LoadCommandProxy<ComplexCommand>();
+
     async Task Because()
     {
-        var payload = new
+        var properties = new Dictionary<string, object>
         {
-            nested = new
+            ["nested"] = new Dictionary<string, object>
             {
-                name = "NestedName",
-                child = new
+                ["name"] = "NestedName",
+                ["child"] = new Dictionary<string, object>
                 {
-                    id = Guid.NewGuid(),
-                    value = 123.45
+                    ["id"] = Guid.NewGuid().ToString(),
+                    ["value"] = 123.45
                 }
             },
-            items = new[] { "item1", "item2", "item3" },
-            values = new Dictionary<string, int>
+            ["items"] = new[] { "item1", "item2", "item3" },
+            ["values"] = new Dictionary<string, int>
             {
                 ["key1"] = 1,
                 ["key2"] = 2
             }
         };
 
-        // ComplexCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge.ExecuteCommandDirectAsync<ComplexCommandResult>(
-            "/api/cratis/arc/proxy-generator/scenarios/commands/complex-command",
-            payload);
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<ComplexCommandResult>(
+            "ComplexCommand",
+            properties);
         _result = executionResult.Result;
     }
 

@@ -14,6 +14,7 @@ public class when_performing_query_for_complex_data : given.a_scenario_web_appli
     void Establish()
     {
         _testId = Guid.NewGuid();
+        LoadQueryProxy<ComplexReadModel>("GetComplex");
     }
 
     async Task Because()
@@ -23,10 +24,7 @@ public class when_performing_query_for_complex_data : given.a_scenario_web_appli
             ["id"] = _testId.ToString()
         };
 
-        // ComplexReadModel.GetComplex has "id" parameter
-        _executionResult = await Bridge.PerformQueryDirectAsync<ComplexReadModel>(
-            "/api/cratis/arc/proxy-generator/scenarios/queries/get-complex",
-            parameters);
+        _executionResult = await Bridge.PerformQueryViaProxyAsync<ComplexReadModel>("GetComplex", parameters);
     }
 
     [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();

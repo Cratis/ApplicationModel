@@ -10,17 +10,18 @@ public class when_executing_command_with_result : given.a_scenario_web_applicati
 {
     CommandResult<CommandResultData>? _result;
 
+    void Establish() => LoadCommandProxy<CommandWithResult>();
+
     async Task Because()
     {
-        var payload = new
+        var properties = new Dictionary<string, object>
         {
-            input = "TestInput"
+            ["input"] = "TestInput"
         };
 
-        // CommandWithResult in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge.ExecuteCommandDirectAsync<CommandResultData>(
-            "/api/cratis/arc/proxy-generator/scenarios/commands/command-with-result",
-            payload);
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<CommandResultData>(
+            "CommandWithResult",
+            properties);
         _result = executionResult.Result;
     }
 

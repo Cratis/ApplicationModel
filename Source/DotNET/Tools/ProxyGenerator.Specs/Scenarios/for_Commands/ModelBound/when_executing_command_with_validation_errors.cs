@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Arc.Commands;
+using Cratis.Arc.ProxyGenerator.Scenarios.Commands;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ModelBound;
 
@@ -9,19 +10,20 @@ public class when_executing_command_with_validation_errors : given.a_scenario_we
 {
     CommandResult<object>? _result;
 
+    void Establish() => LoadCommandProxy<ValidatedCommand>();
+
     async Task Because()
     {
-        var payload = new
+        var properties = new Dictionary<string, object>
         {
-            name = string.Empty, // Required field missing
-            value = 150, // Out of range (1-100)
-            email = "not-an-email" // Invalid email format
+            ["name"] = string.Empty, // Required field missing
+            ["value"] = 150, // Out of range (1-100)
+            ["email"] = "not-an-email" // Invalid email format
         };
 
-        // ValidatedCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge.ExecuteCommandDirectAsync(
-            "/api/cratis/arc/proxy-generator/scenarios/commands/validated-command",
-            payload);
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
+            "ValidatedCommand",
+            properties);
         _result = executionResult.Result;
     }
 

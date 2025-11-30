@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Arc.Commands;
+using Cratis.Arc.ProxyGenerator.Scenarios.Commands;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ModelBound;
 
@@ -9,17 +10,18 @@ public class when_executing_command_that_throws_exception : given.a_scenario_web
 {
     CommandResult<object>? _result;
 
+    void Establish() => LoadCommandProxy<ExceptionCommand>();
+
     async Task Because()
     {
-        var payload = new
+        var properties = new Dictionary<string, object>
         {
-            shouldThrow = true
+            ["shouldThrow"] = true
         };
 
-        // ExceptionCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge.ExecuteCommandDirectAsync(
-            "/api/cratis/arc/proxy-generator/scenarios/commands/exception-command",
-            payload);
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
+            "ExceptionCommand",
+            properties);
         _result = executionResult.Result;
     }
 

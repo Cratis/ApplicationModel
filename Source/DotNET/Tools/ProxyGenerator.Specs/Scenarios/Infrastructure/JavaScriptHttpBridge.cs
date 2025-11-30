@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
@@ -12,8 +11,6 @@ namespace Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
 /// </summary>
 public sealed class JavaScriptHttpBridge : IDisposable
 {
-    readonly JavaScriptRuntime _runtime;
-    readonly HttpClient _httpClient;
     readonly JsonSerializerOptions _jsonOptions;
     bool _disposed;
 
@@ -24,8 +21,8 @@ public sealed class JavaScriptHttpBridge : IDisposable
     /// <param name="httpClient">The HTTP client to use for requests.</param>
     public JavaScriptHttpBridge(JavaScriptRuntime runtime, HttpClient httpClient)
     {
-        _runtime = runtime;
-        _httpClient = httpClient;
+        Runtime = runtime;
+        HttpClient = httpClient;
         _jsonOptions = Json.Globals.JsonSerializerOptions;
         SetupFetchInterceptor();
     }
@@ -33,12 +30,12 @@ public sealed class JavaScriptHttpBridge : IDisposable
     /// <summary>
     /// Gets the JavaScript runtime.
     /// </summary>
-    public JavaScriptRuntime Runtime => _runtime;
+    public JavaScriptRuntime Runtime { get; }
 
     /// <summary>
     /// Gets the HTTP client.
     /// </summary>
-    public HttpClient HttpClient => _httpClient;
+    public HttpClient HttpClient { get; }
 
     /// <summary>
     /// Loads TypeScript code into the runtime by transpiling it first.
@@ -46,8 +43,8 @@ public sealed class JavaScriptHttpBridge : IDisposable
     /// <param name="typeScriptCode">The TypeScript code to load.</param>
     public void LoadTypeScript(string typeScriptCode)
     {
-        var jsCode = _runtime.TranspileTypeScript(typeScriptCode);
-        _runtime.Execute(jsCode);
+        var jsCode = Runtime.TranspileTypeScript(typeScriptCode);
+        Runtime.Execute(jsCode);
     }
 
     /// <summary>
@@ -68,7 +65,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
             $"__cmd.{p.Key} = {JsonSerializer.Serialize(p.Value, _jsonOptions)};"));
 
         // Create command instance and set properties, then call execute()
-        _runtime.Execute(
+        Runtime.Execute(
             "var __cmd = new " + commandClassName + "();" +
             propAssignments +
             "var __cmdResult = null;" +
@@ -86,17 +83,17 @@ public sealed class JavaScriptHttpBridge : IDisposable
         var result = await ProcessPendingFetchAsync();
 
         // Wait for promise resolution
-        SpinWait.SpinUntil(() => (bool)_runtime.Evaluate("__cmdDone")!, TimeSpan.FromSeconds(5));
+        SpinWait.SpinUntil(() => (bool)Runtime.Evaluate("__cmdDone")!, TimeSpan.FromSeconds(5));
 
-        var hasError = _runtime.Evaluate<bool>("__cmdError !== null");
+        var hasError = Runtime.Evaluate<bool>("__cmdError !== null");
         if (hasError)
         {
-            var errorMsg = _runtime.Evaluate<string>("__cmdError?.message || String(__cmdError)");
+            var errorMsg = Runtime.Evaluate<string>("__cmdError?.message || String(__cmdError)");
             throw new JavaScriptProxyExecutionFailed($"Command execution failed: {errorMsg}");
         }
 
         // Get the result from JavaScript
-        var resultJson = _runtime.Evaluate<string>("JSON.stringify(__cmdResult)") ?? "{}";
+        var resultJson = Runtime.Evaluate<string>("JSON.stringify(__cmdResult)") ?? "{}";
         var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<TResult>>(resultJson, _jsonOptions);
 
         return new CommandExecutionResult<TResult>(commandResult, result.ResponseJson);
@@ -121,7 +118,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
             : string.Empty;
 
         // Create query instance and set parameters, then call perform()
-        _runtime.Execute(
+        Runtime.Execute(
             "var __query = new " + queryClassName + "();" +
             paramAssignments +
             "var __queryResult = null;" +
@@ -139,71 +136,20 @@ public sealed class JavaScriptHttpBridge : IDisposable
         var result = await ProcessPendingFetchAsync();
 
         // Wait for promise resolution
-        SpinWait.SpinUntil(() => (bool)_runtime.Evaluate("__queryDone")!, TimeSpan.FromSeconds(5));
+        SpinWait.SpinUntil(() => (bool)Runtime.Evaluate("__queryDone")!, TimeSpan.FromSeconds(5));
 
-        var hasError = _runtime.Evaluate<bool>("__queryError !== null");
+        var hasError = Runtime.Evaluate<bool>("__queryError !== null");
         if (hasError)
         {
-            var errorMsg = _runtime.Evaluate<string>("__queryError?.message || String(__queryError)");
+            var errorMsg = Runtime.Evaluate<string>("__queryError?.message || String(__queryError)");
             throw new JavaScriptProxyExecutionFailed($"Query execution failed: {errorMsg}");
         }
 
         // Get the result from JavaScript
-        var resultJson = _runtime.Evaluate<string>("JSON.stringify(__queryResult)") ?? "{}";
+        var resultJson = Runtime.Evaluate<string>("JSON.stringify(__queryResult)") ?? "{}";
         var queryResult = JsonSerializer.Deserialize<Arc.Queries.QueryResult>(resultJson, _jsonOptions);
 
         return new QueryExecutionResult<TResult>(queryResult, result.ResponseJson);
-    }
-
-    /// <summary>
-    /// Executes a command directly via HTTP without going through JavaScript proxy.
-    /// </summary>
-    /// <typeparam name="TResult">The expected result type.</typeparam>
-    /// <param name="route">The route to POST to.</param>
-    /// <param name="payload">The command payload.</param>
-    /// <returns>The command result.</returns>
-    public async Task<CommandExecutionResult<TResult>> ExecuteCommandDirectAsync<TResult>(string route, object payload)
-    {
-        var response = await _httpClient.PostAsJsonAsync(route, payload, _jsonOptions);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<TResult>>(responseContent, _jsonOptions);
-        return new CommandExecutionResult<TResult>(commandResult, responseContent);
-    }
-
-    /// <summary>
-    /// Executes a command directly via HTTP without going through JavaScript proxy.
-    /// </summary>
-    /// <param name="route">The route to POST to.</param>
-    /// <param name="payload">The command payload.</param>
-    /// <returns>The command result.</returns>
-    public async Task<CommandExecutionResult<object>> ExecuteCommandDirectAsync(string route, object payload)
-    {
-        var response = await _httpClient.PostAsJsonAsync(route, payload, _jsonOptions);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<object>>(responseContent, _jsonOptions);
-        return new CommandExecutionResult<object>(commandResult, responseContent);
-    }
-
-    /// <summary>
-    /// Performs a query directly via HTTP without going through JavaScript proxy.
-    /// </summary>
-    /// <typeparam name="TResult">The expected result type.</typeparam>
-    /// <param name="route">The route to GET from.</param>
-    /// <param name="parameters">Optional query parameters.</param>
-    /// <returns>The query result.</returns>
-    public async Task<QueryExecutionResult<TResult>> PerformQueryDirectAsync<TResult>(string route, Dictionary<string, object>? parameters = null)
-    {
-        var fullRoute = route;
-        if (parameters?.Count > 0)
-        {
-            var queryString = string.Join('&', parameters.Select(p => $"{p.Key}={Uri.EscapeDataString(p.Value?.ToString() ?? string.Empty)}"));
-            fullRoute = route.Contains('?') ? $"{route}&{queryString}" : $"{route}?{queryString}";
-        }
-
-        var response = await _httpClient.GetAsync(fullRoute);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var queryResult = JsonSerializer.Deserialize<Arc.Queries.QueryResult>(responseContent, _jsonOptions);
-        return new QueryExecutionResult<TResult>(queryResult, responseContent);
     }
 
     /// <inheritdoc/>
@@ -211,7 +157,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
     {
         if (!_disposed)
         {
-            _runtime.Dispose();
+            Runtime.Dispose();
             _disposed = true;
         }
     }
@@ -219,7 +165,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
     void SetupFetchInterceptor()
     {
         // Set up the fetch interceptor that stores pending requests
-        _runtime.Execute(
+        Runtime.Execute(
             "var __pendingFetch = null;" +
             "function fetch(url, options) {" +
             "    return new Promise(function(resolve, reject) {" +
@@ -236,26 +182,26 @@ public sealed class JavaScriptHttpBridge : IDisposable
     async Task<FetchResult> ProcessPendingFetchAsync()
     {
         // Get the pending fetch request details
-        var hasPending = _runtime.Evaluate<bool>("__pendingFetch !== null");
+        var hasPending = Runtime.Evaluate<bool>("__pendingFetch !== null");
         if (!hasPending)
         {
             throw new InvalidOperationException("No pending fetch request found");
         }
 
-        var url = _runtime.Evaluate<string>("__pendingFetch.url") ?? string.Empty;
-        var method = _runtime.Evaluate<string>("__pendingFetch.options.method || 'GET'") ?? "GET";
-        var bodyJson = _runtime.Evaluate<string>("__pendingFetch.options.body || null");
+        var url = Runtime.Evaluate<string>("__pendingFetch.url") ?? string.Empty;
+        var method = Runtime.Evaluate<string>("__pendingFetch.options.method || 'GET'") ?? "GET";
+        var bodyJson = Runtime.Evaluate<string>("__pendingFetch.options.body || null");
 
         // Make the actual HTTP request
         HttpResponseMessage response;
         if (method.Equals("POST", StringComparison.OrdinalIgnoreCase))
         {
             var content = new StringContent(bodyJson ?? "{}", System.Text.Encoding.UTF8, "application/json");
-            response = await _httpClient.PostAsync(url, content);
+            response = await HttpClient.PostAsync(url, content);
         }
         else
         {
-            response = await _httpClient.GetAsync(url);
+            response = await HttpClient.GetAsync(url);
         }
 
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -267,7 +213,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
             .Replace("\n", "\\n")
             .Replace("\r", "\\r");
 
-        _runtime.Execute(
+        Runtime.Execute(
             "if (__pendingFetch) {" +
             "    var responseData = JSON.parse('" + escapedResponse + "');" +
             "    __pendingFetch.resolve({" +

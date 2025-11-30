@@ -10,6 +10,8 @@ public class when_performing_query_that_throws_exception : given.a_scenario_web_
 {
     QueryExecutionResult<ExceptionReadModel>? _executionResult;
 
+    void Establish() => LoadQueryProxy<ExceptionReadModel>("GetWithException");
+
     async Task Because()
     {
         var parameters = new Dictionary<string, object>
@@ -17,10 +19,7 @@ public class when_performing_query_that_throws_exception : given.a_scenario_web_
             ["shouldThrow"] = true
         };
 
-        // ExceptionReadModel.GetWithException
-        _executionResult = await Bridge.PerformQueryDirectAsync<ExceptionReadModel>(
-            "/api/cratis/arc/proxy-generator/scenarios/queries/get-with-exception",
-            parameters);
+        _executionResult = await Bridge.PerformQueryViaProxyAsync<ExceptionReadModel>("GetWithException", parameters);
     }
 
     [Fact] void should_not_be_successful() => _executionResult.Result.IsSuccess.ShouldBeFalse();

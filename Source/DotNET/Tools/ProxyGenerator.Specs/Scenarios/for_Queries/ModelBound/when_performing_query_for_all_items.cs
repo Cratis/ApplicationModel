@@ -10,13 +10,11 @@ public class when_performing_query_for_all_items : given.a_scenario_web_applicat
 {
     QueryExecutionResult<IEnumerable<SimpleReadModel>>? _executionResult;
 
+    void Establish() => LoadQueryProxy<SimpleReadModel>("GetAll");
+
     async Task Because()
     {
-        // Route: /api/{namespace-segments-kebab}/{query-name-kebab}
-        // Namespace: Cratis.Arc.ProxyGenerator.Scenarios.Queries
-        // Method: GetAll
-        _executionResult = await Bridge.PerformQueryDirectAsync<IEnumerable<SimpleReadModel>>(
-            "/api/cratis/arc/proxy-generator/scenarios/queries/get-all");
+        _executionResult = await Bridge.PerformQueryViaProxyAsync<IEnumerable<SimpleReadModel>>("GetAll");
     }
 
     [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();

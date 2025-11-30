@@ -10,6 +10,8 @@ public class when_performing_query_with_parameters : given.a_scenario_web_applic
 {
     QueryExecutionResult<IEnumerable<ParameterizedReadModel>>? _executionResult;
 
+    void Establish() => LoadQueryProxy<ParameterizedReadModel>("Search");
+
     async Task Because()
     {
         var parameters = new Dictionary<string, object>
@@ -18,10 +20,7 @@ public class when_performing_query_with_parameters : given.a_scenario_web_applic
             ["category"] = "TestCategory"
         };
 
-        // ParameterizedReadModel.Search
-        _executionResult = await Bridge.PerformQueryDirectAsync<IEnumerable<ParameterizedReadModel>>(
-            "/api/cratis/arc/proxy-generator/scenarios/queries/search",
-            parameters);
+        _executionResult = await Bridge.PerformQueryViaProxyAsync<IEnumerable<ParameterizedReadModel>>("Search", parameters);
     }
 
     [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();

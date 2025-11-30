@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Arc.Commands;
+using Cratis.Arc.ProxyGenerator.Scenarios.Commands;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ModelBound;
 
@@ -9,18 +10,19 @@ public class when_executing_simple_command : given.a_scenario_web_application
 {
     CommandResult<object>? _result;
 
+    void Establish() => LoadCommandProxy<SimpleCommand>();
+
     async Task Because()
     {
-        var payload = new
+        var properties = new Dictionary<string, object>
         {
-            name = "TestName",
-            value = 42
+            ["name"] = "TestName",
+            ["value"] = 42
         };
 
-        // SimpleCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge.ExecuteCommandDirectAsync(
-            "/api/cratis/arc/proxy-generator/scenarios/commands/simple-command",
-            payload);
+        var executionResult = await Bridge.ExecuteCommandViaProxyAsync<object>(
+            "SimpleCommand",
+            properties);
         _result = executionResult.Result;
     }
 
