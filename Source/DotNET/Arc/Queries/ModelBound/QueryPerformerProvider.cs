@@ -14,7 +14,7 @@ namespace Cratis.Arc.Queries.ModelBound;
 /// </summary>
 public class QueryPerformerProvider : IQueryPerformerProvider
 {
-    readonly Dictionary<QueryName, IQueryPerformer> _performers;
+    readonly Dictionary<FullyQualifiedQueryName, IQueryPerformer> _performers;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryPerformerProvider"/> class.
@@ -29,13 +29,13 @@ public class QueryPerformerProvider : IQueryPerformerProvider
             .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(m => m.IsValidQueryFor(t))
                 .Select(m => new ModelBoundQueryPerformer(t, m, serviceProviderIsService, authorizationEvaluator)))
-            .ToDictionary(p => p.Name, p => (IQueryPerformer)p);
+            .ToDictionary(p => p.FullyQualifiedName, p => (IQueryPerformer)p);
     }
 
     /// <inheritdoc/>
     public IEnumerable<IQueryPerformer> Performers => _performers.Values;
 
     /// <inheritdoc/>
-    public bool TryGetPerformerFor(QueryName query, [NotNullWhen(true)] out IQueryPerformer? performer) =>
+    public bool TryGetPerformerFor(FullyQualifiedQueryName query, [NotNullWhen(true)] out IQueryPerformer? performer) =>
         _performers.TryGetValue(query, out performer);
 }
