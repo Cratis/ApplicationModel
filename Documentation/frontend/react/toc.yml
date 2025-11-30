@@ -1,5 +1,5 @@
-- name: Application Model
-  href: application-model.md
+- name: Arc
+  href: arc.md
 - name: Identity
   href: identity.md
 - name: Dialogs
