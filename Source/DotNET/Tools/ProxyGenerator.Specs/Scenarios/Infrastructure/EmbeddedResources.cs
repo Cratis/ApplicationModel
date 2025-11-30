@@ -12,6 +12,7 @@ public static class EmbeddedResources
 {
     const string TypeScriptCompilerResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.typescript.min.js";
     const string ArcRuntimeResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.arc-runtime.js";
+    const string ArcBootstrapResource = "Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure.arc-bootstrap.js";
 
     /// <summary>
     /// Gets the TypeScript compiler JavaScript code.
@@ -34,6 +35,17 @@ public static class EmbeddedResources
     {
         return GetEmbeddedResource(ArcRuntimeResource)
             ?? throw new InvalidOperationException($"Arc runtime not found. Ensure '{ArcRuntimeResource}' is embedded as a resource.");
+    }
+
+    /// <summary>
+    /// Gets the Arc bootstrap code that sets up the module environment.
+    /// </summary>
+    /// <returns>The Arc bootstrap code.</returns>
+    /// <exception cref="InvalidOperationException">The exception that is thrown when the Arc bootstrap resource is not found.</exception>
+    public static string GetArcBootstrap()
+    {
+        return GetEmbeddedResource(ArcBootstrapResource)
+            ?? throw new InvalidOperationException($"Arc bootstrap not found. Ensure '{ArcBootstrapResource}' is embedded as a resource.");
     }
 
     static string? GetEmbeddedResource(string resourceName)
