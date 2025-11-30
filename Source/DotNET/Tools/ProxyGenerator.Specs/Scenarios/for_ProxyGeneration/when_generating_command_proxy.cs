@@ -1,7 +1,6 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ModelBound;
 using Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
 using Cratis.Arc.ProxyGenerator.Templates;
 
