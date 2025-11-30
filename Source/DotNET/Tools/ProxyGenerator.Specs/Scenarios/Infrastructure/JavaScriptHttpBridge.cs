@@ -211,6 +211,12 @@ public sealed class JavaScriptHttpBridge : IDisposable
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
+        // If response is empty or not successful, provide meaningful error
+        if (string.IsNullOrEmpty(responseContent))
+        {
+            throw new InvalidOperationException($"HTTP {method} to '{url}' returned status {(int)response.StatusCode} with empty response body");
+        }
+
         // Resolve the JavaScript promise with the response
         var escapedResponse = responseContent
             .Replace("\\", "\\\\")
