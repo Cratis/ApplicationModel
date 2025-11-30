@@ -4,7 +4,7 @@
 using Cratis.Arc.Queries.ModelBound;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Arc.ProxyGenerator.Scenarios.Queries;
+namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Queries.ModelBound;
 
 /// <summary>
 /// A simple read model for testing.
@@ -149,17 +149,6 @@ public class ExceptionReadModel
 
         return new ExceptionReadModel { Id = Guid.NewGuid() };
     }
-}
-
-/// <summary>
-/// The exception that is thrown when query execution fails intentionally for testing.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="QueryExecutionFailed"/> class.
-/// </remarks>
-/// <param name="message">The error message.</param>
-public class QueryExecutionFailed(string message) : Exception(message)
-{
 }
 
 /// <summary>

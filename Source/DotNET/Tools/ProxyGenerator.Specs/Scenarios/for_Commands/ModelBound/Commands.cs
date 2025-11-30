@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using Cratis.Arc.Commands.ModelBound;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Cratis.Arc.ProxyGenerator.Scenarios.Commands;
+namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ModelBound;
 
 /// <summary>
 /// A simple command for testing.
@@ -125,17 +125,6 @@ public class ExceptionCommand
             throw new CommandExecutionFailed("Intentional test exception");
         }
     }
-}
-
-/// <summary>
-/// The exception that is thrown when command execution fails intentionally for testing.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="CommandExecutionFailed"/> class.
-/// </remarks>
-/// <param name="message">The error message.</param>
-public class CommandExecutionFailed(string message) : Exception(message)
-{
 }
 
 /// <summary>

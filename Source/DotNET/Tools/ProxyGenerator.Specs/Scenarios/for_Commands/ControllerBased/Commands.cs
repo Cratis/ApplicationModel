@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cratis.Arc.ProxyGenerator.Scenarios.Commands;
+namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ControllerBased;
 
 /// <summary>
 /// Controller for testing controller-based commands.

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
-using Cratis.Arc.ProxyGenerator.Scenarios.Queries;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Queries.ModelBound;
 

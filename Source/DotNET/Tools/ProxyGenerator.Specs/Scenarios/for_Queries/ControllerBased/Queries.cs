@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cratis.Arc.ProxyGenerator.Scenarios.Queries;
+namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Queries.ControllerBased;
 
 /// <summary>
 /// Controller for testing controller-based queries.

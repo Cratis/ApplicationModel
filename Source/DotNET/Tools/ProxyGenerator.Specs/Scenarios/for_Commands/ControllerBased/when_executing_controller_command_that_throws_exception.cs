@@ -3,7 +3,6 @@
 
 using System.Net.Http.Json;
 using Cratis.Arc.Commands;
-using Cratis.Arc.ProxyGenerator.Scenarios.Commands;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Commands.ControllerBased;
 
