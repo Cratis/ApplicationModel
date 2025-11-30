@@ -7,11 +7,28 @@
         <IsTestProject>true</IsTestProject>
         <!-- Disable StyleCop rules for test helper files containing multiple types -->
         <NoWarn>$(NoWarn);SA1649;SA1402</NoWarn>
+        <!-- Enable runtime-specific native libraries for ClearScript V8 -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="../ProxyGenerator/ProxyGenerator.csproj" />
+        <ProjectReference Include="../../Arc/Arc.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.ClearScript.V8" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.osx-arm64" Condition="$([MSBuild]::IsOSPlatform('OSX')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.osx-x64" Condition="$([MSBuild]::IsOSPlatform('OSX')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.linux-arm64" Condition="$([MSBuild]::IsOSPlatform('Linux')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.linux-x64" Condition="$([MSBuild]::IsOSPlatform('Linux')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" Condition="$([MSBuild]::IsOSPlatform('Windows')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'" />
+        <PackageReference Include="Microsoft.ClearScript.V8.Native.win-arm64" Condition="$([MSBuild]::IsOSPlatform('Windows')) AND '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'" />
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="$(MSBuildThisFileDirectory)../../GlobalUsings.Specs.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Scenarios\Infrastructure\typescript.min.js" Condition="Exists('Scenarios\Infrastructure\typescript.min.js')" />
+        <EmbeddedResource Include="Scenarios\Infrastructure\arc-runtime.js" Condition="Exists('Scenarios\Infrastructure\arc-runtime.js')" />
     </ItemGroup>
 </Project>
