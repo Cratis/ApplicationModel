@@ -52,5 +52,7 @@
     <PackageVersion Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.5.0" />
     <PackageVersion Include="Microsoft.ClearScript.V8.Native.win-arm64" Version="7.5.0" />
   </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)/Directory.Packages.NET8.props" Condition=" '$(TargetFramework)' == 'net8.0' " />
+  <Import Project="$(MSBuildThisFileDirectory)/Directory.Packages.NET9.props" Condition=" '$(TargetFramework)' == 'net9.0' " />
   <Import Project="$(MSBuildThisFileDirectory)/Directory.Packages.NET8-9.props" Condition=" '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0' " />
 </Project>
