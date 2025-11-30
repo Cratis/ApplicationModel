@@ -1,6 +1,6 @@
 # Concepts
 
-Cratis Applications provides seamless integration between [Cratis Concepts](../../../general/concepts.md) and MongoDB through automatic serialization support. Concepts are domain-driven design primitives that wrap primitive types with business meaning.
+Cratis Applications provides seamless integration between [Cratis Concepts](../../general/index.md) and MongoDB through automatic serialization support. Concepts are domain-driven design primitives that wrap primitive types with business meaning.
 
 ## What are Concepts?
 

@@ -8,7 +8,7 @@ Queries in the frontend is divided into the following:
 
 ## HTTP Headers
 
-Queries automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./application-model.md). This enables you to dynamically include authentication cookies, authorization tokens, or other custom headers with every query request without manual configuration for each query.
+Queries automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./arc.md). This enables you to dynamically include authentication cookies, authorization tokens, or other custom headers with every query request without manual configuration for each query.
 
 ## Proxy Generation
 
@@ -31,7 +31,6 @@ export const MyComponent = () => {
 ```
 
 > Note: All data resulting from a query will be strongly typed based on the metadata provided by the proxy generator.
-> You can read more about how serialization works [here](../../../fundamentals/serialization.md).
 
 ### Return tuple
 
