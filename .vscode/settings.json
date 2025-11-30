@@ -21,6 +21,7 @@
     "Roslynator",
     "Swashbuckle",
     "templating",
+    "Transpiles",
     "tseslint",
     "tsyringe",
     "Unmap",
