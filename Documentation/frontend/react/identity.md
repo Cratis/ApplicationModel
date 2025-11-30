@@ -5,7 +5,7 @@ It provides an encapsulation that feels more natural to a React application.
 
 ## HTTP Headers
 
-Identity requests automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./application-model.md). This is particularly useful for including authentication cookies or other headers needed for identity verification and retrieval.
+Identity requests automatically include any HTTP headers provided by the `httpHeadersCallback` configured in the [Arc](./arc.md). This is particularly useful for including authentication cookies or other headers needed for identity verification and retrieval.
 
 ## Identity provider context
 

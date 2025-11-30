@@ -7,8 +7,8 @@ Queries are used for retrieving data and are a key component of CQRS (Command Qu
 
 | Topic | Description |
 | ------- | ----------- |
-| [Controller based](./controller-based.md) | How to implement queries using controller-based approach. |
-| [Model Bound](./model-bound.md) | How to work with model-bound queries for simplified parameter handling. |
+| [Controller based](./controller-based/index.md) | How to implement queries using controller-based approach. |
+| [Model Bound](./model-bound/index.md) | How to work with model-bound queries for simplified parameter handling. |
 | [Query Pipeline](./query-pipeline.md) | Understanding the query pipeline and how queries are processed. |
 | [Authorization](../authorization.md) | How to use authorization attributes for role-based and policy-based authorization. |
 | [Validation](./validation.md) | How to implement validation for query parameters. |

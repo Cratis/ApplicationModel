@@ -2,11 +2,11 @@
 
 Observable queries provide real-time data streaming using WebSockets, enabling reactive user experiences where data changes are pushed to clients as they occur. You achieve this by returning `ISubject<T>` from your controller actions.
 
-The `ISubject<T>` return type automatically establishes a WebSocket connection between the server and client, enabling real-time data updates. This integrates seamlessly with the [ObservableQuery construct in the frontend](../../frontend/react/queries.md) through the proxy generator, creating strongly-typed reactive data flows.
+The `ISubject<T>` return type automatically establishes a WebSocket connection between the server and client, enabling real-time data updates. This integrates seamlessly with the [ObservableQuery construct in the frontend](../../../frontend/react/queries.md) through the proxy generator, creating strongly-typed reactive data flows.
 
 ## Basic Observable Query
 
-The key to an observable query is to leverage the `ClientObservable<T>` generic type. For database-specific implementations like MongoDB, see [Observing Collections](../mongodb/observing-collections.md).
+The key to an observable query is to leverage the `ClientObservable<T>` generic type.
 
 ```csharp
 [HttpGet("observable")]
@@ -373,7 +373,6 @@ public ISubject<IEnumerable<DebitAccount>> GetAdminObservable()
 6. **Clean up resources** properly when clients disconnect
 7. **Use authentication** to control who can subscribe to observable endpoints
 8. **Monitor performance** and consider the impact of many concurrent subscriptions
-9. **Choose the right data source strategy** - see [Observing Collections](../mongodb/observing-collections.md) for MongoDB-specific approaches
 
 ## Connection Management
 
@@ -407,5 +406,5 @@ The `ISubject<T>` return type automatically establishes and manages WebSocket co
 
 > **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources to prevent memory leaks.
 
-> **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your observable queries,
+> **Note**: The [proxy generator](../../proxy-generation.md) automatically creates TypeScript types for your observable queries,
 > making them strongly typed on the frontend as well.

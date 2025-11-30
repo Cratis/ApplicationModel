@@ -550,7 +550,7 @@ Authorization attributes work seamlessly with the [proxy generator](./proxy-gene
 ## See Also
 
 - [Commands](commands/index.md) - Command documentation including authorization
-- [Model-Bound Commands](commands/model-bound.md) - Model-bound command authorization
+- [Model-Bound Commands](commands/model-bound/index.md) - Model-bound command authorization
 - [Queries](queries/index.md) - Query documentation
 - [Command Filters](commands/command-filters.md) - Including the AuthorizationFilter
 - [Identity](identity.md) - Identity and authentication setup

@@ -33,8 +33,6 @@ public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, dec
 }
 ```
 
-For database-specific implementations like MongoDB, see [Observing Collections](../mongodb/observing-collections.md).
-
 ## Observable with Arguments
 
 Observable queries can accept arguments just like regular queries:
@@ -473,12 +471,11 @@ public record DebitAccount(AccountId Id, AccountName Name, CustomerId Owner, dec
 6. **Clean up resources** properly when clients disconnect
 7. **Use authentication** to control who can subscribe to observable endpoints
 8. **Monitor performance** and consider the impact of many concurrent subscriptions
-9. **Choose the right data source strategy** - see [Observing Collections](../mongodb/observing-collections.md) for MongoDB-specific approaches
-10. **Keep observable methods static** and follow the same patterns as regular model-bound queries
+9. **Keep observable methods static** and follow the same patterns as regular model-bound queries
 
 ## Frontend Integration
 
-Observable queries integrate seamlessly with frontend frameworks through the proxy generator and the [ObservableQuery construct](../../frontend/react/queries.md):
+Observable queries integrate seamlessly with frontend frameworks through the proxy generator and the [ObservableQuery construct](../../../frontend/react/queries.md):
 
 ```typescript
 // Generated TypeScript proxy automatically handles WebSocket connections
@@ -499,7 +496,7 @@ The `ISubject<T>` return type automatically establishes and manages WebSocket co
 
 > **Important**: When using `ClientObservable<T>` directly, the `ClientDisconnected` callback is essential for cleaning up resources to prevent memory leaks.
 
-> **Note**: The [proxy generator](../proxy-generation.md) automatically creates TypeScript types for your observable queries,
+> **Note**: The [proxy generator](../../proxy-generation.md) automatically creates TypeScript types for your observable queries,
 > making them strongly typed on the frontend as well.
 
 ## Connection Management

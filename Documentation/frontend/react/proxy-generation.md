@@ -102,7 +102,7 @@ The return type `QueryResultWithState<>` provides additional metadata about the 
 
 Observable queries provide real-time updates to your React components, typically using WebSockets for live data synchronization.
 
-> **Backend Setup**: To learn how to implement observable queries on the backend, see the [Observable Queries section](../../backend/queries/observable-queries.md) in the backend documentation.
+> **Backend Setup**: To learn how to implement observable queries on the backend, see the [Observable Queries section](../../backend/queries/controller-based/observable-queries.md) in the backend documentation.
 
 Observable queries are generated the same way as regular queries, but they don't provide a manual `perform` method in the returned tuple. Instead, they automatically subscribe to updates and re-render your React components when the underlying data changes, providing a transparent and seamless real-time experience.
 
