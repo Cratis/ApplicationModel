@@ -32,8 +32,8 @@ public class ControllerCommandEndpointMapper(
     /// Maps validation endpoints for all controller-based commands.
     /// </summary>
     /// <param name="endpoints">The endpoint route builder.</param>
-    /// <param name="appModelOptions">Application model options.</param>
-    public void MapValidationEndpoints(IEndpointRouteBuilder endpoints, ArcOptions appModelOptions)
+    /// <param name="arcOptions">Arc options.</param>
+    public void MapValidationEndpoints(IEndpointRouteBuilder endpoints, ArcOptions arcOptions)
     {
         foreach (var action in GetControllerCommandActions())
         {
@@ -50,7 +50,7 @@ public class ControllerCommandEndpointMapper(
 
             endpoints.Map(route, async context =>
             {
-                context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+                context.HandleCorrelationId(correlationIdAccessor, arcOptions.CorrelationId);
 
                 var command = await context.Request.ReadFromJsonAsync(commandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
                 CommandResult commandResult;

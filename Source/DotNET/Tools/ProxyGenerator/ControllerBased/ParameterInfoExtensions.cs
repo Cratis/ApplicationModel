@@ -67,7 +67,7 @@ public static class ParameterInfoExtensions
     }
 
     /// <summary>
-    /// Check if a parameter is adorned with the FromRequestAttribute from Application Model, which means we need to investigate the internals for any request arguments.
+    /// Check if a parameter is adorned with the FromRequestAttribute from Arc, which means we need to investigate the internals for any request arguments.
     /// </summary>
     /// <param name="parameter">Method to check.</param>
     /// <returns>True if it is a from request argument, false otherwise.</returns>

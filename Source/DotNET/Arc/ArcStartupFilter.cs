@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace Cratis.Arc;
 
 /// <summary>
-/// Represents an implementation of <see cref="IStartupFilter"/> that configures Application Model middleware at the beginning of the pipeline.
+/// Represents an implementation of <see cref="IStartupFilter"/> that configures Arc middleware at the beginning of the pipeline.
 /// </summary>
 public class ArcStartupFilter : IStartupFilter
 {
@@ -18,7 +18,7 @@ public class ArcStartupFilter : IStartupFilter
     {
         return app =>
         {
-            // Add Application Model middlewares at the beginning of the pipeline
+            // Add Arc middlewares at the beginning of the pipeline
             app.UseMiddleware<TenantIdMiddleware>();
             app.UseMiddleware<CorrelationIdMiddleware>();
 

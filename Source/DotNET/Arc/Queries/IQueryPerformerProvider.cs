@@ -21,5 +21,5 @@ public interface IQueryPerformerProvider
     /// <param name="query">Query to perform.</param>
     /// <param name="performer">Performer for the query, if found.</param>
     /// <returns>True if a performer was found; otherwise, false.</returns>
-    bool TryGetPerformerFor(QueryName query, [NotNullWhen(true)] out IQueryPerformer? performer);
+    bool TryGetPerformerFor(FullyQualifiedQueryName query, [NotNullWhen(true)] out IQueryPerformer? performer);
 }
