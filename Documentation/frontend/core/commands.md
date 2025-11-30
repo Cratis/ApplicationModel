@@ -1,6 +1,6 @@
 # Commands
 
-The Cratis Application Model provides comprehensive TypeScript/JavaScript support for commands, enabling seamless integration between your frontend and backend through type-safe, automatically generated proxies. Commands represent actions that modify system state and are executed as HTTP POST operations against your backend controllers.
+Cratis Arc provides comprehensive TypeScript/JavaScript support for commands, enabling seamless integration between your frontend and backend through type-safe, automatically generated proxies. Commands represent actions that modify system state and are executed as HTTP POST operations against your backend controllers.
 
 ## Overview
 
@@ -98,7 +98,7 @@ In microservice architectures, commands need to be routed to the correct service
 command.setMicroservice('user-service');
 ```
 
-**It's recommended to configure this globally** through the `<Arc />` component's `microservice` property. This automatically applies to all commands and queries in your application. See the [Application Model Configuration](../react/arc.md#microservice-support) for details.
+**It's recommended to configure this globally** through the `<Arc />` component's `microservice` property. This automatically applies to all commands and queries in your application. See the [Application Model Configuration](../react/application-model.md#microservice-support) for details.
 
 ### API Base Path Configuration
 
@@ -112,7 +112,7 @@ Similarly, API base paths can be set per command:
 command.setApiBasePath('/api/v1');
 ```
 
-**However, it's recommended to configure this globally** using the `<Arc />` component's `apiBasePath` property. This ensures consistency across all commands and queries. See the [Application Model Configuration](../react/arc.md#configuration-options) for details.
+**However, it's recommended to configure this globally** using the `<Arc />` component's `apiBasePath` property. This ensures consistency across all commands and queries. See the [Application Model Configuration](../react/application-model.md#configuration-options) for details.
 
 ## Error Handling
 

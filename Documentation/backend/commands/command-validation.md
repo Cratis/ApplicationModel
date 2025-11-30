@@ -1,6 +1,6 @@
 # Command Validation
 
-The Application Model provides built-in support for validating commands without executing them. This enables pre-flight validation to provide early feedback to users before performing potentially expensive or state-changing operations.
+The Arc provides built-in support for validating commands without executing them. This enables pre-flight validation to provide early feedback to users before performing potentially expensive or state-changing operations.
 
 ## Overview
 

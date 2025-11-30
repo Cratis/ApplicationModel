@@ -75,8 +75,16 @@ public static class StringExtensions
                 {
                     var c = input[i];
 
+                    // Replace underscores with dashes
+                    if (c == '_')
+                    {
+                        span[written++] = '-';
+                        continue;
+                    }
+
                     // If uppercase and not the first character, add a dash before it
-                    if (char.IsUpper(c) && i > 0)
+                    // But not if the previous character was an underscore (already added a dash)
+                    if (char.IsUpper(c) && i > 0 && input[i - 1] != '_')
                     {
                         span[written++] = '-';
                     }

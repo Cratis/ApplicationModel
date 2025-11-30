@@ -1,13 +1,13 @@
 # Dialogs
 
-Cratis Application Model provides a consistent way of working with dialogs independent of component libraries.
+Cratis Arc provides a consistent way of working with dialogs independent of component libraries.
 The purpose is to promote a way of working with dialogs as separate components and not something you
 do inline within another component.
 
 ## Confirmation Dialogs
 
 A common use of modal dialogs are the standard confirmation dialogs. These are dialogs where you ask the user to confirm
-a specific action. The Application Model supports these out of the box and you have options for what type of confirmation you're
+a specific action. The Arc supports these out of the box and you have options for what type of confirmation you're
 looking for in the form of passing it which buttons to show.
 
 There is an enum called `DialogButtons` that has the following options:

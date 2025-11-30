@@ -51,7 +51,7 @@ public static class HostBuilderExtensions
     }
 
     /// <summary>
-    /// Add the Meter for the Application Model.
+    /// Add the Meter for the Arc.
     /// </summary>
     /// <param name="services"><see cref="IServiceCollection"/> to add the meter to.</param>
     /// <returns><see cref="IServiceCollection"/> for building continuation.</returns>

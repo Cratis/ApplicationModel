@@ -1,6 +1,6 @@
 # Tsyringe
 
-The Cratis Application model relies on [Microsoft Tsyringe](https://github.com/microsoft/tsyringe) a lightweight IoC container
+Cratis Arc relies on [Microsoft Tsyringe](https://github.com/microsoft/tsyringe) a lightweight IoC container
 for TypeScript.
 
 In order to use Tsyringe, your application needs to produce type metadata that it can use to resolve dependencies.
@@ -35,7 +35,7 @@ This will enable the necessary reflection metadata for Tsyringe to work properly
 ## Vite
 
 If you're using Vite you will find that things are not working as expected. This is because Vite during development with the dev server will not provide the
-necessary metadata. The Cratis Arc offers a vite plugin for emitting the necessary metadata.
+necessary metadata. Cratis Arc offers a vite plugin for emitting the necessary metadata.
 
 Add a dev package reference to `@cratis/arc.vite`. Then in your `vite.config` you can add it to plugins:
 

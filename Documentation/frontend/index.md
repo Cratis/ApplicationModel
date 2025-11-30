@@ -1,6 +1,6 @@
 # Frontend
 
-The Cratis Application Model provides comprehensive TypeScript/JavaScript support for building modern frontend applications with seamless backend integration.
+Cratis Arc provides comprehensive TypeScript/JavaScript support for building modern frontend applications with seamless backend integration.
 
 ## Core
 

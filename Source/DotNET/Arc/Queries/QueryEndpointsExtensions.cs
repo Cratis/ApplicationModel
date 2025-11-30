@@ -27,8 +27,8 @@ public static class QueryEndpointsExtensions
     {
         if (app is IEndpointRouteBuilder endpoints)
         {
-            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
-            var options = appModelOptions.GeneratedApis;
+            var arcOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
+            var options = arcOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var queryPipeline = app.ApplicationServices.GetRequiredService<IQueryPipeline>();
             var queryPerformerProviders = app.ApplicationServices.GetRequiredService<IQueryPerformerProviders>();
@@ -55,7 +55,7 @@ public static class QueryEndpointsExtensions
                     var builder = group.MapGet(url, async (HttpRequest request, HttpResponse response) =>
                     {
                         var context = request.HttpContext;
-                        context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+                        context.HandleCorrelationId(correlationIdAccessor, arcOptions.CorrelationId);
 
                         var paging = context.GetPagingInfo();
                         var sorting = context.GetSortingInfo();

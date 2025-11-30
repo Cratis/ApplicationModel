@@ -1,4 +1,4 @@
-# Application Model
+# Arc
 
 As with the backend, you can mix and match from the features you want to use. But there is a convenience wrapper that will help you configure it all in
 the form of a custom component that provides the `ArcContext` and configures other Arc contexts in one go.
@@ -46,11 +46,11 @@ export const App = () => {
 
 ## Microservice Support
 
-In microservice architectures, multiple services often share a single ingress point (e.g., an API gateway or reverse proxy). The `microservice` property enables the Application Model to route requests to the correct backend service automatically.
+In microservice architectures, multiple services often share a single ingress point (e.g., an API gateway or reverse proxy). The `microservice` property enables the Arc to route requests to the correct backend service automatically.
 
 ### How It Works
 
-When you specify a microservice name, the Application Model adds this information to all HTTP requests (via headers or query parameters), allowing the ingress to route requests appropriately:
+When you specify a microservice name, the Arc adds this information to all HTTP requests (via headers or query parameters), allowing the ingress to route requests appropriately:
 
 ```tsx
 export const App = () => {

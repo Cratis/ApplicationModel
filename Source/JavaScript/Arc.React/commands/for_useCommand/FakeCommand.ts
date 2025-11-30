@@ -1,8 +1,8 @@
 // Copyright (c) Cratis. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Command, CommandValidator } from '@cratis/applications/commands';
-import { PropertyDescriptor } from '@cratis/applications/reflection';
+import { Command, CommandValidator } from '@cratis/arc/commands';
+import { PropertyDescriptor } from '@cratis/arc/reflection';
 
 export interface FakeCommandContent {
     someProperty?: string;

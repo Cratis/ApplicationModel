@@ -18,7 +18,7 @@ This creates for a more decoupled approach and making your code and structure ea
 
 ## IMessenger
 
-In the Cratis Arc the system that deals with this is called `IMessenger`.
+In Cratis Arc the system that deals with this is called `IMessenger`.
 It has a method called `publish()` for publishing messages, and one for subscribing called `subscribe()`.
 Both of these methods work on types and require a runtime type like a `class` to be the message type.
 

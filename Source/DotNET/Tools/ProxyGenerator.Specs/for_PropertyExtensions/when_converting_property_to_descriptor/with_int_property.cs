@@ -11,7 +11,7 @@ public class with_int_property : Specification
     PropertyInfo _property;
     PropertyDescriptor _result;
 
-    void Establish() => _property = typeof(SampleType).GetProperty(nameof(SampleType.Count))!;
+    void Establish() => _property = typeof(SampleType).GetProperty(nameof(SampleType.Count));
 
     void Because() => _result = _property.ToPropertyDescriptor();
 

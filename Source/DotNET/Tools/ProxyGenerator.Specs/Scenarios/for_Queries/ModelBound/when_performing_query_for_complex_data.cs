@@ -1,0 +1,31 @@
+// Copyright (c) Cratis. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Cratis.Arc.ProxyGenerator.Scenarios.Infrastructure;
+
+namespace Cratis.Arc.ProxyGenerator.Scenarios.for_Queries.ModelBound;
+
+public class when_performing_query_for_complex_data : given.a_scenario_web_application
+{
+    QueryExecutionResult<ComplexReadModel>? _executionResult;
+    Guid _testId;
+
+    void Establish()
+    {
+        _testId = Guid.NewGuid();
+        LoadQueryProxy<ComplexReadModel>("GetComplex");
+    }
+
+    async Task Because()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["id"] = _testId.ToString()
+        };
+
+        _executionResult = await Bridge.PerformQueryViaProxyAsync<ComplexReadModel>("GetComplex", parameters);
+    }
+
+    [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_data() => _executionResult.Result.Data.ShouldNotBeNull();
+}

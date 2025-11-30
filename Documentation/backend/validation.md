@@ -111,7 +111,7 @@ public class AccountNameValidator : ConceptValidator<AccountName>
 ### Conditional validation
 
 FluentValidation supports the concept of [conditions](https://docs.fluentvalidation.net/en/latest/conditions.html) for validation,
-in the API you can see `When()` for different levels. In the Cratis Application Model you'll find that every validator
+in the API you can see `When()` for different levels. In Cratis Arc you'll find that every validator
 that is a discoverable validator (Concept, Command...) have methods on the base type that offers convenience conditions for
 whether or not the request is a **command** or a **query** called `WhenCommand()` or `WhenQuery()`. With this you can
 build rule-sets that are specific the scenario of a command or a query given a specific object you're validating.

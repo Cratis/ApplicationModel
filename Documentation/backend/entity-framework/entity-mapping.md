@@ -1,11 +1,11 @@
 # Entity Mapping
 
-The Application Model provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore.
+The Arc provides a clean, organized way to configure your Entity Framework Core entities through the `IEntityTypeConfiguration<T>` interface from Microsoft.EntityFrameworkCore.
 This approach separates entity configuration from your DbContext, making your code more maintainable.
 
 ## Overview
 
-Entity mapping in the Application Model allows you to define how your entities are configured for Entity Framework Core in dedicated classes.
+Entity mapping in the Arc allows you to define how your entities are configured for Entity Framework Core in dedicated classes.
 These entity configurations are automatically discovered and applied when your DbContext is created, eliminating the need to override `OnModelCreating` in every DbContext
 that inherits from the [`BaseDbContext`](./base-db-context.md).
 
@@ -47,7 +47,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
 ## Automatic Discovery and Registration
 
-Entity configurations are automatically discovered and registered when your application starts. The Application Model:
+Entity configurations are automatically discovered and registered when your application starts. The Arc:
 
 1. **Discovers all implementations** of `IEntityTypeConfiguration<T>` in your application
 2. **Registers them with dependency injection** so they can have dependencies injected

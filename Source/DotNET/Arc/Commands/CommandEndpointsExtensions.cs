@@ -29,8 +29,8 @@ public static class CommandEndpointsExtensions
     {
         if (app is IEndpointRouteBuilder endpoints)
         {
-            var appModelOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
-            var options = appModelOptions.GeneratedApis;
+            var arcOptions = app.ApplicationServices.GetRequiredService<IOptions<ArcOptions>>().Value;
+            var options = arcOptions.GeneratedApis;
             var correlationIdAccessor = app.ApplicationServices.GetRequiredService<ICorrelationIdAccessor>();
             var commandPipeline = app.ApplicationServices.GetRequiredService<ICommandPipeline>();
             var commandHandlerProviders = app.ApplicationServices.GetRequiredService<ICommandHandlerProviders>();
@@ -54,13 +54,13 @@ public static class CommandEndpointsExtensions
                     group,
                     endpoints,
                     url,
-                    $"Execute{handler.CommandType.Name}",
-                    $"Execute {handler.CommandType.Name} command",
+                    $"Execute{handler.CommandType.FullName}",
+                    $"Execute {handler.CommandType.Name} command in {handler.CommandType.Namespace}",
                     handler.CommandType,
                     location,
                     handler.AllowsAnonymousAccess,
                     correlationIdAccessor,
-                    appModelOptions,
+                    arcOptions,
                     jsonSerializerOptions,
                     commandPipeline.Execute);
 
@@ -74,7 +74,7 @@ public static class CommandEndpointsExtensions
                     location,
                     handler.AllowsAnonymousAccess,
                     correlationIdAccessor,
-                    appModelOptions,
+                    arcOptions,
                     jsonSerializerOptions,
                     commandPipeline.Validate);
             }
@@ -86,7 +86,7 @@ public static class CommandEndpointsExtensions
                 commandPipeline,
                 correlationIdAccessor,
                 jsonSerializerOptions);
-            controllerCommandMapper.MapValidationEndpoints(endpoints, appModelOptions);
+            controllerCommandMapper.MapValidationEndpoints(endpoints, arcOptions);
         }
 
         return app;
@@ -102,7 +102,7 @@ public static class CommandEndpointsExtensions
         IEnumerable<string> location,
         bool allowAnonymous,
         ICorrelationIdAccessor correlationIdAccessor,
-        ArcOptions appModelOptions,
+        ArcOptions arcOptions,
         JsonSerializerOptions jsonSerializerOptions,
         Func<object, Task<CommandResult>> commandOperation)
     {
@@ -116,7 +116,7 @@ public static class CommandEndpointsExtensions
         var builder = group.MapPost(url, async (HttpRequest request, HttpResponse response) =>
         {
             var context = request.HttpContext;
-            context.HandleCorrelationId(correlationIdAccessor, appModelOptions.CorrelationId);
+            context.HandleCorrelationId(correlationIdAccessor, arcOptions.CorrelationId);
             var command = await request.ReadFromJsonAsync(commandType, jsonSerializerOptions, cancellationToken: context.RequestAborted);
             CommandResult commandResult;
             if (command is null)

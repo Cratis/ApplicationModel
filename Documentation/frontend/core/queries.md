@@ -1,6 +1,6 @@
 # Queries
 
-The Cratis Application Model provides comprehensive TypeScript/JavaScript support for queries, enabling seamless integration between your frontend and backend through type-safe, automatically generated proxies. Queries retrieve data from your backend and are executed as HTTP GET operations against your backend controllers.
+Cratis Arc provides comprehensive TypeScript/JavaScript support for queries, enabling seamless integration between your frontend and backend through type-safe, automatically generated proxies. Queries retrieve data from your backend and are executed as HTTP GET operations against your backend controllers.
 
 ## Overview
 

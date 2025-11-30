@@ -10,7 +10,7 @@ public class with_property_without_attribute : Specification
     PropertyInfo _property;
     bool _result;
 
-    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Name))!;
+    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Name));
 
     void Because() => _result = _property.IsRequestParameter();
 

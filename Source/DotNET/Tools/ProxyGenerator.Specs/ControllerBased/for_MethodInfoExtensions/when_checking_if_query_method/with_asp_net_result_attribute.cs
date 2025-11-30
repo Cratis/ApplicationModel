@@ -10,7 +10,7 @@ public class with_asp_net_result_attribute : Specification
     MethodInfo _method;
     bool _result;
 
-    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.GetAspNetResult))!;
+    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.GetAspNetResult));
 
     void Because() => _result = _method.IsQueryMethod();
 

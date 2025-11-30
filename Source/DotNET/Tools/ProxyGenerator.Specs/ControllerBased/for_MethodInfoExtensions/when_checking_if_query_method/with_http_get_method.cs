@@ -10,7 +10,7 @@ public class with_http_get_method : Specification
     MethodInfo _method;
     bool _result;
 
-    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.GetAll))!;
+    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.GetAll));
 
     void Because() => _result = _method.IsQueryMethod();
 

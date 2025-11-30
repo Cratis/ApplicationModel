@@ -11,7 +11,7 @@ public class with_string_property : Specification
     PropertyInfo _property;
     PropertyDescriptor _result;
 
-    void Establish() => _property = typeof(SampleType).GetProperty(nameof(SampleType.Name))!;
+    void Establish() => _property = typeof(SampleType).GetProperty(nameof(SampleType.Name));
 
     void Because() => _result = _property.ToPropertyDescriptor();
 

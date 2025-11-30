@@ -17,6 +17,6 @@ public class with_target_type_having_module : Specification
 
     [Fact] void should_return_true() => _success.ShouldBeTrue();
     [Fact] void should_return_import_statement() => _result.ShouldNotBeNull();
-    [Fact] void should_have_correct_type() => _result!.Type.ShouldEqual("string");
-    [Fact] void should_have_correct_module() => _result!.Module.ShouldEqual("@some/module");
+    [Fact] void should_have_correct_type() => _result.Type.ShouldEqual("string");
+    [Fact] void should_have_correct_module() => _result.Module.ShouldEqual("@some/module");
 }

@@ -1,6 +1,6 @@
 # Queries
 
-The Application Model provides comprehensive support for implementing queries in your backend application.
+The Arc provides comprehensive support for implementing queries in your backend application.
 Queries are used for retrieving data and are a key component of CQRS (Command Query Responsibility Segregation) architecture, offering powerful features like observability, validation, and flexible parameter handling.
 
 ## Topics
@@ -19,6 +19,6 @@ Queries are used for retrieving data and are a key component of CQRS (Command Qu
 
 ## Overview
 
-Queries in the Application Model are designed to be flexible and powerful, supporting both traditional request-response patterns and reactive, observable queries that can provide real-time updates.
+Queries in the Arc are designed to be flexible and powerful, supporting both traditional request-response patterns and reactive, observable queries that can provide real-time updates.
 The framework handles parameter validation, binding, and processing through a comprehensive pipeline that ensures consistent behavior across your application.
 Query arguments and parameter binding are covered within the controller-based and model-bound topics.

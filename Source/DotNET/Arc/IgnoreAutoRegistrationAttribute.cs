@@ -7,7 +7,7 @@ namespace Cratis.Arc;
 /// Represents an attribute that indicates that a class should be ignored during automatic registration.
 /// </summary>
 /// <remarks>
-/// This attribute is supported by different systems in the Application Model to indicate that a class should be ignored
+/// This attribute is supported by different systems in the Arc to indicate that a class should be ignored
 /// by automatic registration mechanisms.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class)]

@@ -11,7 +11,7 @@ public class with_enumerable_property : Specification
     PropertyInfo _property;
     PropertyDescriptor _result;
 
-    void Establish() => _property = typeof(TypeWithEnumerableProperty).GetProperty(nameof(TypeWithEnumerableProperty.Items))!;
+    void Establish() => _property = typeof(TypeWithEnumerableProperty).GetProperty(nameof(TypeWithEnumerableProperty.Items));
 
     void Because() => _result = _property.ToPropertyDescriptor();
 

@@ -11,7 +11,7 @@ namespace Cratis.Arc;
 internal static class Internals
 {
     /// <summary>
-    /// Gets the name of the meter used by the Application Model.
+    /// Gets the name of the meter used by the Arc.
     /// </summary>
     internal const string MeterName = "Cratis.Arc";
     static IServiceProvider? _serviceProvider;
