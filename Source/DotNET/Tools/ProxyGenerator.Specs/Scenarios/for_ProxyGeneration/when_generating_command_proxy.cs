@@ -25,7 +25,7 @@ public class when_generating_command_proxy : Specification, IDisposable
 
         _descriptor = new CommandDescriptor(
             commandType,
-            commandType.GetMethod("Handle")!,
+            commandType.GetMethod("Handle"),
             "/api/commands/simple-command",
             "SimpleCommand",
             properties,

@@ -24,11 +24,11 @@ public class when_performing_query_for_complex_data : given.a_scenario_web_appli
         };
 
         // ComplexReadModel.GetComplex has "id" parameter
-        _executionResult = await Bridge!.PerformQueryDirectAsync<ComplexReadModel>(
+        _executionResult = await Bridge.PerformQueryDirectAsync<ComplexReadModel>(
             "/api/cratis/arc/proxy-generator/scenarios/queries/get-complex",
             parameters);
     }
 
-    [Fact] void should_return_successful_result() => _executionResult!.Result.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_data() => _executionResult!.Result.Data.ShouldNotBeNull();
+    [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_data() => _executionResult.Result.Data.ShouldNotBeNull();
 }

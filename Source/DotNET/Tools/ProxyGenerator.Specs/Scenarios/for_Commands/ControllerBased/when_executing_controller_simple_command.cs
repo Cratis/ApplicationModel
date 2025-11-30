@@ -19,12 +19,12 @@ public class when_executing_controller_simple_command : given.a_scenario_web_app
             Count = 5
         };
 
-        var response = await HttpClient!.PostAsJsonAsync("/api/controller-commands/simple", command);
+        var response = await HttpClient.PostAsJsonAsync("/api/controller-commands/simple", command);
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<CommandResult<object>>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_be_authorized() => _result!.IsAuthorized.ShouldBeTrue();
-    [Fact] void should_be_valid() => _result!.IsValid.ShouldBeTrue();
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_be_authorized() => _result.IsAuthorized.ShouldBeTrue();
+    [Fact] void should_be_valid() => _result.IsValid.ShouldBeTrue();
 }

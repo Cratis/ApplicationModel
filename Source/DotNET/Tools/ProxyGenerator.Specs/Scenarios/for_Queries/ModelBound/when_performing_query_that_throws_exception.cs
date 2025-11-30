@@ -18,12 +18,12 @@ public class when_performing_query_that_throws_exception : given.a_scenario_web_
         };
 
         // ExceptionReadModel.GetWithException
-        _executionResult = await Bridge!.PerformQueryDirectAsync<ExceptionReadModel>(
+        _executionResult = await Bridge.PerformQueryDirectAsync<ExceptionReadModel>(
             "/api/cratis/arc/proxy-generator/scenarios/queries/get-with-exception",
             parameters);
     }
 
-    [Fact] void should_not_be_successful() => _executionResult!.Result.IsSuccess.ShouldBeFalse();
-    [Fact] void should_have_exceptions() => _executionResult!.Result.HasExceptions.ShouldBeTrue();
-    [Fact] void should_have_exception_messages() => _executionResult!.Result.ExceptionMessages.ShouldNotBeEmpty();
+    [Fact] void should_not_be_successful() => _executionResult.Result.IsSuccess.ShouldBeFalse();
+    [Fact] void should_have_exceptions() => _executionResult.Result.HasExceptions.ShouldBeTrue();
+    [Fact] void should_have_exception_messages() => _executionResult.Result.ExceptionMessages.ShouldNotBeEmpty();
 }

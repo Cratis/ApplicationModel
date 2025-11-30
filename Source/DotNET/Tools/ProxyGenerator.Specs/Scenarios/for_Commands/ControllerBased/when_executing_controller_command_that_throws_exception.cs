@@ -18,12 +18,12 @@ public class when_executing_controller_command_that_throws_exception : given.a_s
             ShouldThrow = true
         };
 
-        var response = await HttpClient!.PostAsJsonAsync("/api/controller-commands/exception", command);
+        var response = await HttpClient.PostAsJsonAsync("/api/controller-commands/exception", command);
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<CommandResult<object>>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_not_be_successful() => _result!.IsSuccess.ShouldBeFalse();
-    [Fact] void should_have_exceptions() => _result!.HasExceptions.ShouldBeTrue();
-    [Fact] void should_have_exception_messages() => _result!.ExceptionMessages.ShouldNotBeEmpty();
+    [Fact] void should_not_be_successful() => _result.IsSuccess.ShouldBeFalse();
+    [Fact] void should_have_exceptions() => _result.HasExceptions.ShouldBeTrue();
+    [Fact] void should_have_exception_messages() => _result.ExceptionMessages.ShouldNotBeEmpty();
 }

@@ -62,7 +62,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
         var response = await _httpClient.PostAsJsonAsync(route, payload, _jsonOptions);
         var responseContent = await response.Content.ReadAsStringAsync();
         var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<TResult>>(responseContent, _jsonOptions);
-        return new CommandExecutionResult<TResult>(commandResult!, responseContent);
+        return new CommandExecutionResult<TResult>(commandResult, responseContent);
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
         var response = await _httpClient.PostAsJsonAsync(route, payload, _jsonOptions);
         var responseContent = await response.Content.ReadAsStringAsync();
         var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<object>>(responseContent, _jsonOptions);
-        return new CommandExecutionResult<object>(commandResult!, responseContent);
+        return new CommandExecutionResult<object>(commandResult, responseContent);
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
         var response = await _httpClient.GetAsync(fullRoute);
         var responseContent = await response.Content.ReadAsStringAsync();
         var queryResult = JsonSerializer.Deserialize<Arc.Queries.QueryResult>(responseContent, _jsonOptions);
-        return new QueryExecutionResult<TResult>(queryResult!, responseContent);
+        return new QueryExecutionResult<TResult>(queryResult, responseContent);
     }
 
     /// <summary>
@@ -112,26 +112,24 @@ public sealed class JavaScriptHttpBridge : IDisposable
     {
         // Build the command instance in JavaScript
         var propAssignments = string.Join('\n', properties.Select(p => $"cmd.{p.Key} = {JsonSerializer.Serialize(p.Value, _jsonOptions)};"));
-        var script = $@"
-            var cmd = new {commandName}();
-            {propAssignments}
-            var __cmdPayload = {{}};
-            cmd.properties.forEach(function(prop) {{ __cmdPayload[prop] = cmd[prop]; }});
-            var __cmdRoute = cmd.route;
-            JSON.stringify({{ route: __cmdRoute, payload: __cmdPayload }});
-        ";
+        var script = "var cmd = new " + commandName + "();" +
+            propAssignments +
+            "var __cmdPayload = {};" +
+            "cmd.properties.forEach(function(prop) { __cmdPayload[prop] = cmd[prop]; });" +
+            "var __cmdRoute = cmd.route;" +
+            "JSON.stringify({ route: __cmdRoute, payload: __cmdPayload });";
 
         var resultJson = _runtime.Evaluate<string>(script);
-        var commandInfo = JsonSerializer.Deserialize<CommandInfo>(resultJson!, _jsonOptions);
+        var commandInfo = JsonSerializer.Deserialize<CommandInfo>(resultJson, _jsonOptions);
 
         // Execute the HTTP request
-        var response = await _httpClient.PostAsJsonAsync(commandInfo!.Route, commandInfo.Payload, _jsonOptions);
+        var response = await _httpClient.PostAsJsonAsync(commandInfo.Route, commandInfo.Payload, _jsonOptions);
         var responseContent = await response.Content.ReadAsStringAsync();
 
         // Parse the response
         var commandResult = JsonSerializer.Deserialize<Arc.Commands.CommandResult<TResult>>(responseContent, _jsonOptions);
 
-        return new CommandExecutionResult<TResult>(commandResult!, responseContent);
+        return new CommandExecutionResult<TResult>(commandResult, responseContent);
     }
 
     /// <summary>
@@ -148,26 +146,24 @@ public sealed class JavaScriptHttpBridge : IDisposable
             ? string.Join('\n', parameters.Select(p => $"query.{p.Key} = {JsonSerializer.Serialize(p.Value, _jsonOptions)};"))
             : string.Empty;
 
-        var script = $@"
-            var query = new {queryName}();
-            {paramAssignments}
-            var __queryRoute = query.route;
-            var __queryParams = {{}};
-            if (query.parameterDescriptors) {{
-                query.parameterDescriptors.forEach(function(desc) {{
-                    if (query[desc.name] !== undefined) {{
-                        __queryParams[desc.name] = query[desc.name];
-                    }}
-                }});
-            }}
-            JSON.stringify({{ route: __queryRoute, parameters: __queryParams }});
-        ";
+        var script = "var query = new " + queryName + "();" +
+            paramAssignments +
+            "var __queryRoute = query.route;" +
+            "var __queryParams = {};" +
+            "if (query.parameterDescriptors) {" +
+            "    query.parameterDescriptors.forEach(function(desc) {" +
+            "        if (query[desc.name] !== undefined) {" +
+            "            __queryParams[desc.name] = query[desc.name];" +
+            "        }" +
+            "    });" +
+            "}" +
+            "JSON.stringify({ route: __queryRoute, parameters: __queryParams });";
 
         var resultJson = _runtime.Evaluate<string>(script);
-        var queryInfo = JsonSerializer.Deserialize<QueryInfo>(resultJson!, _jsonOptions);
+        var queryInfo = JsonSerializer.Deserialize<QueryInfo>(resultJson, _jsonOptions);
 
         // Build query string
-        var route = queryInfo!.Route;
+        var route = queryInfo.Route;
         if (queryInfo.Parameters?.Count > 0)
         {
             var queryString = string.Join('&', queryInfo.Parameters.Select(p => $"{p.Key}={Uri.EscapeDataString(p.Value?.ToString() ?? string.Empty)}"));
@@ -181,7 +177,7 @@ public sealed class JavaScriptHttpBridge : IDisposable
         // Parse the response
         var queryResult = JsonSerializer.Deserialize<Arc.Queries.QueryResult>(responseContent, _jsonOptions);
 
-        return new QueryExecutionResult<TResult>(queryResult!, responseContent);
+        return new QueryExecutionResult<TResult>(queryResult, responseContent);
     }
 
     /// <inheritdoc/>

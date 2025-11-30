@@ -19,13 +19,13 @@ public class when_executing_command_with_validation_errors : given.a_scenario_we
         };
 
         // ValidatedCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge!.ExecuteCommandDirectAsync(
+        var executionResult = await Bridge.ExecuteCommandDirectAsync(
             "/api/cratis/arc/proxy-generator/scenarios/commands/validated-command",
             payload);
         _result = executionResult.Result;
     }
 
-    [Fact] void should_not_be_successful() => _result!.IsSuccess.ShouldBeFalse();
-    [Fact] void should_not_be_valid() => _result!.IsValid.ShouldBeFalse();
-    [Fact] void should_have_validation_results() => _result!.ValidationResults.ShouldNotBeEmpty();
+    [Fact] void should_not_be_successful() => _result.IsSuccess.ShouldBeFalse();
+    [Fact] void should_not_be_valid() => _result.IsValid.ShouldBeFalse();
+    [Fact] void should_have_validation_results() => _result.ValidationResults.ShouldNotBeEmpty();
 }

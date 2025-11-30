@@ -11,7 +11,7 @@ public class with_nullable_property : Specification
     PropertyInfo _property;
     PropertyDescriptor _result;
 
-    void Establish() => _property = typeof(TypeWithNullableProperty).GetProperty(nameof(TypeWithNullableProperty.NullableValue))!;
+    void Establish() => _property = typeof(TypeWithNullableProperty).GetProperty(nameof(TypeWithNullableProperty.NullableValue));
 
     void Because() => _result = _property.ToPropertyDescriptor();
 

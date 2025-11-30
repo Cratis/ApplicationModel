@@ -11,11 +11,11 @@ public class when_performing_controller_query_for_complex_data : given.a_scenari
 
     async Task Because()
     {
-        var response = await HttpClient!.GetAsync("/api/controller-queries/complex");
+        var response = await HttpClient.GetAsync("/api/controller-queries/complex");
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<QueryResult>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_data() => _result!.Data.ShouldNotBeNull();
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_data() => _result.Data.ShouldNotBeNull();
 }

@@ -32,15 +32,15 @@ public class when_executing_complex_command : given.a_scenario_web_application
         };
 
         // ComplexCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge!.ExecuteCommandDirectAsync<ComplexCommandResult>(
+        var executionResult = await Bridge.ExecuteCommandDirectAsync<ComplexCommandResult>(
             "/api/cratis/arc/proxy-generator/scenarios/commands/complex-command",
             payload);
         _result = executionResult.Result;
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_response() => _result!.Response.ShouldNotBeNull();
-    [Fact] void should_have_received_nested_name() => _result!.Response!.ReceivedNested.ShouldEqual("NestedName");
-    [Fact] void should_have_correct_item_count() => _result!.Response!.ItemCount.ShouldEqual(3);
-    [Fact] void should_have_correct_value_count() => _result!.Response!.ValueCount.ShouldEqual(2);
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_response() => _result.Response.ShouldNotBeNull();
+    [Fact] void should_have_received_nested_name() => _result.Response.ReceivedNested.ShouldEqual("NestedName");
+    [Fact] void should_have_correct_item_count() => _result.Response.ItemCount.ShouldEqual(3);
+    [Fact] void should_have_correct_value_count() => _result.Response.ValueCount.ShouldEqual(2);
 }

@@ -10,7 +10,7 @@ public class with_from_query_property : Specification
     PropertyInfo _property;
     bool _result;
 
-    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Filter))!;
+    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Filter));
 
     void Because() => _result = _property.IsFromQueryParameter();
 

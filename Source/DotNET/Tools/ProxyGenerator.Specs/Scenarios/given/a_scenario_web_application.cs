@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Cratis.Arc.ProxyGenerator.Scenarios.given;
 
@@ -39,6 +40,10 @@ public class a_scenario_web_application : Specification, IDisposable
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
+
+        // Suppress verbose logging during tests
+        builder.Logging.ClearProviders();
+        builder.Logging.SetMinimumLevel(LogLevel.Warning);
 
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(a_scenario_web_application).Assembly);

@@ -18,13 +18,13 @@ public class when_executing_command_with_result : given.a_scenario_web_applicati
         };
 
         // CommandWithResult in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge!.ExecuteCommandDirectAsync<CommandResultData>(
+        var executionResult = await Bridge.ExecuteCommandDirectAsync<CommandResultData>(
             "/api/cratis/arc/proxy-generator/scenarios/commands/command-with-result",
             payload);
         _result = executionResult.Result;
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_response() => _result!.Response.ShouldNotBeNull();
-    [Fact] void should_have_processed_value() => _result!.Response!.ProcessedValue.ShouldContain("Processed: TestInput");
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_response() => _result.Response.ShouldNotBeNull();
+    [Fact] void should_have_processed_value() => _result.Response.ProcessedValue.ShouldContain("Processed: TestInput");
 }

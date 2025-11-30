@@ -24,14 +24,14 @@ public class when_executing_controller_command_with_route_and_query_parameters :
             Value = "BodyValue"
         };
 
-        var response = await HttpClient!.PostAsJsonAsync($"/api/controller-commands/{_routeId}?filter=testFilter", command);
+        var response = await HttpClient.PostAsJsonAsync($"/api/controller-commands/{_routeId}?filter=testFilter", command);
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<CommandResult<ControllerParameterResult>>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_response() => _result!.Response.ShouldNotBeNull();
-    [Fact] void should_have_correct_route_id() => _result!.Response!.RouteId.ShouldEqual(_routeId);
-    [Fact] void should_have_correct_query_filter() => _result!.Response!.QueryFilter.ShouldEqual("testFilter");
-    [Fact] void should_have_correct_body_value() => _result!.Response!.BodyValue.ShouldEqual("BodyValue");
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_response() => _result.Response.ShouldNotBeNull();
+    [Fact] void should_have_correct_route_id() => _result.Response.RouteId.ShouldEqual(_routeId);
+    [Fact] void should_have_correct_query_filter() => _result.Response.QueryFilter.ShouldEqual("testFilter");
+    [Fact] void should_have_correct_body_value() => _result.Response.BodyValue.ShouldEqual("BodyValue");
 }

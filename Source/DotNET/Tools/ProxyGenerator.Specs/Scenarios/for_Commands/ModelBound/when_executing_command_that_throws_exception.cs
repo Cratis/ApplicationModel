@@ -17,13 +17,13 @@ public class when_executing_command_that_throws_exception : given.a_scenario_web
         };
 
         // ExceptionCommand in Cratis.Arc.ProxyGenerator.Scenarios.Commands namespace
-        var executionResult = await Bridge!.ExecuteCommandDirectAsync(
+        var executionResult = await Bridge.ExecuteCommandDirectAsync(
             "/api/cratis/arc/proxy-generator/scenarios/commands/exception-command",
             payload);
         _result = executionResult.Result;
     }
 
-    [Fact] void should_not_be_successful() => _result!.IsSuccess.ShouldBeFalse();
-    [Fact] void should_have_exceptions() => _result!.HasExceptions.ShouldBeTrue();
-    [Fact] void should_have_exception_messages() => _result!.ExceptionMessages.ShouldNotBeEmpty();
+    [Fact] void should_not_be_successful() => _result.IsSuccess.ShouldBeFalse();
+    [Fact] void should_have_exceptions() => _result.HasExceptions.ShouldBeTrue();
+    [Fact] void should_have_exception_messages() => _result.ExceptionMessages.ShouldNotBeEmpty();
 }

@@ -15,12 +15,12 @@ public class when_performing_query_for_all_items : given.a_scenario_web_applicat
         // Route: /api/{namespace-segments-kebab}/{query-name-kebab}
         // Namespace: Cratis.Arc.ProxyGenerator.Scenarios.Queries
         // Method: GetAll
-        _executionResult = await Bridge!.PerformQueryDirectAsync<IEnumerable<SimpleReadModel>>(
+        _executionResult = await Bridge.PerformQueryDirectAsync<IEnumerable<SimpleReadModel>>(
             "/api/cratis/arc/proxy-generator/scenarios/queries/get-all");
     }
 
-    [Fact] void should_return_successful_result() => _executionResult!.Result.IsSuccess.ShouldBeTrue();
-    [Fact] void should_be_authorized() => _executionResult!.Result.IsAuthorized.ShouldBeTrue();
-    [Fact] void should_be_valid() => _executionResult!.Result.IsValid.ShouldBeTrue();
-    [Fact] void should_have_data() => _executionResult!.Result.Data.ShouldNotBeNull();
+    [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_be_authorized() => _executionResult.Result.IsAuthorized.ShouldBeTrue();
+    [Fact] void should_be_valid() => _executionResult.Result.IsValid.ShouldBeTrue();
+    [Fact] void should_have_data() => _executionResult.Result.Data.ShouldNotBeNull();
 }

@@ -10,7 +10,7 @@ public class with_http_post_method : Specification
     MethodInfo _method;
     bool _result;
 
-    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.Create))!;
+    void Establish() => _method = typeof(TestController).GetMethod(nameof(TestController.Create));
 
     void Because() => _result = _method.IsCommandMethod();
 

@@ -18,12 +18,12 @@ public class when_executing_controller_command_with_result : given.a_scenario_we
             Input = "TestInput"
         };
 
-        var response = await HttpClient!.PostAsJsonAsync("/api/controller-commands/with-result", command);
+        var response = await HttpClient.PostAsJsonAsync("/api/controller-commands/with-result", command);
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<CommandResult<ControllerCommandResult>>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_response() => _result!.Response.ShouldNotBeNull();
-    [Fact] void should_have_correct_message() => _result!.Response!.Message.ShouldContain("Received: TestInput");
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_response() => _result.Response.ShouldNotBeNull();
+    [Fact] void should_have_correct_message() => _result.Response.Message.ShouldContain("Received: TestInput");
 }

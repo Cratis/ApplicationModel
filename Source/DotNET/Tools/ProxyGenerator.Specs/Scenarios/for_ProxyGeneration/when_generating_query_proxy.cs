@@ -19,7 +19,7 @@ public class when_generating_query_proxy : Specification, IDisposable
         _runtime = new JavaScriptRuntime();
 
         var readModelType = typeof(SimpleReadModel);
-        var queryMethod = readModelType.GetMethod("GetAll")!;
+        var queryMethod = readModelType.GetMethod("GetAll");
 
         _descriptor = new QueryDescriptor(
             readModelType,

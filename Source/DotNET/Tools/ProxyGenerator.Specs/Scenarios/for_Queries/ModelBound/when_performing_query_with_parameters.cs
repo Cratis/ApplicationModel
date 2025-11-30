@@ -19,12 +19,12 @@ public class when_performing_query_with_parameters : given.a_scenario_web_applic
         };
 
         // ParameterizedReadModel.Search
-        _executionResult = await Bridge!.PerformQueryDirectAsync<IEnumerable<ParameterizedReadModel>>(
+        _executionResult = await Bridge.PerformQueryDirectAsync<IEnumerable<ParameterizedReadModel>>(
             "/api/cratis/arc/proxy-generator/scenarios/queries/search",
             parameters);
     }
 
-    [Fact] void should_return_successful_result() => _executionResult!.Result.IsSuccess.ShouldBeTrue();
-    [Fact] void should_be_authorized() => _executionResult!.Result.IsAuthorized.ShouldBeTrue();
-    [Fact] void should_have_data() => _executionResult!.Result.Data.ShouldNotBeNull();
+    [Fact] void should_return_successful_result() => _executionResult.Result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_be_authorized() => _executionResult.Result.IsAuthorized.ShouldBeTrue();
+    [Fact] void should_have_data() => _executionResult.Result.Data.ShouldNotBeNull();
 }

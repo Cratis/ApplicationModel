@@ -17,11 +17,11 @@ public class when_performing_controller_query_by_id : given.a_scenario_web_appli
 
     async Task Because()
     {
-        var response = await HttpClient!.GetAsync($"/api/controller-queries/items/{_itemId}");
+        var response = await HttpClient.GetAsync($"/api/controller-queries/items/{_itemId}");
         var json = await response.Content.ReadAsStringAsync();
         _result = System.Text.Json.JsonSerializer.Deserialize<QueryResult>(json, Json.Globals.JsonSerializerOptions);
     }
 
-    [Fact] void should_return_successful_result() => _result!.IsSuccess.ShouldBeTrue();
-    [Fact] void should_have_data() => _result!.Data.ShouldNotBeNull();
+    [Fact] void should_return_successful_result() => _result.IsSuccess.ShouldBeTrue();
+    [Fact] void should_have_data() => _result.Data.ShouldNotBeNull();
 }

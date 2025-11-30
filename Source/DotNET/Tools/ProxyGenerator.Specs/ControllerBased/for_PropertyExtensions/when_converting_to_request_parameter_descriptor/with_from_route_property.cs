@@ -11,7 +11,7 @@ public class with_from_route_property : Specification
     PropertyInfo _property;
     RequestParameterDescriptor _result;
 
-    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Id))!;
+    void Establish() => _property = typeof(TypeWithRequestProperties).GetProperty(nameof(TypeWithRequestProperties.Id));
 
     void Because() => _result = _property.ToRequestParameterDescriptor();
 
