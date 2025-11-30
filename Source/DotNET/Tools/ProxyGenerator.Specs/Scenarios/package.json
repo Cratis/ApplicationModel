@@ -1,0 +1,15 @@
+{
+    "name": "@cratis/arc.proxy-generator.specs",
+    "version": "1.0.0",
+    "description": "End-to-end specs for Arc Proxy Generator",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc -b",
+        "clean": "tsc -b --clean"
+    },
+    "dependencies": {
+        "@cratis/arc": "1.0.0",
+        "@cratis/arc.react": "1.0.0"
+    }
+}

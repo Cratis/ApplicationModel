@@ -86,12 +86,12 @@ public sealed class JavaScriptRuntime : IDisposable
 
     void InitializeRuntime()
     {
-        // Load TypeScript compiler
-        var typeScriptCompiler = EmbeddedResources.GetTypeScriptCompiler();
+        // Load TypeScript compiler from node_modules
+        var typeScriptCompiler = JavaScriptResources.GetTypeScriptCompiler();
         Engine.Execute(typeScriptCompiler);
 
-        // Load Arc runtime shims
-        var arcRuntime = EmbeddedResources.GetArcRuntime();
-        Engine.Execute(arcRuntime);
+        // Load Arc bootstrap code (sets up module environment with shims)
+        var arcBootstrap = JavaScriptResources.GetArcBootstrap();
+        Engine.Execute(arcBootstrap);
     }
 }
